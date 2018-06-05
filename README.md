@@ -1,0 +1,2 @@
+# StellarisSaveAnalyser
+Stellaris Save Analyser
