@@ -13,7 +13,7 @@ public class FlagData {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        if (!o.hasKey("flag_date") || !o.hasKey("flag_date") || o.size()!=2) {
+        if (!o.hasKey("flag_date") || !o.hasKey("flag_date") || o.size() != 2) {
             throw new IllegalArgumentException(String.valueOf(o));
         }
 

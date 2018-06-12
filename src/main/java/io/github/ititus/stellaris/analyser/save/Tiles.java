@@ -16,4 +16,8 @@ public class Tiles {
     public Tiles(Map<Integer, Tile> tiles) {
         this.tiles = new HashMap<>(tiles);
     }
+
+    public Map<Integer, Tile> getTiles() {
+        return tiles;
+    }
 }

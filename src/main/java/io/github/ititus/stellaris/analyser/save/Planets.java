@@ -16,4 +16,8 @@ public class Planets {
     public Planets(Map<Integer, Planet> planets) {
         this.planets = new HashMap<>(planets);
     }
+
+    public Map<Integer, Planet> getPlanets() {
+        return planets;
+    }
 }

@@ -141,4 +141,272 @@ public class GameState {
         this.randomSeed = o.getInt("random_seed"); // 1_739_336
         this.randomCount = o.getInt("random_count"); // 1_739_337
     }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getVersionControlRevision() {
+        return versionControlRevision;
+    }
+
+    public int getTick() {
+        return tick;
+    }
+
+    public int getRandomLogDay() {
+        return randomLogDay;
+    }
+
+    public int getLastCreatedSpecies() {
+        return lastCreatedSpecies;
+    }
+
+    public int getLastCreatedPop() {
+        return lastCreatedPop;
+    }
+
+    public int getLastCreatedCountry() {
+        return lastCreatedCountry;
+    }
+
+    public long getLastRefugeeCountry() {
+        return lastRefugeeCountry;
+    }
+
+    public int getLastCreatedSystem() {
+        return lastCreatedSystem;
+    }
+
+    public int getLastCreatedFleet() {
+        return lastCreatedFleet;
+    }
+
+    public int getLastCreatedShip() {
+        return lastCreatedShip;
+    }
+
+    public int getLastCreatedLeader() {
+        return lastCreatedLeader;
+    }
+
+    public int getLastCreatedArmy() {
+        return lastCreatedArmy;
+    }
+
+    public int getLastCreatedDesign() {
+        return lastCreatedDesign;
+    }
+
+    public int getLastCreatedAmbientObject() {
+        return lastCreatedAmbientObject;
+    }
+
+    public int getLastDiploAction() {
+        return lastDiploAction;
+    }
+
+    public int getLastdNotificationId() {
+        return lastdNotificationId;
+    }
+
+    public int getLastEventId() {
+        return lastEventId;
+    }
+
+    public int getLastCreatedPopFaction() {
+        return lastCreatedPopFaction;
+    }
+
+    public int getLastKilledCountryName() {
+        return lastKilledCountryName;
+    }
+
+    public int getRandomCount() {
+        return randomCount;
+    }
+
+    public int getRandomSeed() {
+        return randomSeed;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public List<String> getRequiredDLCs() {
+        return requiredDLCs;
+    }
+
+    public List<String> getUsedColors() {
+        return usedColors;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public List<Species> getSpecies() {
+        return species;
+    }
+
+    public List<Nebula> getNebulas() {
+        return nebulas;
+    }
+
+    public Pops getPops() {
+        return pops;
+    }
+
+    public GalacticObjects getGalacticObjects() {
+        return galacticObjects;
+    }
+
+    public Starbases getStarbases() {
+        return starbases;
+    }
+
+    public Planets getPlanets() {
+        return planets;
+    }
+
+    public Countries getCountries() {
+        return countries;
+    }
+
+    public Alliances getAlliances() {
+        return alliances;
+    }
+
+    public Truces getTruces() {
+        return truces;
+    }
+
+    public TradeDeals getTradeDeals() {
+        return tradeDeals;
+    }
+
+    public Leaders getLeaders() {
+        return leaders;
+    }
+
+    public Ships getShips() {
+        return ships;
+    }
+
+    public Fleets getFleets() {
+        return fleets;
+    }
+
+    public FleetTemplates getFleetTemplates() {
+        return fleetTemplates;
+    }
+
+    public Armies getArmies() {
+        return armies;
+    }
+
+    public GroundCombats getGroundCombats() {
+        return groundCombats;
+    }
+
+    public List<Integer> getFiredEvents() {
+        return firedEvents;
+    }
+
+    public List<Integer> getRimGalacticObjects() {
+        return rimGalacticObjects;
+    }
+
+    public List<Long> getUsedSymbols() {
+        return usedSymbols;
+    }
+
+    public Wars getWars() {
+        return wars;
+    }
+
+    public DebrisMap getDebrisMap() {
+        return debrisMap;
+    }
+
+    public Missiles getMissiles() {
+        return missiles;
+    }
+
+    public StrikeCrafts getStrikeCrafts() {
+        return strikeCrafts;
+    }
+
+    public AmbientObjects getAmbientObjects() {
+        return ambientObjects;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public RandomNameDatabase getRandomNameDatabase() {
+        return randomNameDatabase;
+    }
+
+    public NameList getNameList() {
+        return nameList;
+    }
+
+    public Galaxy getGalaxy() {
+        return galaxy;
+    }
+
+    public double getGalaxyRadius() {
+        return galaxyRadius;
+    }
+
+    public Flags getFlags() {
+        return flags;
+    }
+
+    public List<SavedEventTarget> getSavedEventTarget() {
+        return savedEventTarget;
+    }
+
+    public ShipDesigns getShipDesigns() {
+        return shipDesigns;
+    }
+
+    public PopFactions getPopFactions() {
+        return popFactions;
+    }
+
+    public MegaStructures getMegaStructures() {
+        return megaStructures;
+    }
+
+    public Bypasses getBypasses() {
+        return bypasses;
+    }
+
+    public NaturalWormholes getNaturalWormholes() {
+        return naturalWormholes;
+    }
+
+    public List<GlobalShipDesign> getGlobalShipDesigns() {
+        return globalShipDesigns;
+    }
+
+    public List<Cluster> getClusters() {
+        return clusters;
+    }
+
+    public List<AssetClass> getUsedSpeciesNames() {
+        return usedSpeciesNames;
+    }
+
+    public List<AssetClass> getUsedSpeciesPortraits() {
+        return usedSpeciesPortraits;
+    }
 }

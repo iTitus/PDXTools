@@ -88,6 +88,11 @@ public class Resources {
         }
     }
 
+
+    public Resources() {
+        this(CollectionUtil.listOf(), CollectionUtil.listOf(), CollectionUtil.listOf(), CollectionUtil.listOf(), CollectionUtil.listOf(), CollectionUtil.listOf(), CollectionUtil.listOf(), CollectionUtil.listOf());
+    }
+
     public Resources(Collection<Double> energy, Collection<Double> minerals, Collection<Double> food, Collection<Double> physicsResearch, Collection<Double> societyResearch, Collection<Double> engineeringResearch, Collection<Double> influence, Collection<Double> unity) {
         this.energy = new ArrayList<>(energy);
         this.minerals = new ArrayList<>(minerals);
@@ -97,5 +102,37 @@ public class Resources {
         this.engineeringResearch = new ArrayList<>(engineeringResearch);
         this.influence = new ArrayList<>(influence);
         this.unity = new ArrayList<>(unity);
+    }
+
+    public List<Double> getEnergy() {
+        return energy;
+    }
+
+    public List<Double> getMinerals() {
+        return minerals;
+    }
+
+    public List<Double> getFood() {
+        return food;
+    }
+
+    public List<Double> getPhysicsResearch() {
+        return physicsResearch;
+    }
+
+    public List<Double> getSocietyResearch() {
+        return societyResearch;
+    }
+
+    public List<Double> getEngineeringResearch() {
+        return engineeringResearch;
+    }
+
+    public List<Double> getInfluence() {
+        return influence;
+    }
+
+    public List<Double> getUnity() {
+        return unity;
     }
 }

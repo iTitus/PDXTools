@@ -38,11 +38,7 @@ public class Pop {
             this.ethos = null;
         }
         o1 = o.getObject("flags");
-        if (o1 != null) {
-            this.flags = o1.getAs(Flags::new);
-        } else {
-            this.flags = null;
-        }
+        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
         this.buildablePop = o.getBoolean("buildable_pop");
         this.enslaved = o.getBoolean("enslaved");
         IPdxScript s1 = o.get("timed_modifier");
@@ -58,11 +54,7 @@ public class Pop {
         this.requiredGrowth = o.getObject("required_growth").getAs(PopResourceRequirement::new);
         this.payingSector = o.getInt("paying_sector");
         o1 = o.getObject("resources");
-        if (o1 != null) {
-            this.resources = o1.getAs(Resources::new);
-        } else {
-            this.resources = null;
-        }
+        this.resources = o1 != null ? o1.getAs(Resources::new) : new Resources();
         this.aiRightsServitude = o.getBoolean("ai_rights_servitude");
         this.daysEnslaved = o.getInt("days_enslaved");
     }

@@ -6,47 +6,42 @@ import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptValue;
 import io.github.ititus.stellaris.analyser.util.CollectionUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Planet {
 
-    private final String name;
-    private final boolean customName;
-    private final String planetClass;
+    public static final Set<String> habitablePlanetClasses = CollectionUtil.setOf(
+            "pc_desert",
+            "pc_tropical",
+            "pc_arid",
+            "pc_ocean",
+            "pc_tundra",
+            "pc_arctic",
+            "pc_continental",
+            "pc_alpine",
+            "pc_savannah",
+            "pc_nuked",
+            "pc_machine",
+            "pc_gaia",
+            "pc_tomb",
+            "pc_ringworld_habitable",
+            "pc_habitat"
+
+    );
+
+    private final String name, planetClass, entityName;
+    private final boolean customName, planetClassChanged, isMoon, hasOwnerPops, explicitEntity, surveyed, preventAnomaly;
     private final Coordinate coordinate;
-    private final double orbit;
-    private final int planetSize;
-    private final double bombardmentDamage;
-    private final Date lastBombardment;
-    private final List<Integer> moons;
-    private final boolean planetClassChanged;
-    private final int owner;
-    private final int originalOwner;
-    private final int controller;
-    private final int moonOf;
-    private final boolean isMoon;
-    private final List<Integer> pops;
-    private final Date colonizeDate;
+    private final double orbit, bombardmentDamage;
+    private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, shipClassOrbitalStation, entity, surveyedBy;
+    private final Date lastBombardment, colonizeDate;
+    private final List<Integer> moons, pops, orbitals, armies;
     private final List<BuildingConstructionQueueItem> buildingConstructionQueue;
-    private final List<Integer> orbitals;
-    private final List<Integer> armies;
-    private final int builtArmies;
     private final List<TimedModifier> timedModifiers;
-    private final int shipClassOrbitalStation;
     private final Flags flags;
-    private final int entity;
     private final List<String> planetModifiers;
-    private final boolean hasOwnerPops;
-    private final String entityName;
-    private final boolean explicitEntity;
     private final Tiles tiles;
     private final Spaceport spaceport;
-    private final int surveyedBy;
-    private final boolean surveyed;
-    private final boolean preventAnomaly;
     private final long orbitalDepositTile;
 
     public Planet(IPdxScript s) {
@@ -110,5 +105,145 @@ public class Planet {
         this.surveyed = o.getBoolean("surveyed");
         this.preventAnomaly = o.getBoolean("prevent_anomaly");
         this.orbitalDepositTile = o.getLong("orbital_deposit_tile");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlanetClass() {
+        return planetClass;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public boolean isCustomName() {
+        return customName;
+    }
+
+    public boolean isPlanetClassChanged() {
+        return planetClassChanged;
+    }
+
+    public boolean isMoon() {
+        return isMoon;
+    }
+
+    public boolean isHasOwnerPops() {
+        return hasOwnerPops;
+    }
+
+    public boolean isExplicitEntity() {
+        return explicitEntity;
+    }
+
+    public boolean isSurveyed() {
+        return surveyed;
+    }
+
+    public boolean isPreventAnomaly() {
+        return preventAnomaly;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public double getOrbit() {
+        return orbit;
+    }
+
+    public double getBombardmentDamage() {
+        return bombardmentDamage;
+    }
+
+    public int getPlanetSize() {
+        return planetSize;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public int getOriginalOwner() {
+        return originalOwner;
+    }
+
+    public int getController() {
+        return controller;
+    }
+
+    public int getMoonOf() {
+        return moonOf;
+    }
+
+    public int getBuiltArmies() {
+        return builtArmies;
+    }
+
+    public int getShipClassOrbitalStation() {
+        return shipClassOrbitalStation;
+    }
+
+    public int getEntity() {
+        return entity;
+    }
+
+    public int getSurveyedBy() {
+        return surveyedBy;
+    }
+
+    public Date getLastBombardment() {
+        return lastBombardment;
+    }
+
+    public Date getColonizeDate() {
+        return colonizeDate;
+    }
+
+    public List<Integer> getMoons() {
+        return moons;
+    }
+
+    public List<Integer> getPops() {
+        return pops;
+    }
+
+    public List<Integer> getOrbitals() {
+        return orbitals;
+    }
+
+    public List<Integer> getArmies() {
+        return armies;
+    }
+
+    public List<BuildingConstructionQueueItem> getBuildingConstructionQueue() {
+        return buildingConstructionQueue;
+    }
+
+    public List<TimedModifier> getTimedModifiers() {
+        return timedModifiers;
+    }
+
+    public Flags getFlags() {
+        return flags;
+    }
+
+    public List<String> getPlanetModifiers() {
+        return planetModifiers;
+    }
+
+    public Tiles getTiles() {
+        return tiles;
+    }
+
+    public Spaceport getSpaceport() {
+        return spaceport;
+    }
+
+    public long getOrbitalDepositTile() {
+        return orbitalDepositTile;
     }
 }

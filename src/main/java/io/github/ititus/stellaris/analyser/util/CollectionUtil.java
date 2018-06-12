@@ -1,7 +1,6 @@
 package io.github.ititus.stellaris.analyser.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CollectionUtil {
 
@@ -11,16 +10,17 @@ public class CollectionUtil {
     }
 
 
-    public static <T> List<T> listOf(T t1) {
+    public static <T> List<T> listOf(T t) {
         List<T> l = new ArrayList<>();
-        l.add(t1);
+        l.add(t);
         return l;
     }
 
-    public static <T> List<T> listOf(T t1, T t2) {
+    public static <T> List<T> listOf(T... t) {
         List<T> l = new ArrayList<>();
-        l.add(t1);
-        l.add(t2);
+        if (t != null && t.length > 0) {
+            l.addAll(Arrays.asList(t));
+        }
         return l;
     }
 
@@ -30,6 +30,26 @@ public class CollectionUtil {
         l.add(t2);
         l.add(t3);
         return l;
+    }
+
+    public static <T> Set<T> setOf() {
+        Set<T> s = new HashSet<>();
+        return s;
+    }
+
+
+    public static <T> Set<T> setOf(T t) {
+        Set<T> s = new HashSet<>();
+        s.add(t);
+        return s;
+    }
+
+    public static <T> Set<T> setOf(T... t) {
+        Set<T> s = new HashSet<>();
+        if (t != null && t.length > 0) {
+            s.addAll(Arrays.asList(t));
+        }
+        return s;
     }
 
 }

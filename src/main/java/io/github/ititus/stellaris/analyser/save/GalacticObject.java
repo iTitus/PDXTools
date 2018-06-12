@@ -15,7 +15,7 @@ public class GalacticObject {
 
     private final Coordinate coordinate;
     private final String type, name, starClass, initializer;
-    private final List<Integer> planets, ambientObjects, megaStructures, naturalWormholes, bypasses, dicoveries, fleetPresence, auraPresence, ftlInhibitorPresence;
+    private final List<Integer> planets, ambientObjects, megaStructures, naturalWormholes, bypasses, discoveries, fleetPresence, auraPresence, ftlInhibitorPresence;
     private final List<Claim> claims;
     private final List<Hyperlane> hyperlanes;
     private final List<AsteroidBelt> asteroidBelts;
@@ -56,7 +56,7 @@ public class GalacticObject {
         l = o.getList("asteroid_belts");
         this.asteroidBelts = l != null ? l.getAsList(AsteroidBelt::new) : CollectionUtil.listOf();
         l = o.getList("discovery");
-        this.dicoveries = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.discoveries = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
         this.arm = o.getInt("arm");
         PdxScriptObject o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
@@ -73,7 +73,7 @@ public class GalacticObject {
         this.starbase = o.getLong("starbase");
     }
 
-    public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer, Collection<Integer> planets, Collection<Integer> ambientObjects, Collection<Integer> megaStructures, Collection<Integer> naturalWormholes, Collection<Integer> bypasses, Collection<Integer> dicoveries, Collection<Integer> fleetPresence, Collection<Integer> auraPresence, Collection<Integer> ftlInhibitorPresence, Collection<Claim> claims, Collection<Hyperlane> hyperlanes, Collection<AsteroidBelt> asteroidBelts, int arm, int initParent, int innerRadius, int outerRadius, long starbase, Flags flags) {
+    public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer, Collection<Integer> planets, Collection<Integer> ambientObjects, Collection<Integer> megaStructures, Collection<Integer> naturalWormholes, Collection<Integer> bypasses, Collection<Integer> discoveries, Collection<Integer> fleetPresence, Collection<Integer> auraPresence, Collection<Integer> ftlInhibitorPresence, Collection<Claim> claims, Collection<Hyperlane> hyperlanes, Collection<AsteroidBelt> asteroidBelts, int arm, int initParent, int innerRadius, int outerRadius, long starbase, Flags flags) {
         this.coordinate = coordinate;
         this.type = type;
         this.name = name;
@@ -84,7 +84,7 @@ public class GalacticObject {
         this.megaStructures = new ArrayList<>(megaStructures);
         this.naturalWormholes = new ArrayList<>(naturalWormholes);
         this.bypasses = new ArrayList<>(bypasses);
-        this.dicoveries = new ArrayList<>(dicoveries);
+        this.discoveries = new ArrayList<>(discoveries);
         this.fleetPresence = new ArrayList<>(fleetPresence);
         this.auraPresence = new ArrayList<>(auraPresence);
         this.ftlInhibitorPresence = new ArrayList<>(ftlInhibitorPresence);
@@ -97,5 +97,97 @@ public class GalacticObject {
         this.outerRadius = outerRadius;
         this.starbase = starbase;
         this.flags = flags;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getStarClass() {
+        return starClass;
+    }
+
+    public String getInitializer() {
+        return initializer;
+    }
+
+    public List<Integer> getPlanets() {
+        return planets;
+    }
+
+    public List<Integer> getAmbientObjects() {
+        return ambientObjects;
+    }
+
+    public List<Integer> getMegaStructures() {
+        return megaStructures;
+    }
+
+    public List<Integer> getNaturalWormholes() {
+        return naturalWormholes;
+    }
+
+    public List<Integer> getBypasses() {
+        return bypasses;
+    }
+
+    public List<Integer> getDiscoveries() {
+        return discoveries;
+    }
+
+    public List<Integer> getFleetPresence() {
+        return fleetPresence;
+    }
+
+    public List<Integer> getAuraPresence() {
+        return auraPresence;
+    }
+
+    public List<Integer> getFtlInhibitorPresence() {
+        return ftlInhibitorPresence;
+    }
+
+    public List<Claim> getClaims() {
+        return claims;
+    }
+
+    public List<Hyperlane> getHyperlanes() {
+        return hyperlanes;
+    }
+
+    public List<AsteroidBelt> getAsteroidBelts() {
+        return asteroidBelts;
+    }
+
+    public int getArm() {
+        return arm;
+    }
+
+    public int getInitParent() {
+        return initParent;
+    }
+
+    public int getInnerRadius() {
+        return innerRadius;
+    }
+
+    public int getOuterRadius() {
+        return outerRadius;
+    }
+
+    public long getStarbase() {
+        return starbase;
+    }
+
+    public Flags getFlags() {
+        return flags;
     }
 }

@@ -13,6 +13,18 @@ public class PdxScriptObject implements IPdxScript {
         this.map = new HashMap<>(map);
     }
 
+    public static <T> Function<IPdxScript, T> nullOr(Function<IPdxScript, T> fct) {
+        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.apply(s) : null;
+    }
+
+    public static <T> Function<IPdxScript, T> objectOrNull(Function<IPdxScript, T> fct) {
+        return s -> s instanceof PdxScriptObject ? fct.apply(s) : null;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public boolean hasKey(String key) {
         return map.containsKey(key);
     }
@@ -186,18 +198,6 @@ public class PdxScriptObject implements IPdxScript {
     @Override
     public String toString() {
         return "map = [" + map + "]";
-    }
-
-    public static <T> Function<IPdxScript, T> nullOr(Function<IPdxScript, T> fct) {
-        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.apply(s) : null;
-    }
-
-    public static <T> Function<IPdxScript, T> objectOrNull(Function<IPdxScript, T> fct) {
-        return s -> s instanceof PdxScriptObject ? fct.apply(s) : null;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

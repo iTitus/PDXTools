@@ -16,4 +16,8 @@ public class GalacticObjects {
     public GalacticObjects(Map<Integer, GalacticObject> galacticObjects) {
         this.galacticObjects = new HashMap<>(galacticObjects);
     }
+
+    public Map<Integer, GalacticObject> getGalacticObjects() {
+        return galacticObjects;
+    }
 }
