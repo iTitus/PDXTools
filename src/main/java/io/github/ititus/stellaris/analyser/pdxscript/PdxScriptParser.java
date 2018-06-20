@@ -29,7 +29,9 @@ public class PdxScriptParser {
     private static final String INDENT = "\t";
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
-    private static final Pattern QUOTE_PATTERN = Pattern.compile("\\s|=|");
+    private static final char COMMENT_CHAR = '#';
+    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=]");
+
 
     private static ScriptIntPair parse(List<String> tokens, int i) {
         String token = tokens.get(i);
@@ -122,29 +124,45 @@ public class PdxScriptParser {
 
     private static List<String> tokenize(String src) {
         List<String> tokens = CollectionUtil.listOf(LIST_OBJECT_OPEN);
-        boolean openQuotes = false, token = false;
+        boolean openQuotes = false, token = false, comment = false;
         int tokenStart = 0;
         for (int i = 0; i < src.length(); i++) {
-            if (openQuotes && src.charAt(i) == QUOTE && src.charAt(i - 1) != ESCAPE) {
+            char c = src.charAt(i);
+
+            if (comment) {
+                if (isNewLine(c)) {
+                    comment = false;
+                } else {
+                    continue;
+                }
+            }
+
+            if (openQuotes && c == QUOTE && src.charAt(i - 1) != ESCAPE) {
                 tokens.add(QUOTE + src.substring(tokenStart, i) + QUOTE);
                 openQuotes = false;
-            } else if (!openQuotes && src.charAt(i) == QUOTE) {
+            } else if (!openQuotes && c == QUOTE) {
                 if (token) {
                     tokens.add(src.substring(tokenStart, i));
                     token = false;
                 }
                 openQuotes = true;
                 tokenStart = i + 1;
-            } else if (!openQuotes && isTokenSeparator(src.charAt(i))) {
+            } else if (!openQuotes && c == COMMENT_CHAR) {
+                comment = true;
                 if (token) {
                     tokens.add(src.substring(tokenStart, i));
                     token = false;
                 }
-                tokens.add(String.valueOf(src.charAt(i)));
-            } else if (!openQuotes && token && Character.isWhitespace(src.charAt(i))) {
+            } else if (!openQuotes && isTokenSeparator(c)) {
+                if (token) {
+                    tokens.add(src.substring(tokenStart, i));
+                    token = false;
+                }
+                tokens.add(String.valueOf(c));
+            } else if (!openQuotes && token && Character.isWhitespace(c)) {
                 tokens.add(src.substring(tokenStart, i));
                 token = false;
-            } else if (!openQuotes && !token && !Character.isWhitespace(src.charAt(i))) {
+            } else if (!openQuotes && !token && !Character.isWhitespace(c)) {
                 token = true;
                 tokenStart = i;
             }
@@ -163,12 +181,16 @@ public class PdxScriptParser {
         return c == '{' || c == '}' || c == '=';
     }
 
+    private static boolean isNewLine(char c) {
+        return c == 10 || c == 13 || c == 8232 || c == 8233;
+    }
+
     public static String quote(String s) {
         return '"' + s.replaceAll("\"", "\\\"") + '"';
     }
 
     public static String quoteIfNecessary(String s) {
-        if (QUOTE_PATTERN.matcher(s).find()) {
+        if (STRING_NEEDS_QUOTE_PATTERN.matcher(s).find()) {
             return quote(s);
         }
         return s;
