@@ -11,17 +11,16 @@ import java.util.List;
 
 public class Pop {
 
-    private final int speciesIndex, popFaction, payingSector, daysEnslaved;
-    private final String growthState;
-    private final double growth;
-    private final long tile;
     private final boolean buildablePop, enslaved, aiRightsServitude;
+    private final int speciesIndex, popFaction, payingSector, daysEnslaved;
+    private final long tile;
+    private final double growth;
+    private final String growthState;
+    private final List<TimedModifier> timedModifiers;
     private final Ethos ethos;
     private final Flags flags;
     private final PopResourceRequirement requiredGrowth;
     private final Resources resources;
-    private final List<TimedModifier> timedModifiers;
-
 
     public Pop(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -59,21 +58,81 @@ public class Pop {
         this.daysEnslaved = o.getInt("days_enslaved");
     }
 
-    public Pop(int speciesIndex, long tile, int popFaction, int payingSector, int daysEnslaved, String growthState, double growth, boolean buildablePop, boolean enslaved, boolean aiRightsServitude, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources, Collection<TimedModifier> timedModifiers) {
-        this.speciesIndex = speciesIndex;
-        this.tile = tile;
-        this.popFaction = popFaction;
-        this.payingSector = payingSector;
-        this.daysEnslaved = daysEnslaved;
-        this.growthState = growthState;
-        this.growth = growth;
+    public Pop(boolean buildablePop, boolean enslaved, boolean aiRightsServitude, int speciesIndex, int popFaction, int payingSector, int daysEnslaved, long tile, double growth, String growthState, Collection<TimedModifier> timedModifiers, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources) {
         this.buildablePop = buildablePop;
         this.enslaved = enslaved;
         this.aiRightsServitude = aiRightsServitude;
+        this.speciesIndex = speciesIndex;
+        this.popFaction = popFaction;
+        this.payingSector = payingSector;
+        this.daysEnslaved = daysEnslaved;
+        this.tile = tile;
+        this.growth = growth;
+        this.growthState = growthState;
+        this.timedModifiers = new ArrayList<>(timedModifiers);
         this.ethos = ethos;
         this.flags = flags;
         this.requiredGrowth = requiredGrowth;
         this.resources = resources;
-        this.timedModifiers = new ArrayList<>(timedModifiers);
+    }
+
+    public boolean isBuildablePop() {
+        return buildablePop;
+    }
+
+    public boolean isEnslaved() {
+        return enslaved;
+    }
+
+    public boolean isAiRightsServitude() {
+        return aiRightsServitude;
+    }
+
+    public int getSpeciesIndex() {
+        return speciesIndex;
+    }
+
+    public int getPopFaction() {
+        return popFaction;
+    }
+
+    public int getPayingSector() {
+        return payingSector;
+    }
+
+    public int getDaysEnslaved() {
+        return daysEnslaved;
+    }
+
+    public long getTile() {
+        return tile;
+    }
+
+    public double getGrowth() {
+        return growth;
+    }
+
+    public String getGrowthState() {
+        return growthState;
+    }
+
+    public List<TimedModifier> getTimedModifiers() {
+        return Collections.unmodifiableList(timedModifiers);
+    }
+
+    public Ethos getEthos() {
+        return ethos;
+    }
+
+    public Flags getFlags() {
+        return flags;
+    }
+
+    public PopResourceRequirement getRequiredGrowth() {
+        return requiredGrowth;
+    }
+
+    public Resources getResources() {
+        return resources;
     }
 }

@@ -12,12 +12,15 @@ public class FlagData {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
-
-        if (!o.hasKey("flag_date") || !o.hasKey("flag_date") || o.size() != 2) {
-            throw new IllegalArgumentException(String.valueOf(o));
-        }
-
         this.flagDate = o.getInt("flag_date");
         this.flagDays = o.getInt("flag_days");
+    }
+
+    public int getFlagDate() {
+        return flagDate;
+    }
+
+    public int getFlagDays() {
+        return flagDays;
     }
 }

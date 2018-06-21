@@ -14,8 +14,8 @@ public class ZipUtil {
             throw new IllegalArgumentException("zipFile: " + zipFile);
         }
 
-        if (!extractDir.exists()) {
-            extractDir.mkdirs();
+        if (!extractDir.exists() && !extractDir.mkdirs()) {
+            throw new IllegalArgumentException();
         } else if (!extractDir.isDirectory()) {
             throw new IllegalArgumentException("extractDir: " + extractDir);
         }
@@ -26,13 +26,15 @@ public class ZipUtil {
 
                 File extractFile = new File(extractDir, e.getName());
                 if (e.isDirectory() && !extractFile.exists()) {
-                    extractFile.mkdirs();
+                    if (!extractFile.mkdirs()) {
+                        throw new IOException();
+                    }
                     continue;
                 }
 
                 File parent = extractFile.getParentFile();
-                if (!parent.exists()) {
-                    parent.mkdirs();
+                if (!parent.exists() && !parent.mkdirs()) {
+                    throw new IOException();
                 }
 
                 try (

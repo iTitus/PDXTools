@@ -26,4 +26,8 @@ public class Ethos {
     public Ethos(Collection<String> ethics) {
         this.ethics = new ArrayList<>(ethics);
     }
+
+    public List<String> getEthics() {
+        return Collections.unmodifiableList(ethics);
+    }
 }

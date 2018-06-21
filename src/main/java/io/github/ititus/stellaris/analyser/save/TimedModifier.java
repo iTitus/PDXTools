@@ -21,4 +21,12 @@ public class TimedModifier {
         this.modifier = modifier;
         this.days = days;
     }
+
+    public String getModifier() {
+        return modifier;
+    }
+
+    public int getDays() {
+        return days;
+    }
 }

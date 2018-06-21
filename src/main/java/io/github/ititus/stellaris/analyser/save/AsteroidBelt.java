@@ -21,4 +21,12 @@ public class AsteroidBelt {
         this.type = type;
         this.innerRadius = innerRadius;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public double getInnerRadius() {
+        return innerRadius;
+    }
 }

@@ -26,7 +26,18 @@ public class Flag {
         if (colors.length != 4) {
             throw new IllegalArgumentException(Arrays.toString(colors));
         }
-        this.colors = colors;
+        this.colors = Arrays.copyOf(colors, 4);
     }
 
+    public Texture getIcon() {
+        return icon;
+    }
+
+    public Texture getBackground() {
+        return background;
+    }
+
+    public String[] getColors() {
+        return Arrays.copyOf(colors, 4);
+    }
 }

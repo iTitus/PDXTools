@@ -1,6 +1,8 @@
 package io.github.ititus.stellaris.analyser.pdxscript;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class PdxScriptValue implements IPdxScript {
 
@@ -30,7 +32,8 @@ public class PdxScriptValue implements IPdxScript {
         } else if (value instanceof Boolean) {
             s += (Boolean) value ? PdxScriptParser.YES : PdxScriptParser.NO;
         } else if (value instanceof Date) {
-            s += PdxScriptParser.SDF.format(value);
+            SimpleDateFormat sdf = new SimpleDateFormat(PdxScriptParser.SDF_PATTERN, Locale.ENGLISH);
+            s += sdf.format(value);
         } else if (value instanceof String) {
             s += PdxScriptParser.quote((String) value);
         } else {

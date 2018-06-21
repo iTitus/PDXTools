@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,6 @@ public class GalacticObjects {
     }
 
     public Map<Integer, GalacticObject> getGalacticObjects() {
-        return galacticObjects;
+        return Collections.unmodifiableMap(galacticObjects);
     }
 }

@@ -74,7 +74,7 @@ public class Main {
                 .stream()
                 .map(planets.getPlanets()::get)
                 .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().stream().map(planets.getPlanets()::get)))
-                .flatMap(planet -> !Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? planet.getTiles().getTiles().values().stream() : null)
+                .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
                 .map(Tile::getResources)
                 .reduce(
                         new Resources(CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0)),

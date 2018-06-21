@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class Truces {
 
     public Truces(Map<Integer, Truce> truces) {
         this.truces = new HashMap<>(truces);
+    }
+
+    public Map<Integer, Truce> getTruces() {
+        return Collections.unmodifiableMap(truces);
     }
 }

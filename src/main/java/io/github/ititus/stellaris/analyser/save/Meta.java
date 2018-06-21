@@ -2,8 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Meta {
 
@@ -29,6 +28,18 @@ public class Meta {
         this.planets = o.getInt("meta_planets");
     }
 
+    public Meta(String version, int versionControlRevision, String name, Date date, Collection<String> requiredDLCs, String playerPortrait, Flag flag, double fleets, int planets) {
+        this.version = version;
+        this.versionControlRevision = versionControlRevision;
+        this.name = name;
+        this.date = date;
+        this.requiredDLCs = new ArrayList<>(requiredDLCs);
+        this.playerPortrait = playerPortrait;
+        this.flag = flag;
+        this.fleets = fleets;
+        this.planets = planets;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -42,11 +53,11 @@ public class Meta {
     }
 
     public Date getDate() {
-        return date;
+        return new Date(date.getTime());
     }
 
     public List<String> getRequiredDLCs() {
-        return requiredDLCs;
+        return Collections.unmodifiableList(requiredDLCs);
     }
 
     public String getPlayerPortrait() {

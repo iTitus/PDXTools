@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class DebrisMap {
 
     public DebrisMap(Map<Integer, Debris> debrisMap) {
         this.debrisMap = new HashMap<>(debrisMap);
+    }
+
+    public Map<Integer, Debris> getDebrisMap() {
+        return Collections.unmodifiableMap(debrisMap);
     }
 }

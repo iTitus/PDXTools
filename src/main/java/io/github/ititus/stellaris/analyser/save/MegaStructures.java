@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class MegaStructures {
 
     public MegaStructures(Map<Integer, MegaStructure> megaStructures) {
         this.megaStructures = new HashMap<>(megaStructures);
+    }
+
+    public Map<Integer, MegaStructure> getMegaStructures() {
+        return Collections.unmodifiableMap(megaStructures);
     }
 }

@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class PdxScriptParser {
 
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
+    public static final String SDF_PATTERN = "yyyy.MM.dd";
     public static final String YES = "yes";
     public static final String NO = "no";
     public static final String NONE = "none";
@@ -80,11 +80,12 @@ public class PdxScriptParser {
             assert l > 1 || !isTokenSeparator(token.charAt(0));
 
             Object value;
+            SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH);
 
             if (token.charAt(0) == QUOTE && token.charAt(l - 1) == QUOTE) {
                 token = token.substring(1, token.length() - 1);
                 try {
-                    value = SDF.parse(token);
+                    value = sdf.parse(token);
                 } catch (ParseException e) {
                     value = token;
                 }
@@ -96,7 +97,7 @@ public class PdxScriptParser {
                 value = Boolean.TRUE;
             } else {
                 try {
-                    value = SDF.parse(token);
+                    value = sdf.parse(token);
                 } catch (ParseException e1) {
                     try {
                         value = Integer.valueOf(token);

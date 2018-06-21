@@ -5,11 +5,11 @@ import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
 public class Species {
 
+    private final boolean immortal, popsCanReproduce;
     private final int base, homePlanet;
+    private final double popMaintenance, popsAutoGrowth;
     private final String nameList, name, plural, adjective, class_, portrait, nameData, popEthics;
     private final Traits traits;
-    private final boolean immortal, popsCanReproduce;
-    private final double popMaintenance, popsAutoGrowth;
     private final PopResourceRequirement newPopResourceRequirement;
 
     public Species(IPdxScript s) {
@@ -35,9 +35,13 @@ public class Species {
         this.popEthics = o.getString("pop_ethics");
     }
 
-    public Species(int base, int homePlanet, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popEthics, Traits traits, boolean immortal, boolean popsCanReproduce, double popMaintenance, double popsAutoGrowth, PopResourceRequirement newPopResourceRequirement) {
+    public Species(boolean immortal, boolean popsCanReproduce, int base, int homePlanet, double popMaintenance, double popsAutoGrowth, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popEthics, Traits traits, PopResourceRequirement newPopResourceRequirement) {
+        this.immortal = immortal;
+        this.popsCanReproduce = popsCanReproduce;
         this.base = base;
         this.homePlanet = homePlanet;
+        this.popMaintenance = popMaintenance;
+        this.popsAutoGrowth = popsAutoGrowth;
         this.nameList = nameList;
         this.name = name;
         this.plural = plural;
@@ -47,11 +51,70 @@ public class Species {
         this.nameData = nameData;
         this.popEthics = popEthics;
         this.traits = traits;
-        this.immortal = immortal;
-        this.popsCanReproduce = popsCanReproduce;
-        this.popMaintenance = popMaintenance;
-        this.popsAutoGrowth = popsAutoGrowth;
         this.newPopResourceRequirement = newPopResourceRequirement;
     }
 
+    public boolean isImmortal() {
+        return immortal;
+    }
+
+    public boolean isPopsCanReproduce() {
+        return popsCanReproduce;
+    }
+
+    public int getBase() {
+        return base;
+    }
+
+    public int getHomePlanet() {
+        return homePlanet;
+    }
+
+    public double getPopMaintenance() {
+        return popMaintenance;
+    }
+
+    public double getPopsAutoGrowth() {
+        return popsAutoGrowth;
+    }
+
+    public String getNameList() {
+        return nameList;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlural() {
+        return plural;
+    }
+
+    public String getAdjective() {
+        return adjective;
+    }
+
+    public String getClass_() {
+        return class_;
+    }
+
+    public String getPortrait() {
+        return portrait;
+    }
+
+    public String getNameData() {
+        return nameData;
+    }
+
+    public String getPopEthics() {
+        return popEthics;
+    }
+
+    public Traits getTraits() {
+        return traits;
+    }
+
+    public PopResourceRequirement getNewPopResourceRequirement() {
+        return newPopResourceRequirement;
+    }
 }

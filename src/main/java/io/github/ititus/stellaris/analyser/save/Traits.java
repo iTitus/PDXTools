@@ -14,14 +14,14 @@ public class Traits {
 
     public Traits(PdxScriptObject o) {
         PdxScriptList l = o.getList("trait");
-        if (l != null) {
-            this.traits = l.getAsStringList();
-        } else {
-            this.traits = new ArrayList<>(Collections.singleton(o.getString("trait")));
-        }
+        this.traits = l != null ? l.getAsStringList() : new ArrayList<>(Collections.singleton(o.getString("trait")));
     }
 
     public Traits(Collection<String> traits) {
         this.traits = new ArrayList<>(traits);
+    }
+
+    public List<String> getTraits() {
+        return Collections.unmodifiableList(traits);
     }
 }

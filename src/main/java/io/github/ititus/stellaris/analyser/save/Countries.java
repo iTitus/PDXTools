@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class Countries {
 
     public Countries(Map<Integer, Country> countries) {
         this.countries = new HashMap<>(countries);
+    }
+
+    public Map<Integer, Country> getCountries() {
+        return Collections.unmodifiableMap(countries);
     }
 }

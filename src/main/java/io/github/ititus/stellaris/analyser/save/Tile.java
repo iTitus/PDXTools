@@ -7,10 +7,9 @@ public class Tile {
 
     private final boolean active;
     private final int pop;
+    private final String prevBuilding, deposit;
     private final Resources resources;
     private final Building building;
-    private final String prevBuilding, deposit;
-
 
     public Tile(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -27,13 +26,13 @@ public class Tile {
         this.deposit = o.getString("deposit");
     }
 
-    public Tile(boolean active, int pop, Resources resources, Building building, String prevBuilding, String deposit) {
+    public Tile(boolean active, int pop, String prevBuilding, String deposit, Resources resources, Building building) {
         this.active = active;
         this.pop = pop;
-        this.resources = resources;
-        this.building = building;
         this.prevBuilding = prevBuilding;
         this.deposit = deposit;
+        this.resources = resources;
+        this.building = building;
     }
 
     public boolean isActive() {
@@ -44,19 +43,19 @@ public class Tile {
         return pop;
     }
 
-    public Resources getResources() {
-        return resources;
-    }
-
-    public Building getBuilding() {
-        return building;
-    }
-
     public String getPrevBuilding() {
         return prevBuilding;
     }
 
     public String getDeposit() {
         return deposit;
+    }
+
+    public Resources getResources() {
+        return resources;
+    }
+
+    public Building getBuilding() {
+        return building;
     }
 }

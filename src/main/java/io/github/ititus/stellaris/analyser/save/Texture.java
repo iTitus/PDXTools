@@ -15,4 +15,12 @@ public class Texture {
         this.category = category;
         this.file = file;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getFile() {
+        return file;
+    }
 }

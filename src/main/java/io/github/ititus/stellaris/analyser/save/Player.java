@@ -21,4 +21,12 @@ public class Player {
         this.name = name;
         this.country = country;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getCountry() {
+        return country;
+    }
 }

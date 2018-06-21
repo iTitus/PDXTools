@@ -120,51 +120,51 @@ public class GalacticObject {
     }
 
     public List<Integer> getPlanets() {
-        return planets;
+        return Collections.unmodifiableList(planets);
     }
 
     public List<Integer> getAmbientObjects() {
-        return ambientObjects;
+        return Collections.unmodifiableList(ambientObjects);
     }
 
     public List<Integer> getMegaStructures() {
-        return megaStructures;
+        return Collections.unmodifiableList(megaStructures);
     }
 
     public List<Integer> getNaturalWormholes() {
-        return naturalWormholes;
+        return Collections.unmodifiableList(naturalWormholes);
     }
 
     public List<Integer> getBypasses() {
-        return bypasses;
+        return Collections.unmodifiableList(bypasses);
     }
 
     public List<Integer> getDiscoveries() {
-        return discoveries;
+        return Collections.unmodifiableList(discoveries);
     }
 
     public List<Integer> getFleetPresence() {
-        return fleetPresence;
+        return Collections.unmodifiableList(fleetPresence);
     }
 
     public List<Integer> getAuraPresence() {
-        return auraPresence;
+        return Collections.unmodifiableList(auraPresence);
     }
 
     public List<Integer> getFtlInhibitorPresence() {
-        return ftlInhibitorPresence;
+        return Collections.unmodifiableList(ftlInhibitorPresence);
     }
 
     public List<Claim> getClaims() {
-        return claims;
+        return Collections.unmodifiableList(claims);
     }
 
     public List<Hyperlane> getHyperlanes() {
-        return hyperlanes;
+        return Collections.unmodifiableList(hyperlanes);
     }
 
     public List<AsteroidBelt> getAsteroidBelts() {
-        return asteroidBelts;
+        return Collections.unmodifiableList(asteroidBelts);
     }
 
     public int getArm() {

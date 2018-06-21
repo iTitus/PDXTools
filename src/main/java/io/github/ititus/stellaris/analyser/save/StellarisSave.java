@@ -31,10 +31,16 @@ public class StellarisSave {
             throw new IllegalArgumentException(saveDirPath);
         }
 
+        File[] files = saveDir.listFiles();
+        if (files == null) {
+            throw new IllegalArgumentException();
+        }
+
+
         File newestSave = null;
         Date newestDate = null;
 
-        for (File saveFile : saveDir.listFiles()) {
+        for (File saveFile : files) {
             if (!isValidSaveFile(saveFile)) {
                 System.out.println("Found non Stellaris save file " + saveFile + " in save directory, skipping");
                 continue;

@@ -21,4 +21,12 @@ public class Hyperlane {
         this.to = to;
         this.length = length;
     }
+
+    public double getLength() {
+        return length;
+    }
+
+    public int getTo() {
+        return to;
+    }
 }

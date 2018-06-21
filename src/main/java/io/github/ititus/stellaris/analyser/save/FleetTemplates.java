@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class FleetTemplates {
 
     public FleetTemplates(Map<Integer, FleetTemplate> fleetTemplates) {
         this.fleetTemplates = new HashMap<>(fleetTemplates);
+    }
+
+    public Map<Integer, FleetTemplate> getFleetTemplates() {
+        return Collections.unmodifiableMap(fleetTemplates);
     }
 }

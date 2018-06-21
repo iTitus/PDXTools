@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class AmbientObjects {
 
     public AmbientObjects(Map<Integer, AmbientObject> ambientObjects) {
         this.ambientObjects = new HashMap<>(ambientObjects);
+    }
+
+    public Map<Integer, AmbientObject> getAmbientObjects() {
+        return Collections.unmodifiableMap(ambientObjects);
     }
 }

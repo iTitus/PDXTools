@@ -23,6 +23,18 @@ public class Claim {
     public Claim(int owner, int claims, Date date) {
         this.owner = owner;
         this.claims = claims;
-        this.date = date;
+        this.date = new Date(date.getTime());
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public int getClaims() {
+        return claims;
+    }
+
+    public Date getDate() {
+        return new Date(date.getTime());
     }
 }

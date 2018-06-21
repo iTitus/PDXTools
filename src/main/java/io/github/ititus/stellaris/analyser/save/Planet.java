@@ -26,23 +26,23 @@ public class Planet {
             "pc_tomb",
             "pc_ringworld_habitable",
             "pc_habitat"
-
     );
 
-    private final String name, planetClass, entityName;
     private final boolean customName, planetClassChanged, isMoon, hasOwnerPops, explicitEntity, surveyed, preventAnomaly;
-    private final Coordinate coordinate;
-    private final double orbit, bombardmentDamage;
     private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, shipClassOrbitalStation, entity, surveyedBy;
+    private final long orbitalDepositTile;
+    private final double orbit, bombardmentDamage;
+    private final String name, planetClass, entityName;
     private final Date lastBombardment, colonizeDate;
     private final List<Integer> moons, pops, orbitals, armies;
+    private final List<String> planetModifiers;
     private final List<BuildingConstructionQueueItem> buildingConstructionQueue;
     private final List<TimedModifier> timedModifiers;
+    private final Coordinate coordinate;
     private final Flags flags;
-    private final List<String> planetModifiers;
+
     private final Tiles tiles;
     private final Spaceport spaceport;
-    private final long orbitalDepositTile;
 
     public Planet(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -107,16 +107,42 @@ public class Planet {
         this.orbitalDepositTile = o.getLong("orbital_deposit_tile");
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPlanetClass() {
-        return planetClass;
-    }
-
-    public String getEntityName() {
-        return entityName;
+    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasOwnerPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int shipClassOrbitalStation, int entity, int surveyedBy, long orbitalDepositTile, double orbit, double bombardmentDamage, String name, String planetClass, String entityName, Date lastBombardment, Date colonizeDate, Collection<Integer> moons, Collection<Integer> pops, Collection<Integer> orbitals, Collection<Integer> armies, Collection<String> planetModifiers, Collection<BuildingConstructionQueueItem> buildingConstructionQueue, Collection<TimedModifier> timedModifiers, Coordinate coordinate, Flags flags, Tiles tiles, Spaceport spaceport) {
+        this.customName = customName;
+        this.planetClassChanged = planetClassChanged;
+        this.isMoon = isMoon;
+        this.hasOwnerPops = hasOwnerPops;
+        this.explicitEntity = explicitEntity;
+        this.surveyed = surveyed;
+        this.preventAnomaly = preventAnomaly;
+        this.planetSize = planetSize;
+        this.owner = owner;
+        this.originalOwner = originalOwner;
+        this.controller = controller;
+        this.moonOf = moonOf;
+        this.builtArmies = builtArmies;
+        this.shipClassOrbitalStation = shipClassOrbitalStation;
+        this.entity = entity;
+        this.surveyedBy = surveyedBy;
+        this.orbitalDepositTile = orbitalDepositTile;
+        this.orbit = orbit;
+        this.bombardmentDamage = bombardmentDamage;
+        this.name = name;
+        this.planetClass = planetClass;
+        this.entityName = entityName;
+        this.lastBombardment = new Date(lastBombardment.getTime());
+        this.colonizeDate = new Date(colonizeDate.getTime());
+        this.moons = new ArrayList<>(moons);
+        this.pops = new ArrayList<>(pops);
+        this.orbitals = new ArrayList<>(orbitals);
+        this.armies = new ArrayList<>(armies);
+        this.planetModifiers = new ArrayList<>(planetModifiers);
+        this.buildingConstructionQueue = new ArrayList<>(buildingConstructionQueue);
+        this.timedModifiers = new ArrayList<>(timedModifiers);
+        this.coordinate = coordinate;
+        this.flags = flags;
+        this.tiles = tiles;
+        this.spaceport = spaceport;
     }
 
     public boolean isCustomName() {
@@ -145,18 +171,6 @@ public class Planet {
 
     public boolean isPreventAnomaly() {
         return preventAnomaly;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public double getOrbit() {
-        return orbit;
-    }
-
-    public double getBombardmentDamage() {
-        return bombardmentDamage;
     }
 
     public int getPlanetSize() {
@@ -195,44 +209,72 @@ public class Planet {
         return surveyedBy;
     }
 
+    public long getOrbitalDepositTile() {
+        return orbitalDepositTile;
+    }
+
+    public double getOrbit() {
+        return orbit;
+    }
+
+    public double getBombardmentDamage() {
+        return bombardmentDamage;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlanetClass() {
+        return planetClass;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
     public Date getLastBombardment() {
-        return lastBombardment;
+        return new Date(lastBombardment.getTime());
     }
 
     public Date getColonizeDate() {
-        return colonizeDate;
+        return new Date(colonizeDate.getTime());
     }
 
     public List<Integer> getMoons() {
-        return moons;
+        return Collections.unmodifiableList(moons);
     }
 
     public List<Integer> getPops() {
-        return pops;
+        return Collections.unmodifiableList(pops);
     }
 
     public List<Integer> getOrbitals() {
-        return orbitals;
+        return Collections.unmodifiableList(orbitals);
     }
 
     public List<Integer> getArmies() {
-        return armies;
+        return Collections.unmodifiableList(armies);
+    }
+
+    public List<String> getPlanetModifiers() {
+        return Collections.unmodifiableList(planetModifiers);
     }
 
     public List<BuildingConstructionQueueItem> getBuildingConstructionQueue() {
-        return buildingConstructionQueue;
+        return Collections.unmodifiableList(buildingConstructionQueue);
     }
 
     public List<TimedModifier> getTimedModifiers() {
-        return timedModifiers;
+        return Collections.unmodifiableList(timedModifiers);
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
     }
 
     public Flags getFlags() {
         return flags;
-    }
-
-    public List<String> getPlanetModifiers() {
-        return planetModifiers;
     }
 
     public Tiles getTiles() {
@@ -241,9 +283,5 @@ public class Planet {
 
     public Spaceport getSpaceport() {
         return spaceport;
-    }
-
-    public long getOrbitalDepositTile() {
-        return orbitalDepositTile;
     }
 }

@@ -21,4 +21,20 @@ public class Coordinate {
         this.origin = origin;
         this.randomized = randomized;
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public long getOrigin() {
+        return origin;
+    }
+
+    public boolean isRandomized() {
+        return randomized;
+    }
 }

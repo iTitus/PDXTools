@@ -2,6 +2,7 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class GroundCombats {
 
     public GroundCombats(Map<Integer, GroundCombat> groundCombats) {
         this.groundCombats = new HashMap<>(groundCombats);
+    }
+
+    public Map<Integer, GroundCombat> getGroundCombats() {
+        return Collections.unmodifiableMap(groundCombats);
     }
 }

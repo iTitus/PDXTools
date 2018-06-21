@@ -16,4 +16,12 @@ public class PopResourceRequirement {
         this.type = type;
         this.value = value;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public double getValue() {
+        return value;
+    }
 }

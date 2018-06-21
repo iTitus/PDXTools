@@ -8,6 +8,7 @@ import io.github.ititus.stellaris.analyser.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Resources {
@@ -105,34 +106,34 @@ public class Resources {
     }
 
     public List<Double> getEnergy() {
-        return energy;
+        return Collections.unmodifiableList(energy);
     }
 
     public List<Double> getMinerals() {
-        return minerals;
+        return Collections.unmodifiableList(minerals);
     }
 
     public List<Double> getFood() {
-        return food;
+        return Collections.unmodifiableList(food);
     }
 
     public List<Double> getPhysicsResearch() {
-        return physicsResearch;
+        return Collections.unmodifiableList(physicsResearch);
     }
 
     public List<Double> getSocietyResearch() {
-        return societyResearch;
+        return Collections.unmodifiableList(societyResearch);
     }
 
     public List<Double> getEngineeringResearch() {
-        return engineeringResearch;
+        return Collections.unmodifiableList(engineeringResearch);
     }
 
     public List<Double> getInfluence() {
-        return influence;
+        return Collections.unmodifiableList(influence);
     }
 
     public List<Double> getUnity() {
-        return unity;
+        return Collections.unmodifiableList(unity);
     }
 }

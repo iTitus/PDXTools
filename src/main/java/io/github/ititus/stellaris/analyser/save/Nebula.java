@@ -5,6 +5,7 @@ import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptList;
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,17 +25,29 @@ public class Nebula {
         this.name = o.getString("name");
         this.radius = o.getDouble("radius");
         PdxScriptList l = o.getList("galactic_object");
-        if (l != null) {
-            this.galacticObjects = l.getAsIntegerList();
-        } else {
-            this.galacticObjects = new ArrayList<>(Collections.singleton(o.getInt("galactic_object")));
-        }
+        this.galacticObjects = l != null ? l.getAsIntegerList() : new ArrayList<>(Collections.singleton(o.getInt("galactic_object")));
     }
 
-    public Nebula(Coordinate coordinate, String name, double radius, List<Integer> galacticObjects) {
+    public Nebula(Coordinate coordinate, String name, double radius, Collection<Integer> galacticObjects) {
         this.coordinate = coordinate;
         this.name = name;
         this.radius = radius;
-        this.galacticObjects = galacticObjects;
+        this.galacticObjects = new ArrayList<>(galacticObjects);
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public List<Integer> getGalacticObjects() {
+        return Collections.unmodifiableList(galacticObjects);
+    }
+
+    public String getName() {
+        return name;
     }
 }
