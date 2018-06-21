@@ -89,6 +89,10 @@ public class PdxScriptObject implements IPdxScript {
     }
 
     public boolean getBoolean(String key) {
+        return getBoolean(key, false);
+    }
+
+    public boolean getBoolean(String key, boolean def) {
         IPdxScript o = get(key);
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
@@ -98,7 +102,7 @@ public class PdxScriptObject implements IPdxScript {
             }
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(BOOLEAN);
-        return false;
+        return def;
     }
 
     public int getInt(String key) {
