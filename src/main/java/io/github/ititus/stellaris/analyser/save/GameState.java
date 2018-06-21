@@ -6,10 +6,12 @@ import java.util.*;
 
 public class GameState {
 
-    private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop, lastCreatedCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip, lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction, lastNotificationId, lastEventId, lastCreatedPopFaction, lastKilledCountryName, randomCount, randomSeed;
+    private final PdxScriptObject o;
+
+    private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop, lastCreatedCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip, lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction, lastNotificationId, lastEventId, lastCreatedPopFaction, randomCount, randomSeed;
     private final long lastRefugeeCountry;
     private final double galaxyRadius;
-    private final String version, name;
+    private final String version, name, lastKilledCountryName;
     private final Date date;
     private final List<Integer> firedEvents, rimGalacticObjects;
     private final List<Long> usedSymbols;
@@ -52,6 +54,8 @@ public class GameState {
     private final NaturalWormholes naturalWormholes;
 
     GameState(PdxScriptObject o) {
+        this.o = o;
+
         this.version = o.getString("version");
         this.versionControlRevision = o.getInt("version_control_revision");
         this.name = o.getString("name");
@@ -108,7 +112,7 @@ public class GameState {
         this.shipDesigns = o.getObject("ship_design").getAs(ShipDesigns::new); // 1_618_998
         this.popFactions = o.getObject("pop_factions").getAs(PopFactions::new); // 1_737_170
         this.lastCreatedPopFaction = o.getInt("last_created_pop_faction", -1); // 1_737_964
-        this.lastKilledCountryName = o.getInt("last_killed_country_name", -1); // 1_737_965
+        this.lastKilledCountryName = o.getString("last_killed_country_name"); // 1_737_965
         this.megaStructures = o.getObject("megastructures").getAs(MegaStructures::new); // 1_737_966
         this.bypasses = o.getObject("bypasses").getAs(Bypasses::new); // 1_738_179
         this.naturalWormholes = o.getObject("natural_wormholes").getAs(NaturalWormholes::new); // 1_738_442
@@ -123,7 +127,9 @@ public class GameState {
         this.randomCount = o.getInt("random_count"); // 1_739_337
     }
 
-    public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int lastKilledCountryName, int randomCount, int randomSeed, long lastRefugeeCountry, double galaxyRadius, String version, String name, Date date, Collection<Integer> firedEvents, Collection<Integer> rimGalacticObjects, Collection<Long> usedSymbols, Collection<String> requiredDLCs, Collection<String> usedColors, Collection<Player> players, Collection<Species> species, Collection<Nebula> nebulas, Collection<Message> messages, Collection<SavedEventTarget> savedEventTarget, Collection<GlobalShipDesign> globalShipDesigns, Collection<Cluster> clusters, Collection<AssetClass> usedSpeciesNames, Collection<AssetClass> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, NameList nameList, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
+    public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, String lastKilledCountryName, int randomCount, int randomSeed, long lastRefugeeCountry, double galaxyRadius, String version, String name, Date date, Collection<Integer> firedEvents, Collection<Integer> rimGalacticObjects, Collection<Long> usedSymbols, Collection<String> requiredDLCs, Collection<String> usedColors, Collection<Player> players, Collection<Species> species, Collection<Nebula> nebulas, Collection<Message> messages, Collection<SavedEventTarget> savedEventTarget, Collection<GlobalShipDesign> globalShipDesigns, Collection<Cluster> clusters, Collection<AssetClass> usedSpeciesNames, Collection<AssetClass> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, NameList nameList, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
+        this.o = null;
+
         this.versionControlRevision = versionControlRevision;
         this.tick = tick;
         this.randomLogDay = randomLogDay;
@@ -261,7 +267,7 @@ public class GameState {
         return lastCreatedPopFaction;
     }
 
-    public int getLastKilledCountryName() {
+    public String getLastKilledCountryName() {
         return lastKilledCountryName;
     }
 
@@ -459,5 +465,11 @@ public class GameState {
 
     public NaturalWormholes getNaturalWormholes() {
         return naturalWormholes;
+    }
+
+    public Map<String, Set<String>> getErrors() {
+        Map<String, Set<String>> errors = new HashMap<>();
+        o.getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> new HashSet<>()).addAll(v));
+        return errors;
     }
 }

@@ -2,6 +2,8 @@ package io.github.ititus.stellaris.analyser.save;
 
 import io.github.ititus.stellaris.analyser.pdxscript.IPdxScript;
 import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
+import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptParser;
+import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptValue;
 
 public class Species {
 
@@ -32,7 +34,22 @@ public class Species {
         this.popsCanReproduce = o.getBoolean("pops_can_reproduce");
         this.newPopResourceRequirement = o.getObject("new_pop_resource_requirement").getAs(PopResourceRequirement::new);
         this.popsAutoGrowth = o.getDouble("pops_auto_growth");
-        this.popEthics = o.getString("pop_ethics");
+        IPdxScript s1 = o.get("pop_ethics");
+        if (s1 instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s1).getValue();
+            if (v instanceof String) {
+                this.popEthics = o.getString("pop_ethics");
+                if (!"random".equals(this.popEthics)) {
+                    throw new RuntimeException();
+                }
+            } else if (v instanceof Boolean) {
+                this.popEthics = (boolean) v ? PdxScriptParser.YES : PdxScriptParser.NO;
+            } else {
+                throw new RuntimeException();
+            }
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public Species(boolean immortal, boolean popsCanReproduce, int base, int homePlanet, double popMaintenance, double popsAutoGrowth, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popEthics, Traits traits, PopResourceRequirement newPopResourceRequirement) {

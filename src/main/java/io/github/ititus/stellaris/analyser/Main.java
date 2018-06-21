@@ -6,6 +6,8 @@ import io.github.ititus.stellaris.analyser.util.Pair;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,6 +60,10 @@ public class Main {
         }
 
         System.out.println("done2");
+        System.out.println("-------------------------");
+        Map<String, Set<String>> errors = stellarisSave.getErrors();
+        errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
+        System.out.println("done3");
     }
 
     private static Resources getResources(GameState gameState, GalacticObject system) {
@@ -81,10 +87,17 @@ public class Main {
                                 combineResource(acc.getEngineeringResearch(), r.getEngineeringResearch()),
                                 combineResource(acc.getInfluence(), r.getInfluence()),
                                 combineResource(acc.getUnity(), r.getUnity())
-                        ));
+                        )
+                );
     }
 
     private static List<Double> combineResource(List<Double> l1, List<Double> l2) {
+        checkResourceLists(l1, l2);
+        checkResourceLists(l2, l1);
+        return CollectionUtil.listOf((l1.size() > 0 ? l1.get(0) : 0.0) + (l2.size() > 0 ? l2.get(0) : 0.0));
+    }
+
+    private static void checkResourceLists(List<Double> l1, List<Double> l2) {
         if (l1.size() >= 2) {
             if (!l1.get(0).equals(l1.get(1))) {
                 throw new IllegalArgumentException();
@@ -95,16 +108,5 @@ public class Main {
                 }
             }
         }
-        if (l2.size() >= 2) {
-            if (!l2.get(0).equals(l2.get(1))) {
-                throw new IllegalArgumentException();
-            }
-            if (l2.size() >= 3) {
-                if (!l2.get(2).equals(0.0)) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
-        return CollectionUtil.listOf((l1.size() > 0 ? l1.get(0) : 0.0) + (l2.size() > 0 ? l2.get(0) : 0.0));
     }
 }

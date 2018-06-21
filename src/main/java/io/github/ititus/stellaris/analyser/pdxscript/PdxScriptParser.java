@@ -8,9 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,6 +31,8 @@ public class PdxScriptParser {
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
     private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=]");
+
+    private static final Set<String> unknownLiterals = new HashSet<>();
 
 
     private static ScriptIntPair parse(List<String> tokens, int i) {
@@ -132,6 +132,9 @@ public class PdxScriptParser {
                         try {
                             value = Double.valueOf(token);
                         } catch (NumberFormatException e4) {
+                            if (i > 0 && EQUALS.equals(tokens.get(i - 1))) {
+                                unknownLiterals.add(token);
+                            }
                             value = token; // fallback to string
                         }
                     }
@@ -248,11 +251,12 @@ public class PdxScriptParser {
     }
 
     public static PdxScriptObject parse(File scriptFile) {
-        String src = "";
+        String src;
         try (Stream<String> stream = Files.lines(scriptFile.toPath(), StandardCharsets.UTF_8)) {
             src = stream.collect(Collectors.joining("\n"));
         } catch (IOException e) {
             e.printStackTrace();
+            src = "";
         }
         return parse(src);
     }
@@ -263,6 +267,9 @@ public class PdxScriptParser {
         if (!(pair.o instanceof PdxScriptObject) || pair.i != tokens.size()) {
             throw new RuntimeException();
         }
+        System.out.println("Unknown literals:");
+        unknownLiterals.forEach(System.out::println);
+        System.out.println("-------------------------");
         return (PdxScriptObject) pair.o;
     }
 

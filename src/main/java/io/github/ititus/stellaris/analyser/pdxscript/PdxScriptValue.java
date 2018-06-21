@@ -26,22 +26,22 @@ public class PdxScriptValue implements IPdxScript {
 
     @Override
     public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
-        String s = indentFirst ? PdxScriptParser.indent(indent) : "";
+        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
         if (value == null) {
-            s += PdxScriptParser.NONE;
+            b.append(PdxScriptParser.NONE);
         } else if (value instanceof Boolean) {
-            s += (Boolean) value ? PdxScriptParser.YES : PdxScriptParser.NO;
+            b.append((boolean) value ? PdxScriptParser.YES : PdxScriptParser.NO);
         } else if (value instanceof Date) {
             SimpleDateFormat sdf = new SimpleDateFormat(PdxScriptParser.SDF_PATTERN, Locale.ENGLISH);
-            s += sdf.format(value);
+            b.append(sdf.format(value));
         } else if (value instanceof String) {
-            s += PdxScriptParser.quote((String) value);
+            b.append(PdxScriptParser.quote((String) value));
         } else if (value instanceof ColorWrapper) {
-            s += ((ColorWrapper) value).toPdxScript();
+            b.append(((ColorWrapper) value).toPdxScript());
         } else {
-            s += String.valueOf(value);
+            b.append(value);
         }
-        return s;
+        return b.toString();
     }
 
     @Override

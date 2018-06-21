@@ -95,25 +95,20 @@ public class PdxScriptList implements IPdxScript {
 
     @Override
     public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
-        StringBuilder sb = new StringBuilder();
-        if (indentFirst) {
-            sb.append(PdxScriptParser.indent(indent));
-        }
-        sb.append('{');
+        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "").append("{");
         if (list.size() > 0) {
-            sb.append('\n');
+            b.append('\n');
         }
 
         list.forEach(object -> {
-            sb.append(object.toPdxScript(indent + 1, true, true));
-            sb.append('\n');
+            b.append(object.toPdxScript(indent + 1, true, true));
+            b.append('\n');
         });
 
         if (list.size() > 0) {
-            sb.append(PdxScriptParser.indent(indent));
+            b.append(PdxScriptParser.indent(indent));
         }
-        sb.append('}');
-        return sb.toString();
+        return b.append('}').toString();
     }
 
     @Override

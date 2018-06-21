@@ -34,11 +34,11 @@ public class ColorWrapper {
     }
 
     public String toPdxScript() {
-        String s = (type == Type.HSV ? PdxScriptParser.HSV : PdxScriptParser.RGB) + " { ";
+        StringBuilder b = new StringBuilder((type == Type.HSV ? PdxScriptParser.HSV : PdxScriptParser.RGB)).append(" { ");
         for (float c : colorComponents) {
-            s += c + " ";
+            b.append(c).append(" ");
         }
-        return s + "}";
+        return b.append("}").toString();
     }
 
     enum Type {

@@ -4,7 +4,7 @@ import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptParser;
 import io.github.ititus.stellaris.analyser.util.ZipUtil;
 
 import java.io.File;
-import java.util.Date;
+import java.util.*;
 
 public class StellarisSave {
 
@@ -75,6 +75,13 @@ public class StellarisSave {
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public Map<String, Set<String>> getErrors() {
+        Map<String, Set<String>> errors = new HashMap<>();
+        gameState.getErrors().forEach((k, v) -> errors.computeIfAbsent("gamestate." + k, k_ -> new HashSet<>()).addAll(v));
+        meta.getErrors().forEach((k, v) -> errors.computeIfAbsent("meta." + k, k_ -> new HashSet<>()).addAll(v));
+        return errors;
     }
 
 }
