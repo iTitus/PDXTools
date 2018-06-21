@@ -42,7 +42,7 @@ public class StellarisSave {
 
         for (File saveFile : files) {
             if (!isValidSaveFile(saveFile)) {
-                System.out.println("Found non Stellaris save file " + saveFile + " in save directory, skipping");
+                System.out.println("Found non Stellaris save file " + saveFile + " in save directory, skipping...");
                 continue;
             }
             Date lastModified = new Date(saveFile.lastModified());

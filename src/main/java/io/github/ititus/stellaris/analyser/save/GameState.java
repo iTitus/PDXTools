@@ -70,7 +70,8 @@ public class GameState {
         this.starbases = o.getObject("starbases").getAs(Starbases::new); // 73_165
         this.planets = o.getObject("planet").getAs(Planets::new); // 78_673
         this.countries = o.getObject("country").getAs(Countries::new); // 829_851
-        this.alliances = o.getObject("alliance").getAs(Alliances::new); // 1_054_159
+        // from here on the line numbers are wrong => countries got new data in 2.1.1
+        this.alliances = o.getObject("alliance").getAs(Alliances::new); // 1_054_159 | 1_055_913
         this.truces = o.getObject("truce").getAs(Truces::new); // 1_054_190
         this.tradeDeals = o.getObject("trade_deal").getAs(TradeDeals::new); // 1_054_198
         this.lastCreatedCountry = o.getInt("last_created_country", -1); // 1_054_286
