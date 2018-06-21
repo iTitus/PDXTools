@@ -16,6 +16,7 @@ public class CollectionUtil {
         return l;
     }
 
+    @SafeVarargs
     public static <T> List<T> listOf(T... t) {
         List<T> l = new ArrayList<>();
         if (t != null && t.length > 0) {
@@ -44,6 +45,7 @@ public class CollectionUtil {
         return s;
     }
 
+    @SafeVarargs
     public static <T> Set<T> setOf(T... t) {
         Set<T> s = new HashSet<>();
         if (t != null && t.length > 0) {

@@ -1,13 +1,9 @@
 package io.github.ititus.stellaris.analyser;
 
-import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptObject;
-import io.github.ititus.stellaris.analyser.pdxscript.PdxScriptParser;
 import io.github.ititus.stellaris.analyser.save.*;
 import io.github.ititus.stellaris.analyser.util.CollectionUtil;
 import io.github.ititus.stellaris.analyser.util.Pair;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
@@ -20,15 +16,13 @@ public class Main {
     private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt"/*, "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
 
     public static void main(String[] args) {
-
-
-        List<PdxScriptObject> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
+        /*List<PdxScriptObject> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         for (PdxScriptObject testScript : testScripts) {
             System.out.println(testScript.toPdxScript(0, false, false));
         }
-        System.out.println("done");
+        System.out.println("done");*/
 
-        System.exit(0);
+        // System.exit(0);
 
         StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);
         GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();

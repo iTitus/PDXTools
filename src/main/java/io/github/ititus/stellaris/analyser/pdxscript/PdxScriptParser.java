@@ -22,6 +22,8 @@ public class PdxScriptParser {
     public static final String YES = "yes";
     public static final String NO = "no";
     public static final String NONE = "none";
+    public static final String HSV = "hsv";
+    public static final String RGB = "rgb";
 
     private static final String LIST_OBJECT_OPEN = "{";
     private static final String LIST_OBJECT_CLOSE = "}";
@@ -36,7 +38,9 @@ public class PdxScriptParser {
     private static ScriptIntPair parse(List<String> tokens, int i) {
         String token = tokens.get(i);
         if (i == 0) {
-            assert LIST_OBJECT_OPEN.equals(token) && LIST_OBJECT_CLOSE.equals(tokens.get(tokens.size() - 1));
+            if (!LIST_OBJECT_OPEN.equals(token) || !LIST_OBJECT_CLOSE.equals(tokens.get(tokens.size() - 1))) {
+                throw new RuntimeException();
+            }
         }
 
         IPdxScript object;
@@ -46,11 +50,13 @@ public class PdxScriptParser {
                 i++;
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
                 while (!LIST_OBJECT_CLOSE.equals(tokens.get(i))) {
-                    String key = tokens.get(i);
+                    String key = stripQuotes(tokens.get(i));
                     i++;
 
                     String equals = tokens.get(i);
-                    assert EQUALS.equals(equals);
+                    if (!EQUALS.equals(equals)) {
+                        throw new RuntimeException();
+                    }
                     i++;
 
                     ScriptIntPair pair = parse(tokens, i);
@@ -77,50 +83,85 @@ public class PdxScriptParser {
             }
         } else {
             int l = token.length();
-            assert l > 1 || !isTokenSeparator(token.charAt(0));
+            if (l == 0) {
+                throw new RuntimeException();
+            }
 
             Object value;
             SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH);
 
-            if (token.charAt(0) == QUOTE && token.charAt(l - 1) == QUOTE) {
-                token = token.substring(1, token.length() - 1);
-                try {
-                    value = sdf.parse(token);
-                } catch (ParseException e) {
-                    value = token;
+            if (token.charAt(0) == QUOTE || token.charAt(l - 1) == QUOTE) {
+                if (l >= 2 && token.charAt(0) == QUOTE && token.charAt(l - 1) == QUOTE) {
+                    token = token.substring(1, token.length() - 1);
+                    try {
+                        value = sdf.parse(token);
+                    } catch (ParseException e) {
+                        value = token; // fallback to string
+                    }
+                } else {
+                    throw new RuntimeException();
                 }
+                i++;
             } else if (NONE.equals(token)) {
                 value = null;
+                i++;
             } else if (NO.equals(token)) {
                 value = Boolean.FALSE;
+                i++;
             } else if (YES.equals(token)) {
                 value = Boolean.TRUE;
+                i++;
+            } else if (HSV.equals(token)) {
+                ScriptIntPair colorPair = parse(tokens, ++i);
+                value = new ColorWrapper(ColorWrapper.Type.HSV, ((PdxScriptList) colorPair.o).getAsDoubleArray());
+                i = colorPair.i;
+            } else if (RGB.equals(token)) {
+                ScriptIntPair colorPair = parse(tokens, ++i);
+                value = new ColorWrapper(ColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsDoubleArray());
+                i = colorPair.i;
             } else {
+                // try {
+                //     value = sdf.parse(token);
+                // } catch (ParseException e1) {
                 try {
-                    value = sdf.parse(token);
-                } catch (ParseException e1) {
+                    value = Integer.valueOf(token);
+                } catch (NumberFormatException e2) {
                     try {
-                        value = Integer.valueOf(token);
-                    } catch (NumberFormatException e2) {
+                        value = Long.valueOf(token);
+                    } catch (NumberFormatException e3) {
                         try {
-                            value = Long.valueOf(token);
-                        } catch (NumberFormatException e3) {
-                            try {
-                                value = Double.valueOf(token);
-                            } catch (NumberFormatException e4) {
-                                //fallback to string
-                                value = token;
-                            }
+                            value = Double.valueOf(token);
+                        } catch (NumberFormatException e4) {
+                            value = token; // fallback to string
                         }
                     }
                 }
+                // }
+                i++;
             }
 
             object = new PdxScriptValue(value);
-            i++;
         }
 
         return new ScriptIntPair(object, i);
+    }
+
+    private static String stripQuotes(String s) {
+        if (s == null || s.length() < 2) {
+            return s;
+        }
+
+        int beginIndex = 0;
+        if (s.charAt(beginIndex) == QUOTE) {
+            beginIndex++;
+        }
+
+        int endIndex = s.length();
+        if (s.charAt(endIndex - 1) == QUOTE) {
+            endIndex--;
+        }
+
+        return s.substring(beginIndex, endIndex).replaceAll("\\\"", "\"");
     }
 
     private static List<String> tokenize(String src) {
@@ -168,12 +209,12 @@ public class PdxScriptParser {
                 tokenStart = i;
             }
         }
-        assert !openQuotes;
+        if (openQuotes) {
+            throw new RuntimeException();
+        }
         if (token) {
             tokens.add(src.substring(tokenStart, src.length()));
-            token = false;
         }
-        assert !token;
         tokens.add(LIST_OBJECT_CLOSE);
         return tokens;
     }
@@ -219,7 +260,9 @@ public class PdxScriptParser {
     public static PdxScriptObject parse(String src) {
         List<String> tokens = new ArrayList<>(tokenize(src));
         ScriptIntPair pair = parse(tokens, 0);
-        assert pair.o instanceof PdxScriptObject && pair.i == tokens.size() - 1;
+        if (!(pair.o instanceof PdxScriptObject) || pair.i != tokens.size()) {
+            throw new RuntimeException();
+        }
         return (PdxScriptObject) pair.o;
     }
 

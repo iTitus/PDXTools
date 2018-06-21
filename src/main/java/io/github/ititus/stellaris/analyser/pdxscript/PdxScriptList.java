@@ -61,7 +61,7 @@ public class PdxScriptList implements IPdxScript {
     }
 
     public int[] getAsIntArray() {
-        return getAsValueList().stream().mapToInt(v -> v != null && v.getValue() instanceof Integer ? (int) v.getValue() : null).toArray();
+        return getAsValueList().stream().mapToInt(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).intValue() : null).toArray();
     }
 
     public List<Integer> getAsIntegerList() {
@@ -69,7 +69,7 @@ public class PdxScriptList implements IPdxScript {
     }
 
     public long[] getAsLongArray() {
-        return getAsValueList().stream().mapToLong(v -> v != null && v.getValue() instanceof Long ? (long) v.getValue() : null).toArray();
+        return getAsValueList().stream().mapToLong(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).longValue() : null).toArray();
     }
 
     public List<Long> getAsLongList() {
@@ -77,7 +77,7 @@ public class PdxScriptList implements IPdxScript {
     }
 
     public double[] getAsDoubleArray() {
-        return getAsValueList().stream().mapToDouble(v -> v != null && v.getValue() instanceof Double ? (double) v.getValue() : null).toArray();
+        return getAsValueList().stream().mapToDouble(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).doubleValue() : null).toArray();
     }
 
     public List<Double> getAsDoubleList() {

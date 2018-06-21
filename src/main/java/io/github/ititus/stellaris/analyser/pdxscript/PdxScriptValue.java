@@ -9,7 +9,7 @@ public class PdxScriptValue implements IPdxScript {
     private final Object value;
 
     public PdxScriptValue(Object value) {
-        if (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof String)) {
+        if (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof ColorWrapper) && !(value instanceof String)) {
             throw new IllegalArgumentException(String.valueOf(value));
         }
         this.value = value;
@@ -36,6 +36,8 @@ public class PdxScriptValue implements IPdxScript {
             s += sdf.format(value);
         } else if (value instanceof String) {
             s += PdxScriptParser.quote((String) value);
+        } else if (value instanceof ColorWrapper) {
+            s += ((ColorWrapper) value).toPdxScript();
         } else {
             s += String.valueOf(value);
         }
