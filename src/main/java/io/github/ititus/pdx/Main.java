@@ -3,14 +3,8 @@ package io.github.ititus.pdx;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.save.*;
 import io.github.ititus.pdx.util.CollectionUtil;
-import io.github.ititus.pdx.util.Pair;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -22,17 +16,14 @@ public class Main {
     public static void main(String[] args) {
         /*List<PdxScriptObject> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         for (PdxScriptObject testScript : testScripts) {
-            System.out.println(testScript.toPdxScript(0, false, false));
+            System.out.println(testScript.toPdxScript());
         }
         System.out.println("done1");*/
 
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         System.out.println("done2");
 
-        System.exit(0);
-
-
-        StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);
+        /*StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);
         GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
 
@@ -69,7 +60,7 @@ public class Main {
         System.out.println("-------------------------");
         Map<String, Set<String>> errors = stellarisSave.getErrors();
         errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
-        System.out.println("done4");
+        System.out.println("done4");*/
     }
 
     private static Resources getResources(GameState gameState, GalacticObject system) {

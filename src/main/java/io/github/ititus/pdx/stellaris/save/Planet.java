@@ -1,10 +1,10 @@
 package io.github.ititus.pdx.stellaris.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.util.CollectionUtil;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
+import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.*;
 

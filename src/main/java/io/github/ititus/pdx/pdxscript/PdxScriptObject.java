@@ -36,6 +36,32 @@ public class PdxScriptObject implements IPdxScript {
         return new Builder();
     }
 
+    private static String getTypeString(IPdxScript s) {
+        if (s instanceof PdxScriptObject) {
+            return OBJECT;
+        }
+        if (s instanceof PdxScriptList) {
+            return LIST;
+        }
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Date) {
+                return DATE;
+            } else if (v instanceof Double) {
+                return DOUBLE;
+            } else if (v instanceof Long) {
+                return LONG;
+            } else if (v instanceof Integer) {
+                return INT;
+            } else if (v instanceof Boolean) {
+                return BOOLEAN;
+            } else if (v instanceof String) {
+                return STRING;
+            }
+        }
+        return NULL;
+    }
+
     public boolean hasKey(String key) {
         return map.containsKey(key);
     }
@@ -250,7 +276,7 @@ public class PdxScriptObject implements IPdxScript {
             }
         }
 
-        map.forEach((s, object) -> {
+        map.forEach((s, script) -> {
             if (bound) {
                 b.append(PdxScriptParser.indent(indent + 1));
             } else {
@@ -258,7 +284,7 @@ public class PdxScriptObject implements IPdxScript {
             }
             b.append(PdxScriptParser.quoteIfNecessary(s));
             b.append('=');
-            b.append(object.toPdxScript(bound ? indent + 1 : indent, true, false));
+            b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false));
             b.append('\n');
         });
 
@@ -274,32 +300,6 @@ public class PdxScriptObject implements IPdxScript {
     @Override
     public String toString() {
         return "map = [" + map + "]";
-    }
-
-    private static String getTypeString(IPdxScript s) {
-        if (s instanceof PdxScriptObject) {
-            return OBJECT;
-        }
-        if (s instanceof PdxScriptList) {
-            return LIST;
-        }
-        if (s instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) s).getValue();
-            if (v instanceof Date) {
-                return DATE;
-            } else if (v instanceof Double) {
-                return DOUBLE;
-            } else if (v instanceof Long) {
-                return LONG;
-            } else if (v instanceof Integer) {
-                return INT;
-            } else if (v instanceof Boolean) {
-                return BOOLEAN;
-            } else if (v instanceof String) {
-                return STRING;
-            }
-        }
-        return NULL;
     }
 
     public static class Builder {

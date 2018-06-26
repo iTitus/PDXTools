@@ -17,4 +17,7 @@ public class StellarisGame {
         this.installDir = installDir;
     }
 
+    public File getInstallDir() {
+        return installDir;
+    }
 }

@@ -100,8 +100,8 @@ public class PdxScriptList implements IPdxScript {
             b.append('\n');
         }
 
-        list.forEach(object -> {
-            b.append(object.toPdxScript(indent + 1, true, true));
+        list.forEach(script -> {
+            b.append(script.toPdxScript(indent + 1, true, true));
             b.append('\n');
         });
 
