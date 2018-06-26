@@ -53,9 +53,10 @@ public class PdxScriptParser {
                     String key = stripQuotes(tokens.get(i));
                     i++;
 
+                    // TODO: Add support for the other signs: < >
                     String equals = tokens.get(i);
                     if (!EQUALS.equals(equals)) {
-                        throw new RuntimeException();
+                        throw new RuntimeException(equals);
                     }
                     i++;
 
