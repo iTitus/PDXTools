@@ -27,6 +27,7 @@ public class PdxScriptParser {
     private static final String LIST_OBJECT_CLOSE = "}";
     private static final String EQUALS = "=";
     private static final String INDENT = "\t";
+    private static final char UTF_8_BOM = '\uFEFF';
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
@@ -174,6 +175,10 @@ public class PdxScriptParser {
         int tokenStart = 0;
         for (int i = 0; i < src.length(); i++) {
             char c = src.charAt(i);
+
+            if (c == UTF_8_BOM) {
+                continue;
+            }
 
             if (comment) {
                 if (isNewLine(c)) {

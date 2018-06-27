@@ -1,7 +1,8 @@
 package io.github.ititus.pdx;
 
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
-import io.github.ititus.pdx.stellaris.save.*;
+import io.github.ititus.pdx.stellaris.user.StellarisUserData;
+import io.github.ititus.pdx.stellaris.user.save.*;
 import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.List;
@@ -11,7 +12,8 @@ public class Main {
 
     private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt"/*, "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
     private static final String INSTALL_DIR = "D:\\Miles\\Programme\\Steam\\SteamApps\\common\\Stellaris";
-    private static final String SAVE = "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\save games\\mpomnidirective_20173703";
+    private static final String USER_DATA_DIR = "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris";
+    private static final String SAVE = USER_DATA_DIR + "\\save games\\mpomnidirective_20173703";
 
     public static void main(String[] args) {
         /*List<PdxScriptObject> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
@@ -21,6 +23,7 @@ public class Main {
         System.out.println("done1");*/
 
         StellarisGame game = new StellarisGame(INSTALL_DIR);
+        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
         System.out.println("done2");
 
         /*StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);
