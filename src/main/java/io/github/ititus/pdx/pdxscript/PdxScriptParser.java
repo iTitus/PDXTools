@@ -206,7 +206,7 @@ public class PdxScriptParser {
             }
 
             if (token) {
-                if (Character.isWhitespace(c) || isSeparator(c)) {
+                if (c == COMMENT_CHAR || c == QUOTE || isSeparator(c) || Character.isWhitespace(c)) {
                     token = false;
                     tokens.add(src.substring(tokenStart, i));
                 } else {

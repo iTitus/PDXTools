@@ -121,7 +121,9 @@ public class PdxScriptList implements IPdxScript {
 
     @Override
     public String toString() {
-        return "list = [" + list + "]";
+        return "PdxScriptList{" +
+                "list=" + list +
+                '}';
     }
 
     public static class Builder {

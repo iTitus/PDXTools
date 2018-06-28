@@ -285,6 +285,8 @@ public class PdxScriptObject implements IPdxScript {
             b.append(PdxScriptParser.quoteIfNecessary(s));
             if (!(script instanceof PdxScriptValue)) {
                 b.append('=');
+            } else {
+                b.append(((PdxScriptValue) script).getRelation().getSign());
             }
             b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false));
             b.append('\n');
@@ -301,7 +303,11 @@ public class PdxScriptObject implements IPdxScript {
 
     @Override
     public String toString() {
-        return "map = [" + map + "]";
+        return "PdxScriptObject{" +
+                "used=" + used +
+                ", wronglyUsed=" + wronglyUsed +
+                ", map=" + map +
+                '}';
     }
 
     public static class Builder {

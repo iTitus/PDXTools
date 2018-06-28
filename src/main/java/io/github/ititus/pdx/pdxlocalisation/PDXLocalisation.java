@@ -56,4 +56,10 @@ public class PDXLocalisation {
         return fallback;
     }
 
+    @Override
+    public String toString() {
+        return "PDXLocalisation{" +
+                "localisation=" + localisation +
+                '}';
+    }
 }

@@ -32,8 +32,8 @@ public class PdxScriptValue implements IPdxScript {
 
     @Override
     public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
-        // StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
-        StringBuilder b = new StringBuilder(relation.getSign());
+        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
+        // b.append(relation.getSign());
         if (value == null) {
             b.append(PdxScriptParser.NONE);
         } else if (value instanceof Boolean) {
@@ -53,7 +53,9 @@ public class PdxScriptValue implements IPdxScript {
 
     @Override
     public String toString() {
-        return "relation = [" + relation + "], value = [" + value + "]";
+        return "PdxScriptValue{" +
+                "relation=" + relation +
+                ", value=" + value +
+                '}';
     }
-
 }

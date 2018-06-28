@@ -183,6 +183,15 @@ public class ColorWrapper {
         return b.append("}").toString();
     }
 
+    @Override
+    public String toString() {
+        return "ColorWrapper{" +
+                "colorComponents=" + Arrays.toString(colorComponents) +
+                ", color=" + color +
+                ", type=" + type +
+                '}';
+    }
+
     enum Type {
         RGB, HSV
     }
