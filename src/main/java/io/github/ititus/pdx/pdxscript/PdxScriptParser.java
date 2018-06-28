@@ -3,7 +3,6 @@ package io.github.ititus.pdx.pdxscript;
 import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.ParseException;
@@ -25,13 +24,17 @@ public class PdxScriptParser {
 
     private static final String LIST_OBJECT_OPEN = "{";
     private static final String LIST_OBJECT_CLOSE = "}";
-    private static final String EQUALS = "=";
-    private static final String INDENT = "\t";
+    public static final String EQUALS = "=";
+    public static final String LESS_THAN = "<";
+    public static final String GREATER_THAN = ">";
+    public static final String LESS_THAN_OR_EQUALS = "<=";
+    public static final String GREATER_THAN_OR_EQUALS = ">=";
+    private static final String INDENT = "    ";
     private static final char UTF_8_BOM = '\uFEFF';
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
-    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=]");
+    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#']");
 
     private static final Set<String> unknownLiterals = new HashSet<>();
 
@@ -40,13 +43,21 @@ public class PdxScriptParser {
         String token = tokens.get(i);
         if (i == 0) {
             if (!LIST_OBJECT_OPEN.equals(token) || !LIST_OBJECT_CLOSE.equals(tokens.get(tokens.size() - 1))) {
-                throw new RuntimeException();
+                throw new RuntimeException("First or last token is not a curly bracket");
             }
+        }
+
+        PdxValueRelation relation = PdxValueRelation.get(token);
+        if (relation != null) {
+            token = tokens.get(++i);
         }
 
         IPdxScript object;
         if (LIST_OBJECT_OPEN.equals(token)) {
-            if (EQUALS.equals(tokens.get(i + 2)) || LIST_OBJECT_CLOSE.equals(tokens.get(i + 1))) {
+            if (relation != null && relation != PdxValueRelation.EQUALS) {
+                throw new RuntimeException("Relation sign " + relation + " is not compatible with object/list");
+            }
+            if (LIST_OBJECT_CLOSE.equals(tokens.get(i + 1)) || PdxValueRelation.get(tokens.get(i + 2)) != null) {
                 //object or empty
                 i++;
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
@@ -54,12 +65,9 @@ public class PdxScriptParser {
                     String key = stripQuotes(tokens.get(i));
                     i++;
 
-                    // TODO: Add support for the other signs: < >
-                    String equals = tokens.get(i);
-                    if (!EQUALS.equals(equals)) {
-                        throw new RuntimeException(equals);
+                    if (PdxValueRelation.get(tokens.get(i)) == null) {
+                        throw new RuntimeException("Missing relation sign in object");
                     }
-                    i++;
 
                     ScriptIntPair pair = parse(tokens, i);
                     i = pair.i;
@@ -86,7 +94,7 @@ public class PdxScriptParser {
         } else {
             int l = token.length();
             if (l == 0) {
-                throw new RuntimeException();
+                throw new RuntimeException("Zero length token");
             }
 
             Object value;
@@ -101,7 +109,7 @@ public class PdxScriptParser {
                         value = token; // fallback to string
                     }
                 } else {
-                    throw new RuntimeException();
+                    throw new RuntimeException("Quote not closed at token " + token);
                 }
                 i++;
             } else if (NONE.equals(token)) {
@@ -115,11 +123,11 @@ public class PdxScriptParser {
                 i++;
             } else if (HSV.equals(token)) {
                 ScriptIntPair colorPair = parse(tokens, ++i);
-                value = new ColorWrapper(ColorWrapper.Type.HSV, ((PdxScriptList) colorPair.o).getAsDoubleArray());
+                value = new ColorWrapper(ColorWrapper.Type.HSV, ((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else if (RGB.equals(token)) {
                 ScriptIntPair colorPair = parse(tokens, ++i);
-                value = new ColorWrapper(ColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsDoubleArray());
+                value = new ColorWrapper(ColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else {
                 // try {
@@ -145,7 +153,7 @@ public class PdxScriptParser {
                 i++;
             }
 
-            object = new PdxScriptValue(value);
+            object = new PdxScriptValue(relation != null ? relation : PdxValueRelation.EQUALS, value);
         }
 
         return new ScriptIntPair(object, i);
@@ -171,7 +179,7 @@ public class PdxScriptParser {
 
     private static List<String> tokenize(String src) {
         List<String> tokens = CollectionUtil.listOf(LIST_OBJECT_OPEN);
-        boolean openQuotes = false, token = false, comment = false;
+        boolean openQuotes = false, token = false, comment = false, separator = false;
         int tokenStart = 0;
         for (int i = 0; i < src.length(); i++) {
             char c = src.charAt(i);
@@ -183,53 +191,63 @@ public class PdxScriptParser {
             if (comment) {
                 if (isNewLine(c)) {
                     comment = false;
+                }
+                continue;
+            }
+
+            if (openQuotes) {
+                if (isNewLine(c)) {
+                    throw new RuntimeException("No multi-line strings");
+                } else if (c == QUOTE && src.charAt(i - 1) != ESCAPE) {
+                    openQuotes = false;
+                    tokens.add(src.substring(tokenStart, i + 1));
+                }
+                continue;
+            }
+
+            if (token) {
+                if (Character.isWhitespace(c) || isSeparator(c)) {
+                    token = false;
+                    tokens.add(src.substring(tokenStart, i));
                 } else {
                     continue;
                 }
             }
 
-            if (openQuotes && c == QUOTE && src.charAt(i - 1) != ESCAPE) {
-                tokens.add(QUOTE + src.substring(tokenStart, i) + QUOTE);
-                openQuotes = false;
-            } else if (!openQuotes && c == QUOTE) {
-                if (token) {
+            if (separator) {
+                if (!isSeparator(c)) {
+                    separator = false;
                     tokens.add(src.substring(tokenStart, i));
-                    token = false;
+                } else {
+                    continue;
                 }
-                openQuotes = true;
-                tokenStart = i + 1;
-            } else if (!openQuotes && c == COMMENT_CHAR) {
+            }
+
+            if (c == COMMENT_CHAR) {
                 comment = true;
-                if (token) {
-                    tokens.add(src.substring(tokenStart, i));
-                    token = false;
-                }
-            } else if (!openQuotes && isTokenSeparator(c)) {
-                if (token) {
-                    tokens.add(src.substring(tokenStart, i));
-                    token = false;
-                }
-                tokens.add(String.valueOf(c));
-            } else if (!openQuotes && token && Character.isWhitespace(c)) {
-                tokens.add(src.substring(tokenStart, i));
-                token = false;
-            } else if (!openQuotes && !token && !Character.isWhitespace(c)) {
+            } else if (c == QUOTE) {
+                openQuotes = true;
+                tokenStart = i;
+            } else if (isSeparator(c)) {
+                separator = true;
+                tokenStart = i;
+            } else if (!Character.isWhitespace(c)) {
                 token = true;
                 tokenStart = i;
             }
         }
         if (openQuotes) {
-            throw new RuntimeException();
+            throw new RuntimeException("Quotes not closed at EOF");
         }
-        if (token) {
+        if (token || separator) {
             tokens.add(src.substring(tokenStart, src.length()));
         }
         tokens.add(LIST_OBJECT_CLOSE);
         return tokens;
     }
 
-    private static boolean isTokenSeparator(char c) {
-        return c == '{' || c == '}' || c == '=';
+    private static boolean isSeparator(char c) {
+        return c == '{' || c == '}' || c == '=' || c == '<' || c == '>';
     }
 
     private static boolean isNewLine(char c) {
@@ -256,27 +274,36 @@ public class PdxScriptParser {
         return "";
     }
 
-    public static PdxScriptObject parse(File scriptFile) {
+    public static IPdxScript parse(File scriptFile) {
         String src;
         try (Stream<String> stream = Files.lines(scriptFile.toPath(), StandardCharsets.UTF_8)) {
             src = stream.collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            src = "";
+        } catch (Exception e1) {
+            try (Stream<String> stream = Files.lines(scriptFile.toPath(), StandardCharsets.ISO_8859_1)) {
+                src = stream.collect(Collectors.joining("\n"));
+            } catch (Exception e2) {
+                RuntimeException e = new RuntimeException("Error while reading file: " + scriptFile);
+                e.addSuppressed(e1);
+                e.addSuppressed(e2);
+                throw e;
+            }
         }
         return parse(src);
     }
 
-    public static PdxScriptObject parse(String src) {
+    public static IPdxScript parse(String src) {
         List<String> tokens = new ArrayList<>(tokenize(src));
         ScriptIntPair pair = parse(tokens, 0);
-        if (!(pair.o instanceof PdxScriptObject) || pair.i != tokens.size()) {
-            throw new RuntimeException();
+        if ((!(pair.o instanceof PdxScriptObject) && !(pair.o instanceof PdxScriptList)) || pair.i != tokens.size()) {
+            throw new RuntimeException("Unexpected return value from parsing: " + (pair.o != null ? pair.o.getClass().getTypeName() : "null") + ", " + pair.i + "/" + tokens.size());
         }
+        return pair.o;
+    }
+
+    public static void printUnknownLiterals() {
         System.out.println("Unknown literals:");
         unknownLiterals.forEach(System.out::println);
         System.out.println("-------------------------");
-        return (PdxScriptObject) pair.o;
     }
 
     private static class ScriptIntPair {

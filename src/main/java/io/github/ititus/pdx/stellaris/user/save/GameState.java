@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.*;
@@ -53,8 +54,11 @@ public class GameState {
     private final Bypasses bypasses;
     private final NaturalWormholes naturalWormholes;
 
-    GameState(PdxScriptObject o) {
-        this.o = o;
+    public GameState(IPdxScript s) {
+        if (!(s instanceof PdxScriptObject)) {
+            throw new IllegalArgumentException();
+        }
+        this.o = (PdxScriptObject) s;
 
         this.version = o.getString("version");
         this.versionControlRevision = o.getInt("version_control_revision");

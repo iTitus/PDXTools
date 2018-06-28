@@ -60,6 +60,14 @@ public class PdxScriptList implements IPdxScript {
         return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof String ? (String) v.getValue() : null).collect(Collectors.toList());
     }
 
+    public Number[] getAsNumberArray() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Number ? (Number) v.getValue() : null).toArray(Number[]::new);
+    }
+
+    public List<Number> getAsNumberList() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Number ? (Number) v.getValue() : null).collect(Collectors.toList());
+    }
+
     public int[] getAsIntArray() {
         return getAsValueList().stream().mapToInt(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).intValue() : null).toArray();
     }

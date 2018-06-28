@@ -5,19 +5,24 @@ import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.*;
 import io.github.ititus.pdx.util.CollectionUtil;
 
+import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class Main {
 
-    private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt"/*, "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
+
+    public static final Comparator<File> ASCIIBETICAL_ORDER = Comparator.comparing(File::getName);
+
+    private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt", /*"C:\\Users\\Vella\\Desktop\\00_actions.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
     private static final String INSTALL_DIR = "D:\\Miles\\Programme\\Steam\\SteamApps\\common\\Stellaris";
     private static final String USER_DATA_DIR = "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris";
     private static final String SAVE = USER_DATA_DIR + "\\save games\\mpomnidirective_20173703";
 
     public static void main(String[] args) {
-        /*List<PdxScriptObject> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
-        for (PdxScriptObject testScript : testScripts) {
+        /*List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
+        for (IPdxScript testScript : testScripts) {
             System.out.println(testScript.toPdxScript());
         }
         System.out.println("done1");*/
@@ -63,6 +68,7 @@ public class Main {
         System.out.println("-------------------------");
         Map<String, Set<String>> errors = stellarisSave.getErrors();
         errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
+        PdxScriptParser.printUnknownLiterals();
         System.out.println("done4");*/
     }
 

@@ -1,5 +1,8 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import io.github.ititus.pdx.Main;
+import io.github.ititus.pdx.util.FileExtensionFilter;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -18,13 +21,13 @@ public class PdxLocalisationParser {
     private static final String UTF_8_BOM = "\uFEFF";
 
     public static PDXLocalisation parse(File installDir) {
-        return parse(installDir, f -> f.getName().endsWith(".yml"));
+        return parse(installDir, new FileExtensionFilter("yml"));
     }
 
     public static PDXLocalisation parse(File installDir, FileFilter filter) {
         File[] validFiles;
-        try (Stream<Path> stream = Files.walk(installDir.toPath(), FileVisitOption.FOLLOW_LINKS).parallel()) {
-            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).distinct().toArray(File[]::new);
+        try (Stream<Path> stream = Files.walk(installDir.toPath(), FileVisitOption.FOLLOW_LINKS)/*.parallel()*/) {
+            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).sorted(Main.ASCIIBETICAL_ORDER).distinct().toArray(File[]::new);
         } catch (IOException e) {
             e.printStackTrace();
             validFiles = null;
@@ -64,7 +67,7 @@ public class PdxLocalisationParser {
             if (first.startsWith(UTF_8_BOM)) {
                 lines.set(0, first.substring(1));
             } else {
-                throw new RuntimeException();
+                throw new RuntimeException("Localisation file (" + localisationFile + ") has no BOM");
             }
 
             lines.removeIf(s -> s == null || s.isEmpty() || (!languageP.matcher(s).matches() && !translationP.matcher(s).matches()));
@@ -88,7 +91,7 @@ public class PdxLocalisationParser {
                         }
                     }
                 }
-                throw new RuntimeException();
+                throw new RuntimeException("Found unknown line " + line);
             }
 
             return localisation;

@@ -21,8 +21,8 @@ public class StellarisSave {
             this.saveDir = saveFile;
         }
 
-        this.meta = PdxScriptParser.parse(new File(this.saveDir, "meta")).getAs(Meta::new);
-        this.gameState = PdxScriptParser.parse(new File(this.saveDir, "gamestate")).getAs(GameState::new);
+        this.meta = new Meta(PdxScriptParser.parse(new File(this.saveDir, "meta")));
+        this.gameState = new GameState(PdxScriptParser.parse(new File(this.saveDir, "gamestate")));
     }
 
     public static StellarisSave loadNewest(String saveDirPath) {

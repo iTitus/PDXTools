@@ -283,7 +283,9 @@ public class PdxScriptObject implements IPdxScript {
                 b.append(PdxScriptParser.indent(indent));
             }
             b.append(PdxScriptParser.quoteIfNecessary(s));
-            b.append('=');
+            if (!(script instanceof PdxScriptValue)) {
+                b.append('=');
+            }
             b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false));
             b.append('\n');
         });

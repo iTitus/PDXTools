@@ -6,13 +6,19 @@ import java.util.Locale;
 
 public class PdxScriptValue implements IPdxScript {
 
+    private final PdxValueRelation relation;
     private final Object value;
 
-    public PdxScriptValue(Object value) {
-        if (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof ColorWrapper) && !(value instanceof String)) {
+    public PdxScriptValue(PdxValueRelation relation, Object value) {
+        if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof ColorWrapper) && !(value instanceof String))) {
             throw new IllegalArgumentException(String.valueOf(value));
         }
+        this.relation = relation;
         this.value = value;
+    }
+
+    public PdxValueRelation getRelation() {
+        return relation;
     }
 
     public Object getValue() {
@@ -26,7 +32,8 @@ public class PdxScriptValue implements IPdxScript {
 
     @Override
     public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
-        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
+        // StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
+        StringBuilder b = new StringBuilder(relation.getSign());
         if (value == null) {
             b.append(PdxScriptParser.NONE);
         } else if (value instanceof Boolean) {
@@ -46,7 +53,7 @@ public class PdxScriptValue implements IPdxScript {
 
     @Override
     public String toString() {
-        return "value = [" + value + "]";
+        return "relation = [" + relation + "], value = [" + value + "]";
     }
 
 }

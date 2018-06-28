@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.*;
@@ -18,8 +19,11 @@ public class Meta {
     private final double fleets;
     private final int planets;
 
-    Meta(PdxScriptObject o) {
-        this.o = o;
+    public Meta(IPdxScript s) {
+        if (!(s instanceof PdxScriptObject)) {
+            throw new IllegalArgumentException();
+        }
+        this.o = (PdxScriptObject) s;
 
         this.version = o.getString("version");
         this.versionControlRevision = o.getInt("version_control_revision");

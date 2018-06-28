@@ -51,15 +51,15 @@ public class Species {
             if (v instanceof String) {
                 this.popEthics = o.getString("pop_ethics");
                 if (!"random".equals(this.popEthics)) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("Unexpected value for popEthics: " + this.popEthics);
                 }
             } else if (v instanceof Boolean) {
                 this.popEthics = (boolean) v ? PdxScriptParser.YES : PdxScriptParser.NO;
             } else {
-                throw new RuntimeException();
+                throw new RuntimeException("Unexpected value for popEthics");
             }
         } else {
-            throw new RuntimeException();
+            throw new RuntimeException("Unexpected value for popEthics");
         }
         PdxScriptObject o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
