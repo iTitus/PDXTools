@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.util;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class Pair<K, V> implements Map.Entry<K, V> {
 
@@ -29,5 +30,27 @@ public class Pair<K, V> implements Map.Entry<K, V> {
     @Override
     public V setValue(V value) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Pair<?, ?> pair = (Pair<?, ?>) o;
+        return Objects.equals(k, pair.k) && Objects.equals(v, pair.v);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(k, v);
+    }
+
+    @Override
+    public String toString() {
+        return k + "=" + v;
     }
 }

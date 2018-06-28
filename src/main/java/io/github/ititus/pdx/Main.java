@@ -1,13 +1,18 @@
 package io.github.ititus.pdx;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.*;
 import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.Pair;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -21,14 +26,15 @@ public class Main {
     private static final String SAVE = USER_DATA_DIR + "\\save games\\mpomnidirective_20173703";
 
     public static void main(String[] args) {
-        /*List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
+        List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         for (IPdxScript testScript : testScripts) {
             System.out.println(testScript.toPdxScript());
         }
-        System.out.println("done1");*/
+        System.out.println("done1");
 
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
+        List<Pair<String, Exception>> gameErrors = StellarisGame.getErrors();
         System.out.println("done2");
 
         /*StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);

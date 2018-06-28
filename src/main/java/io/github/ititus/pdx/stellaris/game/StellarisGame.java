@@ -8,20 +8,22 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.util.CollectionUtil;
 import io.github.ititus.pdx.util.FileExtensionFilter;
+import io.github.ititus.pdx.util.Pair;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StellarisGame {
 
     private static final Set<String> BLACKLIST = CollectionUtil.setOf(
             "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt"
     );
-
     private static final FileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
+
+    private static final List<Pair<String, Exception>> errors = new ArrayList<>();
 
     private final File installDir;
     private final PDXLocalisation localisation;
@@ -54,21 +56,24 @@ public class StellarisGame {
             File[] files = dir.listFiles();
             if (files != null) {
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
-                for (File f : files) {
-                    if (f != null) {
-                        if (f.isDirectory()) {
-                            PdxScriptObject o = parseFolder(installDirPath, f);
-                            if (o != null) {
-                                b.add(f.getName(), o);
-                            }
-                        } else {
-                            IPdxScript s = parseFile(installDirPath, f);
-                            if (s != null) {
-                                b.add(f.getName(), s);
-                            }
+                Arrays.stream(files).filter(Objects::nonNull).sorted(Comparator.comparing(f -> {
+                    if (f.isDirectory()) {
+                        return "1_" + f.getName();
+                    }
+                    return "0_" + f.getName();
+                })).forEach(f -> {
+                    if (f.isDirectory()) {
+                        PdxScriptObject o = parseFolder(installDirPath, f);
+                        if (o != null) {
+                            b.add(f.getName(), o);
+                        }
+                    } else {
+                        IPdxScript s = parseFile(installDirPath, f);
+                        if (s != null) {
+                            b.add(f.getName(), s);
                         }
                     }
-                }
+                });
                 PdxScriptObject o = b.build();
                 return o.size() > 0 ? o : null;
             }
@@ -77,31 +82,35 @@ public class StellarisGame {
     }
 
     private static IPdxScript parseFile(String installDirPath, File f) {
-        if (f != null && f.isFile() && !BLACKLIST.contains(getRelativePath(installDirPath, f)) && FILTER.accept(f)) {
-            IPdxScript s;
-            try {
-                s = PdxScriptParser.parse(f);
-            } catch (Exception e) {
-                Throwable[] suppressed = e.getSuppressed();
-                Throwable cause = e.getCause();
-                System.out.println("Error while parsing " + getRelativePath(installDirPath, f) + ": " + e + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
-                s = null;
-            }
-            if (s != null) {
-                boolean success = false;
-                if (s instanceof PdxScriptObject) {
-                    if (((PdxScriptObject) s).size() > 0) {
-                        success = true;
-                    }
-                } else if (s instanceof PdxScriptList) {
-                    if (((PdxScriptList) s).size() > 0) {
-                        success = true;
-                    }
-                } else {
-                    throw new RuntimeException("Unexpected return value from parsing: " + s.getClass().getTypeName());
+        if (f != null && f.isFile()) {
+            String path = getRelativePath(installDirPath, f);
+            if (!BLACKLIST.contains(path) && FILTER.accept(f)) {
+                IPdxScript s;
+                try {
+                    s = PdxScriptParser.parse(f);
+                } catch (Exception e) {
+                    Throwable[] suppressed = e.getSuppressed();
+                    Throwable cause = e.getCause();
+                    System.out.println("Error while parsing " + path + ": " + e + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                    errors.add(Pair.of(path, e));
+                    s = null;
                 }
-                if (success) {
-                    return s;
+                if (s != null) {
+                    boolean success = false;
+                    if (s instanceof PdxScriptObject) {
+                        if (((PdxScriptObject) s).size() > 0) {
+                            success = true;
+                        }
+                    } else if (s instanceof PdxScriptList) {
+                        if (((PdxScriptList) s).size() > 0) {
+                            success = true;
+                        }
+                    } else {
+                        throw new RuntimeException("Unexpected return value from parsing: " + s.getClass().getTypeName());
+                    }
+                    if (success) {
+                        return s;
+                    }
                 }
             }
         }
@@ -122,6 +131,10 @@ public class StellarisGame {
             canonical = canonical.substring(1);
         }
         return canonical;
+    }
+
+    public static List<Pair<String, Exception>> getErrors() {
+        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Pair<String, Exception> p) -> p.getValue().getMessage()).thenComparing(Pair::getKey)).collect(Collectors.toList()));
     }
 
     public File getInstallDir() {

@@ -13,10 +13,6 @@ enum PdxValueRelation {
         this.sign = sign;
     }
 
-    public String getSign() {
-        return sign;
-    }
-
     public static PdxValueRelation get(String sign) {
         switch (sign) {
             case PdxScriptParser.EQUALS:
@@ -31,5 +27,9 @@ enum PdxValueRelation {
                 return GREATER_THAN_OR_EQUALS;
         }
         return null;
+    }
+
+    public String getSign() {
+        return sign;
     }
 }

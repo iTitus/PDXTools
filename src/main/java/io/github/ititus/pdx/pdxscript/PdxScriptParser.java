@@ -21,20 +21,23 @@ public class PdxScriptParser {
     public static final String NONE = "none";
     public static final String HSV = "hsv";
     public static final String RGB = "rgb";
-
-    private static final String LIST_OBJECT_OPEN = "{";
-    private static final String LIST_OBJECT_CLOSE = "}";
     public static final String EQUALS = "=";
     public static final String LESS_THAN = "<";
     public static final String GREATER_THAN = ">";
     public static final String LESS_THAN_OR_EQUALS = "<=";
     public static final String GREATER_THAN_OR_EQUALS = ">=";
+    public static final String ADD = "+";
+    public static final String SUBTRACT = "-";
+    public static final String MULTIPLY = "*";
+    public static final String DIVIDE = "/";
+    private static final String LIST_OBJECT_OPEN = "{";
+    private static final String LIST_OBJECT_CLOSE = "}";
     private static final String INDENT = "    ";
     private static final char UTF_8_BOM = '\uFEFF';
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
-    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#']");
+    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{}+"/*+"-"*/ + "*/\"]");
 
     private static final Set<String> unknownLiterals = new HashSet<>();
 
@@ -142,15 +145,41 @@ public class PdxScriptParser {
                         try {
                             value = Double.valueOf(token);
                         } catch (NumberFormatException e4) {
-                            if (i > 0 && EQUALS.equals(tokens.get(i - 1))) {
+                            if (i > 0 && PdxValueRelation.get(tokens.get(i - 1)) != null) {
                                 unknownLiterals.add(token);
                             }
-                            value = token; // fallback to string
+                            String tokenString = token;
+                            // TODO: Fix tokenizer splitting raw tokens with '-' in it
+                            /*String operator = tokens.get(i + 1);
+                            PdxMathOperation operation = PdxMathOperation.get(operator);
+                            if (operation != null) {
+                                tokenString += operator;
+                            }*/
+                            value = tokenString; // fallback to string
                         }
                     }
                 }
                 // }
                 i++;
+                // TODO: Fix this (currently evaluated from right to left and ignores brackets)
+                if (value instanceof Number) {
+                    String operator = tokens.get(i);
+                    PdxMathOperation operation = PdxMathOperation.get(operator);
+                    if (operation != null) {
+                        i++;
+                        ScriptIntPair pair = parse(tokens, i);
+                        if (!(pair.o instanceof PdxScriptValue)) {
+                            throw new RuntimeException("Expected PdxScriptValue but got " + (pair.o != null ? pair.o.getClass().getTypeName() : "null"));
+                        }
+                        PdxScriptValue v = (PdxScriptValue) pair.o;
+                        Object o = v.getValue();
+                        if (!(o instanceof Number)) {
+                            throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : "null"));
+                        }
+                        value = operation.apply((Number) value, (Number) o);
+                        i = pair.i;
+                    }
+                }
             }
 
             object = new PdxScriptValue(relation != null ? relation : PdxValueRelation.EQUALS, value);
@@ -179,7 +208,7 @@ public class PdxScriptParser {
 
     private static List<String> tokenize(String src) {
         List<String> tokens = CollectionUtil.listOf(LIST_OBJECT_OPEN);
-        boolean openQuotes = false, token = false, comment = false, separator = false;
+        boolean openQuotes = false, token = false, comment = false, separator = false, relation = false, mathOperator = false;
         int tokenStart = 0;
         for (int i = 0; i < src.length(); i++) {
             char c = src.charAt(i);
@@ -206,7 +235,7 @@ public class PdxScriptParser {
             }
 
             if (token) {
-                if (c == COMMENT_CHAR || c == QUOTE || isSeparator(c) || Character.isWhitespace(c)) {
+                if (c == COMMENT_CHAR || c == QUOTE || isSeparator(c) || isRelation(c) || isMathOperator(c) || Character.isWhitespace(c)) {
                     token = false;
                     tokens.add(src.substring(tokenStart, i));
                 } else {
@@ -215,12 +244,22 @@ public class PdxScriptParser {
             }
 
             if (separator) {
-                if (!isSeparator(c)) {
-                    separator = false;
+                separator = false;
+                tokens.add(src.substring(tokenStart, i));
+            }
+
+            if (relation) {
+                if (!isRelation(c)) {
+                    relation = false;
                     tokens.add(src.substring(tokenStart, i));
                 } else {
                     continue;
                 }
+            }
+
+            if (mathOperator) {
+                mathOperator = false;
+                tokens.add(src.substring(tokenStart, i));
             }
 
             if (c == COMMENT_CHAR) {
@@ -231,6 +270,12 @@ public class PdxScriptParser {
             } else if (isSeparator(c)) {
                 separator = true;
                 tokenStart = i;
+            } else if (isRelation(c)) {
+                relation = true;
+                tokenStart = i;
+            } else if (isMathOperator(c)) {
+                mathOperator = true;
+                tokenStart = i;
             } else if (!Character.isWhitespace(c)) {
                 token = true;
                 tokenStart = i;
@@ -239,19 +284,27 @@ public class PdxScriptParser {
         if (openQuotes) {
             throw new RuntimeException("Quotes not closed at EOF");
         }
-        if (token || separator) {
+        if (token || separator || relation || mathOperator) {
             tokens.add(src.substring(tokenStart, src.length()));
         }
         tokens.add(LIST_OBJECT_CLOSE);
         return tokens;
     }
 
-    private static boolean isSeparator(char c) {
-        return c == '{' || c == '}' || c == '=' || c == '<' || c == '>';
-    }
-
     private static boolean isNewLine(char c) {
         return c == 10 || c == 13 || c == 8232 || c == 8233;
+    }
+
+    private static boolean isSeparator(char c) {
+        return c == '{' || c == '}';
+    }
+
+    private static boolean isRelation(char c) {
+        return c == '=' || c == '<' || c == '>';
+    }
+
+    private static boolean isMathOperator(char c) {
+        return c == '+' /*|| c == '-'*/ || c == '*' || c == '/';
     }
 
     public static String quote(String s) {
