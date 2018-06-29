@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PdxScriptObject implements IPdxScript {
+public final class PdxScriptObject implements IPdxScript {
 
     private static final String OBJECT = "object";
     private static final String LIST = "list";
@@ -266,33 +266,22 @@ public class PdxScriptObject implements IPdxScript {
     }
 
     @Override
-    public String toPdxScript(int indent, boolean bound, boolean indentFirst, String key) {
-        StringBuilder b = new StringBuilder();
-
-        if (bound) {
-            if (indentFirst) {
-                b.append(PdxScriptParser.indent(indent));
-            }
-            b.append('{');
-            if (map.size() > 0) {
-                b.append('\n');
-            }
+    public String toPdxScript(int indent, boolean root, String key) {
+        if ((root && indent != 0) || (root && key != null)) {
+            throw new IllegalArgumentException();
         }
 
+        StringBuilder b = new StringBuilder();
+
+        IPdxScript.listObjectOpen(indent, root, key, b, relation, map.isEmpty());
+
         map.forEach((s, script) -> {
-            b.append(PdxScriptParser.indent(bound ? indent + 1 : indent));
-            b.append(PdxScriptParser.quoteIfNecessary(s));
-            b.append(script.getRelation().getSign());
-            b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false, s));
+            b.append(script.toPdxScript(root ? indent : indent + 1, false, s));
             b.append('\n');
         });
 
-        if (bound) {
-            if (map.size() > 0) {
-                b.append(PdxScriptParser.indent(indent));
-            }
-            b.append('}');
-        }
+        IPdxScript.listObjectClose(indent, root, b, map.isEmpty());
+
         return b.toString();
     }
 
@@ -329,4 +318,20 @@ public class PdxScriptObject implements IPdxScript {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdxScriptObject)) {
+            return false;
+        }
+        PdxScriptObject that = (PdxScriptObject) o;
+        return relation == that.relation && Objects.equals(map, that.map);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relation, map);
+    }
 }

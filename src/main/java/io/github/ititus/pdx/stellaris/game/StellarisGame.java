@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class StellarisGame {
 
     private static final Set<String> BLACKLIST = CollectionUtil.setOf(
-            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "interface/reference.txt"
+            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "interface/reference.txt"
     );
     private static final FileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
 

@@ -84,6 +84,9 @@ public class PdxScriptParser {
                 i++;
                 PdxScriptList.Builder b = PdxScriptList.builder();
                 while (!LIST_OBJECT_CLOSE.equals(tokens.get(i))) {
+                    if (PdxRelation.get(tokens.get(i)) != null) {
+                        throw new RuntimeException("No relation sign in list allowed");
+                    }
                     ScriptIntPair pair = parse(tokens, i);
                     i = pair.i;
 
@@ -318,7 +321,9 @@ public class PdxScriptParser {
     }
 
     public static String indent(int indent) {
-        if (indent > 1) {
+        if (indent < 0) {
+            throw new IllegalArgumentException();
+        } else if (indent > 1) {
             return IntStream.range(0, indent).mapToObj(i -> INDENT).collect(Collectors.joining());
         } else if (indent == 1) {
             return INDENT;

@@ -3,10 +3,11 @@ package io.github.ititus.pdx.pdxscript;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PdxScriptList implements IPdxScript {
+public final class PdxScriptList implements IPdxScript {
 
     private final boolean implicit;
     private final PdxRelation relation;
@@ -115,33 +116,26 @@ public class PdxScriptList implements IPdxScript {
     }
 
     @Override
-    public String toPdxScript(int indent, boolean bound, boolean indentFirst, String key) {
-        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
-        if (bound) {
-            b.append("{");
+    public String toPdxScript(int indent, boolean root, String key) {
+        if ((root && indent != 0) || (root && implicit) || (root && key != null)) {
+            throw new IllegalArgumentException();
         }
-        if (list.size() > 0) {
-            b.append('\n');
-        }
+
+        StringBuilder b = new StringBuilder();
+
+        IPdxScript.listObjectOpen(indent, root || implicit, key, b, relation, list.isEmpty());
 
         list.forEach(script -> {
             if (implicit) {
-                b.append(PdxScriptParser.indent(bound ? indent + 1 : indent));
-                b.append(PdxScriptParser.quoteIfNecessary(key));
-                b.append(script.getRelation().getSign());
-                b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false, key));
+                b.append(script.toPdxScript(indent, false, key));
             } else {
-                b.append(script.toPdxScript(indent + 1, true, true, key));
+                b.append(script.toPdxScript(root ? indent : indent + 1, false, null));
             }
             b.append('\n');
         });
 
-        if (list.size() > 0) {
-            b.append(PdxScriptParser.indent(indent));
-        }
-        if (bound) {
-            b.append('}');
-        }
+        IPdxScript.listObjectClose(indent, root || implicit, b, list.isEmpty());
+
         return b.toString();
     }
 
@@ -179,5 +173,22 @@ public class PdxScriptList implements IPdxScript {
         public PdxScriptList build(boolean implicit, PdxRelation relation) {
             return new PdxScriptList(implicit, relation, list);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdxScriptList)) {
+            return false;
+        }
+        PdxScriptList that = (PdxScriptList) o;
+        return relation == that.relation && Objects.equals(list, that.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relation, list);
     }
 }

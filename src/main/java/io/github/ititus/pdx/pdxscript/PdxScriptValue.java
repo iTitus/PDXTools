@@ -3,8 +3,9 @@ package io.github.ititus.pdx.pdxscript;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
-public class PdxScriptValue implements IPdxScript {
+public final class PdxScriptValue implements IPdxScript {
 
     private final PdxRelation relation;
     private final Object value;
@@ -27,8 +28,19 @@ public class PdxScriptValue implements IPdxScript {
     }
 
     @Override
-    public String toPdxScript(int indent, boolean bound, boolean indentFirst, String key) {
-        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
+    public String toPdxScript(int indent, boolean root, String key) {
+        if (root) {
+            throw new IllegalArgumentException();
+        }
+
+        StringBuilder b = new StringBuilder();
+
+        b.append(PdxScriptParser.indent(indent));
+        if (key != null) {
+            b.append(PdxScriptParser.quoteIfNecessary(key));
+            b.append(relation.getSign());
+        }
+
         if (value == null) {
             b.append(PdxScriptParser.NONE);
         } else if (value instanceof Boolean) {
@@ -52,5 +64,22 @@ public class PdxScriptValue implements IPdxScript {
                 "relation=" + relation +
                 ", value=" + value +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdxScriptValue)) {
+            return false;
+        }
+        PdxScriptValue that = (PdxScriptValue) o;
+        return relation == that.relation && Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relation, value);
     }
 }
