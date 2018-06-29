@@ -2,10 +2,7 @@ package io.github.ititus.pdx.stellaris.game;
 
 import io.github.ititus.pdx.pdxlocalisation.PDXLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
-import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
-import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.pdxscript.PdxScriptParser;
+import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.CollectionUtil;
 import io.github.ititus.pdx.util.FileExtensionFilter;
 import io.github.ititus.pdx.util.Pair;
@@ -19,7 +16,7 @@ import java.util.stream.Collectors;
 public class StellarisGame {
 
     private static final Set<String> BLACKLIST = CollectionUtil.setOf(
-            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt"
+            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "interface/reference.txt"
     );
     private static final FileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
 
@@ -74,7 +71,7 @@ public class StellarisGame {
                         }
                     }
                 });
-                PdxScriptObject o = b.build();
+                PdxScriptObject o = b.build(PdxRelation.EQUALS);
                 return o.size() > 0 ? o : null;
             }
         }

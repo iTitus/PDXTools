@@ -50,17 +50,16 @@ public class PdxScriptParser {
             }
         }
 
-        PdxValueRelation relation = PdxValueRelation.get(token);
+        PdxRelation relation = PdxRelation.get(token);
         if (relation != null) {
             token = tokens.get(++i);
+        } else {
+            relation = PdxRelation.EQUALS;
         }
 
         IPdxScript object;
         if (LIST_OBJECT_OPEN.equals(token)) {
-            if (relation != null && relation != PdxValueRelation.EQUALS) {
-                throw new RuntimeException("Relation sign " + relation + " is not compatible with object/list");
-            }
-            if (LIST_OBJECT_CLOSE.equals(tokens.get(i + 1)) || PdxValueRelation.get(tokens.get(i + 2)) != null) {
+            if (LIST_OBJECT_CLOSE.equals(tokens.get(i + 1)) || PdxRelation.get(tokens.get(i + 2)) != null) {
                 //object or empty
                 i++;
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
@@ -68,7 +67,7 @@ public class PdxScriptParser {
                     String key = stripQuotes(tokens.get(i));
                     i++;
 
-                    if (PdxValueRelation.get(tokens.get(i)) == null) {
+                    if (PdxRelation.get(tokens.get(i)) == null) {
                         throw new RuntimeException("Missing relation sign in object");
                     }
 
@@ -79,7 +78,7 @@ public class PdxScriptParser {
                 }
                 i++;
 
-                object = b.build();
+                object = b.build(relation);
             } else {
                 //list
                 i++;
@@ -92,7 +91,7 @@ public class PdxScriptParser {
                 }
                 i++;
 
-                object = b.build();
+                object = b.build(relation);
             }
         } else {
             int l = token.length();
@@ -126,11 +125,11 @@ public class PdxScriptParser {
                 i++;
             } else if (HSV.equals(token)) {
                 ScriptIntPair colorPair = parse(tokens, ++i);
-                value = new ColorWrapper(ColorWrapper.Type.HSV, ((PdxScriptList) colorPair.o).getAsNumberArray());
+                value = new PdxColorWrapper(PdxColorWrapper.Type.HSV, ((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else if (RGB.equals(token)) {
                 ScriptIntPair colorPair = parse(tokens, ++i);
-                value = new ColorWrapper(ColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsNumberArray());
+                value = new PdxColorWrapper(PdxColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else {
                 // try {
@@ -145,7 +144,7 @@ public class PdxScriptParser {
                         try {
                             value = Double.valueOf(token);
                         } catch (NumberFormatException e4) {
-                            if (i > 0 && PdxValueRelation.get(tokens.get(i - 1)) != null) {
+                            if (i > 0 && PdxRelation.get(tokens.get(i - 1)) != null) {
                                 unknownLiterals.add(token);
                             }
                             String tokenString = token;
@@ -182,7 +181,7 @@ public class PdxScriptParser {
                 }
             }
 
-            object = new PdxScriptValue(relation != null ? relation : PdxValueRelation.EQUALS, value);
+            object = new PdxScriptValue(relation != null ? relation : PdxRelation.EQUALS, value);
         }
 
         return new ScriptIntPair(object, i);

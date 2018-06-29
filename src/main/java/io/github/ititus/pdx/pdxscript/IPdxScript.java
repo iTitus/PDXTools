@@ -2,16 +2,20 @@ package io.github.ititus.pdx.pdxscript;
 
 public interface IPdxScript {
 
-    default boolean canAppend(IPdxScript object) {
+    default boolean canAppend(IPdxScript script) {
         return true;
     }
 
-    IPdxScript append(IPdxScript object);
-
-    default String toPdxScript() {
-        return toPdxScript(0, false, false);
+    default PdxScriptList append(IPdxScript script) {
+        return PdxScriptList.builder().add(this).add(script).build(true, PdxRelation.EQUALS);
     }
 
-    String toPdxScript(int indent, boolean bound, boolean indentFirst);
+    default String toPdxScript() {
+        return toPdxScript(0, false, false, null);
+    }
+
+    String toPdxScript(int indent, boolean bound, boolean indentFirst, String key);
+
+    PdxRelation getRelation();
 
 }

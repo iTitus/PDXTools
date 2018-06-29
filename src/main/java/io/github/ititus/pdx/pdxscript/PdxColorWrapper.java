@@ -5,13 +5,13 @@ import io.github.ititus.pdx.util.ColorUtil;
 import java.awt.*;
 import java.util.Arrays;
 
-public class ColorWrapper {
+public class PdxColorWrapper {
 
     private final Number[] colorComponents;
     private final Color color;
     private final Type type;
 
-    public ColorWrapper(Type type, Number... colorComponents) {
+    public PdxColorWrapper(Type type, Number... colorComponents) {
         if (colorComponents == null) {
             throw new IllegalArgumentException();
         }
@@ -185,7 +185,7 @@ public class ColorWrapper {
 
     @Override
     public String toString() {
-        return "ColorWrapper{" +
+        return "PdxColorWrapper{" +
                 "colorComponents=" + Arrays.toString(colorComponents) +
                 ", color=" + color +
                 ", type=" + type +

@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.pdxscript;
 
-enum PdxValueRelation {
+public enum PdxRelation {
+
     EQUALS(PdxScriptParser.EQUALS),
     LESS_THAN(PdxScriptParser.LESS_THAN),
     GREATER_THAN(PdxScriptParser.GREATER_THAN),
@@ -9,11 +10,11 @@ enum PdxValueRelation {
 
     private final String sign;
 
-    PdxValueRelation(String sign) {
+    PdxRelation(String sign) {
         this.sign = sign;
     }
 
-    public static PdxValueRelation get(String sign) {
+    public static PdxRelation get(String sign) {
         switch (sign) {
             case PdxScriptParser.EQUALS:
                 return EQUALS;

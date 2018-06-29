@@ -3,7 +3,7 @@ package io.github.ititus.pdx.util;
 import java.util.Map;
 import java.util.Objects;
 
-public class Pair<K, V> implements Map.Entry<K, V> {
+public final class Pair<K, V> implements Map.Entry<K, V> {
 
     private final K k;
     private final V v;
@@ -37,7 +37,7 @@ public class Pair<K, V> implements Map.Entry<K, V> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Pair<?, ?>)) {
             return false;
         }
         Pair<?, ?> pair = (Pair<?, ?>) o;
@@ -51,6 +51,6 @@ public class Pair<K, V> implements Map.Entry<K, V> {
 
     @Override
     public String toString() {
-        return k + "=" + v;
+        return "Pair{" + k + '=' + v + '}';
     }
 }

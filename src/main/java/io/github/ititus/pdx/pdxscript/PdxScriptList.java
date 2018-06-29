@@ -8,14 +8,27 @@ import java.util.stream.Collectors;
 
 public class PdxScriptList implements IPdxScript {
 
+    private final boolean implicit;
+    private final PdxRelation relation;
     private final List<IPdxScript> list;
 
-    public PdxScriptList(Collection<IPdxScript> list) {
+    public PdxScriptList(boolean implicit, PdxRelation relation, Collection<IPdxScript> list) {
+        this.implicit = implicit;
+        this.relation = relation;
         this.list = new ArrayList<>(list);
     }
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public boolean isImplicit() {
+        return implicit;
+    }
+
+    @Override
+    public PdxRelation getRelation() {
+        return relation;
     }
 
     public int size() {
@@ -97,32 +110,47 @@ public class PdxScriptList implements IPdxScript {
     }
 
     @Override
-    public IPdxScript append(IPdxScript object) {
-        return builder().addAll(list).add(object).build();
+    public PdxScriptList append(IPdxScript script) {
+        return implicit ? builder().addAll(list).add(script).build(true, PdxRelation.EQUALS) : IPdxScript.super.append(script);
     }
 
     @Override
-    public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
-        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "").append("{");
+    public String toPdxScript(int indent, boolean bound, boolean indentFirst, String key) {
+        StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
+        if (bound) {
+            b.append("{");
+        }
         if (list.size() > 0) {
             b.append('\n');
         }
 
         list.forEach(script -> {
-            b.append(script.toPdxScript(indent + 1, true, true));
+            if (implicit) {
+                b.append(PdxScriptParser.indent(bound ? indent + 1 : indent));
+                b.append(PdxScriptParser.quoteIfNecessary(key));
+                b.append(script.getRelation().getSign());
+                b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false, key));
+            } else {
+                b.append(script.toPdxScript(indent + 1, true, true, key));
+            }
             b.append('\n');
         });
 
         if (list.size() > 0) {
             b.append(PdxScriptParser.indent(indent));
         }
-        return b.append('}').toString();
+        if (bound) {
+            b.append('}');
+        }
+        return b.toString();
     }
 
     @Override
     public String toString() {
         return "PdxScriptList{" +
-                "list=" + list +
+                "implicit=" + implicit +
+                ", relation=" + relation +
+                ", list=" + list +
                 '}';
     }
 
@@ -131,7 +159,7 @@ public class PdxScriptList implements IPdxScript {
         private final List<IPdxScript> list;
 
         public Builder() {
-            list = new ArrayList<>();
+            this.list = new ArrayList<>();
         }
 
         public Builder add(IPdxScript value) {
@@ -144,8 +172,12 @@ public class PdxScriptList implements IPdxScript {
             return this;
         }
 
-        public PdxScriptList build() {
-            return new PdxScriptList(list);
+        public PdxScriptList build(PdxRelation relation) {
+            return build(false, relation);
+        }
+
+        public PdxScriptList build(boolean implicit, PdxRelation relation) {
+            return new PdxScriptList(implicit, relation, list);
         }
     }
 }

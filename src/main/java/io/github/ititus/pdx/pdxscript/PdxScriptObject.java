@@ -18,9 +18,12 @@ public class PdxScriptObject implements IPdxScript {
 
     private final Map<String, String> used = new HashMap<>();
     private final Map<String, Set<String>> wronglyUsed = new HashMap<>();
+
+    private final PdxRelation relation;
     private final Map<String, IPdxScript> map;
 
-    public PdxScriptObject(Map<String, IPdxScript> map) {
+    public PdxScriptObject(PdxRelation relation, Map<String, IPdxScript> map) {
+        this.relation = relation;
         this.map = new HashMap<>(map);
     }
 
@@ -60,6 +63,11 @@ public class PdxScriptObject implements IPdxScript {
             }
         }
         return NULL;
+    }
+
+    @Override
+    public PdxRelation getRelation() {
+        return relation;
     }
 
     public boolean hasKey(String key) {
@@ -258,12 +266,7 @@ public class PdxScriptObject implements IPdxScript {
     }
 
     @Override
-    public IPdxScript append(IPdxScript object) {
-        return PdxScriptList.builder().add(this).add(object).build();
-    }
-
-    @Override
-    public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
+    public String toPdxScript(int indent, boolean bound, boolean indentFirst, String key) {
         StringBuilder b = new StringBuilder();
 
         if (bound) {
@@ -277,18 +280,10 @@ public class PdxScriptObject implements IPdxScript {
         }
 
         map.forEach((s, script) -> {
-            if (bound) {
-                b.append(PdxScriptParser.indent(indent + 1));
-            } else {
-                b.append(PdxScriptParser.indent(indent));
-            }
+            b.append(PdxScriptParser.indent(bound ? indent + 1 : indent));
             b.append(PdxScriptParser.quoteIfNecessary(s));
-            if (!(script instanceof PdxScriptValue)) {
-                b.append('=');
-            } else {
-                b.append(((PdxScriptValue) script).getRelation().getSign());
-            }
-            b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false));
+            b.append(script.getRelation().getSign());
+            b.append(script.toPdxScript(bound ? indent + 1 : indent, true, false, s));
             b.append('\n');
         });
 
@@ -304,8 +299,7 @@ public class PdxScriptObject implements IPdxScript {
     @Override
     public String toString() {
         return "PdxScriptObject{" +
-                "used=" + used +
-                ", wronglyUsed=" + wronglyUsed +
+                "relation=" + relation +
                 ", map=" + map +
                 '}';
     }
@@ -315,11 +309,11 @@ public class PdxScriptObject implements IPdxScript {
         private final Map<String, IPdxScript> map;
 
         public Builder() {
-            map = new HashMap<>();
+            this.map = new HashMap<>();
         }
 
-        public PdxScriptObject build() {
-            return new PdxScriptObject(map);
+        public PdxScriptObject build(PdxRelation relation) {
+            return new PdxScriptObject(relation, map);
         }
 
         public Builder add(String key, IPdxScript value) {

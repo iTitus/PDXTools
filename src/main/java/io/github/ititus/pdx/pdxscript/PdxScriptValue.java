@@ -6,18 +6,19 @@ import java.util.Locale;
 
 public class PdxScriptValue implements IPdxScript {
 
-    private final PdxValueRelation relation;
+    private final PdxRelation relation;
     private final Object value;
 
-    public PdxScriptValue(PdxValueRelation relation, Object value) {
-        if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof ColorWrapper) && !(value instanceof String))) {
+    public PdxScriptValue(PdxRelation relation, Object value) {
+        if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof PdxColorWrapper) && !(value instanceof String))) {
             throw new IllegalArgumentException(String.valueOf(value));
         }
         this.relation = relation;
         this.value = value;
     }
 
-    public PdxValueRelation getRelation() {
+    @Override
+    public PdxRelation getRelation() {
         return relation;
     }
 
@@ -26,14 +27,8 @@ public class PdxScriptValue implements IPdxScript {
     }
 
     @Override
-    public IPdxScript append(IPdxScript object) {
-        return PdxScriptList.builder().add(this).add(object).build();
-    }
-
-    @Override
-    public String toPdxScript(int indent, boolean bound, boolean indentFirst) {
+    public String toPdxScript(int indent, boolean bound, boolean indentFirst, String key) {
         StringBuilder b = new StringBuilder(indentFirst ? PdxScriptParser.indent(indent) : "");
-        // b.append(relation.getSign());
         if (value == null) {
             b.append(PdxScriptParser.NONE);
         } else if (value instanceof Boolean) {
@@ -43,8 +38,8 @@ public class PdxScriptValue implements IPdxScript {
             b.append(sdf.format(value));
         } else if (value instanceof String) {
             b.append(PdxScriptParser.quote((String) value));
-        } else if (value instanceof ColorWrapper) {
-            b.append(((ColorWrapper) value).toPdxScript());
+        } else if (value instanceof PdxColorWrapper) {
+            b.append(((PdxColorWrapper) value).toPdxScript());
         } else {
             b.append(value);
         }
