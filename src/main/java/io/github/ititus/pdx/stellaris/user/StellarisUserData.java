@@ -16,4 +16,8 @@ public class StellarisUserData {
         }
         this.dataDir = dataDir;
     }
+
+    public File getDataDir() {
+        return dataDir;
+    }
 }

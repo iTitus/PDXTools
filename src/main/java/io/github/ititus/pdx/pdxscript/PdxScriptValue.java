@@ -33,9 +33,8 @@ public final class PdxScriptValue implements IPdxScript {
             throw new IllegalArgumentException();
         }
 
-        StringBuilder b = new StringBuilder();
+        StringBuilder b = new StringBuilder(PdxScriptParser.indent(indent));
 
-        b.append(PdxScriptParser.indent(indent));
         if (key != null) {
             b.append(PdxScriptParser.quoteIfNecessary(key));
             b.append(relation.getSign());

@@ -5,7 +5,7 @@ import java.awt.*;
 public class ColorUtil {
 
     public static Color fromHSVA(float hue, float saturation, float value, float alpha) {
-        int r = 0, g = 0, b = 0, a = (int) (alpha * 255.0f + 0.5f);
+        int r, g, b, a = (int) (alpha * 255.0f + 0.5f);
         if (saturation == 0) {
             r = g = b = (int) (value * 255.0f + 0.5f);
         } else {

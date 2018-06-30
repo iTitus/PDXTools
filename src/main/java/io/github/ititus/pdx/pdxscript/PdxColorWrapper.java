@@ -66,7 +66,7 @@ public final class PdxColorWrapper {
             } else if (vN instanceof Double) {
                 v = vN.floatValue();
                 if (v < 0 || v > 1) {
-                    // throw new IllegalArgumentException();
+                    throw new IllegalArgumentException();
                 }
             } else {
                 throw new IllegalArgumentException();
