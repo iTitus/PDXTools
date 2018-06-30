@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 public class Main {
 
-
     public static final Comparator<File> ASCIIBETICAL_ORDER = Comparator.comparing(File::getName);
 
     private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt", /*"C:\\Users\\Vella\\Desktop\\00_actions.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};

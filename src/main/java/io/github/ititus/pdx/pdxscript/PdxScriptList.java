@@ -117,7 +117,7 @@ public final class PdxScriptList implements IPdxScript {
 
     @Override
     public String toPdxScript(int indent, boolean root, String key) {
-        if ((root && indent != 0) || (root && implicit) || (root && key != null)) {
+        if ((root && indent != 0) || (root && implicit) || (root && key != null) || (root && list.isEmpty()) || (implicit && list.size() < 2)) {
             throw new IllegalArgumentException();
         }
 
@@ -126,11 +126,7 @@ public final class PdxScriptList implements IPdxScript {
         IPdxScript.listObjectOpen(indent, root || implicit, key, b, relation, list.isEmpty());
 
         list.forEach(script -> {
-            if (implicit) {
-                b.append(script.toPdxScript(indent, false, key));
-            } else {
-                b.append(script.toPdxScript(root ? indent : indent + 1, false, null));
-            }
+            b.append(script.toPdxScript(root || implicit ? indent : indent + 1, false, implicit ? key : null));
             b.append('\n');
         });
 
