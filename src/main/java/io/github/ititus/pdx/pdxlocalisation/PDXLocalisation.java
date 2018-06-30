@@ -54,7 +54,12 @@ public final class PDXLocalisation {
     }
 
     public String toYML() {
-        return "";
+        StringBuilder b = new StringBuilder();
+        localisation.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(langEntry -> {
+            b.append(langEntry.getKey()).append(":\n");
+            langEntry.getValue().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(translationEntry -> b.append(' ').append(translationEntry.getKey()).append(":0 \"").append(translationEntry.getValue()).append("\"\n"));
+        });
+        return b.toString();
     }
 
     @Override

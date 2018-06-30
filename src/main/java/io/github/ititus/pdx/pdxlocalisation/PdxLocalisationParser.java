@@ -38,10 +38,12 @@ public final class PdxLocalisationParser {
         return parseAll(validFiles);
     }
 
-    private static PDXLocalisation parseAll(File... localisationFiles) {
+    public static PDXLocalisation parseAll(File... localisationFiles) {
         return localisationFiles != null ?
                 new PDXLocalisation(
                         Arrays.stream(localisationFiles)
+                                .filter(Objects::nonNull)
+                                .filter(File::isFile)
                                 .map(PdxLocalisationParser::parseInternal)
                                 .reduce(new HashMap<>(),
                                         (acc, r) -> {
