@@ -140,6 +140,23 @@ public final class PdxScriptList implements IPdxScript {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdxScriptList)) {
+            return false;
+        }
+        PdxScriptList that = (PdxScriptList) o;
+        return relation == that.relation && Objects.equals(list, that.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relation, list);
+    }
+
+    @Override
     public String toString() {
         return "PdxScriptList{" +
                 "implicit=" + implicit +
@@ -173,22 +190,5 @@ public final class PdxScriptList implements IPdxScript {
         public PdxScriptList build(boolean implicit, PdxRelation relation) {
             return new PdxScriptList(implicit, relation, list);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PdxScriptList)) {
-            return false;
-        }
-        PdxScriptList that = (PdxScriptList) o;
-        return relation == that.relation && Objects.equals(list, that.list);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(relation, list);
     }
 }

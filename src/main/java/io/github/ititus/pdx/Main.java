@@ -28,13 +28,16 @@ public class Main {
     public static void main(String[] args) {
         List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
-        // testOutput.forEach(System.out::println);
+        testOutput.forEach(System.out::println);
         System.out.println("done1");
 
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
+
         List<Pair<String, Exception>> gameErrors = StellarisGame.getErrors();
-        String s = game.getData().toPdxScript();
+        String d = game.getRawData().toPdxScript();
+        String l = game.getLocalisation().toYML();
+
         System.out.println("done2");
 
         /*StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);

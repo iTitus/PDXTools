@@ -16,7 +16,15 @@ import java.util.stream.Collectors;
 public class StellarisGame {
 
     private static final Set<String> BLACKLIST = CollectionUtil.setOf(
-            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "interface/reference.txt"
+            // Not PDXScript
+            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "interface/reference.txt",
+            // Missing curly bracket at the end
+            "gfx/models/add_ons/_add_ons_meshes.gfx",
+            // V value of HSV color is between 1.0 and 2.0
+            "common/planet_classes/00_planet_classes.txt", "flags/colors.txt", "gfx/advisorwindow/advisorwindow_environment.txt", "gfx/worldgfx/customization_view_planet.txt", "gfx/worldgfx/ship_design_icon.txt", "gfx/worldgfx/ship_details_view.txt", "gfx/worldgfx/system_view.txt",
+            // Missing relation sign in object
+            "common/map_modes/00_map_modes.txt"
+            // Candidates: "common/random_names/00_empire_names.txt", "common/random_names/00_war_names.txt", "common/solar_system_initializers/hostile_system_initializers.txt", "common/static_modifiers/01_static_modifers.txt", "events/colony_events.txt", "gfx/lights/star_lights.asset", "gfx/particles/misc/axis.asset", "sound/soundeffects.asset"
     );
     private static final FileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
 
@@ -24,7 +32,7 @@ public class StellarisGame {
 
     private final File installDir;
     private final PDXLocalisation localisation;
-    private final PdxScriptObject data;
+    private final PdxScriptObject rawData;
 
     public StellarisGame(String installDirPath) {
         this(new File(installDirPath));
@@ -45,7 +53,7 @@ public class StellarisGame {
             e.printStackTrace();
             canonical = installDir.getAbsolutePath();
         }
-        this.data = parseFolder(canonical, installDir);
+        this.rawData = parseFolder(canonical, installDir);
     }
 
     private static PdxScriptObject parseFolder(String installDirPath, File dir) {
@@ -142,7 +150,7 @@ public class StellarisGame {
         return localisation;
     }
 
-    public PdxScriptObject getData() {
-        return data;
+    public PdxScriptObject getRawData() {
+        return rawData;
     }
 }

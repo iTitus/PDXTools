@@ -42,5 +42,4 @@ public interface IPdxScript {
     String toPdxScript(int indent, boolean root, String key);
 
     PdxRelation getRelation();
-
 }

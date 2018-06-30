@@ -59,14 +59,6 @@ public final class PdxScriptValue implements IPdxScript {
     }
 
     @Override
-    public String toString() {
-        return "PdxScriptValue{" +
-                "relation=" + relation +
-                ", value=" + value +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -81,5 +73,13 @@ public final class PdxScriptValue implements IPdxScript {
     @Override
     public int hashCode() {
         return Objects.hash(relation, value);
+    }
+
+    @Override
+    public String toString() {
+        return "PdxScriptValue{" +
+                "relation=" + relation +
+                ", value=" + value +
+                '}';
     }
 }

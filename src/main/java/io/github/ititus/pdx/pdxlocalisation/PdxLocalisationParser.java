@@ -16,9 +16,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PdxLocalisationParser {
+public final class PdxLocalisationParser {
 
     private static final String UTF_8_BOM = "\uFEFF";
+
+    private PdxLocalisationParser() {
+    }
 
     public static PDXLocalisation parse(File installDir) {
         return parse(installDir, new FileExtensionFilter("yml"));

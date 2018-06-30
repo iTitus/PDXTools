@@ -4,8 +4,9 @@ import io.github.ititus.pdx.util.ColorUtil;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Objects;
 
-public class PdxColorWrapper {
+public final class PdxColorWrapper {
 
     private final Number[] colorComponents;
     private final Color color;
@@ -181,6 +182,25 @@ public class PdxColorWrapper {
             b.append(n).append(" ");
         }
         return b.append("}").toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdxColorWrapper)) {
+            return false;
+        }
+        PdxColorWrapper that = (PdxColorWrapper) o;
+        return Arrays.equals(colorComponents, that.colorComponents) && Objects.equals(color, that.color) && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(color, type);
+        result = 31 * result + Arrays.hashCode(colorComponents);
+        return result;
     }
 
     @Override

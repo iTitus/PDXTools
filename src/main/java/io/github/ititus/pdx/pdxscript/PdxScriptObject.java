@@ -286,6 +286,23 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PdxScriptObject)) {
+            return false;
+        }
+        PdxScriptObject that = (PdxScriptObject) o;
+        return relation == that.relation && Objects.equals(map, that.map);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relation, map);
+    }
+
+    @Override
     public String toString() {
         return "PdxScriptObject{" +
                 "relation=" + relation +
@@ -316,22 +333,5 @@ public final class PdxScriptObject implements IPdxScript {
             }
             return this;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof PdxScriptObject)) {
-            return false;
-        }
-        PdxScriptObject that = (PdxScriptObject) o;
-        return relation == that.relation && Objects.equals(map, that.map);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(relation, map);
     }
 }

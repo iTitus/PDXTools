@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class PdxScriptParser {
+public final class PdxScriptParser {
 
     public static final String SDF_PATTERN = "yyyy.MM.dd";
     public static final String YES = "yes";
@@ -41,6 +41,8 @@ public class PdxScriptParser {
 
     private static final Set<String> unknownLiterals = new HashSet<>();
 
+    private PdxScriptParser() {
+    }
 
     private static ScriptIntPair parse(List<String> tokens, int i) {
         String token = tokens.get(i);

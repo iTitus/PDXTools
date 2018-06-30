@@ -1,11 +1,8 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class PDXLocalisation {
+public final class PDXLocalisation {
 
     public static final String ENGLISH = "l_english";
     public static final String BRAZ_POR = "l_braz_por";
@@ -54,6 +51,27 @@ public class PDXLocalisation {
             }
         }
         return fallback;
+    }
+
+    public String toYML() {
+        return "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PDXLocalisation)) {
+            return false;
+        }
+        PDXLocalisation that = (PDXLocalisation) o;
+        return Objects.equals(localisation, that.localisation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(localisation);
     }
 
     @Override
