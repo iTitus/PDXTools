@@ -47,7 +47,7 @@ public final class PdxScriptValue implements IPdxScript {
             b.append((boolean) value ? PdxScriptParser.YES : PdxScriptParser.NO);
         } else if (value instanceof Date) {
             SimpleDateFormat sdf = new SimpleDateFormat(PdxScriptParser.SDF_PATTERN, Locale.ENGLISH);
-            b.append(sdf.format(value));
+            b.append(PdxScriptParser.quote(sdf.format(value)));
         } else if (value instanceof String) {
             b.append(PdxScriptParser.quote((String) value));
         } else if (value instanceof PdxColorWrapper) {

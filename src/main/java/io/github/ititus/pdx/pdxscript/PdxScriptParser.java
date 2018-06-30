@@ -135,18 +135,15 @@ public class PdxScriptParser {
                 value = new PdxColorWrapper(PdxColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else {
-                // try {
-                //     value = sdf.parse(token);
-                // } catch (ParseException e1) {
                 try {
                     value = Integer.valueOf(token);
-                } catch (NumberFormatException e2) {
+                } catch (NumberFormatException e1) {
                     try {
                         value = Long.valueOf(token);
-                    } catch (NumberFormatException e3) {
+                    } catch (NumberFormatException e2) {
                         try {
                             value = Double.valueOf(token);
-                        } catch (NumberFormatException e4) {
+                        } catch (NumberFormatException e3) {
                             if (i > 0 && PdxRelation.get(tokens.get(i - 1)) != null) {
                                 unknownLiterals.add(token);
                             }
@@ -161,7 +158,6 @@ public class PdxScriptParser {
                         }
                     }
                 }
-                // }
                 i++;
                 // TODO: Fix this (currently evaluated from right to left and ignores brackets)
                 if (value instanceof Number) {
