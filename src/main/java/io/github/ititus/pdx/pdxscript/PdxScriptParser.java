@@ -37,7 +37,7 @@ public final class PdxScriptParser {
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
-    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{}+"/*+"-"*/ + "*/\"]");
+    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{}"/*+"+-"*/ + "*/\"]");
 
     private static final Set<String> unknownLiterals = new HashSet<>();
 
@@ -304,7 +304,7 @@ public final class PdxScriptParser {
     }
 
     private static boolean isMathOperator(char c) {
-        return c == '+' /*|| c == '-'*/ || c == '*' || c == '/';
+        return /*c == '+' || c == '-' ||*/ c == '*' || c == '/';
     }
 
     public static String quote(String s) {

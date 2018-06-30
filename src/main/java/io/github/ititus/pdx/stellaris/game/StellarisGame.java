@@ -23,8 +23,10 @@ public class StellarisGame {
             // V value of HSV color is between 1.0 and 2.0
             "common/planet_classes/00_planet_classes.txt", "flags/colors.txt", "gfx/advisorwindow/advisorwindow_environment.txt", "gfx/worldgfx/customization_view_planet.txt", "gfx/worldgfx/ship_design_icon.txt", "gfx/worldgfx/ship_details_view.txt", "gfx/worldgfx/system_view.txt",
             // Missing relation sign in object
-            "common/map_modes/00_map_modes.txt"
-            // Candidates: "common/random_names/00_empire_names.txt", "common/random_names/00_war_names.txt", "common/solar_system_initializers/hostile_system_initializers.txt", "common/static_modifiers/01_static_modifers.txt", "events/colony_events.txt", "gfx/lights/star_lights.asset", "gfx/particles/misc/axis.asset", "sound/soundeffects.asset"
+            "common/map_modes/00_map_modes.txt", "common/random_names/00_empire_names.txt", "common/random_names/00_war_names.txt", "common/solar_system_initializers/hostile_system_initializers.txt", "sound/soundeffects.asset",
+            // Comma-separated values (list?)
+            "gfx/lights/star_lights.asset", "gfx/particles/misc/axis.asset"
+
     );
     private static final FileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
 

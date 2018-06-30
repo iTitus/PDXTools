@@ -3,7 +3,7 @@ package io.github.ititus.pdx.pdxscript;
 import java.util.function.BinaryOperator;
 
 public enum PdxMathOperation {
-    ADD(PdxScriptParser.ADD, (n1, n2) -> {
+    /*ADD(PdxScriptParser.ADD, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() + n2.doubleValue();
         }
@@ -12,7 +12,7 @@ public enum PdxMathOperation {
         }
         return n1.intValue() + n2.intValue();
     }),
-    /*SUBTRACT(PdxScriptParser.SUBTRACT, (n1, n2) -> {
+    SUBTRACT(PdxScriptParser.SUBTRACT, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() - n2.doubleValue();
         }
@@ -59,9 +59,9 @@ public enum PdxMathOperation {
 
     public static PdxMathOperation get(String operator) {
         switch (operator) {
-            case PdxScriptParser.ADD:
+            /*case PdxScriptParser.ADD:
                 return ADD;
-            /*case PdxScriptParser.SUBTRACT:
+            case PdxScriptParser.SUBTRACT:
                 return SUBTRACT;*/
             case PdxScriptParser.MULTIPLY:
                 return MULTIPLY;
