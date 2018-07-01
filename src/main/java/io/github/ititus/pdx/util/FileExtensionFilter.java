@@ -6,7 +6,7 @@ import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class FileExtensionFilter implements FileFilter, FilenameFilter {
+public class FileExtensionFilter implements IFileFilter {
 
     private final String[] extensions;
 
@@ -22,11 +22,6 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
             }
             this.extensions[i] = ext.toLowerCase(Locale.ENGLISH);
         }
-    }
-
-    @Override
-    public boolean accept(File dir, String name) {
-        return accept(new File(dir, name));
     }
 
     public boolean accept(File f) {

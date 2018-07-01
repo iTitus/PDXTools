@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
-import io.github.ititus.pdx.Main;
 import io.github.ititus.pdx.util.FileExtensionFilter;
+import io.github.ititus.pdx.util.FileUtil;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -29,8 +29,8 @@ public final class PdxLocalisationParser {
 
     public static PDXLocalisation parse(File installDir, FileFilter filter) {
         File[] validFiles;
-        try (Stream<Path> stream = Files.walk(installDir.toPath(), FileVisitOption.FOLLOW_LINKS)/*.parallel()*/) {
-            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).sorted(Main.ASCIIBETICAL_ORDER).distinct().toArray(File[]::new);
+        try (Stream<Path> stream = Files.walk(installDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).distinct().sorted(FileUtil.asciibetical(installDir)).toArray(File[]::new);
         } catch (IOException e) {
             e.printStackTrace();
             validFiles = null;

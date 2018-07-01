@@ -10,14 +10,11 @@ import io.github.ititus.pdx.util.Pair;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-
-    public static final Comparator<File> ASCIIBETICAL_ORDER = Comparator.comparing(File::getName);
 
     private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt", /*"C:\\Users\\Vella\\Desktop\\00_actions.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
     private static final String INSTALL_DIR = "D:\\Miles\\Programme\\Steam\\SteamApps\\common\\Stellaris";
@@ -33,9 +30,12 @@ public class Main {
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
 
-        List<Pair<String, Exception>> gameErrors = StellarisGame.getErrors();
-        String d = game.getRawData().toPdxScript();
-        String l = game.getLocalisation().toYML();
+        List<Pair<String, Exception>> gameErrors = game.getErrors();
+        String gd = game.getRawData().toPdxScript();
+        String gl = game.getLocalisation().toYML();
+
+        List<Pair<String, Exception>> userErrors = userData.getErrors();
+        String ud = userData.getRawData().toPdxScript();
 
         System.out.println("done2");
 
@@ -76,7 +76,6 @@ public class Main {
         System.out.println("-------------------------");
         Map<String, Set<String>> errors = stellarisSave.getErrors();
         errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
-        PdxScriptParser.printUnknownLiterals();
         System.out.println("done4");*/
     }
 

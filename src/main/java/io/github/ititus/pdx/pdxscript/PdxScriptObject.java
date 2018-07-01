@@ -214,7 +214,6 @@ public final class PdxScriptObject implements IPdxScript {
             }
         });
         return map;
-        // return this.map.entrySet().stream().collect(Collectors.toMap(e -> keyFct.apply(e.getKey()), e -> valueFct.apply(e.getValue())));
     }
 
     public Map<String, Set<String>> getErrors() {
@@ -275,8 +274,8 @@ public final class PdxScriptObject implements IPdxScript {
 
         IPdxScript.listObjectOpen(indent, root, key, b, relation, map.isEmpty());
 
-        map.forEach((s, script) -> {
-            b.append(script.toPdxScript(root ? indent : indent + 1, false, s));
+        map.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(entry -> {
+            b.append(entry.getValue().toPdxScript(root ? indent : indent + 1, false, entry.getKey()));
             b.append('\n');
         });
 

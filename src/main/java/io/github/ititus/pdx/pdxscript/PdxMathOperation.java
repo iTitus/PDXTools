@@ -20,7 +20,7 @@ public enum PdxMathOperation {
             return n1.longValue() - n2.longValue();
         }
         return n1.intValue() - n2.intValue();
-    }),*/
+    }),
     MULTIPLY(PdxScriptParser.MULTIPLY, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() * n2.doubleValue();
@@ -29,7 +29,7 @@ public enum PdxMathOperation {
             return n1.longValue() * n2.longValue();
         }
         return n1.intValue() * n2.intValue();
-    }),
+    }),*/
     DIVIDE(PdxScriptParser.DIVIDE, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() / n2.doubleValue();
@@ -62,9 +62,9 @@ public enum PdxMathOperation {
             /*case PdxScriptParser.ADD:
                 return ADD;
             case PdxScriptParser.SUBTRACT:
-                return SUBTRACT;*/
+                return SUBTRACT;
             case PdxScriptParser.MULTIPLY:
-                return MULTIPLY;
+                return MULTIPLY;*/
             case PdxScriptParser.DIVIDE:
                 return DIVIDE;
         }
