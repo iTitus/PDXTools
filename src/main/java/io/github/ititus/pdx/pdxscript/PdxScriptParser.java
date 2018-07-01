@@ -1,17 +1,20 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.MutableBoolean;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public final class PdxScriptParser {
 
@@ -182,7 +185,7 @@ public final class PdxScriptParser {
                 }
             }
 
-            object = new PdxScriptValue(relation != null ? relation : PdxRelation.EQUALS, value);
+            object = new PdxScriptValue(relation, value);
         }
 
         return new ScriptIntPair(object, i);
@@ -206,86 +209,106 @@ public final class PdxScriptParser {
         return s.substring(beginIndex, endIndex).replaceAll("\\\"", "\"");
     }
 
-    private static List<String> tokenize(String src) {
+    private static List<String> tokenize(IntStream src) {
         List<String> tokens = CollectionUtil.listOf(LIST_OBJECT_OPEN);
-        boolean openQuotes = false, token = false, comment = false, separator = false, relation = false, mathOperator = false;
-        int tokenStart = 0;
-        for (int i = 0; i < src.length(); i++) {
-            char c = src.charAt(i);
+        StringBuilder b = new StringBuilder();
+        MutableBoolean openQuotes = new MutableBoolean(false), token = new MutableBoolean(false), comment = new MutableBoolean(false), separator = new MutableBoolean(false), relation = new MutableBoolean(false), mathOperator = new MutableBoolean(false);
+        src.forEachOrdered(i -> {
+                    char c = (char) i;
 
-            if (c == UTF_8_BOM) {
-                continue;
-            }
+                    if (c == UTF_8_BOM) {
+                        return;
+                    }
 
-            if (comment) {
-                if (isNewLine(c)) {
-                    comment = false;
+                    if (comment.get()) {
+                        if (isNewLine(c)) {
+                            comment.set(false);
+                        }
+                        return;
+                    }
+
+                    if (openQuotes.get()) {
+                        if (isNewLine(c)) {
+                            throw new RuntimeException("No multi-line strings");
+                        }
+                        b.append(c);
+                        if (c == QUOTE && b.charAt(b.length() - 1) != ESCAPE) {
+                            openQuotes.set(false);
+                            tokens.add(b.toString());
+                            b.setLength(0);
+                        }
+                        return;
+                    }
+
+                    if (token.get()) {
+                        if (c == COMMENT_CHAR || c == QUOTE || isSeparator(c) || isRelation(c) || isMathOperator(c) || Character.isWhitespace(c)) {
+                            token.set(false);
+                            tokens.add(b.toString());
+                            b.setLength(0);
+                        } else {
+                            b.append(c);
+                            return;
+                        }
+                    }
+
+                    if (separator.get()) {
+                        // Separators (curly brackets) can only be one char long
+                        separator.set(false);
+                        tokens.add(b.toString());
+                        b.setLength(0);
+                    }
+
+                    if (relation.get()) {
+                        if (!isRelation(c)) {
+                            relation.set(false);
+                            tokens.add(b.toString());
+                            b.setLength(0);
+                        } else {
+                            b.append(c);
+                            return;
+                        }
+                    }
+
+                    if (mathOperator.get()) {
+                        if (!isMathOperator(c)) {
+                            mathOperator.set(false);
+                            tokens.add(b.toString());
+                            b.setLength(0);
+                        } else {
+                            throw new RuntimeException("Math operators can only be one char long");
+                        }
+                    }
+
+                    if (b.length() > 0) {
+                        throw new RuntimeException();
+                    }
+
+                    if (c == COMMENT_CHAR) {
+                        comment.set(true);
+                    } else if (c == QUOTE) {
+                        openQuotes.set(true);
+                        b.append(c);
+                    } else if (isSeparator(c)) {
+                        separator.set(true);
+                        b.append(c);
+                    } else if (isRelation(c)) {
+                        relation.set(true);
+                        b.append(c);
+                    } else if (isMathOperator(c)) {
+                        mathOperator.set(true);
+                        b.append(c);
+                    } else if (!Character.isWhitespace(c)) {
+                        token.set(true);
+                        b.append(c);
+                    }
                 }
-                continue;
-            }
-
-            if (openQuotes) {
-                if (isNewLine(c)) {
-                    throw new RuntimeException("No multi-line strings");
-                } else if (c == QUOTE && src.charAt(i - 1) != ESCAPE) {
-                    openQuotes = false;
-                    tokens.add(src.substring(tokenStart, i + 1));
-                }
-                continue;
-            }
-
-            if (token) {
-                if (c == COMMENT_CHAR || c == QUOTE || isSeparator(c) || isRelation(c) || isMathOperator(c) || Character.isWhitespace(c)) {
-                    token = false;
-                    tokens.add(src.substring(tokenStart, i));
-                } else {
-                    continue;
-                }
-            }
-
-            if (separator) {
-                separator = false;
-                tokens.add(src.substring(tokenStart, i));
-            }
-
-            if (relation) {
-                if (!isRelation(c)) {
-                    relation = false;
-                    tokens.add(src.substring(tokenStart, i));
-                } else {
-                    continue;
-                }
-            }
-
-            if (mathOperator) {
-                mathOperator = false;
-                tokens.add(src.substring(tokenStart, i));
-            }
-
-            if (c == COMMENT_CHAR) {
-                comment = true;
-            } else if (c == QUOTE) {
-                openQuotes = true;
-                tokenStart = i;
-            } else if (isSeparator(c)) {
-                separator = true;
-                tokenStart = i;
-            } else if (isRelation(c)) {
-                relation = true;
-                tokenStart = i;
-            } else if (isMathOperator(c)) {
-                mathOperator = true;
-                tokenStart = i;
-            } else if (!Character.isWhitespace(c)) {
-                token = true;
-                tokenStart = i;
-            }
-        }
-        if (openQuotes) {
+        );
+        if (openQuotes.get()) {
             throw new RuntimeException("Quotes not closed at EOF");
         }
-        if (token || separator || relation || mathOperator) {
-            tokens.add(src.substring(tokenStart, src.length()));
+        if (token.get() || separator.get() || relation.get() || mathOperator.get()) {
+            tokens.add(b.toString());
+            b.setLength(0);
         }
         tokens.add(LIST_OBJECT_CLOSE);
         return tokens;
@@ -330,24 +353,15 @@ public final class PdxScriptParser {
     }
 
     public static IPdxScript parse(File scriptFile) {
-        String src;
-        try (Stream<String> stream = Files.lines(scriptFile.toPath(), StandardCharsets.UTF_8)) {
-            src = stream.collect(Collectors.joining("\n"));
-        } catch (Exception e1) {
-            try (Stream<String> stream = Files.lines(scriptFile.toPath(), StandardCharsets.ISO_8859_1)) {
-                src = stream.collect(Collectors.joining("\n"));
-            } catch (Exception e2) {
-                RuntimeException e = new RuntimeException("Error while reading file: " + scriptFile);
-                e.addSuppressed(e1);
-                e.addSuppressed(e2);
-                throw e;
-            }
+        try (Reader r = new InputStreamReader(new FileInputStream(scriptFile), StandardCharsets.UTF_8)) {
+            return parse(IOUtil.getCharacterStream(r));
+        } catch (Exception e) {
+            throw new RuntimeException("Error while reading file: " + scriptFile, e);
         }
-        return parse(src);
     }
 
-    public static IPdxScript parse(String src) {
-        List<String> tokens = new ArrayList<>(tokenize(src));
+    public static IPdxScript parse(IntStream stream) {
+        List<String> tokens = new ArrayList<>(tokenize(stream));
         ScriptIntPair pair = parse(tokens, 0);
         if ((!(pair.o instanceof PdxScriptObject) && !(pair.o instanceof PdxScriptList)) || pair.i != tokens.size()) {
             throw new RuntimeException("Unexpected return value from parsing: " + (pair.o != null ? pair.o.getClass().getTypeName() : "null") + ", " + pair.i + "/" + tokens.size());

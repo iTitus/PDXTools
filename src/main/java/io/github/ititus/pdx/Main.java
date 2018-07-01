@@ -30,11 +30,12 @@ public class Main {
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
 
-        List<Pair<String, Exception>> gameErrors = game.getErrors();
+        List<Pair<String, Throwable>> gameErrors = game.getErrors();
         String gd = game.getRawData().toPdxScript();
         String gl = game.getLocalisation().toYML();
 
-        List<Pair<String, Exception>> userErrors = userData.getErrors();
+        List<Pair<String, Throwable>> userErrors = userData.getErrors();
+        List<Pair<String, Throwable>> saveErrors = userData.getSaves().getErrors();
         String ud = userData.getRawData().toPdxScript();
 
         System.out.println("done2");

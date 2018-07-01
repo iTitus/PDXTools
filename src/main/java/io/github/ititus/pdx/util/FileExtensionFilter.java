@@ -1,8 +1,6 @@
 package io.github.ititus.pdx.util;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -26,9 +24,8 @@ public class FileExtensionFilter implements IFileFilter {
 
     public boolean accept(File f) {
         if (f != null && !f.isDirectory()) {
-            String name = f.getName();
-            int i = name.lastIndexOf('.');
-            return i > 0 && i < name.length() - 1 && Arrays.stream(extensions).anyMatch(name.substring(i + 1).toLowerCase(Locale.ENGLISH)::equals);
+            String ext = IOUtil.getExtension(f);
+            return !ext.isEmpty() && Arrays.stream(extensions).anyMatch(ext::equals);
         }
         return false;
     }

@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.user;
 
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.stellaris.user.save.StellarisSaves;
 import io.github.ititus.pdx.util.CollectionUtil;
 import io.github.ititus.pdx.util.FileExtensionFilter;
 import io.github.ititus.pdx.util.IFileFilter;
@@ -17,11 +18,12 @@ public class StellarisUserData {
             // Not PDXScript
             "cache", "dumps", "pops_filestorage", "screenshots", "shadercache",
             // Handled separately
-            "save games"
+            "save games", "oos"
     );
-    private static final IFileFilter FILTER = new FileExtensionFilter("txt", "mod", "hotjoin", "oos");
+    private static final IFileFilter FILTER = new FileExtensionFilter("txt", "mod");
 
     private final File dataDir;
+    private final StellarisSaves saves;
     private final PdxRawDataLoader rawDataLoader;
 
     public StellarisUserData(String dataDirPath) {
@@ -34,6 +36,7 @@ public class StellarisUserData {
         }
         this.dataDir = dataDir;
 
+        this.saves = /*null; //*/ new StellarisSaves(new File(dataDir, "save games"));
         this.rawDataLoader = new PdxRawDataLoader(dataDir, BLACKLIST, FILTER).load();
     }
 
@@ -41,11 +44,15 @@ public class StellarisUserData {
         return dataDir;
     }
 
+    public StellarisSaves getSaves() {
+        return saves;
+    }
+
     public PdxScriptObject getRawData() {
         return rawDataLoader.getRawData();
     }
 
-    public List<Pair<String, Exception>> getErrors() {
+    public List<Pair<String, Throwable>> getErrors() {
         return rawDataLoader.getErrors();
     }
 }

@@ -15,7 +15,7 @@ public class ZipUtil {
         }
 
         if (!extractDir.exists() && !extractDir.mkdirs()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("extractDir: " + extractDir);
         } else if (!extractDir.isDirectory()) {
             throw new IllegalArgumentException("extractDir: " + extractDir);
         }
@@ -55,4 +55,21 @@ public class ZipUtil {
         }
     }
 
+    public static void readZipContents(File zipFile, ThrowingBiConsumer<ZipFile, ZipEntry, IOException> reader) {
+        if (!zipFile.exists() || !zipFile.isFile() || reader == null) {
+            throw new IllegalArgumentException();
+        }
+
+        try (ZipFile f = new ZipFile(zipFile)) {
+            for (Enumeration<? extends ZipEntry> entries = f.entries(); entries.hasMoreElements(); ) {
+                try {
+                    reader.consume(f, entries.nextElement());
+                } catch (IOException | IllegalStateException e2) {
+                    e2.printStackTrace();
+                }
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
 }

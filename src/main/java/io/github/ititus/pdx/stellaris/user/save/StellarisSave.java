@@ -1,28 +1,47 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
+import io.github.ititus.pdx.util.IOUtil;
 import io.github.ititus.pdx.util.ZipUtil;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class StellarisSave {
 
-    private final File saveDir;
-    private final Meta meta;
-    private final GameState gameState;
+    private final File save;
+    private final boolean zipped;
+    private Meta meta;
+    private GameState gameState;
 
-    public StellarisSave(File saveFile, boolean zipped) {
-        if (zipped) {
-            String name = saveFile.getName();
-            this.saveDir = new File(saveFile.getParent(), name.substring(0, name.length() - ".sav".length()) + "_extracted");
-            ZipUtil.unzip(saveFile, saveDir);
-        } else {
-            this.saveDir = saveFile;
+    public StellarisSave(File saveFile) {
+        if (saveFile == null || !saveFile.exists() || !(saveFile.isDirectory() || IOUtil.getExtension(saveFile).equals("sav"))) {
+            throw new IllegalArgumentException();
         }
 
-        this.meta = new Meta(PdxScriptParser.parse(new File(this.saveDir, "meta")));
-        this.gameState = new GameState(PdxScriptParser.parse(new File(this.saveDir, "gamestate")));
+        this.save = saveFile;
+        this.zipped = !saveFile.isDirectory();
+
+        if (zipped) {
+            ZipUtil.readZipContents(saveFile, this::readFromZip);
+        } else {
+            this.meta = new Meta(PdxScriptParser.parse(new File(this.save, "meta")));
+            this.gameState = new GameState(PdxScriptParser.parse(new File(this.save, "gamestate")));
+        }
+    }
+
+    private static IntStream readChars(ZipFile zipFile, ZipEntry zipEntry) {
+        try (Reader r = new InputStreamReader(zipFile.getInputStream(zipEntry), StandardCharsets.UTF_8)) {
+            return IOUtil.getCharacterStream(r);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while reading " + zipEntry + " from zip file: " + zipFile, e);
+        }
     }
 
     public static StellarisSave loadNewest(String saveDirPath) {
@@ -58,15 +77,24 @@ public class StellarisSave {
 
         System.out.println("Found newest save file: " + newestSave);
 
-        return new StellarisSave(newestSave, true);
+        return new StellarisSave(newestSave);
     }
 
     public static boolean isValidSaveFile(File saveFile) {
         return saveFile != null && saveFile.exists() && saveFile.isFile() && saveFile.getName().endsWith(".sav");
     }
 
-    public File getSaveDir() {
-        return saveDir;
+    private void readFromZip(ZipFile zipFile, ZipEntry zipEntry) {
+        switch (zipEntry.getName()) {
+            case "meta":
+                this.meta = new Meta(PdxScriptParser.parse(readChars(zipFile, zipEntry)));
+            case "gamestate":
+                this.gameState = new GameState(PdxScriptParser.parse(readChars(zipFile, zipEntry)));
+        }
+    }
+
+    public File getSave() {
+        return save;
     }
 
     public Meta getMeta() {

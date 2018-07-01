@@ -1,12 +1,13 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.FileUtil;
 import io.github.ititus.pdx.util.IFileFilter;
+import io.github.ititus.pdx.util.IOUtil;
 import io.github.ititus.pdx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PdxRawDataLoader {
@@ -14,7 +15,7 @@ public class PdxRawDataLoader {
     private final File dir;
     private final Set<String> blacklist;
     private final IFileFilter filter;
-    private final List<Pair<String, Exception>> errors;
+    private final List<Pair<String, Throwable>> errors;
 
     private PdxScriptObject rawData;
 
@@ -36,8 +37,8 @@ public class PdxRawDataLoader {
         return rawData;
     }
 
-    public List<Pair<String, Exception>> getErrors() {
-        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Pair<String, Exception> p) -> p.getValue().getMessage()).thenComparing(Pair::getKey)).collect(Collectors.toList()));
+    public List<Pair<String, Throwable>> getErrors() {
+        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Function<Pair<String, Throwable>, String>) String::valueOf).thenComparing(Pair::getKey)).collect(Collectors.toList()));
     }
 
     public PdxRawDataLoader load() {
@@ -50,11 +51,11 @@ public class PdxRawDataLoader {
     }
 
     private PdxScriptObject parseFolder(String installDirPath, File dir) {
-        if (dir != null && dir.isDirectory() && !blacklist.contains(FileUtil.getRelativePath(installDirPath, dir))) {
+        if (dir != null && dir.isDirectory() && !blacklist.contains(IOUtil.getRelativePath(installDirPath, dir))) {
             File[] files = dir.listFiles();
             if (files != null) {
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
-                Arrays.stream(files).filter(Objects::nonNull).sorted(FileUtil.asciibetical(installDirPath)).forEachOrdered(f -> {
+                Arrays.stream(files).filter(Objects::nonNull).sorted(IOUtil.asciibetical(installDirPath)).forEachOrdered(f -> {
                     if (f.isDirectory()) {
                         PdxScriptObject o = parseFolder(installDirPath, f);
                         if (o != null) {
@@ -76,16 +77,17 @@ public class PdxRawDataLoader {
 
     private IPdxScript parseFile(String installDirPath, File f) {
         if (f != null && f.isFile()) {
-            String path = FileUtil.getRelativePath(installDirPath, f);
+            String path = IOUtil.getRelativePath(installDirPath, f);
             if (!blacklist.contains(path) && filter.accept(f)) {
                 IPdxScript s;
                 try {
                     s = PdxScriptParser.parse(f);
                 } catch (Exception e) {
-                    Throwable[] suppressed = e.getSuppressed();
-                    Throwable cause = e.getCause();
-                    System.out.println("Error while parsing " + path + ": " + e + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
-                    errors.add(Pair.of(path, e));
+                    Throwable t = e.getCause() != null ? e.getCause() : e;
+                    Throwable[] suppressed = t.getSuppressed();
+                    Throwable cause = t.getCause();
+                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                    errors.add(Pair.of(path, t));
                     s = null;
                 }
                 if (s != null) {
@@ -109,5 +111,4 @@ public class PdxRawDataLoader {
         }
         return null;
     }
-
 }
