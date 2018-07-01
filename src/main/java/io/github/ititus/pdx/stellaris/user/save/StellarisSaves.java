@@ -31,7 +31,7 @@ public class StellarisSaves {
                     File[] saveGames = saveGame.listFiles();
                     if (saveGames != null) {
                         for (File saveGameFile : saveGames) {
-                            if (saveGameFile != null) {
+                            if (StellarisSave.isValidSaveFile(saveGameFile)) {
                                 try {
                                     saveMap.put(IOUtil.getNameWithoutExtension(saveGameFile), new StellarisSave(saveGameFile));
                                 } catch (Exception e) {
@@ -62,5 +62,9 @@ public class StellarisSaves {
 
     public List<Pair<String, Throwable>> getErrors() {
         return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Function<Pair<String, Throwable>, String>) String::valueOf).thenComparing(Pair::getKey)).collect(Collectors.toList()));
+    }
+
+    public StellarisSave getSave(String saveFolder, String saveGame) {
+        return saves.get(saveFolder).get(saveGame);
     }
 }

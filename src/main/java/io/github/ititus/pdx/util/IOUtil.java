@@ -3,6 +3,7 @@ package io.github.ititus.pdx.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
@@ -92,7 +93,7 @@ public class IOUtil {
                     try {
                         next = r.read();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        throw new UncheckedIOException(e);
                     }
                     hasNextCalled = true;
                 }

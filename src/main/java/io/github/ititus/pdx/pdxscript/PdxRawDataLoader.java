@@ -6,6 +6,7 @@ import io.github.ititus.pdx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class PdxRawDataLoader {
         try {
             this.rawData = parseFolder(dir.getCanonicalPath(), dir);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         return this;
     }

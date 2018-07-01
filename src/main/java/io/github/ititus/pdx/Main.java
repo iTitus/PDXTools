@@ -9,8 +9,8 @@ import io.github.ititus.pdx.util.CollectionUtil;
 import io.github.ititus.pdx.util.Pair;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,7 +19,9 @@ public class Main {
     private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt", /*"C:\\Users\\Vella\\Desktop\\00_actions.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
     private static final String INSTALL_DIR = "D:\\Miles\\Programme\\Steam\\SteamApps\\common\\Stellaris";
     private static final String USER_DATA_DIR = "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris";
-    private static final String SAVE = USER_DATA_DIR + "\\save games\\mpomnidirective_20173703";
+
+    private static final String SAVE_FOLDER = "mpomnidirective_20173703";
+    private static final String SAVE_GAME = "2270.04.10.sav";
 
     public static void main(String[] args) {
         List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
@@ -40,9 +42,8 @@ public class Main {
 
         System.out.println("done2");
 
-        /*StellarisSave stellarisSave = StellarisSave.loadNewest(SAVE);
+        StellarisSave stellarisSave = userData.getSaves().getSave("mpomnidirective_20173703", "2270.04.10.sav");
         GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
-
 
         List<Pair<GalacticObject, Resources>> resourcesInSystems = systems
                 .getGalacticObjects()
@@ -77,7 +78,8 @@ public class Main {
         System.out.println("-------------------------");
         Map<String, Set<String>> errors = stellarisSave.getErrors();
         errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
-        System.out.println("done4");*/
+        PdxScriptParser.printUnknownLiterals();
+        System.out.println("done4");
     }
 
     private static Resources getResources(GameState gameState, GalacticObject system) {
