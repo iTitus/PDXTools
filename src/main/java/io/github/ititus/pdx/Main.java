@@ -16,8 +16,8 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    private static final String[] TEST_FILES = {"C:/Users/Vella/Desktop/test.txt"};
     private static final String USER_HOME = System.getProperty("user.home");
+    private static final String[] TEST_FILES = {USER_HOME + "/Desktop/test.txt"};
     private static final String INSTALL_DIR = "D:/Miles/Programme/Steam/SteamApps/common/Stellaris";
     private static final String USER_DATA_DIR = USER_HOME + "/Documents/Paradox Interactive/Stellaris";
 
@@ -73,7 +73,7 @@ public class Main {
                             .limit(10)
                             .collect(Collectors.toList());
 
-            resourceRichSystems.forEach(pair -> System.out.println(pair.getKey().getName() + ": " + p.getKey().apply(pair.getValue()).get(0) + " " + p.getValue()));
+            resourceRichSystems.stream().map(pair -> pair.getKey().getName() + ": " + p.getKey().apply(pair.getValue()).get(0) + " " + p.getValue()).forEachOrdered(System.out::println);
             System.out.println("-------------------------");
         }
 

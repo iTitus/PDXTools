@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -19,29 +20,39 @@ import java.util.stream.IntStream;
 public final class PdxScriptParser {
 
     public static final String SDF_PATTERN = "yyyy.MM.dd";
+
     public static final String YES = "yes";
     public static final String NO = "no";
     public static final String NONE = "none";
     public static final String HSV = "hsv";
     public static final String RGB = "rgb";
+
     public static final String EQUALS = "=";
     public static final String LESS_THAN = "<";
     public static final String GREATER_THAN = ">";
     public static final String LESS_THAN_OR_EQUALS = "<=";
     public static final String GREATER_THAN_OR_EQUALS = ">=";
+
+    // Currently only one math operation (division: 4/30) in common/defines/00_defines.txt:852
     public static final String ADD = "+";
     public static final String SUBTRACT = "-";
     public static final String MULTIPLY = "*";
     public static final String DIVIDE = "/";
+
     private static final String LIST_OBJECT_OPEN = "{";
     private static final String LIST_OBJECT_CLOSE = "}";
     private static final String COMMA = ",";
+
     private static final String INDENT = "    ";
+
     private static final char UTF_8_BOM = '\uFEFF';
+
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
+
     private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
+    private static final Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");
 
     private static final Set<String> unknownLiterals = new HashSet<>();
 
@@ -154,6 +165,13 @@ public final class PdxScriptParser {
                 value = new PdxColorWrapper(PdxColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else {
+                String oldToken = token;
+                boolean percent = false;
+                Matcher m = PERCENT.matcher(token);
+                if (m.matches()) {
+                    percent = true;
+                    token = m.group(1);
+                }
                 try {
                     value = Integer.valueOf(token);
                 } catch (NumberFormatException e1) {
@@ -163,11 +181,13 @@ public final class PdxScriptParser {
                         try {
                             value = Double.valueOf(token);
                         } catch (NumberFormatException e3) {
-                            if (i > 0 && PdxRelation.get(tokens.get(i - 1)) != null) {
-                                unknownLiterals.add(token);
+                            if (token.matches("0x[0-9a-fA-F]+")) {
+                                System.out.println(token);
                             }
+
+                            unknownLiterals.add(token);
                             String tokenString = token;
-                            // TODO: Fix tokenizer splitting raw tokens with '-' in it
+                            // TODO: Fix tokenizer splitting raw tokens with math symbols in it in it
                             /*String operator = tokens.get(i + 1);
                             PdxMathOperation operation = PdxMathOperation.get(operator);
                             if (operation != null) {
@@ -178,6 +198,36 @@ public final class PdxScriptParser {
                     }
                 }
                 i++;
+
+                if (percent) {
+                    if (value instanceof Double) {
+                        double d = (Double) value / 100D;
+                        if ((int) d == d) {
+                            value = (int) d;
+                        } else if ((long) d == d) {
+                            value = (long) d;
+                        } else {
+                            value = d;
+                        }
+                    } else if (value instanceof Integer) {
+                        double d = (Integer) value / 100D;
+                        if ((int) d == d) {
+                            value = (int) d;
+                        } else {
+                            value = d;
+                        }
+                    } else if (value instanceof Long) {
+                        double d = (Long) value / 100D;
+                        if ((long) d == d) {
+                            value = (long) d;
+                        } else {
+                            value = d;
+                        }
+                    } else {
+                        value = oldToken; // fallback to string
+                    }
+                }
+
                 // TODO: Fix this (currently evaluated from right to left and ignores brackets)
                 if (value instanceof Number) {
                     String operator = tokens.get(i);
@@ -386,7 +436,7 @@ public final class PdxScriptParser {
     public static void printUnknownLiterals() {
         System.out.println("-------------------------");
         System.out.println("Unknown literals:");
-        unknownLiterals.forEach(System.out::println);
+        unknownLiterals.stream().sorted().forEachOrdered(System.out::println);
         System.out.println("-------------------------");
     }
 
