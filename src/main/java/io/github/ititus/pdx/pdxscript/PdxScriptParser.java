@@ -220,7 +220,7 @@ public final class PdxScriptParser {
             endIndex--;
         }
 
-        return s.substring(beginIndex, endIndex).replaceAll("\\\"", "\"");
+        return s.substring(beginIndex, endIndex).replace("\\\"", "\"");
     }
 
     private static List<String> tokenize(IntStream src) {
@@ -345,7 +345,7 @@ public final class PdxScriptParser {
     }
 
     public static String quote(String s) {
-        return '"' + s.replaceAll("\"", "\\\"") + '"';
+        return '"' + s.replace("\"", "\\\"") + '"';
     }
 
     public static String quoteIfNecessary(String s) {

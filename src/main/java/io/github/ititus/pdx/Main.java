@@ -16,9 +16,10 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt"};
-    private static final String INSTALL_DIR = "D:\\Miles\\Programme\\Steam\\SteamApps\\common\\Stellaris";
-    private static final String USER_DATA_DIR = "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris";
+    private static final String[] TEST_FILES = {"C:/Users/Vella/Desktop/test.txt"};
+    private static final String USER_HOME = System.getProperty("user.home");
+    private static final String INSTALL_DIR = "D:/Miles/Programme/Steam/SteamApps/common/Stellaris";
+    private static final String USER_DATA_DIR = USER_HOME + "/Documents/Paradox Interactive/Stellaris";
 
     private static final String SAVE_FOLDER = "mpomnidirective_20173703";
     private static final String SAVE_GAME = "2270.04.10";
