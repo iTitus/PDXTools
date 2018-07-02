@@ -32,7 +32,7 @@ public interface IPdxScript {
     }
 
     default PdxScriptList append(IPdxScript script) {
-        return PdxScriptList.builder().add(this).add(script).build(true, PdxRelation.EQUALS);
+        return PdxScriptList.builder().add(this).add(script).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
     default String toPdxScript() {

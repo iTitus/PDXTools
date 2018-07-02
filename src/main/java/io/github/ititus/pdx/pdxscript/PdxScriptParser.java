@@ -35,12 +35,13 @@ public final class PdxScriptParser {
     public static final String DIVIDE = "/";
     private static final String LIST_OBJECT_OPEN = "{";
     private static final String LIST_OBJECT_CLOSE = "}";
+    private static final String COMMA = ",";
     private static final String INDENT = "    ";
     private static final char UTF_8_BOM = '\uFEFF';
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
     private static final char COMMENT_CHAR = '#';
-    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{}"/*+"+-*"*/ + "/\"]");
+    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
 
     private static final Set<String> unknownLiterals = new HashSet<>();
 
@@ -78,8 +79,21 @@ public final class PdxScriptParser {
 
                     ScriptIntPair pair = parse(tokens, i);
                     i = pair.i;
+                    IPdxScript s = pair.o;
 
-                    b.add(key, pair.o);
+                    if (COMMA.equals(tokens.get(i))) {
+                        PdxScriptList.Builder lb = PdxScriptList.builder();
+                        lb.add(s);
+                        while (COMMA.equals(tokens.get(i))) {
+                            i++;
+                            pair = parse(tokens, i);
+                            i = pair.i;
+                            lb.add(pair.o);
+                        }
+                        s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
+                    }
+
+                    b.add(key, s);
                 }
                 i++;
 
@@ -319,7 +333,7 @@ public final class PdxScriptParser {
     }
 
     private static boolean isSeparator(char c) {
-        return c == '{' || c == '}';
+        return c == '{' || c == '}' || c == ',';
     }
 
     private static boolean isRelation(char c) {

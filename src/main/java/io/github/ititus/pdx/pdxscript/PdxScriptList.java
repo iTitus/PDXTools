@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public final class PdxScriptList implements IPdxScript {
 
-    private final boolean implicit;
+    private final Mode mode;
     private final PdxRelation relation;
     private final List<IPdxScript> list;
 
-    public PdxScriptList(boolean implicit, PdxRelation relation, Collection<IPdxScript> list) {
-        this.implicit = implicit;
+    public PdxScriptList(Mode mode, PdxRelation relation, Collection<IPdxScript> list) {
+        this.mode = mode;
         this.relation = relation;
         this.list = new ArrayList<>(list);
     }
@@ -23,8 +23,8 @@ public final class PdxScriptList implements IPdxScript {
         return new Builder();
     }
 
-    public boolean isImplicit() {
-        return implicit;
+    public Mode getMode() {
+        return mode;
     }
 
     @Override
@@ -112,25 +112,26 @@ public final class PdxScriptList implements IPdxScript {
 
     @Override
     public PdxScriptList append(IPdxScript script) {
-        return implicit ? builder().addAll(list).add(script).build(true, PdxRelation.EQUALS) : IPdxScript.super.append(script);
+        return mode == Mode.IMPLICIT ? builder().addAll(list).add(script).build(Mode.IMPLICIT, PdxRelation.EQUALS) : IPdxScript.super.append(script);
     }
 
     @Override
     public String toPdxScript(int indent, boolean root, String key) {
-        if ((root && indent != 0) || (root && implicit) || (root && key != null) || (root && list.isEmpty()) || (implicit && list.size() < 2)) {
+        // TODO: Maybe add support for printing lists in comma mode
+        if ((root && indent != 0) || (root && mode != Mode.NORMAL) || (root && key != null) || (root && list.isEmpty()) || (mode != Mode.NORMAL && list.size() < 2)) {
             throw new IllegalArgumentException();
         }
 
         StringBuilder b = new StringBuilder();
 
-        IPdxScript.listObjectOpen(indent, root || implicit, key, b, relation, list.isEmpty());
+        IPdxScript.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
 
         list.forEach(script -> {
-            b.append(script.toPdxScript(root || implicit ? indent : indent + 1, false, implicit ? key : null));
+            b.append(script.toPdxScript(root || mode == Mode.IMPLICIT ? indent : indent + 1, false, mode == Mode.IMPLICIT ? key : null));
             b.append('\n');
         });
 
-        IPdxScript.listObjectClose(indent, root || implicit, b, list.isEmpty());
+        IPdxScript.listObjectClose(indent, root || mode == Mode.IMPLICIT, b, list.isEmpty());
 
         return b.toString();
     }
@@ -144,18 +145,18 @@ public final class PdxScriptList implements IPdxScript {
             return false;
         }
         PdxScriptList that = (PdxScriptList) o;
-        return relation == that.relation && Objects.equals(list, that.list);
+        return mode == that.mode && relation == that.relation && Objects.equals(list, that.list);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(relation, list);
+        return Objects.hash(mode, relation, list);
     }
 
     @Override
     public String toString() {
         return "PdxScriptList{" +
-                "implicit=" + implicit +
+                "mode=" + mode +
                 ", relation=" + relation +
                 ", list=" + list +
                 '}';
@@ -180,11 +181,15 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         public PdxScriptList build(PdxRelation relation) {
-            return build(false, relation);
+            return build(Mode.NORMAL, relation);
         }
 
-        public PdxScriptList build(boolean implicit, PdxRelation relation) {
-            return new PdxScriptList(implicit, relation, list);
+        public PdxScriptList build(Mode mode, PdxRelation relation) {
+            return new PdxScriptList(mode, relation, list);
         }
+    }
+
+    enum Mode {
+        NORMAL, COMMA, IMPLICIT
     }
 }
