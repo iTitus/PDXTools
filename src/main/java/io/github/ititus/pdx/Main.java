@@ -16,14 +16,16 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt", /*"C:\\Users\\Vella\\Desktop\\00_actions.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\settings.txt", "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris\\user_empire_designs.txt"*/};
+    private static final String[] TEST_FILES = {"C:\\Users\\Vella\\Desktop\\test.txt"};
     private static final String INSTALL_DIR = "D:\\Miles\\Programme\\Steam\\SteamApps\\common\\Stellaris";
     private static final String USER_DATA_DIR = "C:\\Users\\Vella\\Documents\\Paradox Interactive\\Stellaris";
 
     private static final String SAVE_FOLDER = "mpomnidirective_20173703";
-    private static final String SAVE_GAME = "2270.04.10.sav";
+    private static final String SAVE_GAME = "2270.04.10";
 
     public static void main(String[] args) {
+        long time = System.currentTimeMillis();
+
         List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
         testOutput.forEach(System.out::println);
@@ -42,7 +44,7 @@ public class Main {
 
         System.out.println("done2");
 
-        StellarisSave stellarisSave = userData.getSaves().getSave("mpomnidirective_20173703", "2270.04.10.sav");
+        StellarisSave stellarisSave = userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME);
         GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
         List<Pair<GalacticObject, Resources>> resourcesInSystems = systems
@@ -79,6 +81,8 @@ public class Main {
         Map<String, Set<String>> errors = stellarisSave.getErrors();
         errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
         PdxScriptParser.printUnknownLiterals();
+
+        System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done4");
     }
 
