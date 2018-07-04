@@ -15,7 +15,11 @@ public final class PdxScriptValue implements IPdxScript {
             throw new IllegalArgumentException(String.valueOf(value));
         }
         this.relation = relation;
-        this.value = value;
+        if (value instanceof String) {
+            this.value = ((String) value).intern();
+        } else {
+            this.value = value;
+        }
     }
 
     @Override

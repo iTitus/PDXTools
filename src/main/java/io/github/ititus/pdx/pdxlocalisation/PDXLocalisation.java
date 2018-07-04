@@ -37,20 +37,26 @@ public final class PDXLocalisation {
     }
 
     public String get(String language, String key, String fallbackLanguage, String fallbackKey, String fallback) {
-        if (language != null) {
-            Map<String, String> languageMap = localisation.get(language);
-            if (languageMap == null && !language.equals(fallbackLanguage)) {
-                languageMap = localisation.get(fallbackLanguage);
+        String internedLanguage = language != null ? language.intern() : null;
+        Map<String, String> languageMap = null;
+        if (internedLanguage != null) {
+            languageMap = localisation.get(internedLanguage);
+        }
+        String internedFallbackLanguage = fallbackLanguage != null ? fallbackLanguage.intern() : null;
+        if (languageMap == null && internedFallbackLanguage != null && !internedFallbackLanguage.equals(internedLanguage)) {
+            languageMap = localisation.get(internedFallbackLanguage);
+        }
+        if (languageMap != null) {
+            String internedKey = key != null ? key.intern() : null;
+            if (internedKey != null && languageMap.containsKey(internedKey)) {
+                return languageMap.get(internedKey);
             }
-            if (languageMap != null) {
-                if (key != null && languageMap.containsKey(key)) {
-                    return languageMap.get(key);
-                } else if (((key != null && !key.equals(fallbackKey)) || (fallbackKey != null && !fallbackKey.equals(key))) && languageMap.containsKey(fallbackKey)) {
-                    return languageMap.get(fallbackKey);
-                }
+            String internedFallbackKey = fallbackKey != null ? fallbackKey.intern() : null;
+            if (internedFallbackKey != null && !internedFallbackKey.equals(internedKey) && languageMap.containsKey(internedFallbackKey)) {
+                return languageMap.get(internedFallbackKey);
             }
         }
-        return fallback;
+        return fallback != null ? fallback.intern() : null;
     }
 
     public String toYML() {

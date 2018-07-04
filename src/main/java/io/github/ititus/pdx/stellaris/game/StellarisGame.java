@@ -5,9 +5,9 @@ import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.CollectionUtil;
-import io.github.ititus.pdx.util.FileExtensionFilter;
-import io.github.ititus.pdx.util.IFileFilter;
 import io.github.ititus.pdx.util.Pair;
+import io.github.ititus.pdx.util.io.FileExtensionFilter;
+import io.github.ititus.pdx.util.io.IFileFilter;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +17,7 @@ public class StellarisGame {
 
     private static final Set<String> BLACKLIST = CollectionUtil.setOf(
             // Not PDXScript
-            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "interface/reference.txt",
+            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "common/edicts/README.txt", "interface/credits.txt", "interface/reference.txt", "interface/startup_info.txt",
             // Handled separately
             "localisation", "localisation_synced", "pdx_launcher/common/localisation", "pdx_online_assets/localisation",
             // Missing curly bracket at the end

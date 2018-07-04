@@ -1,8 +1,10 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.CollectionUtil;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.MutableBoolean;
+import io.github.ititus.pdx.util.ColorUtil;
+import io.github.ititus.pdx.util.CountingSet;
+import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.mutable.MutableBoolean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +13,10 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,6 +44,9 @@ public final class PdxScriptParser {
     public static final String MULTIPLY = "*";
     public static final String DIVIDE = "/";
 
+    public static final char COMMENT_CHAR = '#';
+    private static final String VARIABLE_PREFIX = "@";
+
     private static final String LIST_OBJECT_OPEN = "{";
     private static final String LIST_OBJECT_CLOSE = "}";
     private static final String COMMA = ",";
@@ -49,12 +57,11 @@ public final class PdxScriptParser {
 
     private static final char QUOTE = '"';
     private static final char ESCAPE = '\\';
-    private static final char COMMENT_CHAR = '#';
 
     private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
     private static final Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");
 
-    private static final Set<String> unknownLiterals = new HashSet<>();
+    private static final CountingSet<String> unknownLiterals = new CountingSet<>();
 
     private PdxScriptParser() {
     }
@@ -93,6 +100,7 @@ public final class PdxScriptParser {
                     IPdxScript s = pair.o;
 
                     if (COMMA.equals(tokens.get(i))) {
+                        // comma-separated list as value
                         PdxScriptList.Builder lb = PdxScriptList.builder();
                         lb.add(s);
                         while (COMMA.equals(tokens.get(i))) {
@@ -119,8 +127,22 @@ public final class PdxScriptParser {
                     }
                     ScriptIntPair pair = parse(tokens, i);
                     i = pair.i;
+                    IPdxScript s = pair.o;
 
-                    b.add(pair.o);
+                    if (COMMA.equals(tokens.get(i))) {
+                        // comma-separated list as value
+                        PdxScriptList.Builder lb = PdxScriptList.builder();
+                        lb.add(s);
+                        while (COMMA.equals(tokens.get(i))) {
+                            i++;
+                            pair = parse(tokens, i);
+                            i = pair.i;
+                            lb.add(pair.o);
+                        }
+                        s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
+                    }
+
+                    b.add(s);
                 }
                 i++;
 
@@ -158,12 +180,15 @@ public final class PdxScriptParser {
                 i++;
             } else if (HSV.equals(token)) {
                 ScriptIntPair colorPair = parse(tokens, ++i);
-                value = new PdxColorWrapper(PdxColorWrapper.Type.HSV, ((PdxScriptList) colorPair.o).getAsNumberArray());
+                value = PdxColorWrapper.fromHSV(((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
             } else if (RGB.equals(token)) {
                 ScriptIntPair colorPair = parse(tokens, ++i);
-                value = new PdxColorWrapper(PdxColorWrapper.Type.RGB, ((PdxScriptList) colorPair.o).getAsNumberArray());
+                value = PdxColorWrapper.fromRGB(((PdxScriptList) colorPair.o).getAsNumberArray());
                 i = colorPair.i;
+            } else if (ColorUtil.HEX_RGB_PATTERN.matcher(token).matches()) {
+                value = PdxColorWrapper.fromRGBHex(token);
+                i++;
             } else {
                 String oldToken = token;
                 boolean percent = false;
@@ -181,11 +206,12 @@ public final class PdxScriptParser {
                         try {
                             value = Double.valueOf(token);
                         } catch (NumberFormatException e3) {
-                            if (token.matches("0x[0-9a-fA-F]+")) {
-                                System.out.println(token);
+                            token = oldToken;
+                            if (token.startsWith(VARIABLE_PREFIX)) {
+                                // TODO: Parse @ variables
+                            } else {
+                                unknownLiterals.add(token);
                             }
-
-                            unknownLiterals.add(token);
                             String tokenString = token;
                             // TODO: Fix tokenizer splitting raw tokens with math symbols in it in it
                             /*String operator = tokens.get(i + 1);
@@ -199,7 +225,7 @@ public final class PdxScriptParser {
                 }
                 i++;
 
-                if (percent) {
+                if (percent && !token.equals(oldToken)) {
                     if (value instanceof Double) {
                         double d = (Double) value / 100D;
                         if ((int) d == d) {
@@ -224,7 +250,7 @@ public final class PdxScriptParser {
                             value = d;
                         }
                     } else {
-                        value = oldToken; // fallback to string
+                        throw new RuntimeException("Something went wrong while parsing a percent number");
                     }
                 }
 
@@ -433,11 +459,8 @@ public final class PdxScriptParser {
         return pair.o;
     }
 
-    public static void printUnknownLiterals() {
-        System.out.println("-------------------------");
-        System.out.println("Unknown literals:");
-        unknownLiterals.stream().sorted().forEachOrdered(System.out::println);
-        System.out.println("-------------------------");
+    public static List<String> getUnknownLiterals() {
+        return unknownLiterals.sortedStream(Comparator.comparing(s -> s.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
     }
 
     private static class ScriptIntPair {

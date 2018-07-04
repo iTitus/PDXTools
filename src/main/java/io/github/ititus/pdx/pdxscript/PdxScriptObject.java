@@ -322,13 +322,14 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public Builder add(String key, IPdxScript value) {
-            IPdxScript object = map.get(key);
+            String interned = key.intern();
+            IPdxScript object = map.get(interned);
             if (object == null) {
-                map.put(key, value);
+                map.put(interned, value);
             } else if (object.canAppend(value)) {
-                map.put(key, object.append(value));
+                map.put(interned, object.append(value));
             } else {
-                throw new UnsupportedOperationException("existing=" + object + ", appendix=" + value);
+                throw new UnsupportedOperationException("key=" + interned + ", existing=" + object + ", appendix=" + value);
             }
             return this;
         }

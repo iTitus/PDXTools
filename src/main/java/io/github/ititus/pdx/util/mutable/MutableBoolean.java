@@ -1,10 +1,14 @@
-package io.github.ititus.pdx.util;
+package io.github.ititus.pdx.util.mutable;
 
 import java.util.function.Supplier;
 
 public final class MutableBoolean {
 
     private boolean b;
+
+    public MutableBoolean() {
+        this(false);
+    }
 
     public MutableBoolean(boolean b) {
         this.b = b;
@@ -73,6 +77,6 @@ public final class MutableBoolean {
 
     @Override
     public String toString() {
-        return String.valueOf(b);
+        return Boolean.toString(b);
     }
 }

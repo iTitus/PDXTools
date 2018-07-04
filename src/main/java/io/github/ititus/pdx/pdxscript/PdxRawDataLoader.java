@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.IFileFilter;
-import io.github.ititus.pdx.util.IOUtil;
 import io.github.ititus.pdx.util.Pair;
+import io.github.ititus.pdx.util.io.IFileFilter;
+import io.github.ititus.pdx.util.io.IOUtil;
 
 import java.io.File;
 import java.io.IOException;

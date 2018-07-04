@@ -1,4 +1,6 @@
-package io.github.ititus.pdx.util;
+package io.github.ititus.pdx.util.io;
+
+import io.github.ititus.pdx.util.ThrowingBiConsumer;
 
 import java.io.*;
 import java.util.Enumeration;

@@ -126,6 +126,10 @@ public final class PdxScriptList implements IPdxScript {
 
         IPdxScript.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
 
+        if (mode == Mode.COMMA) {
+            b.append(PdxScriptParser.indent(indent + 1)).append(PdxScriptParser.COMMENT_CHAR).append(' ').append("COMMA LIST").append('\n');
+        }
+
         list.forEach(script -> {
             b.append(script.toPdxScript(root || mode == Mode.IMPLICIT ? indent : indent + 1, false, mode == Mode.IMPLICIT ? key : null));
             b.append('\n');
@@ -162,6 +166,10 @@ public final class PdxScriptList implements IPdxScript {
                 '}';
     }
 
+    enum Mode {
+        NORMAL, COMMA, IMPLICIT
+    }
+
     public static class Builder {
 
         private final List<IPdxScript> list;
@@ -187,9 +195,5 @@ public final class PdxScriptList implements IPdxScript {
         public PdxScriptList build(Mode mode, PdxRelation relation) {
             return new PdxScriptList(mode, relation, list);
         }
-    }
-
-    enum Mode {
-        NORMAL, COMMA, IMPLICIT
     }
 }

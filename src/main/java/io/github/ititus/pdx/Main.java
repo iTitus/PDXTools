@@ -43,8 +43,11 @@ public class Main {
         List<Pair<String, Throwable>> saveErrors = userData.getSaves().getErrors();
         String ud = userData.getRawData().toPdxScript();
 
+        List<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
+
         System.out.println("done2");
 
+        System.out.println("-------------------------");
         StellarisSave stellarisSave = userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME);
         GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
@@ -64,7 +67,7 @@ public class Main {
                 Pair.of(Resources::getEngineeringResearch, "engineering"),
                 Pair.of(r -> combineResource(r.getPhysicsResearch(), combineResource(r.getSocietyResearch(), r.getEngineeringResearch())), "research")
         );
-        for (Pair<Function<Resources, List<Double>>, String> p : list) {
+        list.forEach(p -> {
             Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject, Resources> resourcesInSystem) -> p.getKey().apply(resourcesInSystem.getValue()).get(0)).reversed();
             List<Pair<GalacticObject, Resources>> resourceRichSystems =
                     resourcesInSystems
@@ -75,13 +78,18 @@ public class Main {
 
             resourceRichSystems.stream().map(pair -> pair.getKey().getName() + ": " + p.getKey().apply(pair.getValue()).get(0) + " " + p.getValue()).forEachOrdered(System.out::println);
             System.out.println("-------------------------");
-        }
+        });
 
         System.out.println("done3");
-        System.out.println("-------------------------");
         Map<String, Set<String>> errors = stellarisSave.getErrors();
+
+        System.out.println("-------------------------");
         errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
-        PdxScriptParser.printUnknownLiterals();
+
+        System.out.println("-------------------------");
+        System.out.println("Unknown literals:");
+        unknownLiterals.forEach(System.out::println);
+        System.out.println("-------------------------");
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done4");

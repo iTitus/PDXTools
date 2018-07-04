@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.util;
+package io.github.ititus.pdx.util.io;
 
 import java.io.File;
 import java.util.function.Predicate;

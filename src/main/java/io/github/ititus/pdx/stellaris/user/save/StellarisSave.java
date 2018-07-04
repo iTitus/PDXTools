@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.ZipUtil;
+import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.io.ZipUtil;
 
 import java.io.File;
 import java.io.IOException;
