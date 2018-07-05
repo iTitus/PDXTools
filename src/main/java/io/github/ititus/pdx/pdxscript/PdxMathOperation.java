@@ -2,8 +2,8 @@ package io.github.ititus.pdx.pdxscript;
 
 import java.util.function.BinaryOperator;
 
-public enum PdxMathOperation {
-    /*ADD(PdxScriptParser.ADD, (n1, n2) -> {
+public enum PdxMathOperation implements PdxConstants {
+    ADD(PdxConstants.ADD, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() + n2.doubleValue();
         }
@@ -12,7 +12,7 @@ public enum PdxMathOperation {
         }
         return n1.intValue() + n2.intValue();
     }),
-    SUBTRACT(PdxScriptParser.SUBTRACT, (n1, n2) -> {
+    SUBTRACT(PdxConstants.SUBTRACT, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() - n2.doubleValue();
         }
@@ -21,7 +21,7 @@ public enum PdxMathOperation {
         }
         return n1.intValue() - n2.intValue();
     }),
-    MULTIPLY(PdxScriptParser.MULTIPLY, (n1, n2) -> {
+    MULTIPLY(PdxConstants.MULTIPLY, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() * n2.doubleValue();
         }
@@ -29,8 +29,8 @@ public enum PdxMathOperation {
             return n1.longValue() * n2.longValue();
         }
         return n1.intValue() * n2.intValue();
-    }),*/
-    DIVIDE(PdxScriptParser.DIVIDE, (n1, n2) -> {
+    }),
+    DIVIDE(PdxConstants.DIVIDE, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() / n2.doubleValue();
         }
@@ -58,15 +58,16 @@ public enum PdxMathOperation {
     }
 
     public static PdxMathOperation get(String operator) {
-        switch (operator) {
-            /*case PdxScriptParser.ADD:
+        if (operator != null && !operator.isEmpty()) {
+            if (operator.equals(PdxConstants.ADD)) {
                 return ADD;
-            case PdxScriptParser.SUBTRACT:
+            } else if (operator.equals(PdxConstants.SUBTRACT)) {
                 return SUBTRACT;
-            case PdxScriptParser.MULTIPLY:
-                return MULTIPLY;*/
-            case PdxScriptParser.DIVIDE:
+            } else if (operator.equals(PdxConstants.MULTIPLY)) {
+                return MULTIPLY;
+            } else if (operator.equals(PdxConstants.DIVIDE)) {
                 return DIVIDE;
+            }
         }
         return null;
     }

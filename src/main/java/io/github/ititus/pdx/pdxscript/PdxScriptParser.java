@@ -17,45 +17,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class PdxScriptParser {
-
-    public static final char UTF_8_BOM = '\uFEFF';
-    public static final String INDENT = "    ";
-    public static final String SDF_PATTERN = "yyyy.MM.dd";
-
-    public static final String LIST_OBJECT_OPEN = "{";
-    public static final String LIST_OBJECT_CLOSE = "}";
-    public static final String COMMA = ",";
-
-    public static final char COMMENT_CHAR = '#';
-    public static final String VARIABLE_PREFIX = "@";
-    public static final char QUOTE = '"';
-    public static final char ESCAPE = '\\';
-
-    public static final String EQUALS = "=";
-    public static final String LESS_THAN = "<";
-    public static final String GREATER_THAN = ">";
-    public static final String LESS_THAN_OR_EQUALS = "<=";
-    public static final String GREATER_THAN_OR_EQUALS = ">=";
-
-    // Currently only one math operation (division: 4/30) in common/defines/00_defines.txt:852
-    public static final String ADD = "+";
-    public static final String SUBTRACT = "-";
-    public static final String MULTIPLY = "*";
-    public static final String DIVIDE = "/";
-
-    public static final String YES = "yes";
-    public static final String NO = "no";
-    public static final String NONE = "none";
-    public static final String HSV = "hsv";
-    public static final String RGB = "rgb";
-
-    private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
-    private static final Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");
+public final class PdxScriptParser implements PdxConstants {
 
     private static final CountingSet<String> unknownLiterals = new CountingSet<>();
 
@@ -153,8 +118,8 @@ public final class PdxScriptParser {
             Object value;
             SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH);
 
-            if (token.charAt(0) == QUOTE || token.charAt(l - 1) == QUOTE) {
-                if (l >= 2 && token.charAt(0) == QUOTE && token.charAt(l - 1) == QUOTE) {
+            if (token.charAt(0) == QUOTE_CHAR || token.charAt(l - 1) == QUOTE_CHAR) {
+                if (l >= 2 && token.charAt(0) == QUOTE_CHAR && token.charAt(l - 1) == QUOTE_CHAR) {
                     token = token.substring(1, token.length() - 1);
                     try {
                         value = sdf.parse(token);
@@ -258,12 +223,12 @@ public final class PdxScriptParser {
                         i++;
                         ScriptIntPair pair = parse(tokens, i);
                         if (!(pair.o instanceof PdxScriptValue)) {
-                            throw new RuntimeException("Expected PdxScriptValue but got " + (pair.o != null ? pair.o.getClass().getTypeName() : "null"));
+                            throw new RuntimeException("Expected PdxScriptValue but got " + (pair.o != null ? pair.o.getClass().getTypeName() : NULL));
                         }
                         PdxScriptValue v = (PdxScriptValue) pair.o;
                         Object o = v.getValue();
                         if (!(o instanceof Number)) {
-                            throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : "null"));
+                            throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
                         }
                         value = operation.apply((Number) value, (Number) o);
                         i = pair.i;
@@ -283,16 +248,16 @@ public final class PdxScriptParser {
         }
 
         int beginIndex = 0;
-        if (s.charAt(beginIndex) == QUOTE) {
+        if (s.charAt(beginIndex) == QUOTE_CHAR) {
             beginIndex++;
         }
 
         int endIndex = s.length();
-        if (s.charAt(endIndex - 1) == QUOTE) {
+        if (s.charAt(endIndex - 1) == QUOTE_CHAR) {
             endIndex--;
         }
 
-        return s.substring(beginIndex, endIndex).replace("" + ESCAPE + QUOTE, "" + QUOTE);
+        return s.substring(beginIndex, endIndex).replace(ESCAPE + QUOTE, QUOTE);
     }
 
     private static List<String> tokenize(IntStream src) {
@@ -318,7 +283,7 @@ public final class PdxScriptParser {
                             throw new RuntimeException("No multi-line strings");
                         }
                         b.append(c);
-                        if (c == QUOTE && b.charAt(b.length() - 1) != ESCAPE) {
+                        if (c == QUOTE_CHAR && b.charAt(b.length() - 1) != ESCAPE_CHAR) {
                             openQuotes.set(false);
                             tokens.add(b.toString());
                             b.setLength(0);
@@ -327,7 +292,7 @@ public final class PdxScriptParser {
                     }
 
                     if (token.get()) {
-                        if (c == COMMENT_CHAR || c == QUOTE || isSeparator(c) || isRelation(c) || isMathOperator(c) || Character.isWhitespace(c)) {
+                        if (c == COMMENT_CHAR || c == QUOTE_CHAR || isSeparator(c) || isRelation(c) || isMathOperator(c) || Character.isWhitespace(c)) {
                             token.set(false);
                             tokens.add(b.toString());
                             b.setLength(0);
@@ -371,7 +336,7 @@ public final class PdxScriptParser {
 
                     if (c == COMMENT_CHAR) {
                         comment.set(true);
-                    } else if (c == QUOTE) {
+                    } else if (c == QUOTE_CHAR) {
                         openQuotes.set(true);
                         b.append(c);
                     } else if (isSeparator(c)) {
@@ -401,23 +366,23 @@ public final class PdxScriptParser {
     }
 
     private static boolean isNewLine(char c) {
-        return c == 10 || c == 13 || c == 8232 || c == 8233;
+        return c == LINE_FEED || c == CARRIAGE_RETURN || c == LINE_SEPARATOR || c == PARAGRAPH_SEPARATOR;
     }
 
     private static boolean isSeparator(char c) {
-        return c == '{' || c == '}' || c == ',';
+        return c == LIST_OBJECT_OPEN_CHAR || c == LIST_OBJECT_CLOSE_CHAR || c == COMMA_CHAR;
     }
 
     private static boolean isRelation(char c) {
-        return c == '=' || c == '<' || c == '>';
+        return c == EQUALS_CHAR || c == LESS_THAN_CHAR || c == GREATER_THAN_CHAR;
     }
 
     private static boolean isMathOperator(char c) {
-        return /*c == '+' || c == '-' || c == '*' ||*/ c == '/';
+        return /*c == ADD_CHAR || c == SUBTRACT_CHAR || c == MULTIPLY_CHAR ||*/ c == DIVIDE_CHAR;
     }
 
     public static String quote(String s) {
-        return (QUOTE + s.replace("\"", "\\\"") + QUOTE).intern();
+        return (QUOTE_CHAR + s.replace(QUOTE, ESCAPE + QUOTE) + QUOTE_CHAR).intern();
     }
 
     public static String quoteIfNecessary(String s) {
@@ -431,11 +396,11 @@ public final class PdxScriptParser {
         if (indent < 0) {
             throw new IllegalArgumentException();
         } else if (indent > 1) {
-            return IntStream.range(0, indent).mapToObj(i -> INDENT).collect(Collectors.joining());
+            return IntStream.range(0, indent).mapToObj(i -> INDENT).collect(Collectors.joining()).intern();
         } else if (indent == 1) {
             return INDENT;
         }
-        return "";
+        return EMPTY;
     }
 
     public static IPdxScript parse(File scriptFile) {
@@ -450,7 +415,7 @@ public final class PdxScriptParser {
         List<String> tokens = tokenize(stream);
         ScriptIntPair pair = parse(tokens, 0);
         if ((!(pair.o instanceof PdxScriptObject) && !(pair.o instanceof PdxScriptList)) || pair.i != tokens.size()) {
-            throw new RuntimeException("Unexpected return value from parsing: " + (pair.o != null ? pair.o.getClass().getTypeName() : "null") + ", " + pair.i + "/" + tokens.size());
+            throw new RuntimeException("Unexpected return value from parsing: " + (pair.o != null ? pair.o.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + pair.i + SLASH_CHAR + tokens.size());
         }
         return pair.o;
     }

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Objects;
 
-public final class PdxColorWrapper {
+public final class PdxColorWrapper implements PdxConstants {
 
     private final Color color;
     private final String representation;
@@ -27,18 +27,18 @@ public final class PdxColorWrapper {
         if (colorComponents == null) {
             throw new IllegalArgumentException();
         }
-        StringBuilder sb = new StringBuilder(PdxScriptParser.RGB + " { ");
-        Arrays.stream(colorComponents).forEachOrdered(c -> sb.append(c).append(' '));
-        return new PdxColorWrapper(ColorUtil.fromRGBArray(colorComponents), sb.append('}').toString());
+        StringBuilder sb = new StringBuilder(RGB).append(SPACE_CHAR).append(LIST_OBJECT_OPEN_CHAR).append(SPACE_CHAR);
+        Arrays.stream(colorComponents).forEachOrdered(c -> sb.append(c).append(SPACE_CHAR));
+        return new PdxColorWrapper(ColorUtil.fromRGBArray(colorComponents), sb.append(LIST_OBJECT_CLOSE_CHAR).toString());
     }
 
     public static PdxColorWrapper fromHSV(Number... colorComponents) {
         if (colorComponents == null) {
             throw new IllegalArgumentException();
         }
-        StringBuilder sb = new StringBuilder(PdxScriptParser.HSV + " { ");
-        Arrays.stream(colorComponents).forEachOrdered(c -> sb.append(c).append(' '));
-        return new PdxColorWrapper(ColorUtil.fromHSVArray(colorComponents), sb.append('}').toString());
+        StringBuilder sb = new StringBuilder(HSV).append(SPACE_CHAR).append(LIST_OBJECT_OPEN_CHAR).append(SPACE_CHAR);
+        Arrays.stream(colorComponents).forEachOrdered(c -> sb.append(c).append(SPACE_CHAR));
+        return new PdxColorWrapper(ColorUtil.fromHSVArray(colorComponents), sb.append(LIST_OBJECT_CLOSE_CHAR).toString());
     }
 
     public Color getColor() {

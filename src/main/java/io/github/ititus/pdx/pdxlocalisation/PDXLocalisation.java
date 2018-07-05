@@ -1,17 +1,10 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import io.github.ititus.pdx.pdxscript.PdxConstants;
+
 import java.util.*;
 
-public final class PDXLocalisation {
-
-    public static final String ENGLISH = "l_english";
-    public static final String BRAZ_POR = "l_braz_por";
-    public static final String GERMAN = "l_german";
-    public static final String FRENCH = "l_french";
-    public static final String SPANISH = "l_spanish";
-    public static final String POLISH = "l_polish";
-    public static final String RUSSIAN = "l_russian";
-    public static final String DEFAULT = ENGLISH;
+public final class PDXLocalisation implements PdxConstants {
 
     private final Map<String, Map<String, String>> localisation;
 
@@ -25,7 +18,7 @@ public final class PDXLocalisation {
     }
 
     public String get(String language, String key) {
-        return get(language, key, DEFAULT, key, key);
+        return get(language, key, DEFAULT_LANGUAGE, key, key);
     }
 
     public String get(String language, String key, String fallbackLanguage) {
@@ -62,8 +55,24 @@ public final class PDXLocalisation {
     public String toYML() {
         StringBuilder b = new StringBuilder();
         localisation.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(langEntry -> {
-            b.append(langEntry.getKey()).append(":\n");
-            langEntry.getValue().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(translationEntry -> b.append(' ').append(translationEntry.getKey()).append(":0 \"").append(translationEntry.getValue()).append("\"\n"));
+            b.append(langEntry.getKey()).append(COLON_CHAR).append(LINE_FEED);
+            langEntry
+                    .getValue()
+                    .entrySet()
+                    .stream()
+                    .sorted(Comparator.comparing(Map.Entry::getKey))
+                    .forEachOrdered(translationEntry ->
+                            b
+                                    .append(SPACE_CHAR)
+                                    .append(translationEntry.getKey())
+                                    .append(COLON_CHAR)
+                                    .append(ZERO_CHAR)
+                                    .append(SPACE_CHAR)
+                                    .append(QUOTE_CHAR)
+                                    .append(translationEntry.getValue())
+                                    .append(QUOTE_CHAR)
+                                    .append(LINE_FEED)
+                    );
         });
         return b.toString();
     }

@@ -45,19 +45,22 @@ public final class PdxScriptValue implements IPdxScript {
         }
 
         if (value == null) {
-            b.append(PdxScriptParser.NONE);
+            b.append(NONE);
         } else if (value instanceof Boolean) {
-            b.append((boolean) value ? PdxScriptParser.YES : PdxScriptParser.NO);
+            b.append((boolean) value ? YES : NO);
         } else if (value instanceof Date) {
-            SimpleDateFormat sdf = new SimpleDateFormat(PdxScriptParser.SDF_PATTERN, Locale.ENGLISH);
+            SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH);
             b.append(PdxScriptParser.quote(sdf.format(value)));
         } else if (value instanceof String) {
             b.append(PdxScriptParser.quote((String) value));
         } else if (value instanceof PdxColorWrapper) {
             b.append(((PdxColorWrapper) value).toPdxScript());
-        } else {
+        } else if (value instanceof Number) {
             b.append(value);
+        } else {
+            throw new IllegalArgumentException();
         }
+
         return b.toString();
     }
 

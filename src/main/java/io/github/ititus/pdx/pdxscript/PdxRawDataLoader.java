@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PdxRawDataLoader {
+public class PdxRawDataLoader implements PdxConstants {
 
     private final File dir;
     private final Set<String> blacklist;
@@ -87,7 +87,7 @@ public class PdxRawDataLoader {
                     Throwable t = e.getCause() != null ? e.getCause() : e;
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();
-                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
                     errors.add(Pair.of(path, t));
                     s = null;
                 }

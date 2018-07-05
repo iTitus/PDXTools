@@ -127,12 +127,12 @@ public final class PdxScriptList implements IPdxScript {
         IPdxScript.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
 
         if (mode == Mode.COMMA) {
-            b.append(PdxScriptParser.indent(indent + 1)).append(PdxScriptParser.COMMENT_CHAR).append(' ').append("COMMA LIST").append('\n');
+            b.append(PdxScriptParser.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
         }
 
         list.forEach(script -> {
             b.append(script.toPdxScript(root || mode == Mode.IMPLICIT ? indent : indent + 1, false, mode == Mode.IMPLICIT ? key : null));
-            b.append('\n');
+            b.append(LINE_FEED);
         });
 
         IPdxScript.listObjectClose(indent, root || mode == Mode.IMPLICIT, b, list.isEmpty());

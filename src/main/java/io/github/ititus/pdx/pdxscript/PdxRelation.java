@@ -1,12 +1,12 @@
 package io.github.ititus.pdx.pdxscript;
 
-public enum PdxRelation {
+public enum PdxRelation implements PdxConstants {
 
-    EQUALS(PdxScriptParser.EQUALS),
-    LESS_THAN(PdxScriptParser.LESS_THAN),
-    GREATER_THAN(PdxScriptParser.GREATER_THAN),
-    LESS_THAN_OR_EQUALS(PdxScriptParser.LESS_THAN_OR_EQUALS),
-    GREATER_THAN_OR_EQUALS(PdxScriptParser.GREATER_THAN_OR_EQUALS);
+    EQUALS(PdxConstants.EQUALS),
+    LESS_THAN(PdxConstants.LESS_THAN),
+    GREATER_THAN(PdxConstants.GREATER_THAN),
+    LESS_THAN_OR_EQUALS(PdxConstants.LESS_THAN_OR_EQUALS),
+    GREATER_THAN_OR_EQUALS(PdxConstants.GREATER_THAN_OR_EQUALS);
 
     private final String sign;
 
@@ -15,17 +15,18 @@ public enum PdxRelation {
     }
 
     public static PdxRelation get(String sign) {
-        switch (sign) {
-            case PdxScriptParser.EQUALS:
+        if (sign != null && !sign.isEmpty()) {
+            if (sign.equals(PdxConstants.EQUALS)) {
                 return EQUALS;
-            case PdxScriptParser.LESS_THAN:
+            } else if (sign.equals(PdxConstants.LESS_THAN)) {
                 return LESS_THAN;
-            case PdxScriptParser.GREATER_THAN:
+            } else if (sign.equals(PdxConstants.GREATER_THAN)) {
                 return GREATER_THAN;
-            case PdxScriptParser.LESS_THAN_OR_EQUALS:
+            } else if (sign.equals(PdxConstants.LESS_THAN_OR_EQUALS)) {
                 return LESS_THAN_OR_EQUALS;
-            case PdxScriptParser.GREATER_THAN_OR_EQUALS:
+            } else if (sign.equals(PdxConstants.GREATER_THAN_OR_EQUALS)) {
                 return GREATER_THAN_OR_EQUALS;
+            }
         }
         return null;
     }

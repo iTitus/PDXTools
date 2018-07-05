@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 
 import java.util.Collections;
@@ -54,7 +54,7 @@ public class Species {
                     throw new RuntimeException("Unexpected value for popEthics: " + this.popEthics);
                 }
             } else if (v instanceof Boolean) {
-                this.popEthics = (boolean) v ? PdxScriptParser.YES : PdxScriptParser.NO;
+                this.popEthics = (boolean) v ? PdxConstants.YES : PdxConstants.NO;
             } else {
                 throw new RuntimeException("Unexpected value for popEthics");
             }

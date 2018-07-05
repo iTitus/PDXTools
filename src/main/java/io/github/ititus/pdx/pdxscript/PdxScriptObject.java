@@ -6,16 +6,6 @@ import java.util.stream.Collectors;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    private static final String OBJECT = "object";
-    private static final String LIST = "list";
-    private static final String STRING = "value:string";
-    private static final String BOOLEAN = "value:boolean";
-    private static final String INT = "value:int";
-    private static final String LONG = "value:long";
-    private static final String DOUBLE = "value:double";
-    private static final String DATE = "value:date";
-    private static final String NULL = "null";
-
     private final Map<String, String> used = new HashMap<>();
     private final Map<String, Set<String>> wronglyUsed = new HashMap<>();
 
@@ -222,9 +212,10 @@ public final class PdxScriptObject implements IPdxScript {
             String type = getTypeString(entry.getValue());
             Set<String> toAdd = wronglyUsed.get(entry.getKey());
             if (toAdd != null && !toAdd.isEmpty()) {
-                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).addAll(toAdd.stream().map(s -> "wrongly_used=" + s + "/" + type).collect(Collectors.toSet()));
+                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).addAll(toAdd.stream().map(s -> "wrongly_used=" + s + SLASH_CHAR + type).collect(Collectors.toSet()));
             }
-            if (entry.getKey().matches("[0-9]+")) {
+            if (DIGITS_PATTERN.matcher(entry.getKey()).matches()) {
+                // is an id
                 continue;
             }
             if (!used.containsKey(entry.getKey())) {
@@ -233,7 +224,7 @@ public final class PdxScriptObject implements IPdxScript {
                 if (entry.getValue() instanceof PdxScriptObject) {
                     ((PdxScriptObject) entry.getValue()).getErrors().forEach((k, v) -> {
                         if (v != null && !v.isEmpty()) {
-                            errors.computeIfAbsent(entry.getKey() + "." + k, k_ -> new HashSet<>()).addAll(v);
+                            errors.computeIfAbsent(entry.getKey() + DOT_CHAR + k, k_ -> new HashSet<>()).addAll(v);
                         }
                     });
                 } else if (entry.getValue() instanceof PdxScriptList) {
@@ -248,7 +239,7 @@ public final class PdxScriptObject implements IPdxScript {
                             } else if (s instanceof PdxScriptObject) {
                                 ((PdxScriptObject) s).getErrors().forEach((k, v) -> {
                                     if (v != null && !v.isEmpty()) {
-                                        errors.computeIfAbsent(entry.getKey() + "." + k, k_ -> new HashSet<>()).addAll(v);
+                                        errors.computeIfAbsent(entry.getKey() + DOT_CHAR + k, k_ -> new HashSet<>()).addAll(v);
                                     }
                                 });
                             }
@@ -276,7 +267,7 @@ public final class PdxScriptObject implements IPdxScript {
 
         map.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(entry -> {
             b.append(entry.getValue().toPdxScript(root ? indent : indent + 1, false, entry.getKey()));
-            b.append('\n');
+            b.append(LINE_FEED);
         });
 
         IPdxScript.listObjectClose(indent, root, b, map.isEmpty());

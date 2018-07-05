@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
@@ -18,14 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public final class PdxLocalisationParser {
-
-    private static final String UTF_8_BOM = "\uFEFF";
-    private static final Pattern LANGUAGE_PATTERN = Pattern.compile("^(?<language>l_(\\w+)):$");
-    private static final Pattern TRANSLATION_PATTERN = Pattern.compile("^(?<indent> )(?<key>[\\w.]+):0 \"(?<value>.*)\"$");
+public final class PdxLocalisationParser implements PdxConstants {
 
     private PdxLocalisationParser() {
     }
@@ -72,7 +68,7 @@ public final class PdxLocalisationParser {
                         .filter(s -> s != null && !s.isEmpty())
                         .forEachOrdered(line -> {
                             if (first.get()) {
-                                if (line.startsWith(UTF_8_BOM)) {
+                                if (line.charAt(0) == UTF_8_BOM) {
                                     line = line.substring(1);
                                 } else {
                                     throw new RuntimeException("Localisation file (" + localisationFile + ") has no BOM");
@@ -82,14 +78,14 @@ public final class PdxLocalisationParser {
 
                             Matcher m = LANGUAGE_PATTERN.matcher(line);
                             if (m.matches()) {
-                                language.set(m.group("language").intern());
+                                language.set(m.group(KEY_LANGUAGE).intern());
                             } else if (language.isNotNull()) {
                                 m.usePattern(TRANSLATION_PATTERN);
                                 if (m.matches()) {
-                                    String indent = m.group("indent");
+                                    String indent = m.group(KEY_INDENT);
                                     if (indent != null && indent.length() == 1) {
-                                        String key = m.group("key").intern();
-                                        String value = m.group("value").intern();
+                                        String key = m.group(KEY_KEY).intern();
+                                        String value = m.group(KEY_VALUE).intern();
                                         localisation.computeIfAbsent(language.get(), k -> new HashMap<>()).put(key, value);
                                     }
                                 }
@@ -103,5 +99,4 @@ public final class PdxLocalisationParser {
         }
         return null;
     }
-
 }
