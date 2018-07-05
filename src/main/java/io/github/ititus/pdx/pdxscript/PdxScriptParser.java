@@ -13,7 +13,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -24,13 +23,18 @@ import java.util.stream.IntStream;
 
 public final class PdxScriptParser {
 
+    public static final char UTF_8_BOM = '\uFEFF';
+    public static final String INDENT = "    ";
     public static final String SDF_PATTERN = "yyyy.MM.dd";
 
-    public static final String YES = "yes";
-    public static final String NO = "no";
-    public static final String NONE = "none";
-    public static final String HSV = "hsv";
-    public static final String RGB = "rgb";
+    public static final String LIST_OBJECT_OPEN = "{";
+    public static final String LIST_OBJECT_CLOSE = "}";
+    public static final String COMMA = ",";
+
+    public static final char COMMENT_CHAR = '#';
+    public static final String VARIABLE_PREFIX = "@";
+    public static final char QUOTE = '"';
+    public static final char ESCAPE = '\\';
 
     public static final String EQUALS = "=";
     public static final String LESS_THAN = "<";
@@ -44,19 +48,11 @@ public final class PdxScriptParser {
     public static final String MULTIPLY = "*";
     public static final String DIVIDE = "/";
 
-    public static final char COMMENT_CHAR = '#';
-    private static final String VARIABLE_PREFIX = "@";
-
-    private static final String LIST_OBJECT_OPEN = "{";
-    private static final String LIST_OBJECT_CLOSE = "}";
-    private static final String COMMA = ",";
-
-    private static final String INDENT = "    ";
-
-    private static final char UTF_8_BOM = '\uFEFF';
-
-    private static final char QUOTE = '"';
-    private static final char ESCAPE = '\\';
+    public static final String YES = "yes";
+    public static final String NO = "no";
+    public static final String NONE = "none";
+    public static final String HSV = "hsv";
+    public static final String RGB = "rgb";
 
     private static final Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
     private static final Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");
@@ -296,7 +292,7 @@ public final class PdxScriptParser {
             endIndex--;
         }
 
-        return s.substring(beginIndex, endIndex).replace("\\\"", "\"");
+        return s.substring(beginIndex, endIndex).replace("" + ESCAPE + QUOTE, "" + QUOTE);
     }
 
     private static List<String> tokenize(IntStream src) {
@@ -421,7 +417,7 @@ public final class PdxScriptParser {
     }
 
     public static String quote(String s) {
-        return '"' + s.replace("\"", "\\\"") + '"';
+        return (QUOTE + s.replace("\"", "\\\"") + QUOTE).intern();
     }
 
     public static String quoteIfNecessary(String s) {
@@ -451,7 +447,7 @@ public final class PdxScriptParser {
     }
 
     public static IPdxScript parse(IntStream stream) {
-        List<String> tokens = new ArrayList<>(tokenize(stream));
+        List<String> tokens = tokenize(stream);
         ScriptIntPair pair = parse(tokens, 0);
         if ((!(pair.o instanceof PdxScriptObject) && !(pair.o instanceof PdxScriptList)) || pair.i != tokens.size()) {
             throw new RuntimeException("Unexpected return value from parsing: " + (pair.o != null ? pair.o.getClass().getTypeName() : "null") + ", " + pair.i + "/" + tokens.size());

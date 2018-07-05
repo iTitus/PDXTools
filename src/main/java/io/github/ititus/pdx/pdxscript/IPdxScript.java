@@ -9,7 +9,7 @@ public interface IPdxScript {
                 b.append(PdxScriptParser.quoteIfNecessary(key));
                 b.append(relation.getSign());
             }
-            b.append('{');
+            b.append(PdxScriptParser.LIST_OBJECT_OPEN);
             if (!empty) {
                 b.append('\n');
             }
@@ -21,7 +21,7 @@ public interface IPdxScript {
             if (!empty) {
                 b.append(PdxScriptParser.indent(indent));
             }
-            b.append('}');
+            b.append(PdxScriptParser.LIST_OBJECT_CLOSE);
         } else if (!empty) {
             b.deleteCharAt(b.length() - 1);
         }
