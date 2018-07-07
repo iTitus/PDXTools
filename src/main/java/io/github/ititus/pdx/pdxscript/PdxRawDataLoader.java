@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PdxRawDataLoader implements PdxConstants {
@@ -39,7 +38,7 @@ public class PdxRawDataLoader implements PdxConstants {
     }
 
     public List<Pair<String, Throwable>> getErrors() {
-        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Function<Pair<String, Throwable>, String>) String::valueOf).thenComparing(Pair::getKey)).collect(Collectors.toList()));
+        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getValue().toString()).thenComparing(Pair::getKey)).collect(Collectors.toList()));
     }
 
     public PdxRawDataLoader load() {

@@ -39,7 +39,7 @@ public interface PdxConstants {
     String LESS_THAN = String.valueOf(LESS_THAN_CHAR);
     String GREATER_THAN = String.valueOf(GREATER_THAN_CHAR);
     String LESS_THAN_OR_EQUALS = LESS_THAN_CHAR + EQUALS;
-    String GREATER_THAN_OR_EQUALS = LESS_THAN_CHAR + EQUALS;
+    String GREATER_THAN_OR_EQUALS = GREATER_THAN_CHAR + EQUALS;
 
     // Currently only one math operation (division: 4/30) in common/defines/00_defines.txt:852
     char ADD_CHAR = '+';
