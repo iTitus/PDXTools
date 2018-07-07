@@ -84,13 +84,8 @@ public class Main {
             Map<String, Set<String>> errors = stellarisSave.getErrors();
 
             System.out.println("-------------------------");
-            errors.keySet().stream().sorted().map(k -> k + " = " + errors.get(k)).forEachOrdered(System.out::println);
+            errors.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
         }
-
-        System.out.println("-------------------------");
-        System.out.println("Unknown literals:");
-        unknownLiterals.forEach(System.out::println);
-        System.out.println("-------------------------");
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done4");

@@ -13,7 +13,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -171,7 +170,7 @@ public final class PdxScriptParser implements PdxConstants {
                             if (token.startsWith(VARIABLE_PREFIX)) {
                                 // TODO: Parse @ variables
                             } else {
-                                unknownLiterals.add(token);
+                                unknownLiterals.add(token.toLowerCase(Locale.ENGLISH).intern());
                             }
                             String tokenString = token;
                             // TODO: Fix tokenizer splitting raw tokens with math symbols in it in it
@@ -421,7 +420,7 @@ public final class PdxScriptParser implements PdxConstants {
     }
 
     public static List<String> getUnknownLiterals() {
-        return unknownLiterals.sortedStream(Comparator.comparing(s -> s.toLowerCase(Locale.ENGLISH))).collect(Collectors.toList());
+        return unknownLiterals.sortedStream().collect(Collectors.toList());
     }
 
     private static class ScriptIntPair {
