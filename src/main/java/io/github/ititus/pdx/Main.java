@@ -35,8 +35,10 @@ public class Main {
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
 
         List<Pair<String, Throwable>> gameErrors = game.getErrors();
-        String gd = game.getRawData().toPdxScript();
-        String gl = game.getLocalisation().toYML();
+        Map<String, Map<String, String>> missingLocalisation = game.getLocalisation().getMissingLocalisation();
+        Map<String, Map<String, String>> extraLocalisation = game.getLocalisation().getExtraLocalisation();
+        String gameDataString = game.getRawData().toPdxScript();
+        String gameLocalisationString = game.getLocalisation().toYML();
 
         List<Pair<String, Throwable>> userErrors = userData.getErrors();
         List<Pair<String, Throwable>> saveErrors = userData.getSaves().getErrors();

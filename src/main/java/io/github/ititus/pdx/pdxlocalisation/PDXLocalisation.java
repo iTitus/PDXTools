@@ -3,6 +3,7 @@ package io.github.ititus.pdx.pdxlocalisation;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class PDXLocalisation implements PdxConstants {
 
@@ -50,6 +51,28 @@ public final class PDXLocalisation implements PdxConstants {
             }
         }
         return fallback != null ? fallback.intern() : null;
+    }
+
+    public Map<String, Map<String, String>> getExtraLocalisation() {
+        Map<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
+        Map<String, Map<String, String>> map = new HashMap<>();
+        localisation.forEach((language, languageMap) -> {
+            if (!DEFAULT_LANGUAGE.equals(language)) {
+                map.computeIfAbsent(language, k -> new HashMap<>()).putAll(languageMap.entrySet().stream().filter(p -> !defaultLanguageMap.containsKey(p.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            }
+        });
+        return map;
+    }
+
+    public Map<String, Map<String, String>> getMissingLocalisation() {
+        Map<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
+        Map<String, Map<String, String>> map = new HashMap<>();
+        localisation.forEach((language, languageMap) -> {
+            if (!DEFAULT_LANGUAGE.equals(language)) {
+                map.computeIfAbsent(language, k -> new HashMap<>()).putAll(defaultLanguageMap.entrySet().stream().filter(p -> !languageMap.containsKey(p.getKey()) || languageMap.get(p.getKey()).equals(p.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            }
+        });
+        return map;
     }
 
     public String toYML() {
