@@ -3,6 +3,7 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +45,7 @@ public class Pop {
         if (s1 instanceof PdxScriptList) {
             this.timedModifiers = ((PdxScriptList) s1).getAsList(TimedModifier::new);
         } else if (s1 instanceof PdxScriptObject) {
-            this.timedModifiers = new ArrayList<>(Collections.singleton(new TimedModifier(s1)));
+            this.timedModifiers = CollectionUtil.listOf(new TimedModifier(s1));
         } else {
             this.timedModifiers = new ArrayList<>();
         }

@@ -3,23 +3,21 @@ package io.github.ititus.pdx.stellaris.game;
 import io.github.ititus.pdx.pdxlocalisation.PDXLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
-import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
 import io.github.ititus.pdx.util.CollectionUtil;
-import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 public class StellarisGame {
 
     private static final Set<String> BLACKLIST = CollectionUtil.setOf(
             // Not PDXScript
-            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "common/edicts/README.txt", "interface/credits.txt", "interface/reference.txt", "interface/startup_info.txt",
+            "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "common/edicts/README.txt", "interface/credits.txt", "interface/reference.txt", "interface/startup_info.txt", "pdx_launcher/game/motd.txt",
             // Handled separately
-            "localisation", "localisation_synced", "pdx_launcher/common/localisation", "pdx_online_assets/localisation",
+            "dlc", "localisation", "localisation_synced", "pdx_launcher/common/localisation", "pdx_online_assets/localisation",
             // Missing curly bracket at the end
             "gfx/models/add_ons/_add_ons_meshes.gfx",
             // V value of HSV color is between 1.0 and 2.0
@@ -32,7 +30,10 @@ public class StellarisGame {
     private static final IFileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
 
     private final File installDir;
+
+    private final StellarisDLCs dlcs;
     private final PDXLocalisation localisation;
+
     private final PdxRawDataLoader rawDataLoader;
 
     public StellarisGame(String installDirPath) {
@@ -45,8 +46,10 @@ public class StellarisGame {
         }
         this.installDir = installDir;
 
+        this.dlcs = new StellarisDLCs(installDir, new File(installDir, "dlc"));
         this.localisation = PdxLocalisationParser.parse(installDir);
-        this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER).load();
+
+        this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER);
     }
 
     public File getInstallDir() {
@@ -57,11 +60,7 @@ public class StellarisGame {
         return localisation;
     }
 
-    public PdxScriptObject getRawData() {
-        return rawDataLoader.getRawData();
-    }
-
-    public List<Pair<String, Throwable>> getErrors() {
-        return rawDataLoader.getErrors();
+    public PdxRawDataLoader getRawDataLoader() {
+        return rawDataLoader;
     }
 }

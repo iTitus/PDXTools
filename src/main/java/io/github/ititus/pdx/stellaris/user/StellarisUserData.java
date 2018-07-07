@@ -1,15 +1,13 @@
 package io.github.ititus.pdx.stellaris.user;
 
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
-import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.stellaris.user.mod.StellarisMods;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSaves;
 import io.github.ititus.pdx.util.CollectionUtil;
-import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 public class StellarisUserData {
@@ -18,12 +16,13 @@ public class StellarisUserData {
             // Not PDXScript
             "cache", "dumps", "pops_filestorage", "screenshots", "shadercache",
             // Handled separately
-            "save games", "oos"
+            "save games", "oos", "mod"
     );
     private static final IFileFilter FILTER = new FileExtensionFilter("txt", "mod");
 
     private final File dataDir;
     private final StellarisSaves saves;
+    private final StellarisMods mods;
     private final PdxRawDataLoader rawDataLoader;
 
     public StellarisUserData(String dataDirPath) {
@@ -36,8 +35,9 @@ public class StellarisUserData {
         }
         this.dataDir = dataDir;
 
-        this.saves = /*null; //*/ new StellarisSaves(new File(dataDir, "save games"));
-        this.rawDataLoader = new PdxRawDataLoader(dataDir, BLACKLIST, FILTER).load();
+        this.saves = new StellarisSaves(new File(dataDir, "save games"));
+        this.mods = new StellarisMods(new File(dataDir, "mod"));
+        this.rawDataLoader = new PdxRawDataLoader(dataDir, BLACKLIST, FILTER);
     }
 
     public File getDataDir() {
@@ -48,11 +48,7 @@ public class StellarisUserData {
         return saves;
     }
 
-    public PdxScriptObject getRawData() {
-        return rawDataLoader.getRawData();
-    }
-
-    public List<Pair<String, Throwable>> getErrors() {
-        return rawDataLoader.getErrors();
+    public PdxRawDataLoader getRawDataLoader() {
+        return rawDataLoader;
     }
 }

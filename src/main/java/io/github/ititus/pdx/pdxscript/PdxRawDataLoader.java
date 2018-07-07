@@ -3,34 +3,43 @@ package io.github.ititus.pdx.pdxscript;
 import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.io.ZipUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class PdxRawDataLoader implements PdxConstants {
 
-    private final File dir;
+    private final File file;
     private final Set<String> blacklist;
     private final IFileFilter filter;
     private final List<Pair<String, Throwable>> errors;
 
-    private PdxScriptObject rawData;
+    private final PdxScriptObject rawData;
 
-    public PdxRawDataLoader(File dir, Collection<String> blacklist, IFileFilter filter) {
-        if (dir == null || !dir.isDirectory()) {
+    public PdxRawDataLoader(File file, Collection<String> blacklist, IFileFilter filter) {
+        if (file == null || !file.exists()) {
             throw new IllegalArgumentException();
         }
-        this.dir = dir;
+        this.file = file;
         this.blacklist = new HashSet<>(blacklist);
         this.filter = filter;
         this.errors = new ArrayList<>();
+        this.rawData = load();
     }
 
-    public File getDir() {
-        return dir;
+    private static IPdxScript parse(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
+        return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry))));
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public PdxScriptObject getRawData() {
@@ -41,13 +50,40 @@ public class PdxRawDataLoader implements PdxConstants {
         return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getValue().toString()).thenComparing(Pair::getKey)).collect(Collectors.toList()));
     }
 
-    public PdxRawDataLoader load() {
-        try {
-            this.rawData = parseFolder(dir.getCanonicalPath(), dir);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+    private PdxScriptObject load() {
+        if (file.isDirectory()) {
+            try {
+                return parseFolder(file.getCanonicalPath(), file);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        } else {
+            return parseZippedFile(file);
         }
-        return this;
+    }
+
+    private PdxScriptObject parseZippedFile(File file) {
+        // TODO: Add errors to list
+        PdxScriptObject.Builder b = PdxScriptObject.builder();
+        try {
+            ZipUtil.readZipContents(file, ((zipFile, zipEntry) -> {
+                if (zipEntry.isDirectory()) {
+                    return;
+                }
+                if (blacklist.contains(zipEntry.getName())) {
+                    return;
+                }
+                if (!filter.accept(new File(zipFile.getName(), zipEntry.getName()))) {
+                    return;
+                }
+
+                IPdxScript s = parse(zipFile, zipEntry);
+                b.add(zipEntry.getName(), s);
+            }));
+        } catch (UncheckedIOException e) {
+            e.printStackTrace();
+        }
+        return b.build(PdxRelation.EQUALS);
     }
 
     private PdxScriptObject parseFolder(String installDirPath, File dir) {

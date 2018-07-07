@@ -8,6 +8,7 @@ import io.github.ititus.pdx.util.io.ZipUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -28,7 +29,19 @@ public class StellarisSave {
         this.zipped = !saveFile.isDirectory();
 
         if (zipped) {
-            ZipUtil.readZipContents(saveFile, this::readFromZip);
+            try {
+                ZipUtil.readZipContents(saveFile, (zipFile, zipEntry) -> {
+                    switch (zipEntry.getName()) {
+                        case "meta":
+                            this.meta = new Meta(parse(zipFile, zipEntry));
+                            break;
+                        case "gamestate":
+                            this.gameState = new GameState(parse(zipFile, zipEntry));
+                    }
+                });
+            } catch (UncheckedIOException e) {
+                e.printStackTrace();
+            }
         } else {
             this.meta = new Meta(PdxScriptParser.parse(new File(this.save, "meta")));
             this.gameState = new GameState(PdxScriptParser.parse(new File(this.save, "gamestate")));
@@ -77,16 +90,6 @@ public class StellarisSave {
 
     public static boolean isValidSaveFile(File saveFile) {
         return saveFile != null && ((saveFile.isFile() && IOUtil.getExtension(saveFile).equals("sav")) || saveFile.isDirectory());
-    }
-
-    private void readFromZip(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
-        switch (zipEntry.getName()) {
-            case "meta":
-                this.meta = new Meta(parse(zipFile, zipEntry));
-                break;
-            case "gamestate":
-                this.gameState = new GameState(parse(zipFile, zipEntry));
-        }
     }
 
     public File getSave() {

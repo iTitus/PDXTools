@@ -34,22 +34,23 @@ public class Main {
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
 
-        List<Pair<String, Throwable>> gameErrors = game.getErrors();
-        Map<String, Map<String, String>> missingLocalisation = game.getLocalisation().getMissingLocalisation();
-        Map<String, Map<String, String>> extraLocalisation = game.getLocalisation().getExtraLocalisation();
-        String gameDataString = game.getRawData().toPdxScript();
-        String gameLocalisationString = game.getLocalisation().toYML();
+        List<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
+        Map<String, Map<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        Map<String, Map<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        String gameString = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().toPdxScript() : null;
+        String gameLocalisationString = game != null && game.getLocalisation() != null ? game.getLocalisation().toYML() : null;
 
-        List<Pair<String, Throwable>> userErrors = userData.getErrors();
-        List<Pair<String, Throwable>> saveErrors = userData.getSaves().getErrors();
-        String ud = userData.getRawData().toPdxScript();
+        List<Pair<String, Throwable>> userErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
+        List<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
+        String userDataString = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().toPdxScript() : null;
 
         List<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
 
+        System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done2");
 
         System.out.println("-------------------------");
-        StellarisSave stellarisSave = userData != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
+        StellarisSave stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
         if (stellarisSave != null) {
             GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
@@ -82,6 +83,7 @@ public class Main {
                 System.out.println("-------------------------");
             });
 
+            System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
             System.out.println("done3");
             Map<String, Set<String>> errors = stellarisSave.getErrors();
 

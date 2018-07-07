@@ -40,7 +40,7 @@ public class IOUtil {
         if (file == null) {
             throw new IllegalArgumentException();
         }
-        if (!file.isFile()) {
+        if (file.isDirectory()) {
             return "";
         }
         return getExtension(file.getName());
@@ -58,7 +58,7 @@ public class IOUtil {
         if (file == null) {
             throw new IllegalArgumentException();
         }
-        if (!file.isFile()) {
+        if (file.isDirectory()) {
             return file.getName();
         }
         return getNameWithoutExtension(file.getName());

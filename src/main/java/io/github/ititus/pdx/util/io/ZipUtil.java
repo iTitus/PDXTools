@@ -66,12 +66,12 @@ public class ZipUtil {
             for (Enumeration<? extends ZipEntry> entries = f.entries(); entries.hasMoreElements(); ) {
                 try {
                     reader.consume(f, entries.nextElement());
-                } catch (IOException | IllegalStateException e2) {
-                    e2.printStackTrace();
+                } catch (IOException e2) {
+                    throw new UncheckedIOException(e2);
                 }
             }
         } catch (IOException e1) {
-            e1.printStackTrace();
+            throw new UncheckedIOException(e1);
         }
     }
 }
