@@ -17,6 +17,19 @@ public final class PdxScriptObject implements IPdxScript {
         this.map = new HashMap<>(map);
     }
 
+
+    public static Function<IPdxScript, String> nullOrString() {
+        return s -> {
+            if (s instanceof PdxScriptValue) {
+                Object o = ((PdxScriptValue) s).getValue();
+                if (o instanceof String) {
+                    return (String) o;
+                }
+            }
+            return null;
+        };
+    }
+
     public static <T> Function<IPdxScript, T> nullOr(Function<IPdxScript, T> fct) {
         return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.apply(s) : null;
     }
