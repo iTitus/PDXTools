@@ -7,8 +7,6 @@ import java.util.*;
 
 public class GameState {
 
-    private final PdxScriptObject o;
-
     private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop, lastCreatedCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip, lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction, lastNotificationId, lastEventId, lastCreatedPopFaction, randomCount, randomSeed;
     private final long lastRefugeeCountry;
     private final double galaxyRadius;
@@ -58,7 +56,7 @@ public class GameState {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException();
         }
-        this.o = (PdxScriptObject) s;
+        PdxScriptObject o = (PdxScriptObject) s;
 
         this.version = o.getString("version");
         this.versionControlRevision = o.getInt("version_control_revision");
@@ -150,8 +148,6 @@ public class GameState {
     }
 
     public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, String lastKilledCountryName, int randomCount, int randomSeed, long lastRefugeeCountry, double galaxyRadius, String version, String name, Date date, Collection<Integer> firedEvents, Collection<Integer> rimGalacticObjects, Collection<Long> usedSymbols, Collection<String> requiredDLCs, Collection<String> usedColors, Collection<Player> players, Collection<Species> species, Collection<Nebula> nebulas, Collection<Message> messages, Collection<SavedEventTarget> savedEventTarget, Collection<GlobalShipDesign> globalShipDesigns, Collection<Cluster> clusters, Collection<AssetClass> usedSpeciesNames, Collection<AssetClass> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, NameList nameList, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
-        this.o = null;
-
         this.versionControlRevision = versionControlRevision;
         this.tick = tick;
         this.randomLogDay = randomLogDay;
@@ -487,11 +483,5 @@ public class GameState {
 
     public NaturalWormholes getNaturalWormholes() {
         return naturalWormholes;
-    }
-
-    public Map<String, Set<String>> getErrors() {
-        Map<String, Set<String>> errors = new HashMap<>();
-        o.getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> new HashSet<>()).addAll(v));
-        return errors;
     }
 }

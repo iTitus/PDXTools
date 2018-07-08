@@ -1,22 +1,29 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
+import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.ZipUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class StellarisSave {
 
+    private static final String META = "meta";
+    private static final String GAMESTATE = "gamestate";
+
+    private static final Set<String> BLACKLIST = CollectionUtil.setOf();
+    private static final IFileFilter FILTER = f -> f != null && (f.getName().equals(META) || f.getName().equals(GAMESTATE));
+
     private final File save;
-    private final boolean zipped;
+    private final PdxRawDataLoader saveDataLoader;
     private Meta meta;
     private GameState gameState;
 
@@ -26,26 +33,9 @@ public class StellarisSave {
         }
 
         this.save = saveFile;
-        this.zipped = !saveFile.isDirectory();
-
-        if (zipped) {
-            try {
-                ZipUtil.readZipContents(saveFile, (zipFile, zipEntry) -> {
-                    switch (zipEntry.getName()) {
-                        case "meta":
-                            this.meta = new Meta(parse(zipFile, zipEntry));
-                            break;
-                        case "gamestate":
-                            this.gameState = new GameState(parse(zipFile, zipEntry));
-                    }
-                });
-            } catch (UncheckedIOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            this.meta = new Meta(PdxScriptParser.parse(new File(this.save, "meta")));
-            this.gameState = new GameState(PdxScriptParser.parse(new File(this.save, "gamestate")));
-        }
+        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER);
+        this.meta = this.saveDataLoader.getRawData().getObject(META).getAs(Meta::new);
+        this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
     }
 
     private static IPdxScript parse(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
@@ -92,6 +82,10 @@ public class StellarisSave {
         return saveFile != null && ((saveFile.isFile() && IOUtil.getExtension(saveFile).equals("sav")) || saveFile.isDirectory());
     }
 
+    public PdxRawDataLoader getSaveDataLoader() {
+        return saveDataLoader;
+    }
+
     public File getSave() {
         return save;
     }
@@ -106,8 +100,7 @@ public class StellarisSave {
 
     public Map<String, Set<String>> getErrors() {
         Map<String, Set<String>> errors = new HashMap<>();
-        gameState.getErrors().forEach((k, v) -> errors.computeIfAbsent("gamestate." + k, k_ -> new HashSet<>()).addAll(v));
-        meta.getErrors().forEach((k, v) -> errors.computeIfAbsent("meta." + k, k_ -> new HashSet<>()).addAll(v));
+        saveDataLoader.getRawData().getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> new HashSet<>()).addAll(v));
         return errors;
     }
 

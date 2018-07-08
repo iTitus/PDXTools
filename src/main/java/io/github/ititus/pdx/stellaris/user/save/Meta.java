@@ -7,8 +7,6 @@ import java.util.*;
 
 public class Meta {
 
-    private final PdxScriptObject o;
-
     private final String version;
     private final int versionControlRevision;
     private final String name;
@@ -23,7 +21,7 @@ public class Meta {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException();
         }
-        this.o = (PdxScriptObject) s;
+        PdxScriptObject o = (PdxScriptObject) s;
 
         this.version = o.getString("version");
         this.versionControlRevision = o.getInt("version_control_revision");
@@ -37,8 +35,6 @@ public class Meta {
     }
 
     public Meta(String version, int versionControlRevision, String name, Date date, Collection<String> requiredDLCs, String playerPortrait, Flag flag, double fleets, int planets) {
-        this.o = null;
-
         this.version = version;
         this.versionControlRevision = versionControlRevision;
         this.name = name;
@@ -84,11 +80,5 @@ public class Meta {
 
     public int getPlanets() {
         return planets;
-    }
-
-    public Map<String, Set<String>> getErrors() {
-        Map<String, Set<String>> errors = new HashMap<>();
-        o.getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> new HashSet<>()).addAll(v));
-        return errors;
     }
 }
