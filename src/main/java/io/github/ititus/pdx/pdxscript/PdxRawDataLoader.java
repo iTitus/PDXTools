@@ -38,6 +38,21 @@ public class PdxRawDataLoader implements PdxConstants {
         return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry))));
     }
 
+    private static boolean containsParent(Set<String> blacklist, String name) {
+        if (blacklist != null && !blacklist.isEmpty() && name != null && !name.isEmpty()) {
+            int index = -1;
+            while (true) {
+                index = name.indexOf(PdxConstants.SLASH_CHAR, index + 1);
+                if (index == -1) {
+                    break;
+                } else if (blacklist.contains(name.substring(0, index))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public File getFile() {
         return file;
     }
@@ -63,24 +78,50 @@ public class PdxRawDataLoader implements PdxConstants {
     }
 
     private PdxScriptObject parseZippedFile(File file) {
-        // TODO: Add errors to list
         PdxScriptObject.Builder b = PdxScriptObject.builder();
         try {
             ZipUtil.readZipContents(file, ((zipFile, zipEntry) -> {
                 if (zipEntry.isDirectory()) {
                     return;
                 }
-                if (blacklist.contains(zipEntry.getName())) {
+                if (blacklist.contains(zipEntry.getName()) || containsParent(blacklist, zipEntry.getName())) {
                     return;
                 }
                 if (!filter.accept(new File(zipFile.getName(), zipEntry.getName()))) {
                     return;
                 }
 
-                IPdxScript s = parse(zipFile, zipEntry);
-                b.add(zipEntry.getName(), s);
+                IPdxScript s;
+                try {
+                    s = parse(zipFile, zipEntry);
+                } catch (Exception e) {
+                    Throwable t = e.getCause() != null ? e.getCause() : e;
+                    Throwable[] suppressed = t.getSuppressed();
+                    Throwable cause = t.getCause();
+                    System.out.println("Error while parsing " + new File(zipFile.getName(), zipEntry.getName()) + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
+                    errors.add(Pair.of(zipEntry.getName(), t));
+                    s = null;
+                }
+                if (s != null) {
+                    boolean success = false;
+                    if (s instanceof PdxScriptObject) {
+                        if (((PdxScriptObject) s).size() > 0) {
+                            success = true;
+                        }
+                    } else if (s instanceof PdxScriptList) {
+                        if (((PdxScriptList) s).size() > 0) {
+                            success = true;
+                        }
+                    } else {
+                        throw new RuntimeException("Unexpected return value from parsing: " + s.getClass().getTypeName());
+                    }
+                    if (success) {
+                        b.add(zipEntry.getName(), s);
+                    }
+                }
             }));
         } catch (UncheckedIOException e) {
+            // TODO: revisit this exception handling
             e.printStackTrace();
         }
         return b.build(PdxRelation.EQUALS);

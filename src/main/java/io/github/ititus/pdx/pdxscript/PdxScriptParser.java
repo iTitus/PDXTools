@@ -173,7 +173,7 @@ public final class PdxScriptParser implements PdxConstants {
                                 unknownLiterals.add(token.toLowerCase(Locale.ENGLISH).intern());
                             }
                             String tokenString = token;
-                            // TODO: Fix tokenizer splitting raw tokens with math symbols in it in it
+                            // TODO: Fix tokenizer splitting raw tokens with math symbols in it
                             /*String operator = tokens.get(i + 1);
                             PdxMathOperation operation = PdxMathOperation.get(operator);
                             if (operation != null) {

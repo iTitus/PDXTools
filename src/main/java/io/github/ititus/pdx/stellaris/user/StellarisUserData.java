@@ -20,7 +20,7 @@ public class StellarisUserData {
     );
     private static final IFileFilter FILTER = new FileExtensionFilter("txt", "mod");
 
-    private final File dataDir;
+    private final File userDataDir;
     private final StellarisSaves saves;
     private final StellarisMods mods;
     private final PdxRawDataLoader rawDataLoader;
@@ -29,19 +29,19 @@ public class StellarisUserData {
         this(new File(dataDirPath));
     }
 
-    public StellarisUserData(File dataDir) {
-        if (dataDir == null || !dataDir.isDirectory()) {
+    public StellarisUserData(File userDataDir) {
+        if (userDataDir == null || !userDataDir.isDirectory()) {
             throw new IllegalArgumentException();
         }
-        this.dataDir = dataDir;
+        this.userDataDir = userDataDir;
 
-        this.saves = new StellarisSaves(new File(dataDir, "save games"));
-        this.mods = new StellarisMods(new File(dataDir, "mod"));
-        this.rawDataLoader = new PdxRawDataLoader(dataDir, BLACKLIST, FILTER);
+        this.saves = new StellarisSaves(new File(userDataDir, "save games"));
+        this.mods = new StellarisMods(userDataDir, new File(userDataDir, "mod"));
+        this.rawDataLoader = new PdxRawDataLoader(userDataDir, BLACKLIST, FILTER);
     }
 
-    public File getDataDir() {
-        return dataDir;
+    public File getUserDataDir() {
+        return userDataDir;
     }
 
     public StellarisSaves getSaves() {

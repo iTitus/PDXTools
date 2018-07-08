@@ -18,12 +18,10 @@ public class StellarisDLCs {
         this.dlcDir = dlcDir;
         this.dlcs = new HashMap<>();
 
-        File[] files = dlcDir.listFiles();
+        File[] files = dlcDir.listFiles(f -> f != null && f.isDirectory());
         if (files != null) {
             for (File dlcFolder : files) {
-                if (dlcFolder != null && dlcDir.isDirectory()) {
-                    dlcs.put(dlcFolder.getName(), new StellarisDLC(installDir, dlcFolder));
-                }
+                dlcs.put(dlcFolder.getName(), new StellarisDLC(installDir, dlcFolder));
             }
         }
     }
