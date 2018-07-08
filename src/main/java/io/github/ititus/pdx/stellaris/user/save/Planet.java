@@ -87,7 +87,6 @@ public class Planet {
         PdxScriptObject o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
         this.entity = o.getInt("entity", -1);
-        //this.planetModifiers =
         s1 = o.get("planet_modifier");
         if (s1 instanceof PdxScriptList) {
             this.planetModifiers = ((PdxScriptList) s1).getAsStringList();
