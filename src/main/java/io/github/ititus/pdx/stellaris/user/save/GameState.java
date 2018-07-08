@@ -72,8 +72,8 @@ public class GameState {
         this.pops = o.getObject("pop").getAs(Pops::new);
         this.lastCreatedPop = o.getInt("last_created_pop", -1);
         this.galacticObjects = o.getObject("galactic_object").getAs(GalacticObjects::new);
-        this.starbases = o.getObject("starbases").getAs(Starbases::new); // 73_165
-        this.planets = o.getObject("planet").getAs(Planets::new); // 78_673
+        this.starbases = o.getObject("starbases").getAs(Starbases::new);
+        this.planets = o.getObject("planet").getAs(Planets::new);
         //...
         this.countries = o.getObject("country").getAs(Countries::new); // 829_851
         // from here on the line numbers are wrong => countries got new data in 2.1.1
