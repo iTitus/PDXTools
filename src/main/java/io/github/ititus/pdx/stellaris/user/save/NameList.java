@@ -5,6 +5,5 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 public class NameList {
 
     public NameList(PdxScriptObject o) {
-
     }
 }

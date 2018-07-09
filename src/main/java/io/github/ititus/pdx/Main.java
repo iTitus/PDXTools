@@ -106,7 +106,7 @@ public class Main {
                 .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
                 .map(Tile::getResources)
                 .reduce(
-                        new Resources(CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0), CollectionUtil.listOf(0.0)),
+                        new Resources(),
                         (acc, r) -> new Resources(
                                 combineResource(acc.getEnergy(), r.getEnergy()),
                                 combineResource(acc.getMinerals(), r.getMinerals()),
@@ -115,7 +115,23 @@ public class Main {
                                 combineResource(acc.getSocietyResearch(), r.getSocietyResearch()),
                                 combineResource(acc.getEngineeringResearch(), r.getEngineeringResearch()),
                                 combineResource(acc.getInfluence(), r.getInfluence()),
-                                combineResource(acc.getUnity(), r.getUnity())
+                                combineResource(acc.getUnity(), r.getUnity()),
+                                combineResource(acc.getAldar(), r.getAldar()),
+                                combineResource(acc.getDarkMatter(), r.getDarkMatter()),
+                                combineResource(acc.getEngos(), r.getEngos()),
+                                combineResource(acc.getGaranthium(), r.getGaranthium()),
+                                combineResource(acc.getLivingMetal(), r.getLivingMetal()),
+                                combineResource(acc.getLythuric(), r.getLythuric()),
+                                combineResource(acc.getOrillium(), r.getOrillium()),
+                                combineResource(acc.getPitharan(), r.getPitharan()),
+                                combineResource(acc.getSatramene(), r.getSatramene()),
+                                combineResource(acc.getTeldar(), r.getTeldar()),
+                                combineResource(acc.getTerraformGases(), r.getTerraformGases()),
+                                combineResource(acc.getTerraformLiquids(), r.getTerraformLiquids()),
+                                combineResource(acc.getYurantic(), r.getYurantic()),
+                                combineResource(acc.getZro(), r.getZro()),
+                                combineResource(acc.getAlienPets(), r.getAlienPets()),
+                                combineResource(acc.getBetharian(), r.getBetharian())
                         )
                 );
     }

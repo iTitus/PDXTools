@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    private final Map<String, String> used = new HashMap<>();
+    private final Map<String, Set<String>> used = new HashMap<>();
     private final Map<String, Set<String>> wronglyUsed = new HashMap<>();
 
     private final PdxRelation relation;
@@ -17,6 +17,29 @@ public final class PdxScriptObject implements IPdxScript {
         this.map = new HashMap<>(map);
     }
 
+    public static Function<IPdxScript, Integer> nullOrInteger() {
+        return s -> {
+            if (s instanceof PdxScriptValue) {
+                Object o = ((PdxScriptValue) s).getValue();
+                if (o instanceof Integer) {
+                    return (Integer) o;
+                }
+            }
+            return null;
+        };
+    }
+
+    public static Function<IPdxScript, Double> nullOrDouble() {
+        return s -> {
+            if (s instanceof PdxScriptValue) {
+                Object o = ((PdxScriptValue) s).getValue();
+                if (o instanceof Double) {
+                    return (Double) o;
+                }
+            }
+            return null;
+        };
+    }
 
     public static Function<IPdxScript, String> nullOrString() {
         return s -> {
@@ -56,6 +79,10 @@ public final class PdxScriptObject implements IPdxScript {
             } else if (v instanceof Double) {
                 return DOUBLE;
             } else if (v instanceof Long) {
+                long l = (long) v;
+                if (l >= 0 && l <= UNSIGNED_INT_MAX_LONG) {
+                    return UNSIGNED_INT;
+                }
                 return LONG;
             } else if (v instanceof Integer) {
                 return INT;
@@ -71,6 +98,10 @@ public final class PdxScriptObject implements IPdxScript {
     @Override
     public PdxRelation getRelation() {
         return relation;
+    }
+
+    public void use(String key, String usage) {
+        used.computeIfAbsent(key, k -> new HashSet<>()).add(usage);
     }
 
     public boolean hasKey(String key) {
@@ -95,7 +126,7 @@ public final class PdxScriptObject implements IPdxScript {
     public PdxScriptObject getObject(String key) {
         IPdxScript o = get(key);
         if (o instanceof PdxScriptObject) {
-            used.put(key, OBJECT);
+            use(key, OBJECT);
             return (PdxScriptObject) o;
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(OBJECT);
@@ -105,7 +136,7 @@ public final class PdxScriptObject implements IPdxScript {
     public PdxScriptList getList(String key) {
         IPdxScript o = get(key);
         if (o instanceof PdxScriptList) {
-            used.put(key, LIST);
+            use(key, LIST);
             return (PdxScriptList) o;
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(LIST);
@@ -117,7 +148,7 @@ public final class PdxScriptObject implements IPdxScript {
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof String) {
-                used.put(key, STRING);
+                use(key, STRING);
                 return (String) v;
             }
         }
@@ -134,11 +165,34 @@ public final class PdxScriptObject implements IPdxScript {
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof Boolean) {
-                used.put(key, BOOLEAN);
+                use(key, BOOLEAN);
                 return (boolean) v;
             }
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(BOOLEAN);
+        return def;
+    }
+
+    public int getUnsignedInt(String key) {
+        return getUnsignedInt(key, 0);
+    }
+
+    public int getUnsignedInt(String key, int def) {
+        IPdxScript o = get(key);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Integer) {
+                use(key, UNSIGNED_INT);
+                return (int) v;
+            } else if (v instanceof Long) {
+                long l = (long) v;
+                if (l >= 0 && l <= UNSIGNED_INT_MAX_LONG) {
+                    use(key, UNSIGNED_INT);
+                    return (int) l;
+                }
+            }
+        }
+        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(UNSIGNED_INT);
         return def;
     }
 
@@ -151,7 +205,7 @@ public final class PdxScriptObject implements IPdxScript {
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof Integer) {
-                used.put(key, INT);
+                use(key, INT);
                 return (int) v;
             }
         }
@@ -167,9 +221,9 @@ public final class PdxScriptObject implements IPdxScript {
         IPdxScript o = get(key);
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Long) {
-                used.put(key, getTypeString(o));
-                return (long) v;
+            if (v instanceof Long || v instanceof Integer) {
+                use(key, LONG);
+                return ((Number) v).longValue();
             }
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(LONG);
@@ -177,16 +231,20 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     public double getDouble(String key) {
+        return getDouble(key, 0);
+    }
+
+    public double getDouble(String key, double def) {
         IPdxScript o = get(key);
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof Double) {
-                used.put(key, getTypeString(o));
+                use(key, DOUBLE);
                 return (double) v;
             }
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(DOUBLE);
-        return 0;
+        return def;
     }
 
     public Date getDate(String key) {
@@ -194,7 +252,7 @@ public final class PdxScriptObject implements IPdxScript {
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof Date) {
-                used.put(key, DATE);
+                use(key, DATE);
                 return (Date) v;
             }
         }
@@ -213,7 +271,7 @@ public final class PdxScriptObject implements IPdxScript {
             if (k != null) {
                 V v = valueFct.apply(oldV);
                 map.put(k, v);
-                used.put(oldK, NULL);
+                use(oldK, getTypeString(oldV));
             }
         });
         return map;
@@ -225,19 +283,17 @@ public final class PdxScriptObject implements IPdxScript {
             String type = getTypeString(entry.getValue());
             Set<String> toAdd = wronglyUsed.get(entry.getKey());
             if (toAdd != null && !toAdd.isEmpty()) {
-                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).addAll(toAdd.stream().map(s -> "wrongly_used=" + s + SLASH_CHAR + type).collect(Collectors.toSet()));
+                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).addAll(toAdd.stream().map(s -> "wrongly_used_as=" + s + SLASH_CHAR + "was=" + type).collect(Collectors.toSet()));
             }
-            if (DIGITS_PATTERN.matcher(entry.getKey()).matches()) {
-                // is an id
-                continue;
-            }
-            if (!used.containsKey(entry.getKey())) {
-                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).add("unused=" + type);
+            boolean id = DIGITS_PATTERN.matcher(entry.getKey()).matches();
+            Set<String> usages = used.getOrDefault(entry.getKey(), null);
+            if (!id && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
+                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).add("unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
             } else {
                 if (entry.getValue() instanceof PdxScriptObject) {
                     ((PdxScriptObject) entry.getValue()).getErrors().forEach((k, v) -> {
                         if (v != null && !v.isEmpty()) {
-                            errors.computeIfAbsent(entry.getKey() + DOT_CHAR + k, k_ -> new HashSet<>()).addAll(v);
+                            errors.computeIfAbsent((id ? EMPTY : entry.getKey() + DOT_CHAR) + k, k_ -> new HashSet<>()).addAll(v);
                         }
                     });
                 } else if (entry.getValue() instanceof PdxScriptList) {

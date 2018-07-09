@@ -86,6 +86,20 @@ public final class PdxScriptList implements IPdxScript {
         return getAsValueList().stream().mapToInt(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).intValue() : 0).toArray();
     }
 
+    public List<Integer> getAsUnsignedIntegerList() {
+        return getAsValueList().stream().map(v -> {
+            if (v != null) {
+                Object o = v.getValue();
+                if (o instanceof Integer) {
+                    return (Integer) o;
+                } else if (o instanceof Long) {
+                    return ((Long) o).intValue();
+                }
+            }
+            return null;
+        }).collect(Collectors.toList());
+    }
+
     public List<Integer> getAsIntegerList() {
         return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Integer ? (Integer) v.getValue() : null).collect(Collectors.toList());
     }

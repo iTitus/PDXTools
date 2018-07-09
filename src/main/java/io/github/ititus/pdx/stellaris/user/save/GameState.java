@@ -3,12 +3,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class GameState {
 
-    private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop, lastCreatedCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip, lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction, lastNotificationId, lastEventId, lastCreatedPopFaction, randomCount, randomSeed;
-    private final long lastRefugeeCountry;
+    private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop, lastCreatedCountry, lastRefugeeCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip, lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction, lastNotificationId, lastEventId, lastCreatedPopFaction, randomCount, randomSeed;
     private final double galaxyRadius;
     private final String version, name, lastKilledCountryName;
     private final Date date;
@@ -19,10 +21,10 @@ public class GameState {
     private final List<Species> species;
     private final List<Nebula> nebulas;
     private final List<Message> messages;
-    private final List<SavedEventTarget> savedEventTarget;
+    private final List<SavedEventTarget> savedEventTargets;
     private final List<GlobalShipDesign> globalShipDesigns;
     private final List<Cluster> clusters;
-    private final List<AssetClass> usedSpeciesNames, usedSpeciesPortraits;
+    private final List<UsedSpeciesClassAssets> usedSpeciesNames, usedSpeciesPortraits;
     private final Pops pops;
     private final GalacticObjects galacticObjects;
     private final Starbases starbases;
@@ -81,79 +83,78 @@ public class GameState {
         this.truces = o.getObject("truce").getAs(Truces::new); // 1_054_190
         this.tradeDeals = o.getObject("trade_deal").getAs(TradeDeals::new); // 1_054_198
         // {
-        this.lastCreatedCountry = o.getInt("last_created_country", -1); // 1_054_286
-        this.lastRefugeeCountry = o.getLong("last_refugee_country", -1); // 1_054_287
-        this.lastCreatedSystem = o.getInt("last_created_system", -1); // 1_054_288
+        this.lastCreatedCountry = o.getInt("last_created_country", -1);
+        this.lastRefugeeCountry = o.getUnsignedInt("last_refugee_country");
+        this.lastCreatedSystem = o.getInt("last_created_system", -1);
         // }
         this.leaders = o.getObject("leaders").getAs(Leaders::new); // 1_054_289
         this.ships = o.getObject("ships").getAs(Ships::new); // 1_079_050
         this.fleets = o.getObject("fleet").getAs(Fleets::new); // 1_326_245
         this.fleetTemplates = o.getObject("fleet_template").getAs(FleetTemplates::new); // 1_580_777
         // {
-        this.lastCreatedFleet = o.getInt("last_created_fleet", -1); // 1_583_973
-        this.lastCreatedShip = o.getInt("last_created_ship", -1); // 1_583_974
-        this.lastCreatedLeader = o.getInt("last_created_leader", -1); // 1_583_975
-        this.lastCreatedArmy = o.getInt("last_created_army", -1); // 1_583_976
-        this.lastCreatedDesign = o.getInt("last_created_design", -1); // 1_583_977
+        this.lastCreatedFleet = o.getInt("last_created_fleet", -1);
+        this.lastCreatedShip = o.getInt("last_created_ship", -1);
+        this.lastCreatedLeader = o.getInt("last_created_leader", -1);
+        this.lastCreatedArmy = o.getInt("last_created_army", -1);
+        this.lastCreatedDesign = o.getInt("last_created_design", -1);
         // }
         this.armies = o.getObject("army").getAs(Armies::new); // 1_583_978
-        this.groundCombats = o.getObject("ground_combat").getAs(GroundCombats::new); // 1_593_197
         // {
-        this.firedEvents = o.getList("fired_events").getAsIntegerList(); // 1_593_200
+        this.groundCombats = o.getObject("ground_combat").getAs(GroundCombats::new);
+        this.firedEvents = o.getList("fired_events").getAsIntegerList();
+        this.wars = o.getObject("war").getAs(Wars::new);
         // }
-        this.wars = o.getObject("war").getAs(Wars::new); // 1_593_203
         this.debrisMap = o.getObject("debris").getAs(DebrisMap::new); // 1_593_207
-        this.missiles = o.getObject("missile").getAs(Missiles::new); // 1_593_390
-        this.strikeCrafts = o.getObject("strike_craft").getAs(StrikeCrafts::new); // 1_593_429
+        // {
+        this.missiles = o.getObject("missile").getAs(Missiles::new);
+        this.strikeCrafts = o.getObject("strike_craft").getAs(StrikeCrafts::new);
+        // }
         this.ambientObjects = o.getObject("ambient_object").getAs(AmbientObjects::new); // 1_593_447
         // {
-        this.lastCreatedAmbientObject = o.getInt("last_created_ambient_object", -1); // 1_600_029
+        this.lastCreatedAmbientObject = o.getInt("last_created_ambient_object", -1);
         // }
         this.messages = o.getList("message").getAsList(Message::new); // 1_600_030
         // {
-        this.lastDiploAction = o.getInt("last_diplo_action_id", -1); // 1_600_147
-        this.lastNotificationId = o.getInt("last_notification_id", -1); // 1_600_148
-        this.lastEventId = o.getInt("last_event_id", -1); // 1_600_149
+        this.lastDiploAction = o.getInt("last_diplo_action_id", -1);
+        this.lastNotificationId = o.getInt("last_notification_id", -1);
+        this.lastEventId = o.getInt("last_event_id", -1);
+        this.randomNameDatabase = o.getObject("random_name_database").getAs(RandomNameDatabase::new);
+        this.nameList = o.getObject("name_list").getAs(NameList::new);
         // }
-        this.randomNameDatabase = o.getObject("random_name_database").getAs(RandomNameDatabase::new); // 1_600_150
-        this.nameList = o.getObject("name_list").getAs(NameList::new); // 1_617_013
         this.galaxy = o.getObject("galaxy").getAs(Galaxy::new); // 1_617_015
         // {
-        this.galaxyRadius = o.getDouble("galaxy_radius"); // 1_618_729
+        this.galaxyRadius = o.getDouble("galaxy_radius");
+        this.flags = o.getObject("flags").getAs(Flags::new);
+        this.savedEventTargets = o.getList("saved_event_target").getAsList(SavedEventTarget::new);
         // }
-        this.flags = o.getObject("flags").getAs(Flags::new); // 1_618_730
-        this.savedEventTarget = o.getList("saved_event_target").getAsList(SavedEventTarget::new); // 1_618_738
         this.shipDesigns = o.getObject("ship_design").getAs(ShipDesigns::new); // 1_618_998
         this.popFactions = o.getObject("pop_factions").getAs(PopFactions::new); // 1_737_170
         // {
-        this.lastCreatedPopFaction = o.getInt("last_created_pop_faction", -1); // 1_737_964
-        this.lastKilledCountryName = o.getString("last_killed_country_name"); // 1_737_965
-        // }
-        this.megaStructures = o.getObject("megastructures").getAs(MegaStructures::new); // 1_737_966
-        this.bypasses = o.getObject("bypasses").getAs(Bypasses::new); // 1_738_179
-        this.naturalWormholes = o.getObject("natural_wormholes").getAs(NaturalWormholes::new); // 1_738_442
-        this.globalShipDesigns = o.getList("global_ship_design").getAsList(GlobalShipDesign::new); // 1_738_540
-        this.clusters = o.getList("clusters").getAsList(Cluster::new); // clusters Cluster 1_738_935
-        // {
-        this.rimGalacticObjects = o.getList("rim_galactic_objects").getAsIntegerList(); // 1_739_146
-        this.usedColors = o.getList("used_color").getAsStringList(); // 1_739_149
-        this.usedSymbols = o.getList("used_symbols").getAsLongList(); // 1_739_165
-        // }
-        this.usedSpeciesNames = o.getList("used_species_names").getAsList(AssetClass::new); // 1_739_168
-        this.usedSpeciesPortraits = o.getList("used_species_portrait").getAsList(AssetClass::new); // 1_739_252
-        // {
-        this.randomSeed = o.getInt("random_seed"); // 1_739_336
-        this.randomCount = o.getInt("random_count"); // 1_739_337
+        this.lastCreatedPopFaction = o.getInt("last_created_pop_faction", -1);
+        this.lastKilledCountryName = o.getString("last_killed_country_name");
+        this.megaStructures = o.getObject("megastructures").getAs(MegaStructures::new);
+        this.bypasses = o.getObject("bypasses").getAs(Bypasses::new);
+        this.naturalWormholes = o.getObject("natural_wormholes").getAs(NaturalWormholes::new);
+        this.globalShipDesigns = o.getList("global_ship_design").getAsList(GlobalShipDesign::new);
+        this.clusters = o.getList("clusters").getAsList(Cluster::new);
+        this.rimGalacticObjects = o.getList("rim_galactic_objects").getAsIntegerList();
+        this.usedColors = o.getList("used_color").getAsStringList();
+        this.usedSymbols = o.getList("used_symbols").getAsLongList();
+        this.usedSpeciesNames = o.getList("used_species_names").getAsList(UsedSpeciesClassAssets::new);
+        this.usedSpeciesPortraits = o.getList("used_species_portrait").getAsList(UsedSpeciesClassAssets::new);
+        this.randomSeed = o.getInt("random_seed");
+        this.randomCount = o.getInt("random_count");
         // }
     }
 
-    public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, String lastKilledCountryName, int randomCount, int randomSeed, long lastRefugeeCountry, double galaxyRadius, String version, String name, Date date, Collection<Integer> firedEvents, Collection<Integer> rimGalacticObjects, Collection<Long> usedSymbols, Collection<String> requiredDLCs, Collection<String> usedColors, Collection<Player> players, Collection<Species> species, Collection<Nebula> nebulas, Collection<Message> messages, Collection<SavedEventTarget> savedEventTarget, Collection<GlobalShipDesign> globalShipDesigns, Collection<Cluster> clusters, Collection<AssetClass> usedSpeciesNames, Collection<AssetClass> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, NameList nameList, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
+    public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount, int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName, Date date, List<Integer> firedEvents, List<Integer> rimGalacticObjects, List<Long> usedSymbols, List<String> requiredDLCs, List<String> usedColors, List<Player> players, List<Species> species, List<Nebula> nebulas, List<Message> messages, List<SavedEventTarget> savedEventTargets, List<GlobalShipDesign> globalShipDesigns, List<Cluster> clusters, List<UsedSpeciesClassAssets> usedSpeciesNames, List<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, NameList nameList, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
         this.versionControlRevision = versionControlRevision;
         this.tick = tick;
         this.randomLogDay = randomLogDay;
         this.lastCreatedSpecies = lastCreatedSpecies;
         this.lastCreatedPop = lastCreatedPop;
         this.lastCreatedCountry = lastCreatedCountry;
+        this.lastRefugeeCountry = lastRefugeeCountry;
         this.lastCreatedSystem = lastCreatedSystem;
         this.lastCreatedFleet = lastCreatedFleet;
         this.lastCreatedShip = lastCreatedShip;
@@ -165,14 +166,13 @@ public class GameState {
         this.lastNotificationId = lastNotificationId;
         this.lastEventId = lastEventId;
         this.lastCreatedPopFaction = lastCreatedPopFaction;
-        this.lastKilledCountryName = lastKilledCountryName;
         this.randomCount = randomCount;
         this.randomSeed = randomSeed;
-        this.lastRefugeeCountry = lastRefugeeCountry;
         this.galaxyRadius = galaxyRadius;
         this.version = version;
         this.name = name;
-        this.date = new Date(date.getTime());
+        this.lastKilledCountryName = lastKilledCountryName;
+        this.date = date;
         this.firedEvents = new ArrayList<>(firedEvents);
         this.rimGalacticObjects = new ArrayList<>(rimGalacticObjects);
         this.usedSymbols = new ArrayList<>(usedSymbols);
@@ -182,7 +182,7 @@ public class GameState {
         this.species = new ArrayList<>(species);
         this.nebulas = new ArrayList<>(nebulas);
         this.messages = new ArrayList<>(messages);
-        this.savedEventTarget = new ArrayList<>(savedEventTarget);
+        this.savedEventTargets = new ArrayList<>(savedEventTargets);
         this.globalShipDesigns = new ArrayList<>(globalShipDesigns);
         this.clusters = new ArrayList<>(clusters);
         this.usedSpeciesNames = new ArrayList<>(usedSpeciesNames);
@@ -241,6 +241,10 @@ public class GameState {
         return lastCreatedCountry;
     }
 
+    public int getLastRefugeeCountry() {
+        return lastRefugeeCountry;
+    }
+
     public int getLastCreatedSystem() {
         return lastCreatedSystem;
     }
@@ -285,20 +289,12 @@ public class GameState {
         return lastCreatedPopFaction;
     }
 
-    public String getLastKilledCountryName() {
-        return lastKilledCountryName;
-    }
-
     public int getRandomCount() {
         return randomCount;
     }
 
     public int getRandomSeed() {
         return randomSeed;
-    }
-
-    public long getLastRefugeeCountry() {
-        return lastRefugeeCountry;
     }
 
     public double getGalaxyRadius() {
@@ -313,8 +309,12 @@ public class GameState {
         return name;
     }
 
+    public String getLastKilledCountryName() {
+        return lastKilledCountryName;
+    }
+
     public Date getDate() {
-        return new Date(date.getTime());
+        return date;
     }
 
     public List<Integer> getFiredEvents() {
@@ -353,8 +353,8 @@ public class GameState {
         return Collections.unmodifiableList(messages);
     }
 
-    public List<SavedEventTarget> getSavedEventTarget() {
-        return Collections.unmodifiableList(savedEventTarget);
+    public List<SavedEventTarget> getSavedEventTargets() {
+        return Collections.unmodifiableList(savedEventTargets);
     }
 
     public List<GlobalShipDesign> getGlobalShipDesigns() {
@@ -365,11 +365,11 @@ public class GameState {
         return Collections.unmodifiableList(clusters);
     }
 
-    public List<AssetClass> getUsedSpeciesNames() {
+    public List<UsedSpeciesClassAssets> getUsedSpeciesNames() {
         return Collections.unmodifiableList(usedSpeciesNames);
     }
 
-    public List<AssetClass> getUsedSpeciesPortraits() {
+    public List<UsedSpeciesClassAssets> getUsedSpeciesPortraits() {
         return Collections.unmodifiableList(usedSpeciesPortraits);
     }
 

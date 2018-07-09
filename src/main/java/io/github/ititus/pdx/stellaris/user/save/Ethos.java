@@ -1,9 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
-import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.pdxscript.PdxScriptValue;
+import io.github.ititus.pdx.pdxscript.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +15,10 @@ public class Ethos {
         IPdxScript s = o.get("ethic");
         if (s instanceof PdxScriptList) {
             this.ethics = ((PdxScriptList) s).getAsStringList();
+            o.use("ethic", PdxConstants.LIST);
         } else {
             this.ethics = new ArrayList<>(Collections.singleton((String) ((PdxScriptValue) s).getValue()));
+            o.use("ethic", PdxConstants.STRING);
         }
     }
 

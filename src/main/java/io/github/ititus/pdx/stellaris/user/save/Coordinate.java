@@ -4,22 +4,30 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Coordinate {
 
-    private final double x, y;
-    private final long origin;
     private final boolean randomized;
+    private final int origin;
+    private final double x, y;
 
     public Coordinate(PdxScriptObject o) {
         this.x = o.getDouble("x");
         this.y = o.getDouble("y");
-        this.origin = o.getLong("origin");
+        this.origin = o.getUnsignedInt("origin");
         this.randomized = o.getBoolean("randomized");
     }
 
-    public Coordinate(double x, double y, long origin, boolean randomized) {
+    public Coordinate(boolean randomized, int origin, double x, double y) {
+        this.randomized = randomized;
+        this.origin = origin;
         this.x = x;
         this.y = y;
-        this.origin = origin;
-        this.randomized = randomized;
+    }
+
+    public boolean isRandomized() {
+        return randomized;
+    }
+
+    public int getOrigin() {
+        return origin;
     }
 
     public double getX() {
@@ -28,13 +36,5 @@ public class Coordinate {
 
     public double getY() {
         return y;
-    }
-
-    public long getOrigin() {
-        return origin;
-    }
-
-    public boolean isRandomized() {
-        return randomized;
     }
 }

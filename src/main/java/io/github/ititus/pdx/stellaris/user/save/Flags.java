@@ -1,7 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,16 +13,7 @@ public class Flags {
     private final Map<String, FlagData> complexFlags;
 
     public Flags(PdxScriptObject o) {
-        this.intFlags = o.getAsMap(Function.identity(), s -> {
-            if (s instanceof PdxScriptValue) {
-                PdxScriptValue v = (PdxScriptValue) s;
-                Object i = v.getValue();
-                if (i instanceof Integer) {
-                    return (Integer) i;
-                }
-            }
-            return null;
-        });
+        this.intFlags = o.getAsMap(Function.identity(), PdxScriptObject.nullOrInteger());
         this.complexFlags = o.getAsMap(Function.identity(), PdxScriptObject.objectOrNull(FlagData::new));
     }
 

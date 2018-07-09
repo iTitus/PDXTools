@@ -56,8 +56,8 @@ public class StellarisSaves {
 
     public Map<String, Map<String, StellarisSave>> getSaves() {
         Map<String, Map<String, StellarisSave>> map = new HashMap<>();
-        saves.forEach((name, saveMap) -> map.put(name, new HashMap<>(saveMap)));
-        return map;
+        saves.forEach((name, saveMap) -> map.put(name, Collections.unmodifiableMap(saveMap)));
+        return Collections.unmodifiableMap(map);
     }
 
     public List<Pair<String, Throwable>> getErrors() {

@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.CollectionUtil;
@@ -12,9 +13,9 @@ import java.util.List;
 
 public class Pop {
 
-    private final boolean buildablePop, enslaved, aiRightsServitude;
-    private final int speciesIndex, popFaction, payingSector, daysEnslaved;
-    private final long tile;
+    private final boolean buildablePop, enslaved, forceFactionEvaluation, aiRightsServitude;
+    private final int speciesIndex, popFaction, daysEnslaved;
+    private final long tile, payingSector;
     private final double growth;
     private final String growthState;
     private final List<TimedModifier> timedModifiers;
@@ -44,30 +45,34 @@ public class Pop {
         IPdxScript s1 = o.get("timed_modifier");
         if (s1 instanceof PdxScriptList) {
             this.timedModifiers = ((PdxScriptList) s1).getAsList(TimedModifier::new);
+            o.use("timed_modifier", PdxConstants.LIST);
         } else if (s1 instanceof PdxScriptObject) {
             this.timedModifiers = CollectionUtil.listOf(new TimedModifier(s1));
+            o.use("timed_modifier", PdxConstants.OBJECT);
         } else {
             this.timedModifiers = new ArrayList<>();
         }
-        this.tile = o.getLong("tile");
+        this.tile = o.getLong("tile", -1);
+        this.forceFactionEvaluation = o.getBoolean("force_faction_evaluation");
         this.popFaction = o.getInt("pop_faction", -1);
         this.requiredGrowth = o.getObject("required_growth").getAs(PopResourceRequirement::new);
-        this.payingSector = o.getInt("paying_sector");
+        this.payingSector = o.getLong("paying_sector", -1);
         o1 = o.getObject("resources");
         this.resources = o1 != null ? o1.getAs(Resources::new) : new Resources();
         this.aiRightsServitude = o.getBoolean("ai_rights_servitude");
         this.daysEnslaved = o.getInt("days_enslaved");
     }
 
-    public Pop(boolean buildablePop, boolean enslaved, boolean aiRightsServitude, int speciesIndex, int popFaction, int payingSector, int daysEnslaved, long tile, double growth, String growthState, Collection<TimedModifier> timedModifiers, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources) {
+    public Pop(boolean buildablePop, boolean enslaved, boolean forceFactionEvaluation, boolean aiRightsServitude, int speciesIndex, int popFaction, int daysEnslaved, long tile, long payingSector, double growth, String growthState, Collection<TimedModifier> timedModifiers, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources) {
         this.buildablePop = buildablePop;
         this.enslaved = enslaved;
+        this.forceFactionEvaluation = forceFactionEvaluation;
         this.aiRightsServitude = aiRightsServitude;
         this.speciesIndex = speciesIndex;
         this.popFaction = popFaction;
-        this.payingSector = payingSector;
         this.daysEnslaved = daysEnslaved;
         this.tile = tile;
+        this.payingSector = payingSector;
         this.growth = growth;
         this.growthState = growthState;
         this.timedModifiers = new ArrayList<>(timedModifiers);
@@ -85,6 +90,10 @@ public class Pop {
         return enslaved;
     }
 
+    public boolean isForceFactionEvaluation() {
+        return forceFactionEvaluation;
+    }
+
     public boolean isAiRightsServitude() {
         return aiRightsServitude;
     }
@@ -97,16 +106,16 @@ public class Pop {
         return popFaction;
     }
 
-    public int getPayingSector() {
-        return payingSector;
-    }
-
     public int getDaysEnslaved() {
         return daysEnslaved;
     }
 
     public long getTile() {
         return tile;
+    }
+
+    public long getPayingSector() {
+        return payingSector;
     }
 
     public double getGrowth() {

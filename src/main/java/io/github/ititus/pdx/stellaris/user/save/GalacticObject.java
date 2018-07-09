@@ -1,9 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
-import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.pdxscript.PdxScriptValue;
+import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.ArrayList;
@@ -13,8 +10,7 @@ import java.util.List;
 
 public class GalacticObject {
 
-    private final int arm, initParent;
-    private final long starbase;
+    private final int arm, initParent, starbase;
     private final double innerRadius, outerRadius;
     private final String type, name, starClass, initializer;
     private final List<Integer> planets, ambientObjects, megaStructures, naturalWormholes, bypasses, discoveries, fleetPresence, auraPresence, ftlInhibitorPresence;
@@ -35,8 +31,10 @@ public class GalacticObject {
         IPdxScript s1 = o.get("planet");
         if (s1 instanceof PdxScriptList) {
             this.planets = ((PdxScriptList) s1).getAsIntegerList();
+            o.use("planet", PdxConstants.LIST);
         } else if (s1 instanceof PdxScriptValue) {
-            this.planets = CollectionUtil.listOf(o.getInt("planet"));
+            this.planets = CollectionUtil.listOf((int) ((PdxScriptValue) s1).getValue());
+            o.use("planet", PdxConstants.INT);
         } else {
             this.planets = CollectionUtil.listOf();
         }
@@ -70,10 +68,10 @@ public class GalacticObject {
         this.ftlInhibitorPresence = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
         this.innerRadius = o.getDouble("inner_radius");
         this.outerRadius = o.getDouble("outer_radius");
-        this.starbase = o.getLong("starbase");
+        this.starbase = o.getUnsignedInt("starbase");
     }
 
-    public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer, Collection<Integer> planets, Collection<Integer> ambientObjects, Collection<Integer> megaStructures, Collection<Integer> naturalWormholes, Collection<Integer> bypasses, Collection<Integer> discoveries, Collection<Integer> fleetPresence, Collection<Integer> auraPresence, Collection<Integer> ftlInhibitorPresence, Collection<Claim> claims, Collection<Hyperlane> hyperlanes, Collection<AsteroidBelt> asteroidBelts, int arm, int initParent, double innerRadius, double outerRadius, long starbase, Flags flags) {
+    public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer, Collection<Integer> planets, Collection<Integer> ambientObjects, Collection<Integer> megaStructures, Collection<Integer> naturalWormholes, Collection<Integer> bypasses, Collection<Integer> discoveries, Collection<Integer> fleetPresence, Collection<Integer> auraPresence, Collection<Integer> ftlInhibitorPresence, Collection<Claim> claims, Collection<Hyperlane> hyperlanes, Collection<AsteroidBelt> asteroidBelts, int arm, int initParent, int starbase, double innerRadius, double outerRadius, Flags flags) {
         this.coordinate = coordinate;
         this.type = type;
         this.name = name;
@@ -93,9 +91,9 @@ public class GalacticObject {
         this.asteroidBelts = new ArrayList<>(asteroidBelts);
         this.arm = arm;
         this.initParent = initParent;
+        this.starbase = starbase;
         this.innerRadius = innerRadius;
         this.outerRadius = outerRadius;
-        this.starbase = starbase;
         this.flags = flags;
     }
 
@@ -175,16 +173,16 @@ public class GalacticObject {
         return initParent;
     }
 
+    public int getStarbase() {
+        return starbase;
+    }
+
     public double getInnerRadius() {
         return innerRadius;
     }
 
     public double getOuterRadius() {
         return outerRadius;
-    }
-
-    public long getStarbase() {
-        return starbase;
     }
 
     public Flags getFlags() {

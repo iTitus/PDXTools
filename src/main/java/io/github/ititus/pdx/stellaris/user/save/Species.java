@@ -53,8 +53,10 @@ public class Species {
                 if (!"random".equals(this.popEthics)) {
                     throw new RuntimeException("Unexpected value for popEthics: " + this.popEthics);
                 }
+                o.use("pop_ethics", PdxConstants.OBJECT);
             } else if (v instanceof Boolean) {
                 this.popEthics = (boolean) v ? PdxConstants.YES : PdxConstants.NO;
+                o.use("pop_ethics", PdxConstants.BOOLEAN);
             } else {
                 throw new RuntimeException("Unexpected value for popEthics");
             }

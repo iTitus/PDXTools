@@ -17,6 +17,7 @@ public interface PdxConstants {
     String EMPTY = "";
     String INDENT = "    ";
     String SDF_PATTERN = "yyyy.MM.dd";
+    long UNSIGNED_INT_MAX_LONG = 0xFFFFFFFFL;
 
     char LIST_OBJECT_OPEN_CHAR = '{';
     char LIST_OBJECT_CLOSE_CHAR = '}';
@@ -61,6 +62,7 @@ public interface PdxConstants {
     String LIST = "list";
     String STRING = "value:string";
     String BOOLEAN = "value:boolean";
+    String UNSIGNED_INT = "value:u_int";
     String INT = "value:int";
     String LONG = "value:long";
     String DOUBLE = "value:double";
