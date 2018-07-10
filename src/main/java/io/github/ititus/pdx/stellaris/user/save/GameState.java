@@ -82,9 +82,7 @@ public class GameState {
         // {
         this.alliances = o.getObject("alliance").getAs(Alliances::new);
         this.truces = o.getObject("truce").getAs(Truces::new);
-        // }
-        this.tradeDeals = o.getObject("trade_deal").getAs(TradeDeals::new); // 1_054_198
-        // {
+        this.tradeDeals = o.getObject("trade_deal").getAs(TradeDeals::new);
         this.lastCreatedCountry = o.getInt("last_created_country", -1);
         this.lastRefugeeCountry = o.getUnsignedInt("last_refugee_country");
         this.lastCreatedSystem = o.getInt("last_created_system", -1);
@@ -92,16 +90,14 @@ public class GameState {
         this.leaders = o.getObject("leaders").getAs(Leaders::new); // 1_054_289
         this.ships = o.getObject("ships").getAs(Ships::new); // 1_079_050
         this.fleets = o.getObject("fleet").getAs(Fleets::new); // 1_326_245
-        this.fleetTemplates = o.getObject("fleet_template").getAs(FleetTemplates::new); // 1_580_777
         // {
+        this.fleetTemplates = o.getObject("fleet_template").getAs(FleetTemplates::new);
         this.lastCreatedFleet = o.getInt("last_created_fleet", -1);
         this.lastCreatedShip = o.getInt("last_created_ship", -1);
         this.lastCreatedLeader = o.getInt("last_created_leader", -1);
         this.lastCreatedArmy = o.getInt("last_created_army", -1);
         this.lastCreatedDesign = o.getInt("last_created_design", -1);
-        // }
-        this.armies = o.getObject("army").getAs(Armies::new); // 1_583_978
-        // {
+        this.armies = o.getObject("army").getAs(Armies::new);
         this.groundCombats = o.getObject("ground_combat").getAs(GroundCombats::new);
         this.firedEvents = o.getList("fired_events").getAsIntegerList();
         this.wars = o.getObject("war").getAs(Wars::new);
@@ -124,10 +120,8 @@ public class GameState {
         this.galaxyRadius = o.getDouble("galaxy_radius");
         this.flags = o.getObject("flags").getAs(Flags::new);
         this.savedEventTargets = o.getImplicitList("saved_event_target").getAsList(SavedEventTarget::new);
-        // }
-        this.shipDesigns = o.getObject("ship_design").getAs(ShipDesigns::new); // 1_618_998
-        this.popFactions = o.getObject("pop_factions").getAs(PopFactions::new); // 1_737_170
-        // {
+        this.shipDesigns = o.getObject("ship_design").getAs(ShipDesigns::new);
+        this.popFactions = o.getObject("pop_factions").getAs(PopFactions::new);
         this.lastCreatedPopFaction = o.getInt("last_created_pop_faction", -1);
         this.lastKilledCountryName = o.getString("last_killed_country_name");
         this.megaStructures = o.getObject("megastructures").getAs(MegaStructures::new);
