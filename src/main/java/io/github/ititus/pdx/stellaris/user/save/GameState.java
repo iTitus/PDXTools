@@ -86,8 +86,8 @@ public class GameState {
         this.lastCreatedCountry = o.getInt("last_created_country", -1);
         this.lastRefugeeCountry = o.getUnsignedInt("last_refugee_country");
         this.lastCreatedSystem = o.getInt("last_created_system", -1);
+        this.leaders = o.getObject("leaders").getAs(Leaders::new);
         // }
-        this.leaders = o.getObject("leaders").getAs(Leaders::new); // 1_054_289
         this.ships = o.getObject("ships").getAs(Ships::new); // 1_079_050
         this.fleets = o.getObject("fleet").getAs(Fleets::new); // 1_326_245
         // {

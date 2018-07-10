@@ -139,6 +139,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, getTypeString(s));
             return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
         }
+        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(IMPLICIT_LIST);
         return PdxScriptList.builder().build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 

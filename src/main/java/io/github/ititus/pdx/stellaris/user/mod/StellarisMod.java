@@ -53,6 +53,10 @@ public class StellarisMod {
         this.modArchive = modFile.isDirectory() ? new PdxRawDataLoader(modFile, BLACKLIST, FILTER) : null;
     }
 
+    public File getUserDataDir() {
+        return userDataDir;
+    }
+
     public File getModDescriptorFile() {
         return modDescriptorFile;
     }

@@ -48,6 +48,10 @@ public class StellarisUserData {
         return saves;
     }
 
+    public StellarisMods getMods() {
+        return mods;
+    }
+
     public PdxRawDataLoader getRawDataLoader() {
         return rawDataLoader;
     }

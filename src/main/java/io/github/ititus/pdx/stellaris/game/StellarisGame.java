@@ -56,6 +56,10 @@ public class StellarisGame {
         return installDir;
     }
 
+    public StellarisDLCs getDLCs() {
+        return dlcs;
+    }
+
     public PDXLocalisation getLocalisation() {
         return localisation;
     }
