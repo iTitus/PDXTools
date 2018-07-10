@@ -1,9 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -186,6 +183,16 @@ public final class PdxScriptList implements IPdxScript {
 
     public static class Builder {
 
+        private static final Map<Mode, Map<PdxRelation, PdxScriptList>> EMPTY_CACHE;
+
+        static {
+            EMPTY_CACHE = new EnumMap<>(Mode.class);
+            Arrays.stream(Mode.values()).forEach(mode -> {
+                Map<PdxRelation, PdxScriptList> map = EMPTY_CACHE.computeIfAbsent(mode, k -> new EnumMap<>(PdxRelation.class));
+                Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptList(mode, relation, Collections.emptyList())));
+            });
+        }
+
         private final List<IPdxScript> list;
 
         public Builder() {
@@ -193,7 +200,9 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         public Builder add(IPdxScript value) {
-            list.add(value);
+            if (value != null) {
+                list.add(value);
+            }
             return this;
         }
 
@@ -207,6 +216,9 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         public PdxScriptList build(Mode mode, PdxRelation relation) {
+            if (list.isEmpty()) {
+                return EMPTY_CACHE.get(mode).get(relation);
+            }
             return new PdxScriptList(mode, relation, list);
         }
     }

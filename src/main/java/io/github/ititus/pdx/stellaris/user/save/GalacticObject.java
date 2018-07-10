@@ -1,6 +1,8 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.*;
+import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxScriptList;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.ArrayList;
@@ -28,16 +30,7 @@ public class GalacticObject {
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
         this.type = o.getString("type");
         this.name = o.getString("name");
-        IPdxScript s1 = o.get("planet");
-        if (s1 instanceof PdxScriptList) {
-            this.planets = ((PdxScriptList) s1).getAsIntegerList();
-            o.use("planet", PdxConstants.LIST);
-        } else if (s1 instanceof PdxScriptValue) {
-            this.planets = CollectionUtil.listOf((int) ((PdxScriptValue) s1).getValue());
-            o.use("planet", PdxConstants.INT);
-        } else {
-            this.planets = CollectionUtil.listOf();
-        }
+        this.planets = o.getImplicitList("planet").getAsIntegerList();
         PdxScriptList l = o.getList("ambient_object");
         this.ambientObjects = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
         l = o.getList("megastructures");

@@ -70,7 +70,7 @@ public final class PdxScriptObject implements IPdxScript {
             return OBJECT;
         }
         if (s instanceof PdxScriptList) {
-            return LIST;
+            return ((PdxScriptList) s).getMode() == PdxScriptList.Mode.IMPLICIT ? IMPLICIT_LIST : LIST;
         }
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
@@ -108,19 +108,16 @@ public final class PdxScriptObject implements IPdxScript {
         return map.containsKey(key);
     }
 
-    public IPdxScript getRaw(String key) {
+    public boolean hasKey(String key, String type) {
+        return map.containsKey(key) && getTypeString(get(key)).equals(type);
+    }
+
+    private IPdxScript getRaw(String key) {
         return map.get(key);
     }
 
     public IPdxScript get(String key) {
-        IPdxScript o = getRaw(key);
-        /*if (o instanceof PdxScriptList) {
-            PdxScriptList l = (PdxScriptList) o;
-            if (l.size() == 1) {
-                return l.get(0);
-            }
-        }*/
-        return o;
+        return getRaw(key);
     }
 
     public PdxScriptObject getObject(String key) {
@@ -131,6 +128,18 @@ public final class PdxScriptObject implements IPdxScript {
         }
         wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(OBJECT);
         return null;
+    }
+
+    public PdxScriptList getImplicitList(String key) {
+        IPdxScript s = get(key);
+        if (s instanceof PdxScriptList && ((PdxScriptList) s).getMode() == PdxScriptList.Mode.IMPLICIT) {
+            use(key, IMPLICIT_LIST);
+            return (PdxScriptList) s;
+        } else if (s != null) {
+            use(key, getTypeString(s));
+            return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+        }
+        return PdxScriptList.builder().build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
     public PdxScriptList getList(String key) {

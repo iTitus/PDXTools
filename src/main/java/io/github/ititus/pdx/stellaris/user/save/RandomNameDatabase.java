@@ -20,7 +20,7 @@ public class RandomNameDatabase {
         this.blackHoleNames = o.getList("black_hole_names").getAsStringList();
         this.nebulaNames = o.getList("nebula_names").getAsStringList();
         this.asteroidPrefix = o.getList("asteroid_prefix").getAsStringList();
-        this.asteroidPostfix = o.getList("asteroid_postfix").getAsList(s -> {
+        this.asteroidPostfix = o.getImplicitList("asteroid_postfix").getAsList(s -> {
             if (s instanceof PdxScriptList) {
                 return ((PdxScriptList) s).getAsStringList();
             }

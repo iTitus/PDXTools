@@ -1,10 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxConstants;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,26 +21,8 @@ public class Starbase {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        IPdxScript s1 = o.get("build_queue_item");
-        if (s1 instanceof PdxScriptObject) {
-            this.buildQueue = CollectionUtil.listOf(new BuildQueueItem(s1));
-            o.use("build_queue_item", PdxConstants.OBJECT);
-        } else if (s1 instanceof PdxScriptList) {
-            this.buildQueue = ((PdxScriptList) s1).getAsList(BuildQueueItem::new);
-            o.use("build_queue_item", PdxConstants.LIST);
-        } else {
-            this.buildQueue = CollectionUtil.listOf();
-        }
-        s1 = o.get("shipyard_build_queue_item");
-        if (s1 instanceof PdxScriptObject) {
-            this.shipyardBuildQueue = CollectionUtil.listOf(new BuildQueueItem(s1));
-            o.use("shipyard_build_queue_item", PdxConstants.OBJECT);
-        } else if (s1 instanceof PdxScriptList) {
-            this.shipyardBuildQueue = ((PdxScriptList) s1).getAsList(BuildQueueItem::new);
-            o.use("shipyard_build_queue_item", PdxConstants.LIST);
-        } else {
-            this.shipyardBuildQueue = CollectionUtil.listOf();
-        }
+        this.buildQueue = o.getImplicitList("build_queue_item").getAsList(BuildQueueItem::new);
+        this.shipyardBuildQueue = o.getImplicitList("shipyard_build_queue_item").getAsList(BuildQueueItem::new);
         this.level = o.getString("level");
         this.updateFlag = o.getInt("update_flag");
         PdxScriptObject o1 = o.getObject("modules");

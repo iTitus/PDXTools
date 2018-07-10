@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.*;
-import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,16 +29,7 @@ public class Tile {
         this.building = o1 != null ? o1.getAs(Building::new) : null;
         this.prevBuilding = o.getString("prev_building");
         this.blocker = o.getString("blocker");
-        IPdxScript s1 = o.get("deposit");
-        if (s1 instanceof PdxScriptList) {
-            this.deposits = ((PdxScriptList) s1).getAsStringList();
-            o.use("deposit", PdxConstants.LIST);
-        } else if (s1 == null) {
-            this.deposits = CollectionUtil.listOf();
-        } else {
-            this.deposits = CollectionUtil.listOf((String) ((PdxScriptValue) s1).getValue());
-            o.use("deposit", PdxConstants.STRING);
-        }
+        this.deposits = o.getImplicitList("deposit").getAsStringList();
     }
 
     public Tile(boolean active, int pop, String prevBuilding, String blocker, Collection<String> deposits, Resources resources, Building building) {

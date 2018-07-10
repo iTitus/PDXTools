@@ -1,7 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.ArrayList;
@@ -24,8 +23,7 @@ public class Nebula {
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
         this.name = o.getString("name");
         this.radius = o.getDouble("radius");
-        PdxScriptList l = o.getList("galactic_object");
-        this.galacticObjects = l != null ? l.getAsIntegerList() : new ArrayList<>(Collections.singleton(o.getInt("galactic_object")));
+        this.galacticObjects = o.getImplicitList("galactic_object").getAsIntegerList();
     }
 
     public Nebula(Coordinate coordinate, String name, double radius, Collection<Integer> galacticObjects) {

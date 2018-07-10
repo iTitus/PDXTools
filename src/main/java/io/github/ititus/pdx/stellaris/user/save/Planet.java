@@ -1,6 +1,8 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.*;
+import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.pdxscript.PdxScriptList;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.*;
@@ -84,16 +86,7 @@ public class Planet {
         this.alienSlavery = o.getDouble("alien_slavery");
         this.ownSpeciesSlavery = o.getDouble("own_species_slavery");
         this.immigratingPop = o.getInt("immigrating_pop", -1);
-        IPdxScript s1 = o.get("timed_modifier");
-        if (s1 instanceof PdxScriptList) {
-            this.timedModifiers = ((PdxScriptList) s1).getAsList(TimedModifier::new);
-            o.use("timed_modifier", PdxConstants.LIST);
-        } else if (s1 instanceof PdxScriptObject) {
-            this.timedModifiers = CollectionUtil.listOf(new TimedModifier(s1));
-            o.use("timed_modifier", PdxConstants.OBJECT);
-        } else {
-            this.timedModifiers = new ArrayList<>();
-        }
+        this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         this.shipClassOrbitalStation = o.getInt("shipclass_orbital_station", -1);
         o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
@@ -102,16 +95,7 @@ public class Planet {
         o1 = o.getObject("delayed_event");
         this.delayedEvent = o1 != null ? o1.getAs(DelayedEvent::new) : null;
         this.entity = o.getInt("entity", -1);
-        s1 = o.get("planet_modifier");
-        if (s1 instanceof PdxScriptList) {
-            this.planetModifiers = ((PdxScriptList) s1).getAsStringList();
-            o.use("planet_modifier", PdxConstants.LIST);
-        } else if (s1 instanceof PdxScriptValue) {
-            this.planetModifiers = new ArrayList<>(Collections.singleton((String) ((PdxScriptValue) s1).getValue()));
-            o.use("planet_modifier", PdxConstants.STRING);
-        } else {
-            this.planetModifiers = new ArrayList<>();
-        }
+        this.planetModifiers = o.getImplicitList("planet_modifier").getAsStringList();
         this.hasOwnerPops = o.getBoolean("has_owner_pops");
         this.hasOwnedPops = o.getBoolean("has_owned_pops");
         this.entityName = o.getString("entity_name");

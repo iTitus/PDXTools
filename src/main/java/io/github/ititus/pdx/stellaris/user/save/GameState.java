@@ -70,7 +70,7 @@ public class GameState {
         this.randomLogDay = o.getInt("random_log_day");
         this.species = o.getList("species").getAsList(Species::new);
         this.lastCreatedSpecies = o.getInt("last_created_species", -1);
-        this.nebulas = o.getList("nebula").getAsList(Nebula::new);
+        this.nebulas = o.getImplicitList("nebula").getAsList(Nebula::new);
         this.pops = o.getObject("pop").getAs(Pops::new);
         this.lastCreatedPop = o.getInt("last_created_pop", -1);
         this.galacticObjects = o.getObject("galactic_object").getAs(GalacticObjects::new);
@@ -79,8 +79,10 @@ public class GameState {
         //...
         this.countries = o.getObject("country").getAs(Countries::new); // 829_851
         // from here on the line numbers are wrong => countries got new data in 2.1.1
-        this.alliances = o.getObject("alliance").getAs(Alliances::new); // 1_054_159 | 1_055_913
-        this.truces = o.getObject("truce").getAs(Truces::new); // 1_054_190
+        // {
+        this.alliances = o.getObject("alliance").getAs(Alliances::new);
+        this.truces = o.getObject("truce").getAs(Truces::new);
+        // }
         this.tradeDeals = o.getObject("trade_deal").getAs(TradeDeals::new); // 1_054_198
         // {
         this.lastCreatedCountry = o.getInt("last_created_country", -1);
@@ -103,17 +105,13 @@ public class GameState {
         this.groundCombats = o.getObject("ground_combat").getAs(GroundCombats::new);
         this.firedEvents = o.getList("fired_events").getAsIntegerList();
         this.wars = o.getObject("war").getAs(Wars::new);
-        // }
-        this.debrisMap = o.getObject("debris").getAs(DebrisMap::new); // 1_593_207
-        // {
+        this.debrisMap = o.getObject("debris").getAs(DebrisMap::new);
         this.missiles = o.getObject("missile").getAs(Missiles::new);
         this.strikeCrafts = o.getObject("strike_craft").getAs(StrikeCrafts::new);
-        // }
-        this.ambientObjects = o.getObject("ambient_object").getAs(AmbientObjects::new); // 1_593_447
-        // {
+        this.ambientObjects = o.getObject("ambient_object").getAs(AmbientObjects::new);
         this.lastCreatedAmbientObject = o.getInt("last_created_ambient_object", -1);
         // }
-        this.messages = o.getList("message").getAsList(Message::new); // 1_600_030
+        this.messages = o.getImplicitList("message").getAsList(Message::new); // 1_600_030
         // {
         this.lastDiploAction = o.getInt("last_diplo_action_id", -1);
         this.lastNotificationId = o.getInt("last_notification_id", -1);
@@ -125,7 +123,7 @@ public class GameState {
         // {
         this.galaxyRadius = o.getDouble("galaxy_radius");
         this.flags = o.getObject("flags").getAs(Flags::new);
-        this.savedEventTargets = o.getList("saved_event_target").getAsList(SavedEventTarget::new);
+        this.savedEventTargets = o.getImplicitList("saved_event_target").getAsList(SavedEventTarget::new);
         // }
         this.shipDesigns = o.getObject("ship_design").getAs(ShipDesigns::new); // 1_618_998
         this.popFactions = o.getObject("pop_factions").getAs(PopFactions::new); // 1_737_170
@@ -138,10 +136,10 @@ public class GameState {
         this.globalShipDesigns = o.getList("global_ship_design").getAsList(GlobalShipDesign::new);
         this.clusters = o.getList("clusters").getAsList(Cluster::new);
         this.rimGalacticObjects = o.getList("rim_galactic_objects").getAsIntegerList();
-        this.usedColors = o.getList("used_color").getAsStringList();
+        this.usedColors = o.getImplicitList("used_color").getAsStringList();
         this.usedSymbols = o.getList("used_symbols").getAsLongList();
-        this.usedSpeciesNames = o.getList("used_species_names").getAsList(UsedSpeciesClassAssets::new);
-        this.usedSpeciesPortraits = o.getList("used_species_portrait").getAsList(UsedSpeciesClassAssets::new);
+        this.usedSpeciesNames = o.getImplicitList("used_species_names").getAsList(UsedSpeciesClassAssets::new);
+        this.usedSpeciesPortraits = o.getImplicitList("used_species_portrait").getAsList(UsedSpeciesClassAssets::new);
         this.randomSeed = o.getInt("random_seed");
         this.randomCount = o.getInt("random_count");
         // }

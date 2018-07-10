@@ -1,7 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.*;
-import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,16 +12,7 @@ public class Traits {
     private final List<String> traits;
 
     public Traits(PdxScriptObject o) {
-        IPdxScript s = o.get("trait");
-        if (s instanceof PdxScriptList) {
-            this.traits = ((PdxScriptList) s).getAsStringList();
-            o.use("trait", PdxConstants.LIST);
-        } else if (s == null) {
-            this.traits = CollectionUtil.listOf();
-        } else {
-            this.traits = CollectionUtil.listOf((String) ((PdxScriptValue) s).getValue());
-            o.use("trait", PdxConstants.STRING);
-        }
+        this.traits = o.getImplicitList("trait").getAsStringList();
     }
 
     public Traits(Collection<String> traits) {

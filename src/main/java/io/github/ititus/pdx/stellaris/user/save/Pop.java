@@ -1,10 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxConstants;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,16 +39,7 @@ public class Pop {
         this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
         this.buildablePop = o.getBoolean("buildable_pop");
         this.enslaved = o.getBoolean("enslaved");
-        IPdxScript s1 = o.get("timed_modifier");
-        if (s1 instanceof PdxScriptList) {
-            this.timedModifiers = ((PdxScriptList) s1).getAsList(TimedModifier::new);
-            o.use("timed_modifier", PdxConstants.LIST);
-        } else if (s1 instanceof PdxScriptObject) {
-            this.timedModifiers = CollectionUtil.listOf(new TimedModifier(s1));
-            o.use("timed_modifier", PdxConstants.OBJECT);
-        } else {
-            this.timedModifiers = new ArrayList<>();
-        }
+        this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         this.tile = o.getLong("tile", -1);
         this.forceFactionEvaluation = o.getBoolean("force_faction_evaluation");
         this.popFaction = o.getInt("pop_faction", -1);

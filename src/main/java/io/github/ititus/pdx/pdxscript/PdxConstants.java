@@ -60,6 +60,7 @@ public interface PdxConstants {
 
     String OBJECT = "object";
     String LIST = "list";
+    String IMPLICIT_LIST = "list:implicit";
     String STRING = "value:string";
     String BOOLEAN = "value:boolean";
     String UNSIGNED_INT = "value:u_int";
