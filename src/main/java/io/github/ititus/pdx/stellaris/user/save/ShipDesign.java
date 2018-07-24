@@ -13,7 +13,7 @@ public class ShipDesign {
     private final boolean allianceShipDesign, autoGenDesigns, isSpecialBuildable, useDesignName;
     private final String name, shipSize, allowBuildableTrigger;
     private final List<String> requiredComponents;
-    private final List<ShipSection> sections;
+    private final List<ShipDesignSection> sections;
 
     public ShipDesign(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -23,7 +23,7 @@ public class ShipDesign {
 
         this.name = o.getString("name");
         this.shipSize = o.getString("ship_size");
-        this.sections = o.getImplicitList("section").getAsList(ShipSection::new);
+        this.sections = o.getImplicitList("section").getAsList(ShipDesignSection::new);
         this.allianceShipDesign = o.getBoolean("alliance_ship_design");
         this.autoGenDesigns = o.getBoolean("auto_gen_design");
         this.requiredComponents = o.getImplicitList("required_component").getAsStringList();
@@ -32,7 +32,7 @@ public class ShipDesign {
         this.useDesignName = o.getBoolean("use_design_name");
     }
 
-    public ShipDesign(boolean allianceShipDesign, boolean autoGenDesigns, boolean isSpecialBuildable, boolean useDesignName, String name, String shipSize, String allowBuildableTrigger, Collection<String> requiredComponents, Collection<ShipSection> sections) {
+    public ShipDesign(boolean allianceShipDesign, boolean autoGenDesigns, boolean isSpecialBuildable, boolean useDesignName, String name, String shipSize, String allowBuildableTrigger, Collection<String> requiredComponents, Collection<ShipDesignSection> sections) {
         this.allianceShipDesign = allianceShipDesign;
         this.autoGenDesigns = autoGenDesigns;
         this.isSpecialBuildable = isSpecialBuildable;
@@ -76,7 +76,7 @@ public class ShipDesign {
         return Collections.unmodifiableList(requiredComponents);
     }
 
-    public List<ShipSection> getSections() {
+    public List<ShipDesignSection> getSections() {
         return Collections.unmodifiableList(sections);
     }
 }

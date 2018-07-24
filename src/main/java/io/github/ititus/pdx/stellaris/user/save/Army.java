@@ -19,7 +19,7 @@ public class Army {
         this.name = o.getString("name");
         this.type = o.getString("type");
         this.health = o.getDouble("health");
-        this.fleetName = o.getString("fleetName");
+        this.fleetName = o.getString("fleet_name");
         this.homePlanet = o.getInt("home_planet");
         this.owner = o.getInt("owner");
         this.speciesIndex = o.getInt("species_index");

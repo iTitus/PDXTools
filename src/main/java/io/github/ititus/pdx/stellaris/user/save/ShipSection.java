@@ -10,35 +10,42 @@ import java.util.List;
 
 public class ShipSection {
 
-    private final String template, slot;
-    private final List<ShipComponent> components;
+    private final String design, slot;
+    private final List<ShipWeapon> weapons;
+    private final List<ShipStrikeCraft> strikeCrafts;
 
     public ShipSection(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        this.template = o.getString("template");
+        this.design = o.getString("design");
         this.slot = o.getString("slot");
-        this.components = o.getImplicitList("component").getAsList(ShipComponent::new);
+        this.weapons = o.getImplicitList("weapon").getAsList(ShipWeapon::new);
+        this.strikeCrafts = o.getImplicitList("strike_craft").getAsList(ShipStrikeCraft::new);
     }
 
-    public ShipSection(String template, String slot, Collection<ShipComponent> components) {
-        this.template = template;
+    public ShipSection(String design, String slot, Collection<ShipWeapon> weapons, Collection<ShipStrikeCraft> strikeCrafts) {
+        this.design = design;
         this.slot = slot;
-        this.components = new ArrayList<>(components);
+        this.weapons = new ArrayList<>(weapons);
+        this.strikeCrafts = new ArrayList<>(strikeCrafts);
     }
 
-    public String getTemplate() {
-        return template;
+    public String getDesign() {
+        return design;
     }
 
     public String getSlot() {
         return slot;
     }
 
-    public List<ShipComponent> getComponents() {
-        return Collections.unmodifiableList(components);
+    public List<ShipWeapon> getWeapons() {
+        return Collections.unmodifiableList(weapons);
+    }
+
+    public List<ShipStrikeCraft> getStrikeCrafts() {
+        return Collections.unmodifiableList(strikeCrafts);
     }
 }

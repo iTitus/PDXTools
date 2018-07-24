@@ -8,7 +8,7 @@ public class Bypass {
     private final boolean active;
     private final int linkedTo;
     private final String type;
-    private final Owner owner;
+    private final Property owner;
 
     public Bypass(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -19,10 +19,10 @@ public class Bypass {
         this.type = o.getString("type");
         this.active = o.getBoolean("active");
         this.linkedTo = o.getInt("linked_to", -1);
-        this.owner = o.getObject("owner").getAs(Owner::new);
+        this.owner = o.getObject("owner").getAs(Property::new);
     }
 
-    public Bypass(boolean active, int linkedTo, String type, Owner owner) {
+    public Bypass(boolean active, int linkedTo, String type, Property owner) {
         this.active = active;
         this.linkedTo = linkedTo;
         this.type = type;
@@ -41,7 +41,7 @@ public class Bypass {
         return type;
     }
 
-    public Owner getOwner() {
+    public Property getOwner() {
         return owner;
     }
 }

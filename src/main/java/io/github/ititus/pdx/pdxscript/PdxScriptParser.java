@@ -260,7 +260,7 @@ public final class PdxScriptParser implements PdxConstants {
     }
 
     private static List<String> tokenize(IntStream src) {
-        List<String> tokens = CollectionUtil.listOf(LIST_OBJECT_OPEN);
+        List<String> tokens = CollectionUtil.mutableListOf(LIST_OBJECT_OPEN);
         StringBuilder b = new StringBuilder();
         MutableBoolean openQuotes = new MutableBoolean(false), token = new MutableBoolean(false), comment = new MutableBoolean(false), separator = new MutableBoolean(false), relation = new MutableBoolean(false), mathOperator = new MutableBoolean(false);
         src.forEachOrdered(i -> {

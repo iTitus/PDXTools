@@ -27,6 +27,7 @@ public class GalacticObject {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
+
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
         this.type = o.getString("type");
         this.name = o.getString("name");
