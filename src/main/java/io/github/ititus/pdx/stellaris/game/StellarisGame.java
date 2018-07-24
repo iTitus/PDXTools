@@ -4,7 +4,7 @@ import io.github.ititus.pdx.pdxlocalisation.PDXLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
-import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
 

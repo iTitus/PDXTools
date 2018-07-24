@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.CollectionUtil;
 import io.github.ititus.pdx.util.ColorUtil;
-import io.github.ititus.pdx.util.CountingSet;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
 

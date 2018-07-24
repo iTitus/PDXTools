@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.util;
+package io.github.ititus.pdx.util.collection;
 
 import java.util.*;
 import java.util.stream.Stream;

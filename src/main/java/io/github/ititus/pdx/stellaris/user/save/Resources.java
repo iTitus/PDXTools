@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.*;
-import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;

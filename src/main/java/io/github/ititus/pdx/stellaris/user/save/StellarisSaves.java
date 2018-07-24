@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.util.Pair;
+import io.github.ititus.pdx.util.collection.Pair;
 import io.github.ititus.pdx.util.io.IOUtil;
 
 import java.io.File;

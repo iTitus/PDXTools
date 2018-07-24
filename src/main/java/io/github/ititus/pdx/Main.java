@@ -5,8 +5,8 @@ import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.*;
-import io.github.ititus.pdx.util.CollectionUtil;
-import io.github.ititus.pdx.util.Pair;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.Pair;
 
 import java.io.File;
 import java.util.*;

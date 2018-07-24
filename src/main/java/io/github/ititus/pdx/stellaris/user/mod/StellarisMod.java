@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
 import io.github.ititus.pdx.pdxscript.*;
-import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;

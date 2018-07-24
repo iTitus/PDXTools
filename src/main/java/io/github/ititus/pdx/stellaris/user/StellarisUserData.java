@@ -3,7 +3,7 @@ package io.github.ititus.pdx.stellaris.user;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.stellaris.user.mod.StellarisMods;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSaves;
-import io.github.ititus.pdx.util.CollectionUtil;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
 
