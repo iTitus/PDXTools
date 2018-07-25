@@ -8,11 +8,12 @@ import io.github.ititus.pdx.util.collection.ViewableList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RandomNameDatabase {
 
     private final ViewableList<String> speciesModificationPrefix, speciesModificationPostfix, starNames, blackHoleNames, nebulaNames, asteroidPrefix;
-    private final ViewableList<List<String>> asteroidPostfix;
+    private final ViewableList<ViewableList<String>> asteroidPostfix;
 
     public RandomNameDatabase(PdxScriptObject o) {
         this.speciesModificationPrefix = o.getList("species_modification_prefix").getAsStringList();
@@ -65,8 +66,6 @@ public class RandomNameDatabase {
     }
 
     public List<List<String>> getAsteroidPostfix() {
-        List<List<String>> list = new ViewableArrayList<>();
-        asteroidPostfix.forEach(l -> list.add(Collections.unmodifiableList(l)));
-        return list.getView();
+        return Collections.unmodifiableList(asteroidPostfix.stream().map(ViewableList::getView).collect(Collectors.toList()));
     }
 }
