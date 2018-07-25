@@ -78,7 +78,6 @@ public class GameState {
         this.planets = o.getObject("planet").getAs(Planets::new);
         //...
         this.countries = o.getObject("country").getAs(Countries::new); // 829_851
-        // from here on the line numbers are wrong => countries got new data in 2.1.1
         // {
         this.alliances = o.getObject("alliance").getAs(Alliances::new);
         this.truces = o.getObject("truce").getAs(Truces::new);
@@ -89,7 +88,7 @@ public class GameState {
         this.leaders = o.getObject("leaders").getAs(Leaders::new);
         this.ships = o.getObject("ships").getAs(Ships::new);
         // }
-        this.fleets = o.getObject("fleet").getAs(Fleets::new); // 1_326_245
+        this.fleets = o.getObject("fleet").getAs(Fleets::new); // 1_327_996
         // {
         this.fleetTemplates = o.getObject("fleet_template").getAs(FleetTemplates::new);
         this.lastCreatedFleet = o.getInt("last_created_fleet", -1);
@@ -107,7 +106,7 @@ public class GameState {
         this.ambientObjects = o.getObject("ambient_object").getAs(AmbientObjects::new);
         this.lastCreatedAmbientObject = o.getInt("last_created_ambient_object", -1);
         // }
-        this.messages = o.getImplicitList("message").getAsList(Message::new); // 1_600_030
+        this.messages = o.getImplicitList("message").getAsList(Message::new); // 1_606_983
         // {
         this.lastDiploAction = o.getInt("last_diplo_action_id", -1);
         this.lastNotificationId = o.getInt("last_notification_id", -1);
@@ -115,7 +114,7 @@ public class GameState {
         this.randomNameDatabase = o.getObject("random_name_database").getAs(RandomNameDatabase::new);
         this.nameList = o.getObject("name_list").getAs(NameList::new);
         // }
-        this.galaxy = o.getObject("galaxy").getAs(Galaxy::new); // 1_617_015
+        this.galaxy = o.getObject("galaxy").getAs(Galaxy::new); // 1_623_968
         // {
         this.galaxyRadius = o.getDouble("galaxy_radius");
         this.flags = o.getObject("flags").getAs(Flags::new);

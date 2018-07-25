@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -13,7 +14,7 @@ public class Flags {
     private final Map<String, FlagData> complexFlags;
 
     public Flags(PdxScriptObject o) {
-        this.intFlags = o.getAsMap(Function.identity(), PdxScriptObject.nullOrInteger());
+        this.intFlags = o.getAsMap(Function.identity(), PdxConstants.NULL_OR_INTEGER);
         this.complexFlags = o.getAsMap(Function.identity(), PdxScriptObject.objectOrNull(FlagData::new));
     }
 

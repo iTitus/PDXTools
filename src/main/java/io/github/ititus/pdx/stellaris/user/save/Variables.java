@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -11,7 +12,7 @@ public class Variables {
     private final Map<String, Double> variables;
 
     public Variables(PdxScriptObject o) {
-        this.variables = o.getAsMap(Function.identity(), PdxScriptObject.nullOrDouble());
+        this.variables = o.getAsMap(Function.identity(), PdxConstants.NULL_OR_DOUBLE);
     }
 
     public Variables(Map<String, Double> variables) {

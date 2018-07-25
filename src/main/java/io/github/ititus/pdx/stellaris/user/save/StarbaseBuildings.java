@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -11,7 +12,7 @@ public class StarbaseBuildings {
     private final Map<Integer, String> starbaseBuildings;
 
     public StarbaseBuildings(PdxScriptObject o) {
-        this.starbaseBuildings = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOrString());
+        this.starbaseBuildings = o.getAsMap(Integer::valueOf, PdxConstants.NULL_OR_STRING);
     }
 
     public StarbaseBuildings(Map<Integer, String> starbaseBuildings) {

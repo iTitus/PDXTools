@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public interface PdxConstants {
@@ -90,5 +91,42 @@ public interface PdxConstants {
     Pattern HEX_RGB_PATTERN = Pattern.compile("(0x|#)((([0-9A-Fa-f]{2})?)[0-9A-Fa-f]{6})");
     Pattern LANGUAGE_PATTERN = Pattern.compile("^(?<" + KEY_LANGUAGE + ">l_(\\w+)):$");
     Pattern TRANSLATION_PATTERN = Pattern.compile("^(?<" + KEY_INDENT + "> )(?<" + KEY_KEY + ">[\\w.]+):0 \"(?<" + KEY_VALUE + ">.*)\"$");
+
+    Function<IPdxScript, Boolean> NULL_OR_BOOLEAN = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof Boolean) {
+                return (Boolean) o;
+            }
+        }
+        return null;
+    };
+    Function<IPdxScript, Integer> NULL_OR_INTEGER = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof Integer) {
+                return (Integer) o;
+            }
+        }
+        return null;
+    };
+    Function<IPdxScript, Double> NULL_OR_DOUBLE = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof Double) {
+                return (Double) o;
+            }
+        }
+        return null;
+    };
+    Function<IPdxScript, String> NULL_OR_STRING = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof String) {
+                return (String) o;
+            }
+        }
+        return null;
+    };
 
 }
