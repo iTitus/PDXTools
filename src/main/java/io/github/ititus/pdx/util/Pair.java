@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.util.collection;
+package io.github.ititus.pdx.util;
 
 import java.util.Map;
 import java.util.Objects;

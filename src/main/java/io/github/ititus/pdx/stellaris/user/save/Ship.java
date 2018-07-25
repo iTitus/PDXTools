@@ -4,8 +4,13 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class Ship {
 
@@ -14,9 +19,9 @@ public class Ship {
     private final double speed, experience, postMoveAngle, hitpoints, shieldHitpoints, armorHitpoints, maxHitpoints, maxShieldHitpoints, maxArmorHitpoints, rotation, forwardX, forwardY, upgradeProgress, disableAtHealth, enableAtHealth, targeting;
     private final String name, key, graphicalCulture;
     private final Date lastDamage;
-    private final List<Aura> auras;
-    private final List<ShipSection> sections;
-    private final List<TimedModifier> timedModifiers;
+    private final ViewableList<Aura> auras;
+    private final ViewableList<ShipSection> sections;
+    private final ViewableList<TimedModifier> timedModifiers;
     private final Coordinate coordinate, targetCoordinate;
     private final Flags flags;
     private final Homepop homepop;
@@ -30,7 +35,7 @@ public class Ship {
         PdxScriptObject o = (PdxScriptObject) s;
 
         PdxScriptList l = o.getList("auras");
-        this.auras = l != null ? l.getAsList(Aura::new) : CollectionUtil.listOf();
+        this.auras = l != null ? l.getAsList(Aura::new) : CollectionUtil.viewableListOf();
         this.isBeingRepaired = o.getBoolean("is_being_repaired");
         this.fleet = o.getInt("fleet");
         this.name = o.getString("name");
@@ -112,9 +117,9 @@ public class Ship {
         this.key = key;
         this.graphicalCulture = graphicalCulture;
         this.lastDamage = lastDamage;
-        this.auras = new ArrayList<>(auras);
-        this.sections = new ArrayList<>(sections);
-        this.timedModifiers = new ArrayList<>(timedModifiers);
+        this.auras = new ViewableArrayList<>(auras);
+        this.sections = new ViewableArrayList<>(sections);
+        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
         this.coordinate = coordinate;
         this.targetCoordinate = targetCoordinate;
         this.flags = flags;
@@ -256,15 +261,15 @@ public class Ship {
     }
 
     public List<Aura> getAuras() {
-        return Collections.unmodifiableList(auras);
+        return auras.getView();
     }
 
     public List<ShipSection> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections.getView();
     }
 
     public List<TimedModifier> getTimedModifiers() {
-        return Collections.unmodifiableList(timedModifiers);
+        return timedModifiers.getView();
     }
 
     public Coordinate getCoordinate() {

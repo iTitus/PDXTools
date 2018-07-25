@@ -4,9 +4,9 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
 import java.util.Collections;
-import java.util.List;
 
 public class Fleet {
 
@@ -16,7 +16,7 @@ public class Fleet {
     private final int fleetTemplate;
     private final boolean actionInitialized;
     // private final FleetActions actions;
-    private final List<Integer> ships;
+    private final ViewableList<Integer> ships;
     // private final FleetCombat combat;
     // private final FleetAutoMovement autoMovement;
     // private final FleetStats fleetStats;
@@ -33,7 +33,7 @@ public class Fleet {
     private final int orderId;
     // private final FleetOrders order;
     private final long sector;
-    private final List<Integer> incomingMerges;
+    private final ViewableList<Integer> incomingMerges;
     private final boolean friendsShouldFollow;
     // private final Settings settings;
     private final double hitPoints;
@@ -61,7 +61,7 @@ public class Fleet {
         this.orderId = o.getInt("order_id", -1);
         this.sector = o.getLong("sector", -1);
         PdxScriptList l = o.getList("incoming_merges");
-        this.incomingMerges = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.incomingMerges = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.friendsShouldFollow = o.getBoolean("friends_should_follow");
         this.hitPoints = o.getDouble("hit_points");
     }

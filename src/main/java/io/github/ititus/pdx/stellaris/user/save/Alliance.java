@@ -4,15 +4,19 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public class Alliance {
 
     private final int leader, nextLeader;
     private final String name;
     private final Date startDate, nextRotation;
-    private final List<Integer> members, associates, shipDesigns;
+    private final ViewableList<Integer> members, associates, shipDesigns;
 
     public Alliance(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -23,7 +27,7 @@ public class Alliance {
         this.name = o.getString("name");
         this.members = o.getList("members").getAsIntegerList();
         PdxScriptList l = o.getList("associates");
-        this.associates = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.associates = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.startDate = o.getDate("start_date");
         this.nextRotation = o.getDate("next_rotation");
         this.shipDesigns = o.getList("ship_design").getAsIntegerList();
@@ -37,9 +41,9 @@ public class Alliance {
         this.name = name;
         this.startDate = startDate;
         this.nextRotation = nextRotation;
-        this.members = new ArrayList<>(members);
-        this.associates = new ArrayList<>(associates);
-        this.shipDesigns = new ArrayList<>(shipDesigns);
+        this.members = new ViewableArrayList<>(members);
+        this.associates = new ViewableArrayList<>(associates);
+        this.shipDesigns = new ViewableArrayList<>(shipDesigns);
     }
 
     public int getLeader() {
@@ -63,14 +67,14 @@ public class Alliance {
     }
 
     public List<Integer> getMembers() {
-        return Collections.unmodifiableList(members);
+        return members.getView();
     }
 
     public List<Integer> getAssociates() {
-        return Collections.unmodifiableList(associates);
+        return associates.getView();
     }
 
     public List<Integer> getShipDesigns() {
-        return Collections.unmodifiableList(shipDesigns);
+        return shipDesigns.getView();
     }
 }

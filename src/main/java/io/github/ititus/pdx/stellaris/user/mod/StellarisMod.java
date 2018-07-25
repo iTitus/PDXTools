@@ -2,13 +2,13 @@ package io.github.ititus.pdx.stellaris.user.mod;
 
 import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ public class StellarisMod {
 
     private final String name, supportedVersion;
     private final File modFile;
-    private final List<String> tags;
+    private final ViewableList<String> tags;
     private final int remoteFileId;
 
     private final PdxRawDataLoader modArchive;
@@ -44,7 +44,7 @@ public class StellarisMod {
         String str = o.getString("archive");
         this.modFile = str != null ? new File(str) : new File(userDataDir, o.getString("path"));
         PdxScriptList l = o.getList("tags");
-        this.tags = l != null ? l.getAsStringList() : new ArrayList<>();
+        this.tags = l != null ? l.getAsStringList() : new ViewableArrayList<>();
         str = o.getString("remote_file_id");
         this.remoteFileId = str != null ? Integer.parseInt(str) : -1;
         this.supportedVersion = o.getString("supported_version");
@@ -70,7 +70,7 @@ public class StellarisMod {
     }
 
     public List<String> getTags() {
-        return Collections.unmodifiableList(tags);
+        return tags.getView();
     }
 
     public int getRemoteFileId() {

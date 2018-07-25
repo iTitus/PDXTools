@@ -2,18 +2,18 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class ShipDesign {
 
     private final boolean allianceShipDesign, autoGenDesigns, isSpecialBuildable, useDesignName;
     private final String name, shipSize, allowBuildableTrigger;
-    private final List<String> requiredComponents;
-    private final List<ShipDesignSection> sections;
+    private final ViewableList<String> requiredComponents;
+    private final ViewableList<ShipDesignSection> sections;
 
     public ShipDesign(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -40,8 +40,8 @@ public class ShipDesign {
         this.name = name;
         this.shipSize = shipSize;
         this.allowBuildableTrigger = allowBuildableTrigger;
-        this.requiredComponents = new ArrayList<>(requiredComponents);
-        this.sections = new ArrayList<>(sections);
+        this.requiredComponents = new ViewableArrayList<>(requiredComponents);
+        this.sections = new ViewableArrayList<>(sections);
     }
 
     public boolean isAllianceShipDesign() {
@@ -73,10 +73,10 @@ public class ShipDesign {
     }
 
     public List<String> getRequiredComponents() {
-        return Collections.unmodifiableList(requiredComponents);
+        return requiredComponents.getView();
     }
 
     public List<ShipDesignSection> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections.getView();
     }
 }

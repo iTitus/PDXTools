@@ -2,17 +2,17 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class FleetTemplate {
 
     private final int fleet, queued, count;
     private final double fleetSize;
-    private final List<FleetTemplateDesign> fleetTemplateDesigns;
+    private final ViewableList<FleetTemplateDesign> fleetTemplateDesigns;
     private final Location homeBase;
 
     public FleetTemplate(IPdxScript s) {
@@ -35,7 +35,7 @@ public class FleetTemplate {
         this.queued = queued;
         this.count = count;
         this.fleetSize = fleetSize;
-        this.fleetTemplateDesigns = new ArrayList<>(fleetTemplateDesigns);
+        this.fleetTemplateDesigns = new ViewableArrayList<>(fleetTemplateDesigns);
         this.homeBase = homeBase;
     }
 
@@ -56,7 +56,7 @@ public class FleetTemplate {
     }
 
     public List<FleetTemplateDesign> getFleetTemplateDesigns() {
-        return Collections.unmodifiableList(fleetTemplateDesigns);
+        return fleetTemplateDesigns.getView();
     }
 
     public Location getHomeBase() {

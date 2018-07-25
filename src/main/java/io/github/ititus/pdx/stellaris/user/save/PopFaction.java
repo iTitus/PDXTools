@@ -2,10 +2,10 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class PopFaction {
@@ -14,9 +14,9 @@ public class PopFaction {
     private final int country, leader;
     private final double support, happiness;
     private final String type, name;
-    private final List<Integer> members;
-    private final List<Parameter> parameters;
-    private final List<TimedModifier> timedModifiers;
+    private final ViewableList<Integer> members;
+    private final ViewableList<Parameter> parameters;
+    private final ViewableList<TimedModifier> timedModifiers;
 
     public PopFaction(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -44,9 +44,9 @@ public class PopFaction {
         this.happiness = happiness;
         this.type = type;
         this.name = name;
-        this.members = new ArrayList<>(members);
-        this.parameters = new ArrayList<>(parameters);
-        this.timedModifiers = new ArrayList<>(timedModifiers);
+        this.members = new ViewableArrayList<>(members);
+        this.parameters = new ViewableArrayList<>(parameters);
+        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
     }
 
     public boolean isModifierDirty() {
@@ -78,14 +78,14 @@ public class PopFaction {
     }
 
     public List<Integer> getMembers() {
-        return Collections.unmodifiableList(members);
+        return members.getView();
     }
 
     public List<Parameter> getParameters() {
-        return Collections.unmodifiableList(parameters);
+        return parameters.getView();
     }
 
     public List<TimedModifier> getTimedModifiers() {
-        return Collections.unmodifiableList(timedModifiers);
+        return timedModifiers.getView();
     }
 }

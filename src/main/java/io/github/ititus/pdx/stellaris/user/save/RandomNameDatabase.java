@@ -2,16 +2,17 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class RandomNameDatabase {
 
-    private final List<String> speciesModificationPrefix, speciesModificationPostfix, starNames, blackHoleNames, nebulaNames, asteroidPrefix;
-    private final List<List<String>> asteroidPostfix;
+    private final ViewableList<String> speciesModificationPrefix, speciesModificationPostfix, starNames, blackHoleNames, nebulaNames, asteroidPrefix;
+    private final ViewableList<List<String>> asteroidPostfix;
 
     public RandomNameDatabase(PdxScriptObject o) {
         this.speciesModificationPrefix = o.getList("species_modification_prefix").getAsStringList();
@@ -29,43 +30,43 @@ public class RandomNameDatabase {
     }
 
     public RandomNameDatabase(Collection<String> speciesModificationPrefix, Collection<String> speciesModificationPostfix, Collection<String> starNames, Collection<String> blackHoleNames, Collection<String> nebulaNames, Collection<String> asteroidPrefix, Collection<Collection<String>> asteroidPostfix) {
-        this.speciesModificationPrefix = new ArrayList<>(speciesModificationPrefix);
-        this.speciesModificationPostfix = new ArrayList<>(speciesModificationPostfix);
-        this.starNames = new ArrayList<>(starNames);
-        this.blackHoleNames = new ArrayList<>(blackHoleNames);
-        this.nebulaNames = new ArrayList<>(nebulaNames);
-        this.asteroidPrefix = new ArrayList<>(asteroidPrefix);
-        this.asteroidPostfix = new ArrayList<>();
-        asteroidPostfix.forEach(c -> this.asteroidPostfix.add(new ArrayList<>(c)));
+        this.speciesModificationPrefix = new ViewableArrayList<>(speciesModificationPrefix);
+        this.speciesModificationPostfix = new ViewableArrayList<>(speciesModificationPostfix);
+        this.starNames = new ViewableArrayList<>(starNames);
+        this.blackHoleNames = new ViewableArrayList<>(blackHoleNames);
+        this.nebulaNames = new ViewableArrayList<>(nebulaNames);
+        this.asteroidPrefix = new ViewableArrayList<>(asteroidPrefix);
+        this.asteroidPostfix = new ViewableArrayList<>();
+        asteroidPostfix.forEach(c -> this.asteroidPostfix.add(new ViewableArrayList<>(c)));
     }
 
     public List<String> getSpeciesModificationPrefix() {
-        return Collections.unmodifiableList(speciesModificationPrefix);
+        return speciesModificationPrefix.getView();
     }
 
     public List<String> getSpeciesModificationPostfix() {
-        return Collections.unmodifiableList(speciesModificationPostfix);
+        return speciesModificationPostfix.getView();
     }
 
     public List<String> getStarNames() {
-        return Collections.unmodifiableList(starNames);
+        return starNames.getView();
     }
 
     public List<String> getBlackHoleNames() {
-        return Collections.unmodifiableList(blackHoleNames);
+        return blackHoleNames.getView();
     }
 
     public List<String> getNebulaNames() {
-        return Collections.unmodifiableList(nebulaNames);
+        return nebulaNames.getView();
     }
 
     public List<String> getAsteroidPrefix() {
-        return Collections.unmodifiableList(asteroidPrefix);
+        return asteroidPrefix.getView();
     }
 
     public List<List<String>> getAsteroidPostfix() {
-        List<List<String>> list = new ArrayList<>();
+        List<List<String>> list = new ViewableArrayList<>();
         asteroidPostfix.forEach(l -> list.add(Collections.unmodifiableList(l)));
-        return Collections.unmodifiableList(list);
+        return list.getView();
     }
 }

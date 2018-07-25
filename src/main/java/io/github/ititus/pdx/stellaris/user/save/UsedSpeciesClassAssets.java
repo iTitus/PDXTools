@@ -4,16 +4,16 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class UsedSpeciesClassAssets {
 
     private final String speciesClass;
-    private final List<Integer> values;
+    private final ViewableList<Integer> values;
 
     public UsedSpeciesClassAssets(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -23,12 +23,12 @@ public class UsedSpeciesClassAssets {
 
         this.speciesClass = o.getString("class");
         PdxScriptList l = o.getList("values");
-        this.values = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.values = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
     }
 
     public UsedSpeciesClassAssets(String speciesClass, Collection<Integer> values) {
         this.speciesClass = speciesClass;
-        this.values = new ArrayList<>(values);
+        this.values = new ViewableArrayList<>(values);
     }
 
     public String getSpeciesClass() {
@@ -36,6 +36,6 @@ public class UsedSpeciesClassAssets {
     }
 
     public List<Integer> getValues() {
-        return Collections.unmodifiableList(values);
+        return values.getView();
     }
 }

@@ -4,6 +4,8 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
 import java.util.*;
 
@@ -33,11 +35,11 @@ public class Planet {
     private final double orbit, bombardmentDamage, unrest, alienSlavery, ownSpeciesSlavery;
     private final String name, planetClass, anomaly, entityName, picture;
     private final Date lastBombardment, colonizeDate;
-    private final List<Integer> moons, pops, orbitals, armies;
-    private final List<String> planetModifiers;
-    private final List<BuildingConstructionQueueItem> buildingConstructionQueue;
-    private final List<TimedModifier> timedModifiers;
-    private final List<Edict> edicts;
+    private final ViewableList<Integer> moons, pops, orbitals, armies;
+    private final ViewableList<String> planetModifiers;
+    private final ViewableList<BuildingConstructionQueueItem> buildingConstructionQueue;
+    private final ViewableList<TimedModifier> timedModifiers;
+    private final ViewableList<Edict> edicts;
     private final Coordinate coordinate;
     private final Pop colonizerPop;
     private final Flags flags;
@@ -61,7 +63,7 @@ public class Planet {
         this.lastBombardment = o.getDate("last_bombardment");
         this.unrest = o.getDouble("unrest");
         PdxScriptList l = o.getList("moons");
-        this.moons = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.moons = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.planetClassChanged = o.getBoolean("planet_class_changed");
         this.owner = o.getInt("owner", -1);
         this.originalOwner = o.getInt("original_owner", -1);
@@ -74,14 +76,14 @@ public class Planet {
         this.anomaly = o.getString("anomaly");
         this.colonyTile = o.getLong("colony_tile", -1);
         l = o.getList("pop");
-        this.pops = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.pops = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.colonizeDate = o.getDate("colonize_date");
         l = o.getList("building_construction_queue");
-        this.buildingConstructionQueue = l != null ? l.getAsList(BuildingConstructionQueueItem::new) : CollectionUtil.listOf();
+        this.buildingConstructionQueue = l != null ? l.getAsList(BuildingConstructionQueueItem::new) : CollectionUtil.viewableListOf();
         l = o.getList("orbitals");
-        this.orbitals = l != null ? l.getAsUnsignedIntegerList() : CollectionUtil.listOf();
+        this.orbitals = l != null ? l.getAsUnsignedIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("army");
-        this.armies = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.armies = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.builtArmies = o.getInt("built_armies");
         this.alienSlavery = o.getDouble("alien_slavery");
         this.ownSpeciesSlavery = o.getDouble("own_species_slavery");
@@ -104,7 +106,7 @@ public class Planet {
         this.tiles = o.getObject("tiles").getAs(Tiles::new);
         this.spaceport = o.getObject("spaceport").getAs(Spaceport::new);
         l = o.getList("edicts");
-        this.edicts = l != null ? l.getAsList(Edict::new) : CollectionUtil.listOf();
+        this.edicts = l != null ? l.getAsList(Edict::new) : CollectionUtil.viewableListOf();
         this.surveyedBy = o.getInt("surveyed_by", -1);
         this.surveyed = o.getBoolean("surveyed");
         this.preventAnomaly = o.getBoolean("prevent_anomaly");
@@ -147,14 +149,14 @@ public class Planet {
         this.picture = picture;
         this.lastBombardment = new Date(lastBombardment.getTime());
         this.colonizeDate = new Date(colonizeDate.getTime());
-        this.moons = new ArrayList<>(moons);
-        this.pops = new ArrayList<>(pops);
-        this.orbitals = new ArrayList<>(orbitals);
-        this.armies = new ArrayList<>(armies);
-        this.planetModifiers = new ArrayList<>(planetModifiers);
-        this.buildingConstructionQueue = new ArrayList<>(buildingConstructionQueue);
-        this.timedModifiers = new ArrayList<>(timedModifiers);
-        this.edicts = new ArrayList<>(edicts);
+        this.moons = new ViewableArrayList<>(moons);
+        this.pops = new ViewableArrayList<>(pops);
+        this.orbitals = new ViewableArrayList<>(orbitals);
+        this.armies = new ViewableArrayList<>(armies);
+        this.planetModifiers = new ViewableArrayList<>(planetModifiers);
+        this.buildingConstructionQueue = new ViewableArrayList<>(buildingConstructionQueue);
+        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
+        this.edicts = new ViewableArrayList<>(edicts);
         this.coordinate = coordinate;
         this.colonizerPop = colonizerPop;
         this.flags = flags;
@@ -301,35 +303,35 @@ public class Planet {
     }
 
     public List<Integer> getMoons() {
-        return Collections.unmodifiableList(moons);
+        return moons.getView();
     }
 
     public List<Integer> getPops() {
-        return Collections.unmodifiableList(pops);
+        return pops.getView();
     }
 
     public List<Integer> getOrbitals() {
-        return Collections.unmodifiableList(orbitals);
+        return orbitals.getView();
     }
 
     public List<Integer> getArmies() {
-        return Collections.unmodifiableList(armies);
+        return armies.getView();
     }
 
     public List<String> getPlanetModifiers() {
-        return Collections.unmodifiableList(planetModifiers);
+        return planetModifiers.getView();
     }
 
     public List<BuildingConstructionQueueItem> getBuildingConstructionQueue() {
-        return Collections.unmodifiableList(buildingConstructionQueue);
+        return buildingConstructionQueue.getView();
     }
 
     public List<TimedModifier> getTimedModifiers() {
-        return Collections.unmodifiableList(timedModifiers);
+        return timedModifiers.getView();
     }
 
     public List<Edict> getEdicts() {
-        return Collections.unmodifiableList(edicts);
+        return edicts.getView();
     }
 
     public Coordinate getCoordinate() {

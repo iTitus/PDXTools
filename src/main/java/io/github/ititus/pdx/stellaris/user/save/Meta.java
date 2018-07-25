@@ -2,8 +2,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public class Meta {
 
@@ -11,7 +15,7 @@ public class Meta {
     private final int versionControlRevision;
     private final String name;
     private final Date date;
-    private final List<String> requiredDLCs;
+    private final ViewableList<String> requiredDLCs;
     private final String playerPortrait;
     private final Flag flag;
     private final double fleets;
@@ -39,7 +43,7 @@ public class Meta {
         this.versionControlRevision = versionControlRevision;
         this.name = name;
         this.date = new Date(date.getTime());
-        this.requiredDLCs = new ArrayList<>(requiredDLCs);
+        this.requiredDLCs = new ViewableArrayList<>(requiredDLCs);
         this.playerPortrait = playerPortrait;
         this.flag = flag;
         this.fleets = fleets;
@@ -63,7 +67,7 @@ public class Meta {
     }
 
     public List<String> getRequiredDLCs() {
-        return Collections.unmodifiableList(requiredDLCs);
+        return requiredDLCs.getView();
     }
 
     public String getPlayerPortrait() {

@@ -1,8 +1,26 @@
 package io.github.ititus.pdx.util.collection;
 
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 public class CollectionUtil {
+
+    private static final Set<Collector.Characteristics> CH_ID = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+    private static final ViewableList EMPTY_VIEWABLE_LIST = new EmptyViewableList<>();
+
+    @SuppressWarnings("unchecked")
+    public static <T> ViewableList<T> viewableListOf() {
+        return (ViewableList<T>) EMPTY_VIEWABLE_LIST;
+    }
+
+    public static <T> ViewableList<T> viewableListOf(T t) {
+        return new ViewableSingletonList<>(t);
+    }
+
+    public static <T> ViewableList<T> viewableListOf(T... t) {
+        return new ViewableArrayList<>(listOf(t));
+    }
 
     public static <T> List<T> listOf() {
         return Collections.emptyList();
@@ -51,6 +69,17 @@ public class CollectionUtil {
             return s;
         }
         return setOf();
+    }
+
+    public static <T> Collector<T, ?, ViewableList<T>> toViewableList() {
+        return new CollectorImpl<>(
+                (Supplier<ViewableList<T>>) ViewableArrayList::new,
+                List::add,
+                (left, right) -> {
+                    left.addAll(right);
+                    return left;
+                },
+                CH_ID);
     }
 
 }

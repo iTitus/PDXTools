@@ -2,8 +2,9 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class Tile {
     private final boolean active;
     private final int pop;
     private final String prevBuilding, blocker;
-    private final List<String> deposits;
+    private final ViewableList<String> deposits;
     private final Resources resources;
     private final Building building;
 
@@ -37,7 +38,7 @@ public class Tile {
         this.pop = pop;
         this.prevBuilding = prevBuilding;
         this.blocker = blocker;
-        this.deposits = new ArrayList<>(deposits);
+        this.deposits = new ViewableArrayList<>(deposits);
         this.resources = resources;
         this.building = building;
     }
@@ -59,7 +60,7 @@ public class Tile {
     }
 
     public List<String> getDeposits() {
-        return new ArrayList<>(deposits);
+        return new ViewableArrayList<>(deposits);
     }
 
     public Resources getResources() {

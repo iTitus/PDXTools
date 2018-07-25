@@ -5,6 +5,8 @@ import java.util.stream.Stream;
 
 public class CountingSet<E> extends AbstractSet<E> {
 
+    private static final long serialVersionUID = 1;
+
     private final Map<E, Integer> map;
 
     public CountingSet() {

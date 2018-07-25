@@ -2,8 +2,9 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,7 @@ public class Starbase {
 
     private final int updateFlag, nextBuildItemId, nextShipyardBuildItemId, shipDesign, station, system, owner;
     private final String level;
-    private final List<BuildQueueItem> buildQueue, shipyardBuildQueue;
+    private final ViewableList<BuildQueueItem> buildQueue, shipyardBuildQueue;
     private final StarbaseBuildings modules, buildings;
 
     public Starbase(IPdxScript s) {
@@ -46,8 +47,8 @@ public class Starbase {
         this.system = system;
         this.owner = owner;
         this.level = level;
-        this.buildQueue = new ArrayList<>(buildQueue);
-        this.shipyardBuildQueue = new ArrayList<>(shipyardBuildQueue);
+        this.buildQueue = new ViewableArrayList<>(buildQueue);
+        this.shipyardBuildQueue = new ViewableArrayList<>(shipyardBuildQueue);
         this.modules = modules;
         this.buildings = buildings;
     }
@@ -85,11 +86,11 @@ public class Starbase {
     }
 
     public List<BuildQueueItem> getBuildQueue() {
-        return Collections.unmodifiableList(buildQueue);
+        return buildQueue.getView();
     }
 
     public List<BuildQueueItem> getShipyardBuildQueue() {
-        return Collections.unmodifiableList(shipyardBuildQueue);
+        return shipyardBuildQueue.getView();
     }
 
     public StarbaseBuildings getModules() {

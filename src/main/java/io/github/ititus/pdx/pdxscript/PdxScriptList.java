@@ -1,19 +1,22 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
+
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class PdxScriptList implements IPdxScript {
 
     private final Mode mode;
     private final PdxRelation relation;
-    private final List<IPdxScript> list;
+    private final ViewableList<IPdxScript> list;
 
     public PdxScriptList(Mode mode, PdxRelation relation, Collection<IPdxScript> list) {
         this.mode = mode;
         this.relation = relation;
-        this.list = new ArrayList<>(list);
+        this.list = new ViewableArrayList<>(list);
     }
 
     public static Builder builder() {
@@ -59,7 +62,7 @@ public final class PdxScriptList implements IPdxScript {
         return null;
     }
 
-    public List<PdxScriptValue> getAsValueList() {
+    public ViewableList<PdxScriptValue> getAsValueList() {
         return getAsList(s -> s instanceof PdxScriptValue ? (PdxScriptValue) s : null);
     }
 
@@ -67,23 +70,23 @@ public final class PdxScriptList implements IPdxScript {
         return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof String ? (String) v.getValue() : null).toArray(String[]::new);
     }
 
-    public List<String> getAsStringList() {
-        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof String ? (String) v.getValue() : null).collect(Collectors.toList());
+    public ViewableList<String> getAsStringList() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof String ? (String) v.getValue() : null).collect(CollectionUtil.toViewableList());
     }
 
     public Number[] getAsNumberArray() {
         return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Number ? (Number) v.getValue() : null).toArray(Number[]::new);
     }
 
-    public List<Number> getAsNumberList() {
-        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Number ? (Number) v.getValue() : null).collect(Collectors.toList());
+    public ViewableList<Number> getAsNumberList() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Number ? (Number) v.getValue() : null).collect(CollectionUtil.toViewableList());
     }
 
     public int[] getAsIntArray() {
         return getAsValueList().stream().mapToInt(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).intValue() : 0).toArray();
     }
 
-    public List<Integer> getAsUnsignedIntegerList() {
+    public ViewableList<Integer> getAsUnsignedIntegerList() {
         return getAsValueList().stream().map(v -> {
             if (v != null) {
                 Object o = v.getValue();
@@ -94,31 +97,31 @@ public final class PdxScriptList implements IPdxScript {
                 }
             }
             return null;
-        }).collect(Collectors.toList());
+        }).collect(CollectionUtil.toViewableList());
     }
 
-    public List<Integer> getAsIntegerList() {
-        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Integer ? (Integer) v.getValue() : null).collect(Collectors.toList());
+    public ViewableList<Integer> getAsIntegerList() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Integer ? (Integer) v.getValue() : null).collect(CollectionUtil.toViewableList());
     }
 
     public long[] getAsLongArray() {
         return getAsValueList().stream().mapToLong(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).longValue() : 0).toArray();
     }
 
-    public List<Long> getAsLongList() {
-        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Long ? (Long) v.getValue() : null).collect(Collectors.toList());
+    public ViewableList<Long> getAsLongList() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Long ? (Long) v.getValue() : null).collect(CollectionUtil.toViewableList());
     }
 
     public double[] getAsDoubleArray() {
         return getAsValueList().stream().mapToDouble(v -> v != null && v.getValue() instanceof Number ? ((Number) v.getValue()).doubleValue() : 0).toArray();
     }
 
-    public List<Double> getAsDoubleList() {
-        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Double ? (Double) v.getValue() : null).collect(Collectors.toList());
+    public ViewableList<Double> getAsDoubleList() {
+        return getAsValueList().stream().map(v -> v != null && v.getValue() instanceof Double ? (Double) v.getValue() : null).collect(CollectionUtil.toViewableList());
     }
 
-    public <T> List<T> getAsList(Function<IPdxScript, T> fct) {
-        return list.stream().map(fct).collect(Collectors.toList());
+    public <T> ViewableList<T> getAsList(Function<IPdxScript, T> fct) {
+        return list.stream().map(fct).collect(CollectionUtil.toViewableList());
     }
 
     @Override

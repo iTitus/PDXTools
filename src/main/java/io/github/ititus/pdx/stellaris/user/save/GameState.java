@@ -2,9 +2,9 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -14,17 +14,17 @@ public class GameState {
     private final double galaxyRadius;
     private final String version, name, lastKilledCountryName;
     private final Date date;
-    private final List<Integer> firedEvents, rimGalacticObjects;
-    private final List<Long> usedSymbols;
-    private final List<String> requiredDLCs, usedColors;
-    private final List<Player> players;
-    private final List<Species> species;
-    private final List<Nebula> nebulas;
-    private final List<Message> messages;
-    private final List<SavedEventTarget> savedEventTargets;
-    private final List<GlobalShipDesign> globalShipDesigns;
-    private final List<Cluster> clusters;
-    private final List<UsedSpeciesClassAssets> usedSpeciesNames, usedSpeciesPortraits;
+    private final ViewableList<Integer> firedEvents, rimGalacticObjects;
+    private final ViewableList<Long> usedSymbols;
+    private final ViewableList<String> requiredDLCs, usedColors;
+    private final ViewableList<Player> players;
+    private final ViewableList<Species> species;
+    private final ViewableList<Nebula> nebulas;
+    private final ViewableList<Message> messages;
+    private final ViewableList<SavedEventTarget> savedEventTargets;
+    private final ViewableList<GlobalShipDesign> globalShipDesigns;
+    private final ViewableList<Cluster> clusters;
+    private final ViewableList<UsedSpeciesClassAssets> usedSpeciesNames, usedSpeciesPortraits;
     private final Pops pops;
     private final GalacticObjects galacticObjects;
     private final Starbases starbases;
@@ -164,20 +164,20 @@ public class GameState {
         this.name = name;
         this.lastKilledCountryName = lastKilledCountryName;
         this.date = date;
-        this.firedEvents = new ArrayList<>(firedEvents);
-        this.rimGalacticObjects = new ArrayList<>(rimGalacticObjects);
-        this.usedSymbols = new ArrayList<>(usedSymbols);
-        this.requiredDLCs = new ArrayList<>(requiredDLCs);
-        this.usedColors = new ArrayList<>(usedColors);
-        this.players = new ArrayList<>(players);
-        this.species = new ArrayList<>(species);
-        this.nebulas = new ArrayList<>(nebulas);
-        this.messages = new ArrayList<>(messages);
-        this.savedEventTargets = new ArrayList<>(savedEventTargets);
-        this.globalShipDesigns = new ArrayList<>(globalShipDesigns);
-        this.clusters = new ArrayList<>(clusters);
-        this.usedSpeciesNames = new ArrayList<>(usedSpeciesNames);
-        this.usedSpeciesPortraits = new ArrayList<>(usedSpeciesPortraits);
+        this.firedEvents = new ViewableArrayList<>(firedEvents);
+        this.rimGalacticObjects = new ViewableArrayList<>(rimGalacticObjects);
+        this.usedSymbols = new ViewableArrayList<>(usedSymbols);
+        this.requiredDLCs = new ViewableArrayList<>(requiredDLCs);
+        this.usedColors = new ViewableArrayList<>(usedColors);
+        this.players = new ViewableArrayList<>(players);
+        this.species = new ViewableArrayList<>(species);
+        this.nebulas = new ViewableArrayList<>(nebulas);
+        this.messages = new ViewableArrayList<>(messages);
+        this.savedEventTargets = new ViewableArrayList<>(savedEventTargets);
+        this.globalShipDesigns = new ViewableArrayList<>(globalShipDesigns);
+        this.clusters = new ViewableArrayList<>(clusters);
+        this.usedSpeciesNames = new ViewableArrayList<>(usedSpeciesNames);
+        this.usedSpeciesPortraits = new ViewableArrayList<>(usedSpeciesPortraits);
         this.pops = pops;
         this.galacticObjects = galacticObjects;
         this.starbases = starbases;
@@ -309,59 +309,59 @@ public class GameState {
     }
 
     public List<Integer> getFiredEvents() {
-        return Collections.unmodifiableList(firedEvents);
+        return firedEvents.getView();
     }
 
     public List<Integer> getRimGalacticObjects() {
-        return Collections.unmodifiableList(rimGalacticObjects);
+        return rimGalacticObjects.getView();
     }
 
     public List<Long> getUsedSymbols() {
-        return Collections.unmodifiableList(usedSymbols);
+        return usedSymbols.getView();
     }
 
     public List<String> getRequiredDLCs() {
-        return Collections.unmodifiableList(requiredDLCs);
+        return requiredDLCs.getView();
     }
 
     public List<String> getUsedColors() {
-        return Collections.unmodifiableList(usedColors);
+        return usedColors.getView();
     }
 
     public List<Player> getPlayers() {
-        return Collections.unmodifiableList(players);
+        return players.getView();
     }
 
     public List<Species> getSpecies() {
-        return Collections.unmodifiableList(species);
+        return species.getView();
     }
 
     public List<Nebula> getNebulas() {
-        return Collections.unmodifiableList(nebulas);
+        return nebulas.getView();
     }
 
     public List<Message> getMessages() {
-        return Collections.unmodifiableList(messages);
+        return messages.getView();
     }
 
     public List<SavedEventTarget> getSavedEventTargets() {
-        return Collections.unmodifiableList(savedEventTargets);
+        return savedEventTargets.getView();
     }
 
     public List<GlobalShipDesign> getGlobalShipDesigns() {
-        return Collections.unmodifiableList(globalShipDesigns);
+        return globalShipDesigns.getView();
     }
 
     public List<Cluster> getClusters() {
-        return Collections.unmodifiableList(clusters);
+        return clusters.getView();
     }
 
     public List<UsedSpeciesClassAssets> getUsedSpeciesNames() {
-        return Collections.unmodifiableList(usedSpeciesNames);
+        return usedSpeciesNames.getView();
     }
 
     public List<UsedSpeciesClassAssets> getUsedSpeciesPortraits() {
-        return Collections.unmodifiableList(usedSpeciesPortraits);
+        return usedSpeciesPortraits.getView();
     }
 
     public Pops getPops() {

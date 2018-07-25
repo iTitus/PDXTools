@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.collection.Pair;
+import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.ZipUtil;

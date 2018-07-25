@@ -4,8 +4,9 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,10 +16,10 @@ public class GalacticObject {
     private final int arm, initParent, starbase;
     private final double innerRadius, outerRadius;
     private final String type, name, starClass, initializer;
-    private final List<Integer> planets, ambientObjects, megaStructures, naturalWormholes, bypasses, discoveries, fleetPresence, auraPresence, ftlInhibitorPresence;
-    private final List<Claim> claims;
-    private final List<Hyperlane> hyperlanes;
-    private final List<AsteroidBelt> asteroidBelts;
+    private final ViewableList<Integer> planets, ambientObjects, megaStructures, naturalWormholes, bypasses, discoveries, fleetPresence, auraPresence, ftlInhibitorPresence;
+    private final ViewableList<Claim> claims;
+    private final ViewableList<Hyperlane> hyperlanes;
+    private final ViewableList<AsteroidBelt> asteroidBelts;
     private final Coordinate coordinate;
     private final Flags flags;
 
@@ -33,33 +34,33 @@ public class GalacticObject {
         this.name = o.getString("name");
         this.planets = o.getImplicitList("planet").getAsIntegerList();
         PdxScriptList l = o.getList("ambient_object");
-        this.ambientObjects = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.ambientObjects = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("megastructures");
-        this.megaStructures = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.megaStructures = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("claims");
-        this.claims = l != null ? l.getAsList(Claim::new) : CollectionUtil.listOf();
+        this.claims = l != null ? l.getAsList(Claim::new) : CollectionUtil.viewableListOf();
         this.starClass = o.getString("star_class");
         l = o.getList("hyperlane");
-        this.hyperlanes = l != null ? l.getAsList(Hyperlane::new) : CollectionUtil.listOf();
+        this.hyperlanes = l != null ? l.getAsList(Hyperlane::new) : CollectionUtil.viewableListOf();
         l = o.getList("natural_wormholes");
-        this.naturalWormholes = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.naturalWormholes = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("bypasses");
-        this.bypasses = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.bypasses = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("asteroid_belts");
-        this.asteroidBelts = l != null ? l.getAsList(AsteroidBelt::new) : CollectionUtil.listOf();
+        this.asteroidBelts = l != null ? l.getAsList(AsteroidBelt::new) : CollectionUtil.viewableListOf();
         l = o.getList("discovery");
-        this.discoveries = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.discoveries = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.arm = o.getInt("arm");
         PdxScriptObject o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
         this.initializer = o.getString("initializer");
         this.initParent = o.getInt("init_parent", -1);
         l = o.getList("fleet_presence");
-        this.fleetPresence = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.fleetPresence = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("aura_presence");
-        this.auraPresence = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.auraPresence = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         l = o.getList("ftl_inhibitor_presence");
-        this.ftlInhibitorPresence = l != null ? l.getAsIntegerList() : CollectionUtil.listOf();
+        this.ftlInhibitorPresence = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.innerRadius = o.getDouble("inner_radius");
         this.outerRadius = o.getDouble("outer_radius");
         this.starbase = o.getUnsignedInt("starbase");
@@ -71,18 +72,18 @@ public class GalacticObject {
         this.name = name;
         this.starClass = starClass;
         this.initializer = initializer;
-        this.planets = new ArrayList<>(planets);
-        this.ambientObjects = new ArrayList<>(ambientObjects);
-        this.megaStructures = new ArrayList<>(megaStructures);
-        this.naturalWormholes = new ArrayList<>(naturalWormholes);
-        this.bypasses = new ArrayList<>(bypasses);
-        this.discoveries = new ArrayList<>(discoveries);
-        this.fleetPresence = new ArrayList<>(fleetPresence);
-        this.auraPresence = new ArrayList<>(auraPresence);
-        this.ftlInhibitorPresence = new ArrayList<>(ftlInhibitorPresence);
-        this.claims = new ArrayList<>(claims);
-        this.hyperlanes = new ArrayList<>(hyperlanes);
-        this.asteroidBelts = new ArrayList<>(asteroidBelts);
+        this.planets = new ViewableArrayList<>(planets);
+        this.ambientObjects = new ViewableArrayList<>(ambientObjects);
+        this.megaStructures = new ViewableArrayList<>(megaStructures);
+        this.naturalWormholes = new ViewableArrayList<>(naturalWormholes);
+        this.bypasses = new ViewableArrayList<>(bypasses);
+        this.discoveries = new ViewableArrayList<>(discoveries);
+        this.fleetPresence = new ViewableArrayList<>(fleetPresence);
+        this.auraPresence = new ViewableArrayList<>(auraPresence);
+        this.ftlInhibitorPresence = new ViewableArrayList<>(ftlInhibitorPresence);
+        this.claims = new ViewableArrayList<>(claims);
+        this.hyperlanes = new ViewableArrayList<>(hyperlanes);
+        this.asteroidBelts = new ViewableArrayList<>(asteroidBelts);
         this.arm = arm;
         this.initParent = initParent;
         this.starbase = starbase;
@@ -112,51 +113,51 @@ public class GalacticObject {
     }
 
     public List<Integer> getPlanets() {
-        return Collections.unmodifiableList(planets);
+        return planets.getView();
     }
 
     public List<Integer> getAmbientObjects() {
-        return Collections.unmodifiableList(ambientObjects);
+        return ambientObjects.getView();
     }
 
     public List<Integer> getMegaStructures() {
-        return Collections.unmodifiableList(megaStructures);
+        return megaStructures.getView();
     }
 
     public List<Integer> getNaturalWormholes() {
-        return Collections.unmodifiableList(naturalWormholes);
+        return naturalWormholes.getView();
     }
 
     public List<Integer> getBypasses() {
-        return Collections.unmodifiableList(bypasses);
+        return bypasses.getView();
     }
 
     public List<Integer> getDiscoveries() {
-        return Collections.unmodifiableList(discoveries);
+        return discoveries.getView();
     }
 
     public List<Integer> getFleetPresence() {
-        return Collections.unmodifiableList(fleetPresence);
+        return fleetPresence.getView();
     }
 
     public List<Integer> getAuraPresence() {
-        return Collections.unmodifiableList(auraPresence);
+        return auraPresence.getView();
     }
 
     public List<Integer> getFtlInhibitorPresence() {
-        return Collections.unmodifiableList(ftlInhibitorPresence);
+        return ftlInhibitorPresence.getView();
     }
 
     public List<Claim> getClaims() {
-        return Collections.unmodifiableList(claims);
+        return claims.getView();
     }
 
     public List<Hyperlane> getHyperlanes() {
-        return Collections.unmodifiableList(hyperlanes);
+        return hyperlanes.getView();
     }
 
     public List<AsteroidBelt> getAsteroidBelts() {
-        return Collections.unmodifiableList(asteroidBelts);
+        return asteroidBelts.getView();
     }
 
     public int getArm() {

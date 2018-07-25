@@ -2,17 +2,17 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.collection.ViewableArrayList;
+import io.github.ititus.pdx.util.collection.ViewableList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Cluster {
 
     private final double radius;
     private final String id;
-    private final List<Integer> objects;
+    private final ViewableList<Integer> objects;
     private final Coordinate position;
 
     public Cluster(IPdxScript s) {
@@ -30,7 +30,7 @@ public class Cluster {
     public Cluster(double radius, String id, Collection<Integer> objects, Coordinate position) {
         this.radius = radius;
         this.id = id;
-        this.objects = new ArrayList<>(objects);
+        this.objects = new ViewableArrayList<>(objects);
         this.position = position;
     }
 
@@ -43,7 +43,7 @@ public class Cluster {
     }
 
     public List<Integer> getObjects() {
-        return Collections.unmodifiableList(objects);
+        return objects.getView();
     }
 
     public Coordinate getPosition() {
