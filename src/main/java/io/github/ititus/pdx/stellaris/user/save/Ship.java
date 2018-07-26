@@ -25,7 +25,7 @@ public class Ship {
     private final Coordinate coordinate, targetCoordinate;
     private final Flags flags;
     private final Homepop homepop;
-    private final ShipFormationPos formationPos;
+    private final FormationPos formationPos;
     private final Variables auraModifier;
 
     public Ship(IPdxScript s) {
@@ -71,7 +71,7 @@ public class Ship {
         this.lastDamage = o.getDate("last_damage");
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         o1 = o.getObject("formation_pos");
-        this.formationPos = o1 != null ? o1.getAs(ShipFormationPos::new) : null;
+        this.formationPos = o1 != null ? o1.getAs(FormationPos::new) : null;
         this.combatAction = o.getInt("combat_action", -1);
         this.disabled = o.getBoolean("disabled");
         this.disabled_by_event = o.getBoolean("disabled_by_event");
@@ -83,7 +83,7 @@ public class Ship {
         this.upgradable = o.getBoolean("upgradable", true);
     }
 
-    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean disabled, boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign, int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed, double experience, double postMoveAngle, double hitpoints, double shieldHitpoints, double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints, double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth, double enableAtHealth, double targeting, String name, String key, String graphicalCulture, Date lastDamage, Collection<Aura> auras, Collection<ShipSection> sections, Collection<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate, Flags flags, Homepop homepop, ShipFormationPos formationPos, Variables auraModifier) {
+    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean disabled, boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign, int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed, double experience, double postMoveAngle, double hitpoints, double shieldHitpoints, double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints, double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth, double enableAtHealth, double targeting, String name, String key, String graphicalCulture, Date lastDamage, Collection<Aura> auras, Collection<ShipSection> sections, Collection<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate, Flags flags, Homepop homepop, FormationPos formationPos, Variables auraModifier) {
         this.isBeingRepaired = isBeingRepaired;
         this.createdThisUpdate = createdThisUpdate;
         this.disabled = disabled;
@@ -288,7 +288,7 @@ public class Ship {
         return homepop;
     }
 
-    public ShipFormationPos getFormationPos() {
+    public FormationPos getFormationPos() {
         return formationPos;
     }
 

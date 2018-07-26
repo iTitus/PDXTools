@@ -2,11 +2,11 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-public class ShipFormationPos {
+public class FormationPos {
 
     private final double x, y, speed, rotation, forwardX, forwardY;
 
-    public ShipFormationPos(PdxScriptObject o) {
+    public FormationPos(PdxScriptObject o) {
         this.x = o.getDouble("x");
         this.y = o.getDouble("y");
         this.speed = o.getDouble("speed");
@@ -15,7 +15,7 @@ public class ShipFormationPos {
         this.forwardY = o.getDouble("forward_y");
     }
 
-    public ShipFormationPos(double x, double y, double speed, double rotation, double forwardX, double forwardY) {
+    public FormationPos(double x, double y, double speed, double rotation, double forwardX, double forwardY) {
         this.x = x;
         this.y = y;
         this.speed = speed;
