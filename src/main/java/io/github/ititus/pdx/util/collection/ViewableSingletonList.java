@@ -68,6 +68,23 @@ public class ViewableSingletonList<E> extends AbstractList<E> implements Viewabl
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o instanceof List) {
+            List<?> other = (List<?>) o;
+            return other.size() == 1 && Objects.equals(other.get(0), element);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(element);
+    }
+
+    @Override
     public void forEach(Consumer<? super E> action) {
         action.accept(element);
     }
