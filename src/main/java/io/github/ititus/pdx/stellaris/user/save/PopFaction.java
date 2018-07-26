@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,9 +44,9 @@ public class PopFaction {
         this.happiness = happiness;
         this.type = type;
         this.name = name;
-        this.members = new ViewableArrayList<>(members);
-        this.parameters = new ViewableArrayList<>(parameters);
-        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
+        this.members = new ViewableUnmodifiableArrayList<>(members);
+        this.parameters = new ViewableUnmodifiableArrayList<>(parameters);
+        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
     }
 
     public boolean isModifierDirty() {

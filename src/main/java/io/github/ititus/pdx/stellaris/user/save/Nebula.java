@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +30,7 @@ public class Nebula {
         this.coordinate = coordinate;
         this.name = name;
         this.radius = radius;
-        this.galacticObjects = new ViewableArrayList<>(galacticObjects);
+        this.galacticObjects = new ViewableUnmodifiableArrayList<>(galacticObjects);
     }
 
     public Coordinate getCoordinate() {

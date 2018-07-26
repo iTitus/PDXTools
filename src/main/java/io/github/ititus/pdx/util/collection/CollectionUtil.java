@@ -1,12 +1,16 @@
 package io.github.ititus.pdx.util.collection;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 public class CollectionUtil {
 
+    private static final Set<Collector.Characteristics> CH_CONCURRENT_ID = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.CONCURRENT, Collector.Characteristics.UNORDERED, Collector.Characteristics.IDENTITY_FINISH));
+    private static final Set<Collector.Characteristics> CH_CONCURRENT_NOID = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.CONCURRENT, Collector.Characteristics.UNORDERED));
     private static final Set<Collector.Characteristics> CH_ID = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+    private static final Set<Collector.Characteristics> CH_UNORDERED_ID = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.UNORDERED, Collector.Characteristics.IDENTITY_FINISH));
+    private static final Set<Collector.Characteristics> CH_NOID = setOf();
+
     private static final ViewableList EMPTY_VIEWABLE_LIST = new EmptyViewableList<>();
 
     @SuppressWarnings("unchecked")
@@ -18,8 +22,15 @@ public class CollectionUtil {
         return new ViewableSingletonList<>(t);
     }
 
+    @SafeVarargs
     public static <T> ViewableList<T> viewableListOf(T... t) {
-        return new ViewableArrayList<>(listOf(t));
+        if (t != null && t.length > 0) {
+            if (t.length == 1) {
+                return viewableListOf(t[0]);
+            }
+            return ViewableUnmodifiableArrayList.<T>builder().addAll(t).build();
+        }
+        return viewableListOf();
     }
 
     public static <T> List<T> listOf() {
@@ -36,9 +47,7 @@ public class CollectionUtil {
             if (t.length == 1) {
                 return listOf(t[0]);
             }
-            List<T> l = new ArrayList<>(t.length);
-            l.addAll(Arrays.asList(t));
-            return l;
+            return ViewableUnmodifiableArrayList.<T>builder().addAll(t).build();
         }
         return listOf();
     }
@@ -71,15 +80,13 @@ public class CollectionUtil {
         return setOf();
     }
 
-    public static <T> Collector<T, ?, ViewableList<T>> toViewableList() {
+    public static <T> Collector<T, ViewableUnmodifiableArrayList.Builder<T>, ViewableList<T>> toViewableList() {
         return new CollectorImpl<>(
-                (Supplier<ViewableList<T>>) ViewableArrayList::new,
-                List::add,
-                (left, right) -> {
-                    left.addAll(right);
-                    return left;
-                },
-                CH_ID);
+                ViewableUnmodifiableArrayList::builder,
+                ViewableUnmodifiableArrayList.Builder::add,
+                ViewableUnmodifiableArrayList.Builder::addAll,
+                ViewableUnmodifiableArrayList.Builder::build,
+                CH_NOID);
     }
 
 }

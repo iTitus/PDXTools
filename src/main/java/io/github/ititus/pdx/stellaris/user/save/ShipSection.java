@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,8 +29,8 @@ public class ShipSection {
     public ShipSection(String design, String slot, Collection<ShipWeapon> weapons, Collection<ShipStrikeCraft> strikeCrafts) {
         this.design = design;
         this.slot = slot;
-        this.weapons = new ViewableArrayList<>(weapons);
-        this.strikeCrafts = new ViewableArrayList<>(strikeCrafts);
+        this.weapons = new ViewableUnmodifiableArrayList<>(weapons);
+        this.strikeCrafts = new ViewableUnmodifiableArrayList<>(strikeCrafts);
     }
 
     public String getDesign() {

@@ -4,8 +4,8 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.*;
 
@@ -149,14 +149,14 @@ public class Planet {
         this.picture = picture;
         this.lastBombardment = new Date(lastBombardment.getTime());
         this.colonizeDate = new Date(colonizeDate.getTime());
-        this.moons = new ViewableArrayList<>(moons);
-        this.pops = new ViewableArrayList<>(pops);
-        this.orbitals = new ViewableArrayList<>(orbitals);
-        this.armies = new ViewableArrayList<>(armies);
-        this.planetModifiers = new ViewableArrayList<>(planetModifiers);
-        this.buildingConstructionQueue = new ViewableArrayList<>(buildingConstructionQueue);
-        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
-        this.edicts = new ViewableArrayList<>(edicts);
+        this.moons = new ViewableUnmodifiableArrayList<>(moons);
+        this.pops = new ViewableUnmodifiableArrayList<>(pops);
+        this.orbitals = new ViewableUnmodifiableArrayList<>(orbitals);
+        this.armies = new ViewableUnmodifiableArrayList<>(armies);
+        this.planetModifiers = new ViewableUnmodifiableArrayList<>(planetModifiers);
+        this.buildingConstructionQueue = new ViewableUnmodifiableArrayList<>(buildingConstructionQueue);
+        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
+        this.edicts = new ViewableUnmodifiableArrayList<>(edicts);
         this.coordinate = coordinate;
         this.colonizerPop = colonizerPop;
         this.flags = flags;

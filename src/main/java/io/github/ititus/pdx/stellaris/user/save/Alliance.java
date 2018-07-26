@@ -4,8 +4,8 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.Date;
@@ -41,9 +41,9 @@ public class Alliance {
         this.name = name;
         this.startDate = startDate;
         this.nextRotation = nextRotation;
-        this.members = new ViewableArrayList<>(members);
-        this.associates = new ViewableArrayList<>(associates);
-        this.shipDesigns = new ViewableArrayList<>(shipDesigns);
+        this.members = new ViewableUnmodifiableArrayList<>(members);
+        this.associates = new ViewableUnmodifiableArrayList<>(associates);
+        this.shipDesigns = new ViewableUnmodifiableArrayList<>(shipDesigns);
     }
 
     public int getLeader() {

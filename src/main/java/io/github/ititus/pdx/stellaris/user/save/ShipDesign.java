@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,8 +40,8 @@ public class ShipDesign {
         this.name = name;
         this.shipSize = shipSize;
         this.allowBuildableTrigger = allowBuildableTrigger;
-        this.requiredComponents = new ViewableArrayList<>(requiredComponents);
-        this.sections = new ViewableArrayList<>(sections);
+        this.requiredComponents = new ViewableUnmodifiableArrayList<>(requiredComponents);
+        this.sections = new ViewableUnmodifiableArrayList<>(sections);
     }
 
     public boolean isAllianceShipDesign() {

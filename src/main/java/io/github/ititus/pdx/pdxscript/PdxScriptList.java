@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.*;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ public final class PdxScriptList implements IPdxScript {
     public PdxScriptList(Mode mode, PdxRelation relation, Collection<IPdxScript> list) {
         this.mode = mode;
         this.relation = relation;
-        this.list = new ViewableArrayList<>(list);
+        this.list = new ViewableUnmodifiableArrayList<>(list);
     }
 
     public static Builder builder() {

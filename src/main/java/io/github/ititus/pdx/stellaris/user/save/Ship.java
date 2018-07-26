@@ -4,8 +4,8 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -117,9 +117,9 @@ public class Ship {
         this.key = key;
         this.graphicalCulture = graphicalCulture;
         this.lastDamage = lastDamage;
-        this.auras = new ViewableArrayList<>(auras);
-        this.sections = new ViewableArrayList<>(sections);
-        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
+        this.auras = new ViewableUnmodifiableArrayList<>(auras);
+        this.sections = new ViewableUnmodifiableArrayList<>(sections);
+        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
         this.coordinate = coordinate;
         this.targetCoordinate = targetCoordinate;
         this.flags = flags;

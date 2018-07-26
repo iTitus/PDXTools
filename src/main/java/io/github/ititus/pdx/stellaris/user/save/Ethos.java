@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +16,7 @@ public class Ethos {
     }
 
     public Ethos(Collection<String> ethics) {
-        this.ethics = new ViewableArrayList<>(ethics);
+        this.ethics = new ViewableUnmodifiableArrayList<>(ethics);
     }
 
     public List<String> getEthics() {

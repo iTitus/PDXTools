@@ -2,7 +2,6 @@ package io.github.ititus.pdx.stellaris.user.mod;
 
 import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
@@ -44,7 +43,7 @@ public class StellarisMod {
         String str = o.getString("archive");
         this.modFile = str != null ? new File(str) : new File(userDataDir, o.getString("path"));
         PdxScriptList l = o.getList("tags");
-        this.tags = l != null ? l.getAsStringList() : new ViewableArrayList<>();
+        this.tags = l != null ? l.getAsStringList() : CollectionUtil.viewableListOf();
         str = o.getString("remote_file_id");
         this.remoteFileId = str != null ? Integer.parseInt(str) : -1;
         this.supportedVersion = o.getString("supported_version");

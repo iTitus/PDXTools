@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class Pop {
         this.payingSector = payingSector;
         this.growth = growth;
         this.growthState = growthState;
-        this.timedModifiers = new ViewableArrayList<>(timedModifiers);
+        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
         this.ethos = ethos;
         this.flags = flags;
         this.requiredGrowth = requiredGrowth;

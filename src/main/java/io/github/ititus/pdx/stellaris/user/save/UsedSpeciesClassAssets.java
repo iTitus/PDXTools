@@ -4,8 +4,8 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +28,7 @@ public class UsedSpeciesClassAssets {
 
     public UsedSpeciesClassAssets(String speciesClass, Collection<Integer> values) {
         this.speciesClass = speciesClass;
-        this.values = new ViewableArrayList<>(values);
+        this.values = new ViewableUnmodifiableArrayList<>(values);
     }
 
     public String getSpeciesClass() {

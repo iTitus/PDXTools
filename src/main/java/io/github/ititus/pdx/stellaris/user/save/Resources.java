@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,30 +44,30 @@ public class Resources {
     }
 
     public Resources(Collection<Double> energy, Collection<Double> minerals, Collection<Double> food, Collection<Double> physicsResearch, Collection<Double> societyResearch, Collection<Double> engineeringResearch, Collection<Double> influence, Collection<Double> unity, Collection<Double> aldar, Collection<Double> darkMatter, Collection<Double> engos, Collection<Double> garanthium, Collection<Double> livingMetal, Collection<Double> lythuric, Collection<Double> orillium, Collection<Double> pitharan, Collection<Double> satramene, Collection<Double> teldar, Collection<Double> terraformGases, Collection<Double> terraformLiquids, Collection<Double> yurantic, Collection<Double> zro, Collection<Double> alienPets, Collection<Double> betharian) {
-        this.energy = new ViewableArrayList<>(energy);
-        this.minerals = new ViewableArrayList<>(minerals);
-        this.food = new ViewableArrayList<>(food);
-        this.physicsResearch = new ViewableArrayList<>(physicsResearch);
-        this.societyResearch = new ViewableArrayList<>(societyResearch);
-        this.engineeringResearch = new ViewableArrayList<>(engineeringResearch);
-        this.influence = new ViewableArrayList<>(influence);
-        this.unity = new ViewableArrayList<>(unity);
-        this.aldar = new ViewableArrayList<>(aldar);
-        this.darkMatter = new ViewableArrayList<>(darkMatter);
-        this.engos = new ViewableArrayList<>(engos);
-        this.garanthium = new ViewableArrayList<>(garanthium);
-        this.livingMetal = new ViewableArrayList<>(livingMetal);
-        this.lythuric = new ViewableArrayList<>(lythuric);
-        this.orillium = new ViewableArrayList<>(orillium);
-        this.pitharan = new ViewableArrayList<>(pitharan);
-        this.satramene = new ViewableArrayList<>(satramene);
-        this.teldar = new ViewableArrayList<>(teldar);
-        this.terraformGases = new ViewableArrayList<>(terraformGases);
-        this.terraformLiquids = new ViewableArrayList<>(terraformLiquids);
-        this.yurantic = new ViewableArrayList<>(yurantic);
-        this.zro = new ViewableArrayList<>(zro);
-        this.alienPets = new ViewableArrayList<>(alienPets);
-        this.betharian = new ViewableArrayList<>(betharian);
+        this.energy = new ViewableUnmodifiableArrayList<>(energy);
+        this.minerals = new ViewableUnmodifiableArrayList<>(minerals);
+        this.food = new ViewableUnmodifiableArrayList<>(food);
+        this.physicsResearch = new ViewableUnmodifiableArrayList<>(physicsResearch);
+        this.societyResearch = new ViewableUnmodifiableArrayList<>(societyResearch);
+        this.engineeringResearch = new ViewableUnmodifiableArrayList<>(engineeringResearch);
+        this.influence = new ViewableUnmodifiableArrayList<>(influence);
+        this.unity = new ViewableUnmodifiableArrayList<>(unity);
+        this.aldar = new ViewableUnmodifiableArrayList<>(aldar);
+        this.darkMatter = new ViewableUnmodifiableArrayList<>(darkMatter);
+        this.engos = new ViewableUnmodifiableArrayList<>(engos);
+        this.garanthium = new ViewableUnmodifiableArrayList<>(garanthium);
+        this.livingMetal = new ViewableUnmodifiableArrayList<>(livingMetal);
+        this.lythuric = new ViewableUnmodifiableArrayList<>(lythuric);
+        this.orillium = new ViewableUnmodifiableArrayList<>(orillium);
+        this.pitharan = new ViewableUnmodifiableArrayList<>(pitharan);
+        this.satramene = new ViewableUnmodifiableArrayList<>(satramene);
+        this.teldar = new ViewableUnmodifiableArrayList<>(teldar);
+        this.terraformGases = new ViewableUnmodifiableArrayList<>(terraformGases);
+        this.terraformLiquids = new ViewableUnmodifiableArrayList<>(terraformLiquids);
+        this.yurantic = new ViewableUnmodifiableArrayList<>(yurantic);
+        this.zro = new ViewableUnmodifiableArrayList<>(zro);
+        this.alienPets = new ViewableUnmodifiableArrayList<>(alienPets);
+        this.betharian = new ViewableUnmodifiableArrayList<>(betharian);
     }
 
     private static ViewableList<Double> get(PdxScriptObject o, String resource) {

@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableArrayList;
 import io.github.ititus.pdx.util.collection.ViewableList;
+import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,14 +31,15 @@ public class RandomNameDatabase {
     }
 
     public RandomNameDatabase(Collection<String> speciesModificationPrefix, Collection<String> speciesModificationPostfix, Collection<String> starNames, Collection<String> blackHoleNames, Collection<String> nebulaNames, Collection<String> asteroidPrefix, Collection<Collection<String>> asteroidPostfix) {
-        this.speciesModificationPrefix = new ViewableArrayList<>(speciesModificationPrefix);
-        this.speciesModificationPostfix = new ViewableArrayList<>(speciesModificationPostfix);
-        this.starNames = new ViewableArrayList<>(starNames);
-        this.blackHoleNames = new ViewableArrayList<>(blackHoleNames);
-        this.nebulaNames = new ViewableArrayList<>(nebulaNames);
-        this.asteroidPrefix = new ViewableArrayList<>(asteroidPrefix);
-        this.asteroidPostfix = new ViewableArrayList<>();
-        asteroidPostfix.forEach(c -> this.asteroidPostfix.add(new ViewableArrayList<>(c)));
+        this.speciesModificationPrefix = new ViewableUnmodifiableArrayList<>(speciesModificationPrefix);
+        this.speciesModificationPostfix = new ViewableUnmodifiableArrayList<>(speciesModificationPostfix);
+        this.starNames = new ViewableUnmodifiableArrayList<>(starNames);
+        this.blackHoleNames = new ViewableUnmodifiableArrayList<>(blackHoleNames);
+        this.nebulaNames = new ViewableUnmodifiableArrayList<>(nebulaNames);
+        this.asteroidPrefix = new ViewableUnmodifiableArrayList<>(asteroidPrefix);
+        ViewableUnmodifiableArrayList.Builder<ViewableList<String>> b = ViewableUnmodifiableArrayList.builder();
+        asteroidPostfix.forEach(c -> b.add(new ViewableUnmodifiableArrayList<>(c)));
+        this.asteroidPostfix = b.build();
     }
 
     public List<String> getSpeciesModificationPrefix() {
