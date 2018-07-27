@@ -1,8 +1,9 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
+import com.koloboke.collect.map.hash.HashObjObjMaps;
+
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
 
 public class StellarisDLCs {
@@ -16,14 +17,9 @@ public class StellarisDLCs {
         }
         this.installDir = installDir;
         this.dlcDir = dlcDir;
-        this.dlcs = new HashMap<>();
 
         File[] files = dlcDir.listFiles(f -> f != null && f.isDirectory());
-        if (files != null) {
-            for (File dlcFolder : files) {
-                dlcs.put(dlcFolder.getName(), new StellarisDLC(installDir, dlcFolder));
-            }
-        }
+        this.dlcs = HashObjObjMaps.newImmutableMap(Arrays.stream(files).map(File::getName)::iterator, Arrays.stream(files).map(dlcFolder -> new StellarisDLC(installDir, dlcFolder))::iterator);
     }
 
     public File getInstallDir() {
@@ -35,6 +31,6 @@ public class StellarisDLCs {
     }
 
     public Map<String, StellarisDLC> getDLCs() {
-        return Collections.unmodifiableMap(dlcs);
+        return dlcs;
     }
 }

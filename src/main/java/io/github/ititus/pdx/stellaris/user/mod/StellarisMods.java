@@ -1,12 +1,12 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
+import com.koloboke.collect.map.hash.HashObjObjMaps;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
 
 public class StellarisMods {
@@ -22,14 +22,9 @@ public class StellarisMods {
         }
         this.userDataDir = userDataDir;
         this.modsFolder = modsFolder;
-        this.mods = new HashMap<>();
 
         File[] files = modsFolder.listFiles(MOD);
-        if (files != null) {
-            for (File modFile : files) {
-                mods.put(IOUtil.getNameWithoutExtension(modFile), new StellarisMod(userDataDir, modFile));
-            }
-        }
+        this.mods = HashObjObjMaps.newImmutableMap(Arrays.stream(files).map(IOUtil::getNameWithoutExtension)::iterator, Arrays.stream(files).map(modFile -> new StellarisMod(userDataDir, modFile))::iterator);
     }
 
     public File getUserDataDir() {
@@ -41,6 +36,6 @@ public class StellarisMods {
     }
 
     public Map<String, StellarisMod> getMods() {
-        return Collections.unmodifiableMap(mods);
+        return mods;
     }
 }
