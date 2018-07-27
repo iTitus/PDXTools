@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class GalacticObjects {
 
-    private final Map<Integer, GalacticObject> galacticObjects;
+    private final IntObjMap<GalacticObject> galacticObjects;
 
     public GalacticObjects(PdxScriptObject o) {
-        this.galacticObjects = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(GalacticObject::new));
+        this.galacticObjects = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(GalacticObject::new));
     }
 
-    public GalacticObjects(Map<Integer, GalacticObject> galacticObjects) {
-        this.galacticObjects = new HashMap<>(galacticObjects);
+    public GalacticObjects(IntObjMap<GalacticObject> galacticObjects) {
+        this.galacticObjects = HashIntObjMaps.newImmutableMap(galacticObjects);
     }
 
-    public Map<Integer, GalacticObject> getGalacticObjects() {
-        return Collections.unmodifiableMap(galacticObjects);
+    public IntObjMap<GalacticObject> getGalacticObjects() {
+        return galacticObjects;
     }
 }

@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class StrikeCrafts {
 
-    private final Map<Integer, StrikeCraft> strikeCrafts;
+    private final IntObjMap<StrikeCraft> strikeCrafts;
 
     public StrikeCrafts(PdxScriptObject o) {
-        this.strikeCrafts = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(StrikeCraft::new));
+        this.strikeCrafts = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(StrikeCraft::new));
     }
 
-    public StrikeCrafts(Map<Integer, StrikeCraft> strikeCrafts) {
-        this.strikeCrafts = new HashMap<>(strikeCrafts);
+    public StrikeCrafts(IntObjMap<StrikeCraft> strikeCrafts) {
+        this.strikeCrafts = HashIntObjMaps.newImmutableMap(strikeCrafts);
     }
 
-    public Map<Integer, StrikeCraft> getStrikeCrafts() {
-        return Collections.unmodifiableMap(strikeCrafts);
+    public IntObjMap<StrikeCraft> getStrikeCrafts() {
+        return strikeCrafts;
     }
 }

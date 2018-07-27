@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class Leaders {
 
-    private final Map<Integer, Leader> leaders;
+    private final IntObjMap<Leader> leaders;
 
     public Leaders(PdxScriptObject o) {
-        this.leaders = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(Leader::new));
+        this.leaders = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Leader::new));
     }
 
-    public Leaders(Map<Integer, Leader> leaders) {
-        this.leaders = new HashMap<>(leaders);
+    public Leaders(IntObjMap<Leader> leaders) {
+        this.leaders = HashIntObjMaps.newImmutableMap(leaders);
     }
 
-    public Map<Integer, Leader> getLeaders() {
-        return Collections.unmodifiableMap(leaders);
+    public IntObjMap<Leader> getLeaders() {
+        return leaders;
     }
 }

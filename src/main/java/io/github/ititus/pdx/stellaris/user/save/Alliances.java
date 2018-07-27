@@ -1,24 +1,22 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Alliances {
 
-    private final Map<Integer, Alliance> alliances;
+    private final IntObjMap<Alliance> alliances;
 
     public Alliances(PdxScriptObject o) {
-        this.alliances = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(Alliance::new));
+        this.alliances = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Alliance::new));
     }
 
-    public Alliances(Map<Integer, Alliance> alliances) {
-        this.alliances = new HashMap<>(alliances);
+    public Alliances(IntObjMap<Alliance> alliances) {
+        this.alliances = HashIntObjMaps.newImmutableMap(alliances);
     }
 
-    public Map<Integer, Alliance> getAlliances() {
-        return Collections.unmodifiableMap(alliances);
+    public IntObjMap<Alliance> getAlliances() {
+        return alliances;
     }
 }

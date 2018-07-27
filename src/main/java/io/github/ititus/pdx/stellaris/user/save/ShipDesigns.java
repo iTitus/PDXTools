@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class ShipDesigns {
 
-    private final Map<Integer, ShipDesign> shipDesigns;
+    private final IntObjMap<ShipDesign> shipDesigns;
 
     public ShipDesigns(PdxScriptObject o) {
-        this.shipDesigns = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(ShipDesign::new));
+        this.shipDesigns = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(ShipDesign::new));
     }
 
-    public ShipDesigns(Map<Integer, ShipDesign> shipDesigns) {
-        this.shipDesigns = new HashMap<>(shipDesigns);
+    public ShipDesigns(IntObjMap<ShipDesign> shipDesigns) {
+        this.shipDesigns = HashIntObjMaps.newImmutableMap(shipDesigns);
     }
 
-    public Map<Integer, ShipDesign> getShipDesigns() {
-        return Collections.unmodifiableMap(shipDesigns);
+    public IntObjMap<ShipDesign> getShipDesigns() {
+        return shipDesigns;
     }
 }

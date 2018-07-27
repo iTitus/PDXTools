@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class Bypasses {
 
-    private final Map<Integer, Bypass> bypasses;
+    private final IntObjMap<Bypass> bypasses;
 
     public Bypasses(PdxScriptObject o) {
-        this.bypasses = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(Bypass::new));
+        this.bypasses = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Bypass::new));
     }
 
-    public Bypasses(Map<Integer, Bypass> bypasses) {
-        this.bypasses = new HashMap<>(bypasses);
+    public Bypasses(IntObjMap<Bypass> bypasses) {
+        this.bypasses = HashIntObjMaps.newImmutableMap(bypasses);
     }
 
-    public Map<Integer, Bypass> getBypasses() {
-        return Collections.unmodifiableMap(bypasses);
+    public IntObjMap<Bypass> getBypasses() {
+        return bypasses;
     }
 }

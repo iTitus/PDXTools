@@ -1,24 +1,22 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.LongObjMap;
+import com.koloboke.collect.map.hash.HashLongObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Missiles {
 
-    private final Map<Long, Missile> missiles;
+    private final LongObjMap<Missile> missiles;
 
     public Missiles(PdxScriptObject o) {
-        this.missiles = o.getAsMap(Long::valueOf, PdxScriptObject.nullOr(Missile::new));
+        this.missiles = o.getAsLongObjMap(Long::parseLong, PdxScriptObject.nullOr(Missile::new));
     }
 
-    public Missiles(Map<Long, Missile> missiles) {
-        this.missiles = new HashMap<>(missiles);
+    public Missiles(LongObjMap<Missile> missiles) {
+        this.missiles = HashLongObjMaps.newImmutableMap(missiles);
     }
 
-    public Map<Long, Missile> getMissiles() {
-        return Collections.unmodifiableMap(missiles);
+    public LongObjMap<Missile> getMissiles() {
+        return missiles;
     }
 }

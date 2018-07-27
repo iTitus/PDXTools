@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class MegaStructures {
 
-    private final Map<Integer, MegaStructure> megaStructures;
+    private final IntObjMap<MegaStructure> megaStructures;
 
     public MegaStructures(PdxScriptObject o) {
-        this.megaStructures = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(MegaStructure::new));
+        this.megaStructures = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(MegaStructure::new));
     }
 
-    public MegaStructures(Map<Integer, MegaStructure> megaStructures) {
-        this.megaStructures = new HashMap<>(megaStructures);
+    public MegaStructures(IntObjMap<MegaStructure> megaStructures) {
+        this.megaStructures = HashIntObjMaps.newImmutableMap(megaStructures);
     }
 
-    public Map<Integer, MegaStructure> getMegaStructures() {
-        return Collections.unmodifiableMap(megaStructures);
+    public IntObjMap<MegaStructure> getMegaStructures() {
+        return megaStructures;
     }
 }

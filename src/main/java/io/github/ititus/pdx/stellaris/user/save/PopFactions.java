@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Collections;
@@ -8,17 +10,17 @@ import java.util.Map;
 
 public class PopFactions {
 
-    private final Map<Integer, PopFaction> popFactions;
+    private final IntObjMap<PopFaction> popFactions;
 
     public PopFactions(PdxScriptObject o) {
-        this.popFactions = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(PopFaction::new));
+        this.popFactions = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(PopFaction::new));
     }
 
-    public PopFactions(Map<Integer, PopFaction> popFactions) {
-        this.popFactions = new HashMap<>(popFactions);
+    public PopFactions(IntObjMap<PopFaction> popFactions) {
+        this.popFactions = HashIntObjMaps.newImmutableMap(popFactions);
     }
 
-    public Map<Integer, PopFaction> getPopFactions() {
-        return Collections.unmodifiableMap(popFactions);
+    public IntObjMap<PopFaction> getPopFactions() {
+        return popFactions;
     }
 }
