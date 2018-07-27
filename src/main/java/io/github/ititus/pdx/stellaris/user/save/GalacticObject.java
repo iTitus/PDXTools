@@ -8,7 +8,6 @@ import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class GalacticObject {
@@ -52,7 +51,7 @@ public class GalacticObject {
         this.discoveries = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.arm = o.getInt("arm");
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.initializer = o.getString("initializer");
         this.initParent = o.getInt("init_parent", -1);
         l = o.getList("fleet_presence");

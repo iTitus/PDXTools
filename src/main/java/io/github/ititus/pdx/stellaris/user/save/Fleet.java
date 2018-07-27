@@ -8,7 +8,6 @@ import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Fleet {
@@ -57,7 +56,7 @@ public class Fleet {
         this.groundSupportStance = o.getString("ground_support_stance");
         this.fleetStance = o.getString("fleet_stance");
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.movementManager = o.getObject("movement_manager").getAs(FleetMovementManager::new);
         o1 = o.getObject("mission");
         this.mission = o1 != null ? o1.getAs(FleetMission::new) : null;
@@ -69,7 +68,7 @@ public class Fleet {
         this.incomingMerges = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
         this.friendsShouldFollow = o.getBoolean("friends_should_follow");
         o1 = o.getObject("settings");
-        this.settings = o1 != null ? o1.getAs(Settings::new) : new Settings(Collections.emptyMap());
+        this.settings = o1 != null ? o1.getAs(Settings::new) : null;
         this.hitPoints = o.getDouble("hit_points");
     }
 

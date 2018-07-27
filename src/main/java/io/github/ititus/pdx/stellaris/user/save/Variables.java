@@ -1,25 +1,25 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.ObjDoubleMap;
+import com.koloboke.collect.map.hash.HashObjDoubleMaps;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.function.Function;
 
 public class Variables {
 
-    private final Map<String, Double> variables;
+    private final ObjDoubleMap<String> variables;
 
     public Variables(PdxScriptObject o) {
-        this.variables = o.getAsMap(Function.identity(), PdxConstants.NULL_OR_DOUBLE);
+        this.variables = o.getAsObjDoubleMap(Function.identity(), PdxConstants.TO_DOUBLE);
     }
 
-    public Variables(Map<String, Double> variables) {
-        this.variables = Collections.unmodifiableMap(variables);
+    public Variables(ObjDoubleMap<String> variables) {
+        this.variables = HashObjDoubleMaps.newImmutableMap(variables);
     }
 
-    public Map<String, Double> getVariables() {
-        return Collections.unmodifiableMap(variables);
+    public ObjDoubleMap<String> getVariables() {
+        return variables;
     }
 }

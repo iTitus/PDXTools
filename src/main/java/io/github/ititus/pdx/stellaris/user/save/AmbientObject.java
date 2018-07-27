@@ -3,8 +3,6 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Collections;
-
 public class AmbientObject {
 
     private final String data;
@@ -21,7 +19,7 @@ public class AmbientObject {
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
         this.data = o.getString("data");
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.properties = o.getObject("properties").getAs(Properties::new);
     }
 

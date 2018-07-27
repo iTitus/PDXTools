@@ -7,7 +7,10 @@ import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class Planet {
 
@@ -91,9 +94,9 @@ public class Planet {
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         this.shipClassOrbitalStation = o.getInt("shipclass_orbital_station", -1);
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         o1 = o.getObject("variables");
-        this.variables = o1 != null ? o1.getAs(Variables::new) : new Variables(Collections.emptyMap());
+        this.variables = o1 != null ? o1.getAs(Variables::new) : null;
         o1 = o.getObject("delayed_event");
         this.delayedEvent = o1 != null ? o1.getAs(DelayedEvent::new) : null;
         this.entity = o.getInt("entity", -1);

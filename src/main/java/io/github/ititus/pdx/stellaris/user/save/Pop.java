@@ -6,7 +6,6 @@ import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Pop {
@@ -37,7 +36,7 @@ public class Pop {
             this.ethos = null;
         }
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.buildablePop = o.getBoolean("buildable_pop");
         this.enslaved = o.getBoolean("enslaved");
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
@@ -47,7 +46,7 @@ public class Pop {
         this.requiredGrowth = o.getObject("required_growth").getAs(PopResourceRequirement::new);
         this.payingSector = o.getLong("paying_sector", -1);
         o1 = o.getObject("resources");
-        this.resources = o1 != null ? o1.getAs(Resources::new) : new Resources();
+        this.resources = o1 != null ? o1.getAs(Resources::new) : null;
         this.aiRightsServitude = o.getBoolean("ai_rights_servitude");
         this.daysEnslaved = o.getInt("days_enslaved");
     }

@@ -1,20 +1,21 @@
 package io.github.ititus.pdx.pdxscript;
 
-import com.koloboke.collect.map.hash.HashObjObjMap;
-import com.koloboke.collect.map.hash.HashObjObjMaps;
+import com.koloboke.collect.map.*;
+import com.koloboke.collect.map.hash.*;
+import com.koloboke.collect.set.hash.HashObjSet;
 import com.koloboke.collect.set.hash.HashObjSets;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    private final Map<String, Set<String>> used;
-    private final Map<String, Set<String>> wronglyUsed;
+    private final ObjObjMap<String, HashObjSet<String>> used;
+    private final ObjObjMap<String, HashObjSet<String>> wronglyUsed;
 
     private final PdxRelation relation;
-    private final Map<String, IPdxScript> map;
+    private final ObjObjMap<String, IPdxScript> map;
 
     public PdxScriptObject(PdxRelation relation, Map<String, IPdxScript> map) {
         this.used = HashObjObjMaps.newUpdatableMap();
@@ -245,8 +246,73 @@ public final class PdxScriptObject implements IPdxScript {
         return fct.apply(this);
     }
 
-    public <K, V> Map<K, V> getAsMap(Function<String, K> keyFct, Function<IPdxScript, V> valueFct) {
-        HashObjObjMap<K, V> map = HashObjObjMaps.newUpdatableMap();
+    public <V> IntObjMap<V> getAsIntObjMap(ToIntFunction<String> keyFct, Function<IPdxScript, V> valueFct) {
+        IntObjMap<V> map = HashIntObjMaps.newUpdatableMap();
+        this.map.forEach((oldK, oldV) -> {
+            int k = keyFct.applyAsInt(oldK);
+            // if (k != null) {
+            V v = valueFct.apply(oldV);
+            map.put(k, v);
+            use(oldK, getTypeString(oldV));
+            // }
+        });
+        return HashIntObjMaps.newImmutableMap(map);
+    }
+
+    public <V> LongObjMap<V> getAsLongObjMap(ToLongFunction<String> keyFct, Function<IPdxScript, V> valueFct) {
+        LongObjMap<V> map = HashLongObjMaps.newUpdatableMap();
+        this.map.forEach((oldK, oldV) -> {
+            long k = keyFct.applyAsLong(oldK);
+            // if (k != null) {
+            V v = valueFct.apply(oldV);
+            map.put(k, v);
+            use(oldK, getTypeString(oldV));
+            // }
+        });
+        return HashLongObjMaps.newImmutableMap(map);
+    }
+
+    public <K> ObjByteMap<K> getAsObjBooleanMap(Function<String, K> keyFct, Predicate<IPdxScript> valueFct) {
+        ObjByteMap<K> map = HashObjByteMaps.newUpdatableMap();
+        this.map.forEach((oldK, oldV) -> {
+            K k = keyFct.apply(oldK);
+            if (k != null) {
+                boolean v = valueFct.test(oldV);
+                map.put(k, (byte) (v ? 1 : 0));
+                use(oldK, getTypeString(oldV));
+            }
+        });
+        return HashObjByteMaps.newImmutableMap(map);
+    }
+
+    public <K> ObjIntMap<K> getAsObjIntMap(Function<String, K> keyFct, ToIntFunction<IPdxScript> valueFct) {
+        ObjIntMap<K> map = HashObjIntMaps.newUpdatableMap();
+        this.map.forEach((oldK, oldV) -> {
+            K k = keyFct.apply(oldK);
+            if (k != null) {
+                int v = valueFct.applyAsInt(oldV);
+                map.put(k, v);
+                use(oldK, getTypeString(oldV));
+            }
+        });
+        return HashObjIntMaps.newImmutableMap(map);
+    }
+
+    public <K> ObjDoubleMap<K> getAsObjDoubleMap(Function<String, K> keyFct, ToDoubleFunction<IPdxScript> valueFct) {
+        ObjDoubleMap<K> map = HashObjDoubleMaps.newUpdatableMap();
+        this.map.forEach((oldK, oldV) -> {
+            K k = keyFct.apply(oldK);
+            if (k != null) {
+                double v = valueFct.applyAsDouble(oldV);
+                map.put(k, v);
+                use(oldK, getTypeString(oldV));
+            }
+        });
+        return HashObjDoubleMaps.newImmutableMap(map);
+    }
+
+    public <K, V> ObjObjMap<K, V> getAsMap(Function<String, K> keyFct, Function<IPdxScript, V> valueFct) {
+        ObjObjMap<K, V> map = HashObjObjMaps.newUpdatableMap();
         this.map.forEach((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
@@ -255,11 +321,11 @@ public final class PdxScriptObject implements IPdxScript {
                 use(oldK, getTypeString(oldV));
             }
         });
-        return map;
+        return HashObjObjMaps.newImmutableMap(map);
     }
 
-    public Map<String, Set<String>> getErrors() {
-        Map<String, Set<String>> errors = HashObjObjMaps.newUpdatableMap();
+    public ObjObjMap<String, HashObjSet<String>> getErrors() {
+        ObjObjMap<String, HashObjSet<String>> errors = HashObjObjMaps.newUpdatableMap();
         for (Map.Entry<String, IPdxScript> entry : map.entrySet()) {
             String type = getTypeString(entry.getValue());
             Set<String> toAdd = wronglyUsed.get(entry.getKey());
@@ -352,7 +418,7 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static class Builder {
 
-        private final Map<String, IPdxScript> map;
+        private final ObjObjMap<String, IPdxScript> map;
 
         public Builder() {
             this.map = HashObjObjMaps.newUpdatableMap();

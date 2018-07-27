@@ -1,8 +1,9 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import com.koloboke.collect.map.ObjObjMap;
 import com.koloboke.collect.map.hash.HashObjObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
-import io.github.ititus.pdx.util.map.MapUtil;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -12,10 +13,10 @@ import java.util.stream.Collectors;
 
 public final class PDXLocalisation implements PdxConstants {
 
-    private final Map<String, Map<String, String>> localisation;
+    private final ObjObjMap<String, ObjObjMap<String, String>> localisation;
 
-    public PDXLocalisation(Map<String, Map<String, String>> localisation) {
-        this.localisation = MapUtil.toImmutableDeep(localisation);
+    public PDXLocalisation(ObjObjMap<String, ObjObjMap<String, String>> localisation) {
+        this.localisation = CollectionUtil.toImmutableDeep(localisation);
     }
 
     public Set<String> getLanguages() {
@@ -36,7 +37,7 @@ public final class PDXLocalisation implements PdxConstants {
 
     public String get(String language, String key, String fallbackLanguage, String fallbackKey, String fallback) {
         String internedLanguage = language != null ? language.intern() : null;
-        Map<String, String> languageMap = null;
+        ObjObjMap<String, String> languageMap = null;
         if (internedLanguage != null) {
             languageMap = localisation.get(internedLanguage);
         }
@@ -57,9 +58,9 @@ public final class PDXLocalisation implements PdxConstants {
         return fallback != null ? fallback.intern() : null;
     }
 
-    public Map<String, Map<String, String>> getExtraLocalisation() {
-        Map<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
-        Map<String, Map<String, String>> map = HashObjObjMaps.newUpdatableMap();
+    public ObjObjMap<String, ObjObjMap<String, String>> getExtraLocalisation() {
+        ObjObjMap<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
+        ObjObjMap<String, ObjObjMap<String, String>> map = HashObjObjMaps.newUpdatableMap();
         localisation.forEach((language, languageMap) -> {
             if (!DEFAULT_LANGUAGE.equals(language)) {
                 map.computeIfAbsent(language, k -> HashObjObjMaps.newUpdatableMap()).putAll(languageMap.entrySet().stream().filter(p -> !defaultLanguageMap.containsKey(p.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
@@ -68,9 +69,9 @@ public final class PDXLocalisation implements PdxConstants {
         return map;
     }
 
-    public Map<String, Map<String, String>> getMissingLocalisation() {
-        Map<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
-        Map<String, Map<String, String>> map = HashObjObjMaps.newUpdatableMap();
+    public ObjObjMap<String, ObjObjMap<String, String>> getMissingLocalisation() {
+        ObjObjMap<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
+        ObjObjMap<String, ObjObjMap<String, String>> map = HashObjObjMaps.newUpdatableMap();
         localisation.forEach((language, languageMap) -> {
             if (!DEFAULT_LANGUAGE.equals(language)) {
                 map.computeIfAbsent(language, k -> HashObjObjMaps.newUpdatableMap()).putAll(defaultLanguageMap.entrySet().stream().filter(p -> !languageMap.containsKey(p.getKey()) || languageMap.get(p.getKey()).equals(p.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));

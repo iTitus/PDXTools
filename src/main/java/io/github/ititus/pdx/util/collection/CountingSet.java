@@ -1,32 +1,62 @@
 package io.github.ititus.pdx.util.collection;
 
-import com.koloboke.collect.map.hash.HashObjIntMap;
+import com.koloboke.collect.Equivalence;
+import com.koloboke.collect.ObjCursor;
+import com.koloboke.collect.ObjIterator;
+import com.koloboke.collect.map.ObjIntMap;
 import com.koloboke.collect.map.hash.HashObjIntMaps;
+import com.koloboke.collect.set.ObjSet;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class CountingSet<E> extends AbstractSet<E> {
+public class CountingSet<E> extends AbstractSet<E> implements ObjSet<E> {
 
-    private final HashObjIntMap<E> map;
+    private final ObjIntMap<E> map;
 
     public CountingSet() {
         this.map = HashObjIntMaps.newUpdatableMap();
     }
 
-    public CountingSet(int initialCapacity) {
-        this.map = HashObjIntMaps.newUpdatableMap(initialCapacity);
+    @Override
+    public Equivalence<E> equivalence() {
+        return map.keyEquivalence();
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public boolean forEachWhile(Predicate<? super E> predicate) {
+        return map.keySet().forEachWhile(predicate);
+    }
+
+    @Override
+    public ObjCursor<E> cursor() {
+        return map.keySet().cursor();
+    }
+
+    @Override
+    public ObjIterator<E> iterator() {
         return map.keySet().iterator();
     }
 
     @Override
     public int size() {
         return map.size();
+    }
+
+    @Override
+    public long sizeAsLong() {
+        return map.sizeAsLong();
+    }
+
+    @Override
+    public boolean ensureCapacity(long l) {
+        return map.ensureCapacity(l);
+    }
+
+    @Override
+    public boolean shrink() {
+        return map.shrink();
     }
 
     @Override

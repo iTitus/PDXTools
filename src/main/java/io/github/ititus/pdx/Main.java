@@ -1,12 +1,17 @@
 package io.github.ititus.pdx;
 
+import com.koloboke.collect.map.ObjObjMap;
+import com.koloboke.collect.set.hash.HashObjSet;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.*;
 import io.github.ititus.pdx.util.Pair;
+import io.github.ititus.pdx.util.Tuple3D;
+import io.github.ititus.pdx.util.Util;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.collection.CollectorImpl;
 
 import java.io.File;
 import java.util.*;
@@ -35,8 +40,8 @@ public class Main {
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
 
         List<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
-        Map<String, Map<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
-        Map<String, Map<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ObjObjMap<String, ObjObjMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        ObjObjMap<String, ObjObjMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
         String gameString = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().toPdxScript() : null;
         String gameLocalisationString = game != null && game.getLocalisation() != null ? game.getLocalisation().toYML() : null;
 
@@ -61,7 +66,7 @@ public class Main {
                     .map(system -> Pair.of(system, getResources(stellarisSave.getGameState(), system)))
                     .collect(Collectors.toList());
 
-            List<Pair<Function<Resources, List<Double>>, String>> list = CollectionUtil.listOf(
+            List<Pair<Function<Resources, Tuple3D>, String>> list = CollectionUtil.listOf(
                     Pair.of(Resources::getMinerals, "minerals"),
                     Pair.of(Resources::getEnergy, "energy"),
                     Pair.of(r -> combineResource(r.getMinerals(), r.getEnergy()), "resources"),
@@ -71,7 +76,7 @@ public class Main {
                     Pair.of(r -> combineResource(r.getPhysicsResearch(), combineResource(r.getSocietyResearch(), r.getEngineeringResearch())), "research")
             );
             list.forEach(p -> {
-                Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject, Resources> resourcesInSystem) -> p.getKey().apply(resourcesInSystem.getValue()).get(0)).reversed();
+                Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject, Resources> resourcesInSystem) -> p.getKey().apply(resourcesInSystem.getValue()).getD1()).reversed();
                 List<Pair<GalacticObject, Resources>> resourceRichSystems =
                         resourcesInSystems
                                 .stream()
@@ -79,13 +84,13 @@ public class Main {
                                 .limit(10)
                                 .collect(Collectors.toList());
 
-                resourceRichSystems.stream().map(pair -> pair.getKey().getName() + ": " + p.getKey().apply(pair.getValue()).get(0) + " " + p.getValue()).forEachOrdered(System.out::println);
+                resourceRichSystems.stream().map(pair -> pair.getKey().getName() + ": " + p.getKey().apply(pair.getValue()).getD1() + " " + p.getValue()).forEachOrdered(System.out::println);
                 System.out.println("-------------------------");
             });
 
             System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
             System.out.println("done3");
-            Map<String, Set<String>> errors = stellarisSave.getErrors();
+            ObjObjMap<String, HashObjSet<String>> errors = stellarisSave.getErrors();
 
             System.out.println("-------------------------");
             errors.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
@@ -93,6 +98,8 @@ public class Main {
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done4");
+
+        while (true) ;
     }
 
     private static Resources getResources(GameState gameState, GalacticObject system) {
@@ -105,53 +112,43 @@ public class Main {
                 .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().stream().map(planets.getPlanets()::get)))
                 .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
                 .map(Tile::getResources)
-                .reduce(
-                        new Resources(),
-                        (acc, r) -> new Resources(
-                                combineResource(acc.getEnergy(), r.getEnergy()),
-                                combineResource(acc.getMinerals(), r.getMinerals()),
-                                combineResource(acc.getFood(), r.getFood()),
-                                combineResource(acc.getPhysicsResearch(), r.getPhysicsResearch()),
-                                combineResource(acc.getSocietyResearch(), r.getSocietyResearch()),
-                                combineResource(acc.getEngineeringResearch(), r.getEngineeringResearch()),
-                                combineResource(acc.getInfluence(), r.getInfluence()),
-                                combineResource(acc.getUnity(), r.getUnity()),
-                                combineResource(acc.getAldar(), r.getAldar()),
-                                combineResource(acc.getDarkMatter(), r.getDarkMatter()),
-                                combineResource(acc.getEngos(), r.getEngos()),
-                                combineResource(acc.getGaranthium(), r.getGaranthium()),
-                                combineResource(acc.getLivingMetal(), r.getLivingMetal()),
-                                combineResource(acc.getLythuric(), r.getLythuric()),
-                                combineResource(acc.getOrillium(), r.getOrillium()),
-                                combineResource(acc.getPitharan(), r.getPitharan()),
-                                combineResource(acc.getSatramene(), r.getSatramene()),
-                                combineResource(acc.getTeldar(), r.getTeldar()),
-                                combineResource(acc.getTerraformGases(), r.getTerraformGases()),
-                                combineResource(acc.getTerraformLiquids(), r.getTerraformLiquids()),
-                                combineResource(acc.getYurantic(), r.getYurantic()),
-                                combineResource(acc.getZro(), r.getZro()),
-                                combineResource(acc.getAlienPets(), r.getAlienPets()),
-                                combineResource(acc.getBetharian(), r.getBetharian())
-                        )
-                );
+                .filter(Objects::nonNull)
+                .collect(new CollectorImpl<>(
+                        () -> new double[24],
+                        (array, r) -> {
+                            int i = 0;
+                            array[i++] += r.getEnergy().getD1();
+                            array[i++] += r.getMinerals().getD1();
+                            array[i++] += r.getFood().getD1();
+                            array[i++] += r.getPhysicsResearch().getD1();
+                            array[i++] += r.getSocietyResearch().getD1();
+                            array[i++] += r.getEngineeringResearch().getD1();
+                            array[i++] += r.getInfluence().getD1();
+                            array[i++] += r.getUnity().getD1();
+                            array[i++] += r.getAldar().getD1();
+                            array[i++] += r.getDarkMatter().getD1();
+                            array[i++] += r.getEngos().getD1();
+                            array[i++] += r.getGaranthium().getD1();
+                            array[i++] += r.getLivingMetal().getD1();
+                            array[i++] += r.getLythuric().getD1();
+                            array[i++] += r.getOrillium().getD1();
+                            array[i++] += r.getPitharan().getD1();
+                            array[i++] += r.getSatramene().getD1();
+                            array[i++] += r.getTeldar().getD1();
+                            array[i++] += r.getTerraformGases().getD1();
+                            array[i++] += r.getTerraformLiquids().getD1();
+                            array[i++] += r.getYurantic().getD1();
+                            array[i++] += r.getZro().getD1();
+                            array[i++] += r.getAlienPets().getD1();
+                            array[i] += r.getBetharian().getD1();
+                        },
+                        Util::addArrays,
+                        Resources::new,
+                        CollectionUtil.CH_NOID
+                ));
     }
 
-    private static List<Double> combineResource(List<Double> l1, List<Double> l2) {
-        checkResourceLists(l1);
-        checkResourceLists(l2);
-        return CollectionUtil.listOf((l1.size() > 0 ? l1.get(0) : 0.0) + (l2.size() > 0 ? l2.get(0) : 0.0));
-    }
-
-    private static void checkResourceLists(List<Double> list) {
-        if (list.size() >= 2) {
-            if (!list.get(0).equals(list.get(1))) {
-                throw new IllegalArgumentException();
-            }
-            if (list.size() >= 3) {
-                if (!list.get(2).equals(0.0)) {
-                    throw new IllegalArgumentException();
-                }
-            }
-        }
+    private static Tuple3D combineResource(Tuple3D t1, Tuple3D t2) {
+        return Tuple3D.of(t1.getD1() + t2.getD1(), 0, 0);
     }
 }

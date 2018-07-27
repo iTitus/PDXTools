@@ -25,7 +25,7 @@ public class Tile {
         this.active = o.getBoolean("active");
         this.pop = o.getInt("pop", -1);
         PdxScriptObject o1 = o.getObject("resources");
-        this.resources = o1 != null ? o1.getAs(Resources::new) : new Resources();
+        this.resources = o1 != null ? o1.getAs(Resources::new) : null;
         o1 = o.getObject("building");
         this.building = o1 != null ? o1.getAs(Building::new) : null;
         this.prevBuilding = o.getString("prev_building");

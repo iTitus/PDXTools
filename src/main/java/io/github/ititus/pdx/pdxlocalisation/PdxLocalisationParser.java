@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import com.koloboke.collect.map.ObjObjMap;
 import com.koloboke.collect.map.hash.HashObjObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
@@ -16,7 +17,6 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
@@ -58,11 +58,11 @@ public final class PdxLocalisationParser implements PdxConstants {
                 null;
     }
 
-    private static Map<String, Map<String, String>> parseInternal(File localisationFile) {
+    private static ObjObjMap<String, ObjObjMap<String, String>> parseInternal(File localisationFile) {
         if (localisationFile != null) {
             MutableBoolean first = new MutableBoolean(true);
             MutableString language = new MutableString();
-            Map<String, Map<String, String>> localisation = HashObjObjMaps.newUpdatableMap();
+            ObjObjMap<String, ObjObjMap<String, String>> localisation = HashObjObjMaps.newUpdatableMap();
             try (Stream<String> stream = Files.lines(localisationFile.toPath(), StandardCharsets.UTF_8)) {
                 stream
                         .filter(s -> s != null && !s.isEmpty())

@@ -1,24 +1,22 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Planets {
 
-    private final Map<Integer, Planet> planets;
+    private final IntObjMap<Planet> planets;
 
     public Planets(PdxScriptObject o) {
-        this.planets = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(Planet::new));
+        this.planets = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Planet::new));
     }
 
-    public Planets(Map<Integer, Planet> planets) {
-        this.planets = new HashMap<>(planets);
+    public Planets(IntObjMap<Planet> planets) {
+        this.planets = HashIntObjMaps.newImmutableMap(planets);
     }
 
-    public Map<Integer, Planet> getPlanets() {
-        return Collections.unmodifiableMap(planets);
+    public IntObjMap<Planet> getPlanets() {
+        return planets;
     }
 }

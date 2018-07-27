@@ -1,16 +1,11 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.*;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import io.github.ititus.pdx.util.Tuple3D;
 
 public class Resources {
 
-    private final ViewableList<Double> energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
+    private final Tuple3D energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
 
     public Resources(PdxScriptObject o) {
         this.energy = get(o, "energy");
@@ -39,142 +34,142 @@ public class Resources {
         this.betharian = get(o, "sr_betharian");
     }
 
-    public Resources() {
-        this(CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf(), CollectionUtil.viewableListOf());
+    public Resources(double... array) {
+        this(Tuple3D.of(array[0], 0, 0), Tuple3D.of(array[1], 0, 0), Tuple3D.of(array[2], 0, 0), Tuple3D.of(array[3], 0, 0), Tuple3D.of(array[4], 0, 0), Tuple3D.of(array[5], 0, 0), Tuple3D.of(array[6], 0, 0), Tuple3D.of(array[7], 0, 0), Tuple3D.of(array[8], 0, 0), Tuple3D.of(array[9], 0, 0), Tuple3D.of(array[10], 0, 0), Tuple3D.of(array[11], 0, 0), Tuple3D.of(array[12], 0, 0), Tuple3D.of(array[13], 0, 0), Tuple3D.of(array[14], 0, 0), Tuple3D.of(array[15], 0, 0), Tuple3D.of(array[16], 0, 0), Tuple3D.of(array[17], 0, 0), Tuple3D.of(array[18], 0, 0), Tuple3D.of(array[19], 0, 0), Tuple3D.of(array[20], 0, 0), Tuple3D.of(array[21], 0, 0), Tuple3D.of(array[22], 0, 0), Tuple3D.of(array[23], 0, 0));
     }
 
-    public Resources(Collection<Double> energy, Collection<Double> minerals, Collection<Double> food, Collection<Double> physicsResearch, Collection<Double> societyResearch, Collection<Double> engineeringResearch, Collection<Double> influence, Collection<Double> unity, Collection<Double> aldar, Collection<Double> darkMatter, Collection<Double> engos, Collection<Double> garanthium, Collection<Double> livingMetal, Collection<Double> lythuric, Collection<Double> orillium, Collection<Double> pitharan, Collection<Double> satramene, Collection<Double> teldar, Collection<Double> terraformGases, Collection<Double> terraformLiquids, Collection<Double> yurantic, Collection<Double> zro, Collection<Double> alienPets, Collection<Double> betharian) {
-        this.energy = new ViewableUnmodifiableArrayList<>(energy);
-        this.minerals = new ViewableUnmodifiableArrayList<>(minerals);
-        this.food = new ViewableUnmodifiableArrayList<>(food);
-        this.physicsResearch = new ViewableUnmodifiableArrayList<>(physicsResearch);
-        this.societyResearch = new ViewableUnmodifiableArrayList<>(societyResearch);
-        this.engineeringResearch = new ViewableUnmodifiableArrayList<>(engineeringResearch);
-        this.influence = new ViewableUnmodifiableArrayList<>(influence);
-        this.unity = new ViewableUnmodifiableArrayList<>(unity);
-        this.aldar = new ViewableUnmodifiableArrayList<>(aldar);
-        this.darkMatter = new ViewableUnmodifiableArrayList<>(darkMatter);
-        this.engos = new ViewableUnmodifiableArrayList<>(engos);
-        this.garanthium = new ViewableUnmodifiableArrayList<>(garanthium);
-        this.livingMetal = new ViewableUnmodifiableArrayList<>(livingMetal);
-        this.lythuric = new ViewableUnmodifiableArrayList<>(lythuric);
-        this.orillium = new ViewableUnmodifiableArrayList<>(orillium);
-        this.pitharan = new ViewableUnmodifiableArrayList<>(pitharan);
-        this.satramene = new ViewableUnmodifiableArrayList<>(satramene);
-        this.teldar = new ViewableUnmodifiableArrayList<>(teldar);
-        this.terraformGases = new ViewableUnmodifiableArrayList<>(terraformGases);
-        this.terraformLiquids = new ViewableUnmodifiableArrayList<>(terraformLiquids);
-        this.yurantic = new ViewableUnmodifiableArrayList<>(yurantic);
-        this.zro = new ViewableUnmodifiableArrayList<>(zro);
-        this.alienPets = new ViewableUnmodifiableArrayList<>(alienPets);
-        this.betharian = new ViewableUnmodifiableArrayList<>(betharian);
+    public Resources(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
+        this.energy = energy;
+        this.minerals = minerals;
+        this.food = food;
+        this.physicsResearch = physicsResearch;
+        this.societyResearch = societyResearch;
+        this.engineeringResearch = engineeringResearch;
+        this.influence = influence;
+        this.unity = unity;
+        this.aldar = aldar;
+        this.darkMatter = darkMatter;
+        this.engos = engos;
+        this.garanthium = garanthium;
+        this.livingMetal = livingMetal;
+        this.lythuric = lythuric;
+        this.orillium = orillium;
+        this.pitharan = pitharan;
+        this.satramene = satramene;
+        this.teldar = teldar;
+        this.terraformGases = terraformGases;
+        this.terraformLiquids = terraformLiquids;
+        this.yurantic = yurantic;
+        this.zro = zro;
+        this.alienPets = alienPets;
+        this.betharian = betharian;
     }
 
-    private static ViewableList<Double> get(PdxScriptObject o, String resource) {
+    private static Tuple3D get(PdxScriptObject o, String resource) {
         IPdxScript s = o.get(resource);
         if (s instanceof PdxScriptList) {
             o.use(resource, PdxConstants.LIST);
-            return ((PdxScriptList) s).getAsDoubleList();
+            return Tuple3D.of(((PdxScriptList) s).getAsDoubleArray());
         } else if (s == null) {
-            return CollectionUtil.viewableListOf(0.0D, 0.0D, 0.0D);
+            return Tuple3D.of(0, 0, 0);
         }
         o.use(resource, PdxConstants.DOUBLE);
-        return CollectionUtil.viewableListOf((Double) ((PdxScriptValue) s).getValue(), 0.0D, 0.0D);
+        return Tuple3D.of(((Number) ((PdxScriptValue) s).getValue()).doubleValue(), 0, 0);
     }
 
-    public List<Double> getEnergy() {
-        return energy.getView();
+    public Tuple3D getEnergy() {
+        return energy;
     }
 
-    public List<Double> getMinerals() {
-        return minerals.getView();
+    public Tuple3D getMinerals() {
+        return minerals;
     }
 
-    public List<Double> getFood() {
-        return food.getView();
+    public Tuple3D getFood() {
+        return food;
     }
 
-    public List<Double> getPhysicsResearch() {
-        return physicsResearch.getView();
+    public Tuple3D getPhysicsResearch() {
+        return physicsResearch;
     }
 
-    public List<Double> getSocietyResearch() {
-        return societyResearch.getView();
+    public Tuple3D getSocietyResearch() {
+        return societyResearch;
     }
 
-    public List<Double> getEngineeringResearch() {
-        return engineeringResearch.getView();
+    public Tuple3D getEngineeringResearch() {
+        return engineeringResearch;
     }
 
-    public List<Double> getInfluence() {
-        return influence.getView();
+    public Tuple3D getInfluence() {
+        return influence;
     }
 
-    public List<Double> getUnity() {
-        return unity.getView();
+    public Tuple3D getUnity() {
+        return unity;
     }
 
-    public List<Double> getAldar() {
-        return aldar.getView();
+    public Tuple3D getAldar() {
+        return aldar;
     }
 
-    public List<Double> getDarkMatter() {
-        return darkMatter.getView();
+    public Tuple3D getDarkMatter() {
+        return darkMatter;
     }
 
-    public List<Double> getEngos() {
-        return engos.getView();
+    public Tuple3D getEngos() {
+        return engos;
     }
 
-    public List<Double> getGaranthium() {
-        return garanthium.getView();
+    public Tuple3D getGaranthium() {
+        return garanthium;
     }
 
-    public List<Double> getLivingMetal() {
-        return livingMetal.getView();
+    public Tuple3D getLivingMetal() {
+        return livingMetal;
     }
 
-    public List<Double> getLythuric() {
-        return lythuric.getView();
+    public Tuple3D getLythuric() {
+        return lythuric;
     }
 
-    public List<Double> getOrillium() {
-        return orillium.getView();
+    public Tuple3D getOrillium() {
+        return orillium;
     }
 
-    public List<Double> getPitharan() {
-        return pitharan.getView();
+    public Tuple3D getPitharan() {
+        return pitharan;
     }
 
-    public List<Double> getSatramene() {
-        return satramene.getView();
+    public Tuple3D getSatramene() {
+        return satramene;
     }
 
-    public List<Double> getTeldar() {
-        return teldar.getView();
+    public Tuple3D getTeldar() {
+        return teldar;
     }
 
-    public List<Double> getTerraformGases() {
-        return terraformGases.getView();
+    public Tuple3D getTerraformGases() {
+        return terraformGases;
     }
 
-    public List<Double> getTerraformLiquids() {
-        return terraformLiquids.getView();
+    public Tuple3D getTerraformLiquids() {
+        return terraformLiquids;
     }
 
-    public List<Double> getYurantic() {
-        return yurantic.getView();
+    public Tuple3D getYurantic() {
+        return yurantic;
     }
 
-    public List<Double> getZro() {
-        return zro.getView();
+    public Tuple3D getZro() {
+        return zro;
     }
 
-    public List<Double> getAlienPets() {
-        return alienPets.getView();
+    public Tuple3D getAlienPets() {
+        return alienPets;
     }
 
-    public List<Double> getBetharian() {
-        return betharian.getView();
+    public Tuple3D getBetharian() {
+        return betharian;
     }
 }

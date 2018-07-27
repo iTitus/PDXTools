@@ -1,24 +1,22 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.IntObjMap;
+import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Pops {
 
-    private final Map<Integer, Pop> pops;
+    private final IntObjMap<Pop> pops;
 
     public Pops(PdxScriptObject o) {
-        this.pops = o.getAsMap(Integer::valueOf, PdxScriptObject.nullOr(Pop::new));
+        this.pops = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Pop::new));
     }
 
-    public Pops(Map<Integer, Pop> pops) {
-        this.pops = new HashMap<>(pops);
+    public Pops(IntObjMap<Pop> pops) {
+        this.pops = HashIntObjMaps.newImmutableMap(pops);
     }
 
-    public Map<Integer, Pop> getPops() {
-        return Collections.unmodifiableMap(pops);
+    public IntObjMap<Pop> getPops() {
+        return pops;
     }
 }

@@ -6,7 +6,6 @@ import io.github.ititus.pdx.util.collection.ViewableList;
 import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Starbase {
@@ -27,9 +26,9 @@ public class Starbase {
         this.level = o.getString("level");
         this.updateFlag = o.getInt("update_flag");
         PdxScriptObject o1 = o.getObject("modules");
-        this.modules = o1 != null ? o1.getAs(StarbaseBuildings::new) : new StarbaseBuildings(Collections.emptyMap());
+        this.modules = o1 != null ? o1.getAs(StarbaseBuildings::new) : null;
         o1 = o.getObject("buildings");
-        this.buildings = o1 != null ? o1.getAs(StarbaseBuildings::new) : new StarbaseBuildings(Collections.emptyMap());
+        this.buildings = o1 != null ? o1.getAs(StarbaseBuildings::new) : null;
         this.nextBuildItemId = o.getInt("next_build_item_id");
         this.nextShipyardBuildItemId = o.getInt("next_shipyard_build_item_id");
         this.shipDesign = o.getInt("ship_design");

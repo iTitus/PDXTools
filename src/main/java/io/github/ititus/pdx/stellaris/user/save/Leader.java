@@ -3,7 +3,6 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Collections;
 import java.util.Date;
 
 public class Leader {
@@ -49,7 +48,7 @@ public class Leader {
         this.age = o.getInt("age");
         this.popFaction = o.getInt("pop_faction", -1);
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.agenda = o.getString("agenda");
         o1 = o.getObject("mandate");
         this.mandate = o1 != null ? o1.getAs(LeaderMandate::new) : null;

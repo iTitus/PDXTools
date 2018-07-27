@@ -1,5 +1,9 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import com.koloboke.collect.map.ObjObjMap;
+import com.koloboke.collect.map.hash.HashObjObjMaps;
+import com.koloboke.collect.set.hash.HashObjSet;
+import com.koloboke.collect.set.hash.HashObjSets;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -10,7 +14,8 @@ import io.github.ititus.pdx.util.io.IOUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -98,9 +103,9 @@ public class StellarisSave {
         return gameState;
     }
 
-    public Map<String, Set<String>> getErrors() {
-        Map<String, Set<String>> errors = new HashMap<>();
-        saveDataLoader.getRawData().getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> new HashSet<>()).addAll(v));
+    public ObjObjMap<String, HashObjSet<String>> getErrors() {
+        ObjObjMap<String, HashObjSet<String>> errors = HashObjObjMaps.newUpdatableMap();
+        saveDataLoader.getRawData().getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> HashObjSets.newUpdatableSet()).addAll(v));
         return errors;
     }
 

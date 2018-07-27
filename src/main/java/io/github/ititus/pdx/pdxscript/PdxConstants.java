@@ -1,6 +1,9 @@
 package io.github.ititus.pdx.pdxscript;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
 import java.util.regex.Pattern;
 
 public interface PdxConstants {
@@ -92,6 +95,15 @@ public interface PdxConstants {
     Pattern LANGUAGE_PATTERN = Pattern.compile("^(?<" + KEY_LANGUAGE + ">l_(\\w+)):$");
     Pattern TRANSLATION_PATTERN = Pattern.compile("^(?<" + KEY_INDENT + "> )(?<" + KEY_KEY + ">[\\w.]+):0 \"(?<" + KEY_VALUE + ">.*)\"$");
 
+    Predicate<IPdxScript> TO_BOOLEAN = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof Boolean) {
+                return (boolean) o;
+            }
+        }
+        return false;
+    };
     Function<IPdxScript, Boolean> NULL_OR_BOOLEAN = s -> {
         if (s instanceof PdxScriptValue) {
             Object o = ((PdxScriptValue) s).getValue();
@@ -101,6 +113,15 @@ public interface PdxConstants {
         }
         return null;
     };
+    ToIntFunction<IPdxScript> TO_INT = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof Number) {
+                return (int) o;
+            }
+        }
+        return 0;
+    };
     Function<IPdxScript, Integer> NULL_OR_INTEGER = s -> {
         if (s instanceof PdxScriptValue) {
             Object o = ((PdxScriptValue) s).getValue();
@@ -108,7 +129,16 @@ public interface PdxConstants {
                 return (Integer) o;
             }
         }
-        return null;
+        return 0;
+    };
+    ToDoubleFunction<IPdxScript> TO_DOUBLE = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof Number) {
+                return (double) o;
+            }
+        }
+        return 0;
     };
     Function<IPdxScript, Double> NULL_OR_DOUBLE = s -> {
         if (s instanceof PdxScriptValue) {

@@ -5,8 +5,6 @@ import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 
-import java.util.Collections;
-
 public class Species {
 
     private final boolean immortal, popsCanBeColonizers, popsCanMigrate, popsCanReproduce, popsCanJoinFactions, canGenerateLeaders, popsCanBeSlaves, popsHaveHappiness;
@@ -64,7 +62,7 @@ public class Species {
             throw new RuntimeException("Unexpected value '" + s1 + "' for popEthics");
         }
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : new Flags(Collections.emptyMap(), Collections.emptyMap());
+        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
     }
 
     public Species(boolean immortal, boolean popsCanBeColonizers, boolean popsCanMigrate, boolean popsCanReproduce, boolean popsCanJoinFactions, boolean canGenerateLeaders, boolean popsCanBeSlaves, boolean popsHaveHappiness, int base, int homePlanet, double popMaintenance, double popsAutoGrowth, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popsAutoUpgradeTo, String buildablePop, String popEthics, Traits traits, PopResourceRequirement newPopResourceRequirement, Flags flags) {
