@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import com.koloboke.collect.set.hash.HashObjSets;
 import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
@@ -19,7 +20,7 @@ public class PdxRawDataLoader implements PdxConstants {
     private final File file;
     private final Set<String> blacklist;
     private final IFileFilter filter;
-    private final List<Pair<String, Throwable>> errors;
+    private final Set<Pair<String, Throwable>> errors;
 
     private final PdxScriptObject rawData;
 
@@ -28,9 +29,9 @@ public class PdxRawDataLoader implements PdxConstants {
             throw new IllegalArgumentException();
         }
         this.file = file;
-        this.blacklist = new HashSet<>(blacklist);
+        this.blacklist = HashObjSets.newImmutableSet(blacklist);
         this.filter = filter;
-        this.errors = new ArrayList<>();
+        this.errors = HashObjSets.newUpdatableSet();
         this.rawData = load();
     }
 
@@ -62,7 +63,7 @@ public class PdxRawDataLoader implements PdxConstants {
     }
 
     public List<Pair<String, Throwable>> getErrors() {
-        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getValue().toString()).thenComparing(Pair::getKey)).collect(Collectors.toList()));
+        return errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getValue().toString()).thenComparing(Pair::getKey)).collect(Collectors.toList());
     }
 
     private PdxScriptObject load() {

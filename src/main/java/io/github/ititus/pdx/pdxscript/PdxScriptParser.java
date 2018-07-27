@@ -13,7 +13,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -421,7 +420,7 @@ public final class PdxScriptParser implements PdxConstants {
     }
 
     public static List<String> getUnknownLiterals() {
-        return Collections.unmodifiableList(unknownLiterals.sortedStream().collect(Collectors.toList()));
+        return unknownLiterals.sortedStream().collect(Collectors.toList());
     }
 
     private static class ScriptIntPair {

@@ -1,14 +1,11 @@
 package io.github.ititus.pdx.util.collection;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-public class ViewableSingletonList<E> extends AbstractList<E> implements ViewableList<E>, RandomAccess, Serializable {
-
-    private static final long serialVersionUID = 1;
+public class ViewableSingletonList<E> extends AbstractList<E> implements ViewableList<E>, RandomAccess {
 
     private final E element;
 

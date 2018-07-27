@@ -192,7 +192,7 @@ public final class PdxScriptList implements IPdxScript {
             EMPTY_CACHE = new EnumMap<>(Mode.class);
             Arrays.stream(Mode.values()).forEach(mode -> {
                 Map<PdxRelation, PdxScriptList> map = EMPTY_CACHE.computeIfAbsent(mode, k -> new EnumMap<>(PdxRelation.class));
-                Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptList(mode, relation, Collections.emptyList())));
+                Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptList(mode, relation, CollectionUtil.listOf())));
             });
         }
 

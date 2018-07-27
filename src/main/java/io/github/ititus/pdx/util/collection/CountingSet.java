@@ -1,29 +1,22 @@
 package io.github.ititus.pdx.util.collection;
 
+import com.koloboke.collect.map.hash.HashObjIntMap;
+import com.koloboke.collect.map.hash.HashObjIntMaps;
+
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CountingSet<E> extends AbstractSet<E> {
 
-    private static final long serialVersionUID = 1;
-
-    private final Map<E, Integer> map;
+    private final HashObjIntMap<E> map;
 
     public CountingSet() {
-        this.map = new HashMap<>();
-    }
-
-    public CountingSet(Collection<? extends E> c) {
-        this.map = new HashMap<>(Math.max((int) (c.size() / .75f) + 1, 16));
-        addAll(c);
-    }
-
-    public CountingSet(int initialCapacity, float loadFactor) {
-        this.map = new HashMap<>(initialCapacity, loadFactor);
+        this.map = HashObjIntMaps.newUpdatableMap();
     }
 
     public CountingSet(int initialCapacity) {
-        this.map = new HashMap<>(initialCapacity);
+        this.map = HashObjIntMaps.newUpdatableMap(initialCapacity);
     }
 
     @Override
@@ -54,7 +47,22 @@ public class CountingSet<E> extends AbstractSet<E> {
 
     @Override
     public boolean remove(Object o) {
-        return map.remove(o) != null;
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super E> filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

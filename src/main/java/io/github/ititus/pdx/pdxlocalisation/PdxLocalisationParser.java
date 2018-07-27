@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import com.koloboke.collect.map.hash.HashObjObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
@@ -15,7 +16,6 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -48,9 +48,9 @@ public final class PdxLocalisationParser implements PdxConstants {
                                 .filter(Objects::nonNull)
                                 .filter(File::isFile)
                                 .map(PdxLocalisationParser::parseInternal)
-                                .reduce(new HashMap<>(),
+                                .reduce(HashObjObjMaps.newUpdatableMap(),
                                         (acc, r) -> {
-                                            r.forEach((language, languageMap) -> acc.computeIfAbsent(language, k -> new HashMap<>()).putAll(languageMap));
+                                            r.forEach((language, languageMap) -> acc.computeIfAbsent(language, k -> HashObjObjMaps.newUpdatableMap()).putAll(languageMap));
                                             return acc;
                                         }
                                 )
@@ -62,7 +62,7 @@ public final class PdxLocalisationParser implements PdxConstants {
         if (localisationFile != null) {
             MutableBoolean first = new MutableBoolean(true);
             MutableString language = new MutableString();
-            Map<String, Map<String, String>> localisation = new HashMap<>();
+            Map<String, Map<String, String>> localisation = HashObjObjMaps.newUpdatableMap();
             try (Stream<String> stream = Files.lines(localisationFile.toPath(), StandardCharsets.UTF_8)) {
                 stream
                         .filter(s -> s != null && !s.isEmpty())
@@ -86,7 +86,7 @@ public final class PdxLocalisationParser implements PdxConstants {
                                     if (indent != null && indent.length() == 1) {
                                         String key = m.group(KEY_KEY).intern();
                                         String value = m.group(KEY_VALUE).intern();
-                                        localisation.computeIfAbsent(language.get(), k -> new HashMap<>()).put(key, value);
+                                        localisation.computeIfAbsent(language.get(), k -> HashObjObjMaps.newUpdatableMap()).put(key, value);
                                     }
                                 }
                             }

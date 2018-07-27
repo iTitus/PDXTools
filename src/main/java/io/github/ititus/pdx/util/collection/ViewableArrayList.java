@@ -7,8 +7,6 @@ import java.util.List;
 
 public class ViewableArrayList<E> extends ArrayList<E> implements ViewableList<E> {
 
-    private static final long serialVersionUID = 1;
-
     private transient List<E> view;
 
     public ViewableArrayList(int initialCapacity) {

@@ -7,8 +7,6 @@ import java.util.function.UnaryOperator;
 
 public class EmptyViewableList<E> extends AbstractList<E> implements ViewableList<E>, RandomAccess {
 
-    private static final long serialVersionUID = 1;
-
     @Override
     public Iterator<E> iterator() {
         return Collections.emptyIterator();

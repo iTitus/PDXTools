@@ -1,20 +1,27 @@
 package io.github.ititus.pdx.pdxscript;
 
+import com.koloboke.collect.map.hash.HashObjObjMap;
+import com.koloboke.collect.map.hash.HashObjObjMaps;
+import com.koloboke.collect.set.hash.HashObjSets;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    private final Map<String, Set<String>> used = new HashMap<>();
-    private final Map<String, Set<String>> wronglyUsed = new HashMap<>();
+    private final Map<String, Set<String>> used;
+    private final Map<String, Set<String>> wronglyUsed;
 
     private final PdxRelation relation;
     private final Map<String, IPdxScript> map;
 
     public PdxScriptObject(PdxRelation relation, Map<String, IPdxScript> map) {
+        this.used = HashObjObjMaps.newUpdatableMap();
+        this.wronglyUsed = HashObjObjMaps.newUpdatableMap();
+
         this.relation = relation;
-        this.map = new HashMap<>(map);
+        this.map = HashObjObjMaps.newImmutableMap(map);
     }
 
     public static <T> Function<IPdxScript, T> nullOr(Function<IPdxScript, T> fct) {
@@ -65,7 +72,7 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     public void use(String key, String usage) {
-        used.computeIfAbsent(key, k -> new HashSet<>()).add(usage);
+        used.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(usage);
     }
 
     public boolean hasKey(String key) {
@@ -90,7 +97,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, OBJECT);
             return (PdxScriptObject) o;
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(OBJECT);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(OBJECT);
         return null;
     }
 
@@ -103,7 +110,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, getTypeString(s));
             return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(IMPLICIT_LIST);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(IMPLICIT_LIST);
         return PdxScriptList.builder().build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
@@ -113,7 +120,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, LIST);
             return (PdxScriptList) o;
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(LIST);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(LIST);
         return null;
     }
 
@@ -126,7 +133,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (String) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(STRING);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(STRING);
         return null;
     }
 
@@ -143,7 +150,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (boolean) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(BOOLEAN);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(BOOLEAN);
         return def;
     }
 
@@ -166,7 +173,7 @@ public final class PdxScriptObject implements IPdxScript {
                 }
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(UNSIGNED_INT);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(UNSIGNED_INT);
         return def;
     }
 
@@ -183,7 +190,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (int) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(INT);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(INT);
         return def;
     }
 
@@ -200,7 +207,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return ((Number) v).longValue();
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(LONG);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(LONG);
         return def;
     }
 
@@ -217,7 +224,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (double) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(DOUBLE);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(DOUBLE);
         return def;
     }
 
@@ -230,7 +237,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (Date) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> new HashSet<>()).add(DATE);
+        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(DATE);
         return null;
     }
 
@@ -239,7 +246,7 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     public <K, V> Map<K, V> getAsMap(Function<String, K> keyFct, Function<IPdxScript, V> valueFct) {
-        Map<K, V> map = new HashMap<>();
+        HashObjObjMap<K, V> map = HashObjObjMaps.newUpdatableMap();
         this.map.forEach((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
@@ -252,22 +259,22 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     public Map<String, Set<String>> getErrors() {
-        Map<String, Set<String>> errors = new HashMap<>();
+        Map<String, Set<String>> errors = HashObjObjMaps.newUpdatableMap();
         for (Map.Entry<String, IPdxScript> entry : map.entrySet()) {
             String type = getTypeString(entry.getValue());
             Set<String> toAdd = wronglyUsed.get(entry.getKey());
             if (toAdd != null && !toAdd.isEmpty()) {
-                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).addAll(toAdd.stream().map(s -> "wrongly_used_as=" + s + SLASH_CHAR + "was=" + type).collect(Collectors.toSet()));
+                errors.computeIfAbsent(entry.getKey(), k -> HashObjSets.newUpdatableSet()).addAll(toAdd.stream().map(s -> "wrongly_used_as=" + s + SLASH_CHAR + "was=" + type).collect(Collectors.toSet()));
             }
             boolean id = DIGITS_PATTERN.matcher(entry.getKey()).matches();
             Set<String> usages = used.getOrDefault(entry.getKey(), null);
             if (!id && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
-                errors.computeIfAbsent(entry.getKey(), k -> new HashSet<>()).add("unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
+                errors.computeIfAbsent(entry.getKey(), k -> HashObjSets.newUpdatableSet()).add("unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
             } else {
                 if (entry.getValue() instanceof PdxScriptObject) {
                     ((PdxScriptObject) entry.getValue()).getErrors().forEach((k, v) -> {
                         if (v != null && !v.isEmpty()) {
-                            errors.computeIfAbsent((id ? EMPTY : entry.getKey() + DOT_CHAR) + k, k_ -> new HashSet<>()).addAll(v);
+                            errors.computeIfAbsent((id ? EMPTY : entry.getKey() + DOT_CHAR) + k, k_ -> HashObjSets.newUpdatableSet()).addAll(v);
                         }
                     });
                 } else if (entry.getValue() instanceof PdxScriptList) {
@@ -282,7 +289,7 @@ public final class PdxScriptObject implements IPdxScript {
                             } else if (s instanceof PdxScriptObject) {
                                 ((PdxScriptObject) s).getErrors().forEach((k, v) -> {
                                     if (v != null && !v.isEmpty()) {
-                                        errors.computeIfAbsent(entry.getKey() + DOT_CHAR + k, k_ -> new HashSet<>()).addAll(v);
+                                        errors.computeIfAbsent(entry.getKey() + DOT_CHAR + k, k_ -> HashObjSets.newUpdatableSet()).addAll(v);
                                     }
                                 });
                             }
@@ -348,7 +355,7 @@ public final class PdxScriptObject implements IPdxScript {
         private final Map<String, IPdxScript> map;
 
         public Builder() {
-            this.map = new HashMap<>();
+            this.map = HashObjObjMaps.newUpdatableMap();
         }
 
         public PdxScriptObject build(PdxRelation relation) {

@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.util.collection;
 
+import com.koloboke.collect.set.hash.HashObjSets;
+
 import java.util.*;
 import java.util.stream.Collector;
 
@@ -64,7 +66,7 @@ public class CollectionUtil {
 
 
     public static <T> Set<T> setOf(T t) {
-        return Collections.singleton(t);
+        return HashObjSets.newImmutableSetOf(t);
     }
 
     @SafeVarargs
@@ -73,9 +75,7 @@ public class CollectionUtil {
             if (t.length == 1) {
                 return setOf(t[0]);
             }
-            Set<T> s = new HashSet<>(t.length);
-            s.addAll(Arrays.asList(t));
-            return s;
+            return HashObjSets.newImmutableSet(t);
         }
         return setOf();
     }
