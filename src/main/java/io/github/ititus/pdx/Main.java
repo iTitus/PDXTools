@@ -98,8 +98,6 @@ public class Main {
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done4");
-
-        while (true) ;
     }
 
     private static Resources getResources(GameState gameState, GalacticObject system) {
