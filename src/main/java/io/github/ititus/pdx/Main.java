@@ -1,21 +1,25 @@
 package io.github.ititus.pdx;
 
-import com.koloboke.collect.map.ObjObjMap;
-import com.koloboke.collect.set.hash.HashObjSet;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.*;
-import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.Tuple3D;
 import io.github.ititus.pdx.util.Util;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.CollectorImpl;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.tuple.Tuples;
 
 import java.io.File;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,17 +43,17 @@ public class Main {
         StellarisGame game = new StellarisGame(INSTALL_DIR);
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR);
 
-        List<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
-        ObjObjMap<String, ObjObjMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
-        ObjObjMap<String, ObjObjMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
         String gameString = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().toPdxScript() : null;
         String gameLocalisationString = game != null && game.getLocalisation() != null ? game.getLocalisation().toYML() : null;
 
-        List<Pair<String, Throwable>> userErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
-        List<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
+        ImmutableList<Pair<String, Throwable>> userErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
+        ImmutableList<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
         String userDataString = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().toPdxScript() : null;
 
-        List<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
+        ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done2");
@@ -59,24 +63,24 @@ public class Main {
         if (stellarisSave != null) {
             GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
-            List<Pair<GalacticObject, Resources>> resourcesInSystems = systems
+            ImmutableList<Pair<GalacticObject, Resources>> resourcesInSystems = systems
                     .getGalacticObjects()
                     .values()
                     .stream()
-                    .map(system -> Pair.of(system, getResources(stellarisSave.getGameState(), system)))
-                    .collect(Collectors.toList());
+                    .map(system -> Tuples.pair(system, getResources(stellarisSave.getGameState(), system)))
+                    .collect(Collectors2.toImmutableList());
 
-            List<Pair<Function<Resources, Tuple3D>, String>> list = CollectionUtil.listOf(
-                    Pair.of(Resources::getMinerals, "minerals"),
-                    Pair.of(Resources::getEnergy, "energy"),
-                    Pair.of(r -> combineResource(r.getMinerals(), r.getEnergy()), "resources"),
-                    Pair.of(Resources::getPhysicsResearch, "physics"),
-                    Pair.of(Resources::getSocietyResearch, "society"),
-                    Pair.of(Resources::getEngineeringResearch, "engineering"),
-                    Pair.of(r -> combineResource(r.getPhysicsResearch(), combineResource(r.getSocietyResearch(), r.getEngineeringResearch())), "research")
+            ImmutableList<Pair<Function<Resources, Tuple3D>, String>> list = Lists.immutable.with(
+                    Tuples.pair(Resources::getMinerals, "minerals"),
+                    Tuples.pair(Resources::getEnergy, "energy"),
+                    Tuples.pair(r -> combineResource(r.getMinerals(), r.getEnergy()), "resources"),
+                    Tuples.pair(Resources::getPhysicsResearch, "physics"),
+                    Tuples.pair(Resources::getSocietyResearch, "society"),
+                    Tuples.pair(Resources::getEngineeringResearch, "engineering"),
+                    Tuples.pair(r -> combineResource(r.getPhysicsResearch(), combineResource(r.getSocietyResearch(), r.getEngineeringResearch())), "research")
             );
             list.forEach(p -> {
-                Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject, Resources> resourcesInSystem) -> p.getKey().apply(resourcesInSystem.getValue()).getD1()).reversed();
+                Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject, Resources> resourcesInSystem) -> p.getOne().apply(resourcesInSystem.getTwo()).getD1()).reversed();
                 List<Pair<GalacticObject, Resources>> resourceRichSystems =
                         resourcesInSystems
                                 .stream()
@@ -84,16 +88,16 @@ public class Main {
                                 .limit(10)
                                 .collect(Collectors.toList());
 
-                resourceRichSystems.stream().map(pair -> pair.getKey().getName() + ": " + p.getKey().apply(pair.getValue()).getD1() + " " + p.getValue()).forEachOrdered(System.out::println);
+                resourceRichSystems.stream().map(pair -> pair.getOne().getName() + ": " + p.getOne().apply(pair.getTwo()).getD1() + " " + p.getTwo()).forEachOrdered(System.out::println);
                 System.out.println("-------------------------");
             });
 
             System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
             System.out.println("done3");
-            ObjObjMap<String, HashObjSet<String>> errors = stellarisSave.getErrors();
 
             System.out.println("-------------------------");
-            errors.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
+            ImmutableMultimap<String, String> errors = stellarisSave.getErrors();
+            errors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
         }
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
@@ -102,16 +106,13 @@ public class Main {
 
     private static Resources getResources(GameState gameState, GalacticObject system) {
         Planets planets = gameState.getPlanets();
-        List<Integer> systemPlanets = system.getPlanets();
-
-        return systemPlanets
-                .stream()
-                .map(planets.getPlanets()::get)
-                .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().stream().map(planets.getPlanets()::get)))
+        return CollectionUtil.stream(system.getPlanets())
+                .mapToObj(planets.getPlanets()::get)
+                .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()::get).stream()))
                 .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
                 .map(Tile::getResources)
                 .filter(Objects::nonNull)
-                .collect(new CollectorImpl<>(
+                .collect(Collector.of(
                         () -> new double[24],
                         (array, r) -> {
                             int i = 0;
@@ -141,8 +142,7 @@ public class Main {
                             array[i] += r.getBetharian().getD1();
                         },
                         Util::addArrays,
-                        Resources::new,
-                        CollectionUtil.CH_NOID
+                        Resources::new
                 ));
     }
 

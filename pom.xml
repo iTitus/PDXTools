@@ -25,15 +25,15 @@
             <version>9.2.0</version>
         </dependency>
         <dependency>
-            <groupId>com.koloboke</groupId>
-            <artifactId>koloboke-api-jdk8</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-testutils</artifactId>
+            <version>9.2.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.koloboke</groupId>
-            <artifactId>koloboke-impl-jdk8</artifactId>
-            <version>1.0.0</version>
-            <scope>runtime</scope>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-forkjoin</artifactId>
+            <version>9.2.0</version>
         </dependency>
     </dependencies>
 

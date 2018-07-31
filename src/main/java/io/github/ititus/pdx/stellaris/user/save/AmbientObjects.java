@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class AmbientObjects {
 
-    private final IntObjMap<AmbientObject> ambientObjects;
+    private final ImmutableIntObjectMap<AmbientObject> ambientObjects;
 
     public AmbientObjects(PdxScriptObject o) {
-        this.ambientObjects = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(AmbientObject::new));
+        this.ambientObjects = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(AmbientObject::new));
     }
 
-    public AmbientObjects(IntObjMap<AmbientObject> ambientObjects) {
-        this.ambientObjects = HashIntObjMaps.newImmutableMap(ambientObjects);
+    public AmbientObjects(ImmutableIntObjectMap<AmbientObject> ambientObjects) {
+        this.ambientObjects = ambientObjects;
     }
 
-    public IntObjMap<AmbientObject> getAmbientObjects() {
+    public ImmutableIntObjectMap<AmbientObject> getAmbientObjects() {
         return ambientObjects;
     }
 }

@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class Leaders {
 
-    private final IntObjMap<Leader> leaders;
+    private final ImmutableIntObjectMap<Leader> leaders;
 
     public Leaders(PdxScriptObject o) {
-        this.leaders = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Leader::new));
+        this.leaders = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Leader::new));
     }
 
-    public Leaders(IntObjMap<Leader> leaders) {
-        this.leaders = HashIntObjMaps.newImmutableMap(leaders);
+    public Leaders(ImmutableIntObjectMap<Leader> leaders) {
+        this.leaders = leaders;
     }
 
-    public IntObjMap<Leader> getLeaders() {
+    public ImmutableIntObjectMap<Leader> getLeaders() {
         return leaders;
     }
 }

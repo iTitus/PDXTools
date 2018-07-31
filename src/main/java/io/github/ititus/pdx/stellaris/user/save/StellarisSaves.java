@@ -1,35 +1,39 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.ObjObjMap;
-import com.koloboke.collect.map.hash.HashObjObjMaps;
-import io.github.ititus.pdx.util.Pair;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.IOUtil;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.tuple.Tuples;
 
 import java.io.File;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class StellarisSaves {
 
     private final File saveGameFolder;
-    private final ObjObjMap<String, ObjObjMap<String, StellarisSave>> saves;
-    private final List<Pair<String, Throwable>> errors;
+    private final ImmutableMap<String, ImmutableMap<String, StellarisSave>> saves;
+    private final MutableList<Pair<String, Throwable>> errors;
 
     public StellarisSaves(File saveGameFolder) {
         if (saveGameFolder == null || !saveGameFolder.isDirectory()) {
             throw new IllegalArgumentException();
         }
         this.saveGameFolder = saveGameFolder;
-        this.saves = HashObjObjMaps.newUpdatableMap();
-        this.errors = new ArrayList<>();
+        this.errors = Lists.mutable.empty();
 
+        MutableMap<String, ImmutableMap<String, StellarisSave>> saves = Maps.mutable.empty();
         File[] files = saveGameFolder.listFiles();
         if (files != null) {
             for (File saveGame : files) {
                 if (saveGame != null && saveGame.isDirectory()) {
-                    ObjObjMap<String, StellarisSave> saveMap = saves.computeIfAbsent(saveGame.getName(), k -> HashObjObjMaps.newUpdatableMap());
+                    MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
 
                     File[] saveGames = saveGame.listFiles();
                     if (saveGames != null) {
@@ -43,26 +47,30 @@ public class StellarisSaves {
                                     Throwable[] suppressed = t.getSuppressed();
                                     Throwable cause = t.getCause();
                                     System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
-                                    errors.add(Pair.of(path, t));
+                                    errors.add(Tuples.pair(path, t));
                                 }
                             }
                         }
                     }
+
+                    saves.put(saveGame.getName(), saveMap.toImmutable());
                 }
             }
         }
+
+        this.saves = saves.toImmutable();
     }
 
     public File getSaveGameFolder() {
         return saveGameFolder;
     }
 
-    public ObjObjMap<String, ObjObjMap<String, StellarisSave>> getSaves() {
-        return CollectionUtil.toImmutableDeep(saves);
+    public ImmutableMap<String, ImmutableMap<String, StellarisSave>> getSaves() {
+        return saves;
     }
 
-    public List<Pair<String, Throwable>> getErrors() {
-        return Collections.unmodifiableList(errors.stream().sorted(Comparator.comparing((Function<Pair<String, Throwable>, String>) String::valueOf).thenComparing(Pair::getKey)).collect(Collectors.toList()));
+    public ImmutableList<Pair<String, Throwable>> getErrors() {
+        return errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList());
     }
 
     public StellarisSave getSave(String saveFolder, String saveGame) {

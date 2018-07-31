@@ -1,10 +1,14 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.ColorUtil;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
+import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +17,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -26,7 +29,7 @@ public final class PdxScriptParser implements PdxConstants {
     private PdxScriptParser() {
     }
 
-    private static ScriptIntPair parse(List<String> tokens, int i) {
+    private static ObjectIntPair<IPdxScript> parse(ImmutableList<String> tokens, int i) {
         String token = tokens.get(i);
         if (i == 0) {
             if (!LIST_OBJECT_OPEN.equals(token) || !LIST_OBJECT_CLOSE.equals(tokens.get(tokens.size() - 1))) {
@@ -55,9 +58,9 @@ public final class PdxScriptParser implements PdxConstants {
                         throw new RuntimeException("Missing relation sign in object");
                     }
 
-                    ScriptIntPair pair = parse(tokens, i);
-                    i = pair.i;
-                    IPdxScript s = pair.o;
+                    ObjectIntPair<IPdxScript> pair = parse(tokens, i);
+                    i = pair.getTwo();
+                    IPdxScript s = pair.getOne();
 
                     if (COMMA.equals(tokens.get(i))) {
                         // comma-separated list as value
@@ -66,8 +69,8 @@ public final class PdxScriptParser implements PdxConstants {
                         while (COMMA.equals(tokens.get(i))) {
                             i++;
                             pair = parse(tokens, i);
-                            i = pair.i;
-                            lb.add(pair.o);
+                            i = pair.getTwo();
+                            lb.add(pair.getOne());
                         }
                         s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
                     }
@@ -85,9 +88,9 @@ public final class PdxScriptParser implements PdxConstants {
                     if (PdxRelation.get(tokens.get(i)) != null) {
                         throw new RuntimeException("No relation sign in list allowed");
                     }
-                    ScriptIntPair pair = parse(tokens, i);
-                    i = pair.i;
-                    IPdxScript s = pair.o;
+                    ObjectIntPair<IPdxScript> pair = parse(tokens, i);
+                    i = pair.getTwo();
+                    IPdxScript s = pair.getOne();
 
                     if (COMMA.equals(tokens.get(i))) {
                         // comma-separated list as value
@@ -96,8 +99,8 @@ public final class PdxScriptParser implements PdxConstants {
                         while (COMMA.equals(tokens.get(i))) {
                             i++;
                             pair = parse(tokens, i);
-                            i = pair.i;
-                            lb.add(pair.o);
+                            i = pair.getTwo();
+                            lb.add(pair.getOne());
                         }
                         s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
                     }
@@ -139,13 +142,13 @@ public final class PdxScriptParser implements PdxConstants {
                 value = Boolean.TRUE;
                 i++;
             } else if (HSV.equals(token)) {
-                ScriptIntPair colorPair = parse(tokens, ++i);
-                value = PdxColorWrapper.fromHSV(((PdxScriptList) colorPair.o).getAsNumberArray());
-                i = colorPair.i;
+                ObjectIntPair<IPdxScript> colorPair = parse(tokens, ++i);
+                value = PdxColorWrapper.fromHSV(((PdxScriptList) colorPair.getOne()).getAsNumberArray());
+                i = colorPair.getTwo();
             } else if (RGB.equals(token)) {
-                ScriptIntPair colorPair = parse(tokens, ++i);
-                value = PdxColorWrapper.fromRGB(((PdxScriptList) colorPair.o).getAsNumberArray());
-                i = colorPair.i;
+                ObjectIntPair<IPdxScript> colorPair = parse(tokens, ++i);
+                value = PdxColorWrapper.fromRGB(((PdxScriptList) colorPair.getOne()).getAsNumberArray());
+                i = colorPair.getTwo();
             } else if (ColorUtil.HEX_RGB_PATTERN.matcher(token).matches()) {
                 value = PdxColorWrapper.fromRGBHex(token);
                 i++;
@@ -220,17 +223,17 @@ public final class PdxScriptParser implements PdxConstants {
                     PdxMathOperation operation = PdxMathOperation.get(operator);
                     if (operation != null) {
                         i++;
-                        ScriptIntPair pair = parse(tokens, i);
-                        if (!(pair.o instanceof PdxScriptValue)) {
-                            throw new RuntimeException("Expected PdxScriptValue but got " + (pair.o != null ? pair.o.getClass().getTypeName() : NULL));
+                        ObjectIntPair<IPdxScript> pair = parse(tokens, i);
+                        if (!(pair.getOne() instanceof PdxScriptValue)) {
+                            throw new RuntimeException("Expected PdxScriptValue but got " + (pair.getOne() != null ? pair.getOne().getClass().getTypeName() : NULL));
                         }
-                        PdxScriptValue v = (PdxScriptValue) pair.o;
+                        PdxScriptValue v = (PdxScriptValue) pair.getOne();
                         Object o = v.getValue();
                         if (!(o instanceof Number)) {
                             throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
                         }
                         value = operation.apply((Number) value, (Number) o);
-                        i = pair.i;
+                        i = pair.getTwo();
                     }
                 }
             }
@@ -238,7 +241,7 @@ public final class PdxScriptParser implements PdxConstants {
             object = new PdxScriptValue(relation, value);
         }
 
-        return new ScriptIntPair(object, i);
+        return PrimitiveTuples.pair(object, i);
     }
 
     private static String stripQuotes(String s) {
@@ -259,8 +262,8 @@ public final class PdxScriptParser implements PdxConstants {
         return s.substring(beginIndex, endIndex).replace(ESCAPE + QUOTE, QUOTE);
     }
 
-    private static List<String> tokenize(IntStream src) {
-        List<String> tokens = CollectionUtil.mutableListOf(LIST_OBJECT_OPEN);
+    private static ImmutableList<String> tokenize(IntStream src) {
+        MutableList<String> tokens = Lists.mutable.of(LIST_OBJECT_OPEN);
         StringBuilder b = new StringBuilder();
         MutableBoolean openQuotes = new MutableBoolean(false), token = new MutableBoolean(false), comment = new MutableBoolean(false), separator = new MutableBoolean(false), relation = new MutableBoolean(false), mathOperator = new MutableBoolean(false);
         src.forEachOrdered(i -> {
@@ -361,7 +364,7 @@ public final class PdxScriptParser implements PdxConstants {
             b.setLength(0);
         }
         tokens.add(LIST_OBJECT_CLOSE);
-        return tokens;
+        return tokens.toImmutable();
     }
 
     private static boolean isNewLine(char c) {
@@ -411,26 +414,15 @@ public final class PdxScriptParser implements PdxConstants {
     }
 
     public static IPdxScript parse(IntStream stream) {
-        List<String> tokens = tokenize(stream);
-        ScriptIntPair pair = parse(tokens, 0);
-        if ((!(pair.o instanceof PdxScriptObject) && !(pair.o instanceof PdxScriptList)) || pair.i != tokens.size()) {
-            throw new RuntimeException("Unexpected return value from parsing: " + (pair.o != null ? pair.o.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + pair.i + SLASH_CHAR + tokens.size());
+        ImmutableList<String> tokens = tokenize(stream);
+        ObjectIntPair<IPdxScript> pair = parse(tokens, 0);
+        if ((!(pair.getOne() instanceof PdxScriptObject) && !(pair.getOne() instanceof PdxScriptList)) || pair.getTwo() != tokens.size()) {
+            throw new RuntimeException("Unexpected return value from parsing: " + (pair.getOne() != null ? pair.getOne().getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + pair.getTwo() + SLASH_CHAR + tokens.size());
         }
-        return pair.o;
+        return pair.getOne();
     }
 
-    public static List<String> getUnknownLiterals() {
-        return unknownLiterals.sortedStream().collect(Collectors.toList());
-    }
-
-    private static class ScriptIntPair {
-
-        private final IPdxScript o;
-        private final int i;
-
-        private ScriptIntPair(IPdxScript o, int i) {
-            this.o = o;
-            this.i = i;
-        }
+    public static ImmutableList<String> getUnknownLiterals() {
+        return unknownLiterals.sortedList();
     }
 }

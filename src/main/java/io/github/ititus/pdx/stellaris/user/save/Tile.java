@@ -2,18 +2,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class Tile {
 
     private final boolean active;
     private final int pop;
     private final String prevBuilding, blocker;
-    private final ViewableList<String> deposits;
+    private final ImmutableList<String> deposits;
     private final Resources resources;
     private final Building building;
 
@@ -33,12 +29,12 @@ public class Tile {
         this.deposits = o.getImplicitList("deposit").getAsStringList();
     }
 
-    public Tile(boolean active, int pop, String prevBuilding, String blocker, Collection<String> deposits, Resources resources, Building building) {
+    public Tile(boolean active, int pop, String prevBuilding, String blocker, ImmutableList<String> deposits, Resources resources, Building building) {
         this.active = active;
         this.pop = pop;
         this.prevBuilding = prevBuilding;
         this.blocker = blocker;
-        this.deposits = new ViewableUnmodifiableArrayList<>(deposits);
+        this.deposits = deposits;
         this.resources = resources;
         this.building = building;
     }
@@ -59,8 +55,8 @@ public class Tile {
         return blocker;
     }
 
-    public List<String> getDeposits() {
-        return new ViewableUnmodifiableArrayList<>(deposits);
+    public ImmutableList<String> getDeposits() {
+        return deposits;
     }
 
     public Resources getResources() {

@@ -1,37 +1,44 @@
 package io.github.ititus.pdx.pdxscript;
 
-import com.koloboke.collect.set.hash.HashObjSets;
-import io.github.ititus.pdx.util.Pair;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.ZipUtil;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.tuple.Tuples;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PdxRawDataLoader implements PdxConstants {
 
+    private final MutableSet<Pair<String, Throwable>> errors;
+
     private final File file;
-    private final Set<String> blacklist;
+    private final ImmutableSet<String> blacklist;
     private final IFileFilter filter;
-    private final Set<Pair<String, Throwable>> errors;
 
     private final PdxScriptObject rawData;
 
-    public PdxRawDataLoader(File file, Collection<String> blacklist, IFileFilter filter) {
+    public PdxRawDataLoader(File file, ImmutableSet<String> blacklist, IFileFilter filter) {
         if (file == null || !file.exists()) {
             throw new IllegalArgumentException();
         }
+        this.errors = Sets.mutable.empty();
         this.file = file;
-        this.blacklist = HashObjSets.newImmutableSet(blacklist);
+        this.blacklist = Sets.immutable.ofAll(blacklist);
         this.filter = filter;
-        this.errors = HashObjSets.newUpdatableSet();
         this.rawData = load();
     }
 
@@ -39,7 +46,7 @@ public class PdxRawDataLoader implements PdxConstants {
         return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry))));
     }
 
-    private static boolean containsParent(Set<String> blacklist, String name) {
+    private static boolean containsParent(ImmutableSet<String> blacklist, String name) {
         if (blacklist != null && !blacklist.isEmpty() && name != null && !name.isEmpty()) {
             int index = -1;
             while (true) {
@@ -62,8 +69,8 @@ public class PdxRawDataLoader implements PdxConstants {
         return rawData;
     }
 
-    public List<Pair<String, Throwable>> getErrors() {
-        return errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getValue().toString()).thenComparing(Pair::getKey)).collect(Collectors.toList());
+    public ImmutableList<Pair<String, Throwable>> getErrors() {
+        return errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList());
     }
 
     private PdxScriptObject load() {
@@ -100,7 +107,7 @@ public class PdxRawDataLoader implements PdxConstants {
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();
                     System.out.println("Error while parsing " + new File(zipFile.getName(), zipEntry.getName()) + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
-                    errors.add(Pair.of(zipEntry.getName(), t));
+                    errors.add(Tuples.pair(zipEntry.getName(), t));
                     s = null;
                 }
                 if (s != null) {
@@ -165,7 +172,7 @@ public class PdxRawDataLoader implements PdxConstants {
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();
                     System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
-                    errors.add(Pair.of(path, t));
+                    errors.add(Tuples.pair(path, t));
                     s = null;
                 }
                 if (s != null) {

@@ -88,6 +88,7 @@ public interface PdxConstants {
     String KEY_KEY = "key";
     String KEY_VALUE = "value";
 
+    Pattern EMPTY_PATTERN = Pattern.compile(EMPTY);
     Pattern DIGITS_PATTERN = Pattern.compile("\\d+");
     Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
     Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");

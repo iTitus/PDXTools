@@ -1,23 +1,22 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class StarbaseBuildings {
 
-    private final IntObjMap<String> starbaseBuildings;
+    private final ImmutableIntObjectMap<String> starbaseBuildings;
 
     public StarbaseBuildings(PdxScriptObject o) {
-        this.starbaseBuildings = o.getAsIntObjMap(Integer::parseInt, PdxConstants.NULL_OR_STRING);
+        this.starbaseBuildings = o.getAsIntObjectMap(Integer::parseInt, PdxConstants.NULL_OR_STRING);
     }
 
-    public StarbaseBuildings(IntObjMap<String> starbaseBuildings) {
-        this.starbaseBuildings = HashIntObjMaps.newImmutableMap(starbaseBuildings);
+    public StarbaseBuildings(ImmutableIntObjectMap<String> starbaseBuildings) {
+        this.starbaseBuildings = starbaseBuildings;
     }
 
-    public IntObjMap<String> getStarbaseBuildings() {
+    public ImmutableIntObjectMap<String> getStarbaseBuildings() {
         return starbaseBuildings;
     }
 }

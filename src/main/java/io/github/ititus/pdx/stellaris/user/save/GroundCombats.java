@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class GroundCombats {
 
-    private final IntObjMap<GroundCombat> groundCombats;
+    private final ImmutableIntObjectMap<GroundCombat> groundCombats;
 
     public GroundCombats(PdxScriptObject o) {
-        this.groundCombats = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(GroundCombat::new));
+        this.groundCombats = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(GroundCombat::new));
     }
 
-    public GroundCombats(IntObjMap<GroundCombat> groundCombats) {
-        this.groundCombats = HashIntObjMaps.newImmutableMap(groundCombats);
+    public GroundCombats(ImmutableIntObjectMap<GroundCombat> groundCombats) {
+        this.groundCombats = groundCombats;
     }
 
-    public IntObjMap<GroundCombat> getGroundCombats() {
+    public ImmutableIntObjectMap<GroundCombat> getGroundCombats() {
         return groundCombats;
     }
 }

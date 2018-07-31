@@ -2,18 +2,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class Nebula {
 
     private final Coordinate coordinate;
     private final String name;
     private final double radius;
-    private final ViewableList<Integer> galacticObjects;
+    private final ImmutableIntList galacticObjects;
 
     public Nebula(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -23,14 +19,14 @@ public class Nebula {
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
         this.name = o.getString("name");
         this.radius = o.getDouble("radius");
-        this.galacticObjects = o.getImplicitList("galactic_object").getAsIntegerList();
+        this.galacticObjects = o.getImplicitList("galactic_object").getAsIntList();
     }
 
-    public Nebula(Coordinate coordinate, String name, double radius, Collection<Integer> galacticObjects) {
+    public Nebula(Coordinate coordinate, String name, double radius, ImmutableIntList galacticObjects) {
         this.coordinate = coordinate;
         this.name = name;
         this.radius = radius;
-        this.galacticObjects = new ViewableUnmodifiableArrayList<>(galacticObjects);
+        this.galacticObjects = galacticObjects;
     }
 
     public Coordinate getCoordinate() {
@@ -41,8 +37,8 @@ public class Nebula {
         return radius;
     }
 
-    public List<Integer> getGalacticObjects() {
-        return galacticObjects.getView();
+    public ImmutableIntList getGalacticObjects() {
+        return galacticObjects;
     }
 
     public String getName() {

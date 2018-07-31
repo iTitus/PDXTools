@@ -1,62 +1,41 @@
 package io.github.ititus.pdx.util.collection;
 
-import com.koloboke.collect.Equivalence;
-import com.koloboke.collect.ObjCursor;
-import com.koloboke.collect.ObjIterator;
-import com.koloboke.collect.map.ObjIntMap;
-import com.koloboke.collect.map.hash.HashObjIntMaps;
-import com.koloboke.collect.set.ObjSet;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
+import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-public class CountingSet<E> extends AbstractSet<E> implements ObjSet<E> {
+public class CountingSet<E> extends AbstractSet<E> {
 
-    private final ObjIntMap<E> map;
+    private static final Comparator<Object> HASH_COMP = Comparator.comparingInt(Object::hashCode);
+
+    private final Comparator<E> COMP = (o1, o2) -> {
+        if (o1 == o2) {
+            return 0;
+        }
+        if (o1 instanceof Comparable && o2 != null) {
+            return ((Comparable<? super E>) o1).compareTo(o2);
+        }
+        return HASH_COMP.compare(o1, o2);
+    };
+
+    private final MutableObjectIntMap<E> map;
 
     public CountingSet() {
-        this.map = HashObjIntMaps.newUpdatableMap();
+        this.map = ObjectIntMaps.mutable.empty();
     }
 
     @Override
-    public Equivalence<E> equivalence() {
-        return map.keyEquivalence();
-    }
-
-    @Override
-    public boolean forEachWhile(Predicate<? super E> predicate) {
-        return map.keySet().forEachWhile(predicate);
-    }
-
-    @Override
-    public ObjCursor<E> cursor() {
-        return map.keySet().cursor();
-    }
-
-    @Override
-    public ObjIterator<E> iterator() {
+    public Iterator<E> iterator() {
         return map.keySet().iterator();
     }
 
     @Override
     public int size() {
         return map.size();
-    }
-
-    @Override
-    public long sizeAsLong() {
-        return map.sizeAsLong();
-    }
-
-    @Override
-    public boolean ensureCapacity(long l) {
-        return map.ensureCapacity(l);
-    }
-
-    @Override
-    public boolean shrink() {
-        return map.shrink();
     }
 
     @Override
@@ -71,7 +50,7 @@ public class CountingSet<E> extends AbstractSet<E> implements ObjSet<E> {
 
     @Override
     public boolean add(E e) {
-        map.put(e, map.getOrDefault(e, 0) + 1);
+        map.addToValue(e, 1);
         return true;
     }
 
@@ -105,19 +84,7 @@ public class CountingSet<E> extends AbstractSet<E> implements ObjSet<E> {
         return map.keySet().spliterator();
     }
 
-    public Stream<E> sortedStream() {
-        return map.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry<E, Integer>::getValue).reversed().thenComparing(Map.Entry::getKey, (Comparator<? super E>) Comparator.naturalOrder())).map(Map.Entry::getKey);
-    }
-
-    public Stream<E> sortedStream(Comparator<? super E> comparator) {
-        return map.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry<E, Integer>::getValue).reversed().thenComparing(Map.Entry::getKey, comparator)).map(Map.Entry::getKey);
-    }
-
-    public Stream<E> sortedParallelStream() {
-        return map.entrySet().parallelStream().sorted(Comparator.comparingInt(Map.Entry<E, Integer>::getValue).reversed().thenComparing(Map.Entry::getKey, (Comparator<? super E>) Comparator.naturalOrder())).map(Map.Entry::getKey);
-    }
-
-    public Stream<E> sortedParallelStream(Comparator<? super E> comparator) {
-        return map.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry<E, Integer>::getValue).reversed().thenComparing(Map.Entry::getKey, comparator)).map(Map.Entry::getKey);
+    public ImmutableList<E> sortedList() {
+        return map.keyValuesView().toSortedList(Comparator.comparingInt(ObjectIntPair<E>::getTwo).reversed().thenComparing(ObjectIntPair::getOne, COMP)).collect(ObjectIntPair::getOne).toImmutable();
     }
 }

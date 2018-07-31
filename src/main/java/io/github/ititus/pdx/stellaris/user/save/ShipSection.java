@@ -2,17 +2,13 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class ShipSection {
 
     private final String design, slot;
-    private final ViewableList<ShipWeapon> weapons;
-    private final ViewableList<ShipStrikeCraft> strikeCrafts;
+    private final ImmutableList<ShipWeapon> weapons;
+    private final ImmutableList<ShipStrikeCraft> strikeCrafts;
 
     public ShipSection(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -26,11 +22,11 @@ public class ShipSection {
         this.strikeCrafts = o.getImplicitList("strike_craft").getAsList(ShipStrikeCraft::new);
     }
 
-    public ShipSection(String design, String slot, Collection<ShipWeapon> weapons, Collection<ShipStrikeCraft> strikeCrafts) {
+    public ShipSection(String design, String slot, ImmutableList<ShipWeapon> weapons, ImmutableList<ShipStrikeCraft> strikeCrafts) {
         this.design = design;
         this.slot = slot;
-        this.weapons = new ViewableUnmodifiableArrayList<>(weapons);
-        this.strikeCrafts = new ViewableUnmodifiableArrayList<>(strikeCrafts);
+        this.weapons = weapons;
+        this.strikeCrafts = strikeCrafts;
     }
 
     public String getDesign() {
@@ -41,11 +37,11 @@ public class ShipSection {
         return slot;
     }
 
-    public List<ShipWeapon> getWeapons() {
-        return weapons.getView();
+    public ImmutableList<ShipWeapon> getWeapons() {
+        return weapons;
     }
 
-    public List<ShipStrikeCraft> getStrikeCrafts() {
-        return strikeCrafts.getView();
+    public ImmutableList<ShipStrikeCraft> getStrikeCrafts() {
+        return strikeCrafts;
     }
 }

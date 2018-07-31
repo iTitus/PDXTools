@@ -3,13 +3,10 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class Ship {
 
@@ -18,9 +15,9 @@ public class Ship {
     private final double speed, experience, postMoveAngle, hitpoints, shieldHitpoints, armorHitpoints, maxHitpoints, maxShieldHitpoints, maxArmorHitpoints, rotation, forwardX, forwardY, upgradeProgress, disableAtHealth, enableAtHealth, targeting;
     private final String name, key, graphicalCulture;
     private final Date lastDamage;
-    private final ViewableList<Aura> auras;
-    private final ViewableList<ShipSection> sections;
-    private final ViewableList<TimedModifier> timedModifiers;
+    private final ImmutableList<Aura> auras;
+    private final ImmutableList<ShipSection> sections;
+    private final ImmutableList<TimedModifier> timedModifiers;
     private final Coordinate coordinate, targetCoordinate;
     private final Flags flags;
     private final Homepop homepop;
@@ -34,7 +31,7 @@ public class Ship {
         PdxScriptObject o = (PdxScriptObject) s;
 
         PdxScriptList l = o.getList("auras");
-        this.auras = l != null ? l.getAsList(Aura::new) : CollectionUtil.viewableListOf();
+        this.auras = l != null ? l.getAsList(Aura::new) : Lists.immutable.empty();
         this.isBeingRepaired = o.getBoolean("is_being_repaired");
         this.fleet = o.getInt("fleet");
         this.name = o.getString("name");
@@ -82,7 +79,7 @@ public class Ship {
         this.upgradable = o.getBoolean("upgradable", true);
     }
 
-    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean disabled, boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign, int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed, double experience, double postMoveAngle, double hitpoints, double shieldHitpoints, double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints, double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth, double enableAtHealth, double targeting, String name, String key, String graphicalCulture, Date lastDamage, Collection<Aura> auras, Collection<ShipSection> sections, Collection<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate, Flags flags, Homepop homepop, FormationPos formationPos, Variables auraModifier) {
+    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean disabled, boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign, int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed, double experience, double postMoveAngle, double hitpoints, double shieldHitpoints, double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints, double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth, double enableAtHealth, double targeting, String name, String key, String graphicalCulture, Date lastDamage, ImmutableList<Aura> auras, ImmutableList<ShipSection> sections, ImmutableList<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate, Flags flags, Homepop homepop, FormationPos formationPos, Variables auraModifier) {
         this.isBeingRepaired = isBeingRepaired;
         this.createdThisUpdate = createdThisUpdate;
         this.disabled = disabled;
@@ -116,9 +113,9 @@ public class Ship {
         this.key = key;
         this.graphicalCulture = graphicalCulture;
         this.lastDamage = lastDamage;
-        this.auras = new ViewableUnmodifiableArrayList<>(auras);
-        this.sections = new ViewableUnmodifiableArrayList<>(sections);
-        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
+        this.auras = auras;
+        this.sections = sections;
+        this.timedModifiers = timedModifiers;
         this.coordinate = coordinate;
         this.targetCoordinate = targetCoordinate;
         this.flags = flags;
@@ -259,16 +256,16 @@ public class Ship {
         return lastDamage;
     }
 
-    public List<Aura> getAuras() {
-        return auras.getView();
+    public ImmutableList<Aura> getAuras() {
+        return auras;
     }
 
-    public List<ShipSection> getSections() {
-        return sections.getView();
+    public ImmutableList<ShipSection> getSections() {
+        return sections;
     }
 
-    public List<TimedModifier> getTimedModifiers() {
-        return timedModifiers.getView();
+    public ImmutableList<TimedModifier> getTimedModifiers() {
+        return timedModifiers;
     }
 
     public Coordinate getCoordinate() {

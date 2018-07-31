@@ -2,12 +2,9 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
+import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class Meta {
 
@@ -15,7 +12,7 @@ public class Meta {
     private final int versionControlRevision;
     private final String name;
     private final Date date;
-    private final ViewableList<String> requiredDLCs;
+    private final ImmutableList<String> requiredDLCs;
     private final String playerPortrait;
     private final Flag flag;
     private final double fleets;
@@ -38,12 +35,12 @@ public class Meta {
         this.planets = o.getInt("meta_planets");
     }
 
-    public Meta(String version, int versionControlRevision, String name, Date date, Collection<String> requiredDLCs, String playerPortrait, Flag flag, double fleets, int planets) {
+    public Meta(String version, int versionControlRevision, String name, Date date, ImmutableList<String> requiredDLCs, String playerPortrait, Flag flag, double fleets, int planets) {
         this.version = version;
         this.versionControlRevision = versionControlRevision;
         this.name = name;
         this.date = new Date(date.getTime());
-        this.requiredDLCs = new ViewableUnmodifiableArrayList<>(requiredDLCs);
+        this.requiredDLCs = requiredDLCs;
         this.playerPortrait = playerPortrait;
         this.flag = flag;
         this.fleets = fleets;
@@ -66,8 +63,8 @@ public class Meta {
         return new Date(date.getTime());
     }
 
-    public List<String> getRequiredDLCs() {
-        return requiredDLCs.getView();
+    public ImmutableList<String> getRequiredDLCs() {
+        return requiredDLCs;
     }
 
     public String getPlayerPortrait() {

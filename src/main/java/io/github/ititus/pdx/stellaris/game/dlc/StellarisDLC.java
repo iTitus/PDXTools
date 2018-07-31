@@ -4,19 +4,19 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Set;
 
 public class StellarisDLC {
 
-    private static final Set<String> BLACKLIST = CollectionUtil.setOf();
-    private static final IFileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
+    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
     private static final FileFilter DLC = new FileExtensionFilter("dlc");
+    private static final IFileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
 
     private final File installDir, dlcDir;
 

@@ -1,20 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
-import com.koloboke.collect.map.hash.HashObjObjMaps;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.factory.Maps;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-import java.util.Map;
 
 public class StellarisMods {
 
     private static final FileFilter MOD = new FileExtensionFilter("mod");
 
     private final File userDataDir, modsFolder;
-    private final Map<String, StellarisMod> mods;
+    private final ImmutableMap<String, StellarisMod> mods;
 
     public StellarisMods(File userDataDir, File modsFolder) {
         if (userDataDir == null || !userDataDir.isDirectory() || modsFolder == null || !modsFolder.isDirectory()) {
@@ -23,8 +24,9 @@ public class StellarisMods {
         this.userDataDir = userDataDir;
         this.modsFolder = modsFolder;
 
-        File[] files = modsFolder.listFiles(MOD);
-        this.mods = HashObjObjMaps.newImmutableMap(Arrays.stream(files).map(IOUtil::getNameWithoutExtension)::iterator, Arrays.stream(files).map(modFile -> new StellarisMod(userDataDir, modFile))::iterator);
+        MutableMap<String, StellarisMod> map = Maps.mutable.empty();
+        Arrays.stream(modsFolder.listFiles(MOD)).forEach(f -> map.put(IOUtil.getNameWithoutExtension(f), new StellarisMod(userDataDir, f)));
+        this.mods = map.toImmutable();
     }
 
     public File getUserDataDir() {
@@ -35,7 +37,7 @@ public class StellarisMods {
         return modsFolder;
     }
 
-    public Map<String, StellarisMod> getMods() {
+    public ImmutableMap<String, StellarisMod> getMods() {
         return mods;
     }
 }

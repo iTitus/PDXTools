@@ -1,33 +1,30 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
+import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class FleetMovementPath {
 
     private final Date date;
-    private final ViewableList<FleetMovementPathNode> nodes;
+    private final ImmutableList<FleetMovementPathNode> nodes;
 
     public FleetMovementPath(PdxScriptObject o) {
         this.nodes = o.getImplicitList("node").getAsList(FleetMovementPathNode::new);
         this.date = o.getDate("date");
     }
 
-    public FleetMovementPath(Date date, Collection<FleetMovementPathNode> nodes) {
+    public FleetMovementPath(Date date, ImmutableList<FleetMovementPathNode> nodes) {
         this.date = date;
-        this.nodes = new ViewableUnmodifiableArrayList<>(nodes);
+        this.nodes = nodes;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public List<FleetMovementPathNode> getNodes() {
-        return nodes.getView();
+    public ImmutableList<FleetMovementPathNode> getNodes() {
+        return nodes;
     }
 }

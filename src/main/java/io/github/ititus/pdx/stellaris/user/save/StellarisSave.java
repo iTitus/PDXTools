@@ -1,21 +1,18 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.ObjObjMap;
-import com.koloboke.collect.map.hash.HashObjObjMaps;
-import com.koloboke.collect.set.hash.HashObjSet;
-import com.koloboke.collect.set.hash.HashObjSets;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -24,7 +21,7 @@ public class StellarisSave {
     private static final String META = "meta";
     private static final String GAMESTATE = "gamestate";
 
-    private static final Set<String> BLACKLIST = CollectionUtil.setOf();
+    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
     private static final IFileFilter FILTER = f -> f != null && (f.getName().equals(META) || f.getName().equals(GAMESTATE));
 
     private final File save;
@@ -103,10 +100,8 @@ public class StellarisSave {
         return gameState;
     }
 
-    public ObjObjMap<String, HashObjSet<String>> getErrors() {
-        ObjObjMap<String, HashObjSet<String>> errors = HashObjObjMaps.newUpdatableMap();
-        saveDataLoader.getRawData().getErrors().forEach((k, v) -> errors.computeIfAbsent(k, k_ -> HashObjSets.newUpdatableSet()).addAll(v));
-        return errors;
+    public ImmutableMultimap<String, String> getErrors() {
+        return saveDataLoader.getRawData().getErrors();
     }
 
 }

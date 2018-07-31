@@ -2,41 +2,37 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
 
 public class Formation {
 
     private final int root;
-    private final ViewableList<Integer> ships, parents;
+    private final ImmutableIntList ships, parents;
 
     public Formation(PdxScriptObject o) {
         this.root = o.getInt("root");
         PdxScriptList l = o.getList("ships");
-        this.ships = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.ships = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("parent");
-        this.parents = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.parents = l != null ? l.getAsIntList() : IntLists.immutable.empty();
     }
 
-    public Formation(int root, Collection<Integer> ships, Collection<Integer> parents) {
+    public Formation(int root, ImmutableIntList ships, ImmutableIntList parents) {
         this.root = root;
-        this.ships = new ViewableUnmodifiableArrayList<>(ships);
-        this.parents = new ViewableUnmodifiableArrayList<>(parents);
+        this.ships = ships;
+        this.parents = parents;
     }
 
     public int getRoot() {
         return root;
     }
 
-    public List<Integer> getShips() {
-        return ships.getView();
+    public ImmutableIntList getShips() {
+        return ships;
     }
 
-    public List<Integer> getParents() {
-        return parents.getView();
+    public ImmutableIntList getParents() {
+        return parents;
     }
 }

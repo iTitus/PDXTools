@@ -2,18 +2,15 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
+import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class Debris {
 
     private final int country;
     private final Date date;
-    private final ViewableList<String> components;
+    private final ImmutableList<String> components;
     private final Coordinate coordinate;
 
     public Debris(IPdxScript s) {
@@ -28,10 +25,10 @@ public class Debris {
         this.date = o.getDate("date");
     }
 
-    public Debris(int country, Date date, Collection<String> components, Coordinate coordinate) {
+    public Debris(int country, Date date, ImmutableList<String> components, Coordinate coordinate) {
         this.country = country;
         this.date = date;
-        this.components = new ViewableUnmodifiableArrayList<>(components);
+        this.components = components;
         this.coordinate = coordinate;
     }
 
@@ -43,8 +40,8 @@ public class Debris {
         return date;
     }
 
-    public List<String> getComponents() {
-        return components.getView();
+    public ImmutableList<String> getComponents() {
+        return components;
     }
 
     public Coordinate getCoordinate() {

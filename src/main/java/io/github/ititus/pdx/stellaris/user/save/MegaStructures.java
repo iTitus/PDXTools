@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class MegaStructures {
 
-    private final IntObjMap<MegaStructure> megaStructures;
+    private final ImmutableIntObjectMap<MegaStructure> megaStructures;
 
     public MegaStructures(PdxScriptObject o) {
-        this.megaStructures = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(MegaStructure::new));
+        this.megaStructures = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(MegaStructure::new));
     }
 
-    public MegaStructures(IntObjMap<MegaStructure> megaStructures) {
-        this.megaStructures = HashIntObjMaps.newImmutableMap(megaStructures);
+    public MegaStructures(ImmutableIntObjectMap<MegaStructure> megaStructures) {
+        this.megaStructures = megaStructures;
     }
 
-    public IntObjMap<MegaStructure> getMegaStructures() {
+    public ImmutableIntObjectMap<MegaStructure> getMegaStructures() {
         return megaStructures;
     }
 }

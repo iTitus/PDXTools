@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class TradeDeals {
 
-    private final IntObjMap<TradeDeal> tradeDeals;
+    private final ImmutableIntObjectMap<TradeDeal> tradeDeals;
 
     public TradeDeals(PdxScriptObject o) {
-        this.tradeDeals = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(TradeDeal::new));
+        this.tradeDeals = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(TradeDeal::new));
     }
 
-    public TradeDeals(IntObjMap<TradeDeal> tradeDeals) {
-        this.tradeDeals = HashIntObjMaps.newImmutableMap(tradeDeals);
+    public TradeDeals(ImmutableIntObjectMap<TradeDeal> tradeDeals) {
+        this.tradeDeals = tradeDeals;
     }
 
-    public IntObjMap<TradeDeal> getTradeDeals() {
+    public ImmutableIntObjectMap<TradeDeal> getTradeDeals() {
         return tradeDeals;
     }
 }

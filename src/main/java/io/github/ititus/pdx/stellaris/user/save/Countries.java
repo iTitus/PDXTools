@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class Countries {
 
-    private final IntObjMap<Country> countries;
+    private final ImmutableIntObjectMap<Country> countries;
 
     public Countries(PdxScriptObject o) {
-        this.countries = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Country::new));
+        this.countries = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Country::new));
     }
 
-    public Countries(IntObjMap<Country> countries) {
-        this.countries = HashIntObjMaps.newImmutableMap(countries);
+    public Countries(ImmutableIntObjectMap<Country> countries) {
+        this.countries = countries;
     }
 
-    public IntObjMap<Country> getCountries() {
+    public ImmutableIntObjectMap<Country> getCountries() {
         return countries;
     }
 }

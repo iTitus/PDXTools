@@ -2,11 +2,7 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class Pop {
 
@@ -15,7 +11,7 @@ public class Pop {
     private final long tile, payingSector;
     private final double growth;
     private final String growthState;
-    private final ViewableList<TimedModifier> timedModifiers;
+    private final ImmutableList<TimedModifier> timedModifiers;
     private final Ethos ethos;
     private final Flags flags;
     private final PopResourceRequirement requiredGrowth;
@@ -51,7 +47,7 @@ public class Pop {
         this.daysEnslaved = o.getInt("days_enslaved");
     }
 
-    public Pop(boolean buildablePop, boolean enslaved, boolean forceFactionEvaluation, boolean aiRightsServitude, int speciesIndex, int popFaction, int daysEnslaved, long tile, long payingSector, double growth, String growthState, Collection<TimedModifier> timedModifiers, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources) {
+    public Pop(boolean buildablePop, boolean enslaved, boolean forceFactionEvaluation, boolean aiRightsServitude, int speciesIndex, int popFaction, int daysEnslaved, long tile, long payingSector, double growth, String growthState, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources) {
         this.buildablePop = buildablePop;
         this.enslaved = enslaved;
         this.forceFactionEvaluation = forceFactionEvaluation;
@@ -63,7 +59,7 @@ public class Pop {
         this.payingSector = payingSector;
         this.growth = growth;
         this.growthState = growthState;
-        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
+        this.timedModifiers = timedModifiers;
         this.ethos = ethos;
         this.flags = flags;
         this.requiredGrowth = requiredGrowth;
@@ -114,8 +110,8 @@ public class Pop {
         return growthState;
     }
 
-    public List<TimedModifier> getTimedModifiers() {
-        return timedModifiers.getView();
+    public ImmutableList<TimedModifier> getTimedModifiers() {
+        return timedModifiers;
     }
 
     public Ethos getEthos() {

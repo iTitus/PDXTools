@@ -2,18 +2,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 
 public class FleetMovementManager {
 
     private final int timeSinceLastPathUpdate, ftlWindup, ftlTotalWindup;
     private final String state;
-    private final ViewableList<Double> customFormation;
+    private final ImmutableDoubleList customFormation;
     private final FormationType formation;
     private final Coordinate coordinate, targetCoordinate;
     private final FleetMovementTarget target;
@@ -34,15 +30,15 @@ public class FleetMovementManager {
         this.lastFTLJump = o.getObject("last_ftl_jump").getAs(FTLJump::new);
         this.ftlTotalWindup = o.getInt("ftl_total_windup", -1);
         PdxScriptList l = o.getList("custom_formation");
-        this.customFormation = l != null ? l.getAsDoubleList() : CollectionUtil.viewableListOf();
+        this.customFormation = l != null ? l.getAsDoubleList() : DoubleLists.immutable.empty();
     }
 
-    public FleetMovementManager(int timeSinceLastPathUpdate, int ftlWindup, int ftlTotalWindup, String state, Collection<Double> customFormation, FormationType formation, Coordinate coordinate, Coordinate targetCoordinate, FleetMovementTarget target, FleetMovementPath path, FleetMovementOrbit orbit, FTLJump lastFTLJump) {
+    public FleetMovementManager(int timeSinceLastPathUpdate, int ftlWindup, int ftlTotalWindup, String state, ImmutableDoubleList customFormation, FormationType formation, Coordinate coordinate, Coordinate targetCoordinate, FleetMovementTarget target, FleetMovementPath path, FleetMovementOrbit orbit, FTLJump lastFTLJump) {
         this.timeSinceLastPathUpdate = timeSinceLastPathUpdate;
         this.ftlWindup = ftlWindup;
         this.ftlTotalWindup = ftlTotalWindup;
         this.state = state;
-        this.customFormation = new ViewableUnmodifiableArrayList<>(customFormation);
+        this.customFormation = customFormation;
         this.formation = formation;
         this.coordinate = coordinate;
         this.targetCoordinate = targetCoordinate;
@@ -68,8 +64,8 @@ public class FleetMovementManager {
         return state;
     }
 
-    public List<Double> getCustomFormation() {
-        return customFormation.getView();
+    public ImmutableDoubleList getCustomFormation() {
+        return customFormation;
     }
 
     public FormationType getFormation() {

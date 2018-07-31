@@ -4,16 +4,16 @@ import io.github.ititus.pdx.pdxlocalisation.PDXLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import java.io.File;
-import java.util.Set;
 
 public class StellarisGame {
 
-    private static final Set<String> BLACKLIST = CollectionUtil.setOf(
+    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
             "licenses", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "common/HOW_TO_MAKE_NEW_SHIPS.txt", "common/edicts/README.txt", "interface/credits.txt", "interface/reference.txt", "interface/startup_info.txt", "pdx_launcher/game/motd.txt",
             // Handled separately

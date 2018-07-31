@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class NaturalWormholes {
 
-    private final IntObjMap<NaturalWormhole> naturalWormholes;
+    private final ImmutableIntObjectMap<NaturalWormhole> naturalWormholes;
 
     public NaturalWormholes(PdxScriptObject o) {
-        this.naturalWormholes = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(NaturalWormhole::new));
+        this.naturalWormholes = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(NaturalWormhole::new));
     }
 
-    public NaturalWormholes(IntObjMap<NaturalWormhole> naturalWormholes) {
-        this.naturalWormholes = HashIntObjMaps.newImmutableMap(naturalWormholes);
+    public NaturalWormholes(ImmutableIntObjectMap<NaturalWormhole> naturalWormholes) {
+        this.naturalWormholes = naturalWormholes;
     }
 
-    public IntObjMap<NaturalWormhole> getNaturalWormholes() {
+    public ImmutableIntObjectMap<NaturalWormhole> getNaturalWormholes() {
         return naturalWormholes;
     }
 }

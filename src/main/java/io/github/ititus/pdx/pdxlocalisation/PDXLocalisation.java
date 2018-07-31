@@ -1,26 +1,25 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
-import com.koloboke.collect.map.ObjObjMap;
-import com.koloboke.collect.map.hash.HashObjObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
+import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.factory.Maps;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class PDXLocalisation implements PdxConstants {
 
-    private final ObjObjMap<String, ObjObjMap<String, String>> localisation;
+    private final ImmutableMap<String, ImmutableMap<String, String>> localisation;
 
-    public PDXLocalisation(ObjObjMap<String, ObjObjMap<String, String>> localisation) {
-        this.localisation = CollectionUtil.toImmutableDeep(localisation);
+    public PDXLocalisation(ImmutableMap<String, ImmutableMap<String, String>> localisation) {
+        this.localisation = localisation;
     }
 
-    public Set<String> getLanguages() {
-        return localisation.keySet();
+    public RichIterable<String> getLanguages() {
+        return localisation.keysView();
     }
 
     public String get(String language, String key) {
@@ -37,7 +36,7 @@ public final class PDXLocalisation implements PdxConstants {
 
     public String get(String language, String key, String fallbackLanguage, String fallbackKey, String fallback) {
         String internedLanguage = language != null ? language.intern() : null;
-        ObjObjMap<String, String> languageMap = null;
+        ImmutableMap<String, String> languageMap = null;
         if (internedLanguage != null) {
             languageMap = localisation.get(internedLanguage);
         }
@@ -58,49 +57,49 @@ public final class PDXLocalisation implements PdxConstants {
         return fallback != null ? fallback.intern() : null;
     }
 
-    public ObjObjMap<String, ObjObjMap<String, String>> getExtraLocalisation() {
-        ObjObjMap<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
-        ObjObjMap<String, ObjObjMap<String, String>> map = HashObjObjMaps.newUpdatableMap();
-        localisation.forEach((language, languageMap) -> {
-            if (!DEFAULT_LANGUAGE.equals(language)) {
-                map.computeIfAbsent(language, k -> HashObjObjMaps.newUpdatableMap()).putAll(languageMap.entrySet().stream().filter(p -> !defaultLanguageMap.containsKey(p.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    public ImmutableMap<String, ImmutableMap<String, String>> getExtraLocalisation() {
+        ImmutableMap<String, String> defaultLangMap = localisation.get(DEFAULT_LANGUAGE);
+        ImmutableMap<String, String> tets;
+        MutableMap<String, MutableMap<String, String>> map = Maps.mutable.empty();
+        localisation.forEachKeyValue((lang, langMap) -> {
+            if (!DEFAULT_LANGUAGE.equals(lang)) {
+                map.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap.toMap().entrySet().stream().filter(p -> !defaultLangMap.containsKey(p.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
             }
         });
-        return map;
+        MutableMap<String, ImmutableMap<String, String>> ret = Maps.mutable.empty();
+        map.forEachKeyValue((lang, langMap) -> ret.put(lang, langMap.toImmutable()));
+        return ret.toImmutable();
     }
 
-    public ObjObjMap<String, ObjObjMap<String, String>> getMissingLocalisation() {
-        ObjObjMap<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE);
-        ObjObjMap<String, ObjObjMap<String, String>> map = HashObjObjMaps.newUpdatableMap();
-        localisation.forEach((language, languageMap) -> {
-            if (!DEFAULT_LANGUAGE.equals(language)) {
-                map.computeIfAbsent(language, k -> HashObjObjMaps.newUpdatableMap()).putAll(defaultLanguageMap.entrySet().stream().filter(p -> !languageMap.containsKey(p.getKey()) || languageMap.get(p.getKey()).equals(p.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    public ImmutableMap<String, ImmutableMap<String, String>> getMissingLocalisation() {
+        MutableMap<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE).toMap();
+        MutableMap<String, MutableMap<String, String>> map = Maps.mutable.empty();
+        localisation.forEachKeyValue((lang, langMap) -> {
+            if (!DEFAULT_LANGUAGE.equals(lang)) {
+                map.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(defaultLanguageMap.entrySet().stream().filter(p -> !langMap.containsKey(p.getKey()) || langMap.get(p.getKey()).equals(p.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
             }
         });
-        return map;
+        MutableMap<String, ImmutableMap<String, String>> ret = Maps.mutable.empty();
+        map.forEachKeyValue((lang, langMap) -> ret.put(lang, langMap.toImmutable()));
+        return ret.toImmutable();
     }
 
     public String toYML() {
         StringBuilder b = new StringBuilder();
-        localisation.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(langEntry -> {
-            b.append(langEntry.getKey()).append(COLON_CHAR).append(LINE_FEED);
-            langEntry
-                    .getValue()
-                    .entrySet()
-                    .stream()
-                    .sorted(Comparator.comparing(Map.Entry::getKey))
-                    .forEachOrdered(translationEntry ->
-                            b
-                                    .append(SPACE_CHAR)
-                                    .append(translationEntry.getKey())
-                                    .append(COLON_CHAR)
-                                    .append(ZERO_CHAR)
-                                    .append(SPACE_CHAR)
-                                    .append(QUOTE_CHAR)
-                                    .append(translationEntry.getValue())
-                                    .append(QUOTE_CHAR)
-                                    .append(LINE_FEED)
-                    );
+        localisation.forEachKeyValue((lang, langMap) -> {
+            b.append(lang).append(COLON_CHAR).append(LINE_FEED);
+            langMap.forEachKeyValue((k, v) ->
+                    b
+                            .append(SPACE_CHAR)
+                            .append(k)
+                            .append(COLON_CHAR)
+                            .append(ZERO_CHAR)
+                            .append(SPACE_CHAR)
+                            .append(QUOTE_CHAR)
+                            .append(v)
+                            .append(QUOTE_CHAR)
+                            .append(LINE_FEED)
+            );
         });
         return b.toString();
     }

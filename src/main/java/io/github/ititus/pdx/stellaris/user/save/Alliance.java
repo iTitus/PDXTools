@@ -3,20 +3,17 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class Alliance {
 
     private final int leader, nextLeader;
     private final String name;
     private final Date startDate, nextRotation;
-    private final ViewableList<Integer> members, associates, shipDesigns;
+    private final ImmutableIntList members, associates, shipDesigns;
 
     public Alliance(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -25,25 +22,25 @@ public class Alliance {
         PdxScriptObject o = (PdxScriptObject) s;
 
         this.name = o.getString("name");
-        this.members = o.getList("members").getAsIntegerList();
+        this.members = o.getList("members").getAsIntList();
         PdxScriptList l = o.getList("associates");
-        this.associates = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.associates = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.startDate = o.getDate("start_date");
         this.nextRotation = o.getDate("next_rotation");
-        this.shipDesigns = o.getList("ship_design").getAsIntegerList();
+        this.shipDesigns = o.getList("ship_design").getAsIntList();
         this.leader = o.getInt("leader");
         this.nextLeader = o.getInt("next_leader");
     }
 
-    public Alliance(int leader, int nextLeader, String name, Date startDate, Date nextRotation, Collection<Integer> members, Collection<Integer> associates, Collection<Integer> shipDesigns) {
+    public Alliance(int leader, int nextLeader, String name, Date startDate, Date nextRotation, ImmutableIntList members, ImmutableIntList associates, ImmutableIntList shipDesigns) {
         this.leader = leader;
         this.nextLeader = nextLeader;
         this.name = name;
         this.startDate = startDate;
         this.nextRotation = nextRotation;
-        this.members = new ViewableUnmodifiableArrayList<>(members);
-        this.associates = new ViewableUnmodifiableArrayList<>(associates);
-        this.shipDesigns = new ViewableUnmodifiableArrayList<>(shipDesigns);
+        this.members = members;
+        this.associates = associates;
+        this.shipDesigns = shipDesigns;
     }
 
     public int getLeader() {
@@ -66,15 +63,15 @@ public class Alliance {
         return nextRotation;
     }
 
-    public List<Integer> getMembers() {
-        return members.getView();
+    public ImmutableIntList getMembers() {
+        return members;
     }
 
-    public List<Integer> getAssociates() {
-        return associates.getView();
+    public ImmutableIntList getAssociates() {
+        return associates;
     }
 
-    public List<Integer> getShipDesigns() {
-        return shipDesigns.getView();
+    public ImmutableIntList getShipDesigns() {
+        return shipDesigns;
     }
 }

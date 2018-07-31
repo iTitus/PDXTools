@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class Ships {
 
-    private final IntObjMap<Ship> ships;
+    private final ImmutableIntObjectMap<Ship> ships;
 
     public Ships(PdxScriptObject o) {
-        this.ships = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Ship::new));
+        this.ships = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Ship::new));
     }
 
-    public Ships(IntObjMap<Ship> ships) {
-        this.ships = HashIntObjMaps.newImmutableMap(ships);
+    public Ships(ImmutableIntObjectMap<Ship> ships) {
+        this.ships = ships;
     }
 
-    public IntObjMap<Ship> getShips() {
+    public ImmutableIntObjectMap<Ship> getShips() {
         return ships;
     }
 }

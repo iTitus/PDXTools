@@ -2,18 +2,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class ShipDesign {
 
     private final boolean allianceShipDesign, autoGenDesigns, isSpecialBuildable, useDesignName;
     private final String name, shipSize, allowBuildableTrigger;
-    private final ViewableList<String> requiredComponents;
-    private final ViewableList<ShipDesignSection> sections;
+    private final ImmutableList<String> requiredComponents;
+    private final ImmutableList<ShipDesignSection> sections;
 
     public ShipDesign(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -32,7 +28,7 @@ public class ShipDesign {
         this.useDesignName = o.getBoolean("use_design_name");
     }
 
-    public ShipDesign(boolean allianceShipDesign, boolean autoGenDesigns, boolean isSpecialBuildable, boolean useDesignName, String name, String shipSize, String allowBuildableTrigger, Collection<String> requiredComponents, Collection<ShipDesignSection> sections) {
+    public ShipDesign(boolean allianceShipDesign, boolean autoGenDesigns, boolean isSpecialBuildable, boolean useDesignName, String name, String shipSize, String allowBuildableTrigger, ImmutableList<String> requiredComponents, ImmutableList<ShipDesignSection> sections) {
         this.allianceShipDesign = allianceShipDesign;
         this.autoGenDesigns = autoGenDesigns;
         this.isSpecialBuildable = isSpecialBuildable;
@@ -40,8 +36,8 @@ public class ShipDesign {
         this.name = name;
         this.shipSize = shipSize;
         this.allowBuildableTrigger = allowBuildableTrigger;
-        this.requiredComponents = new ViewableUnmodifiableArrayList<>(requiredComponents);
-        this.sections = new ViewableUnmodifiableArrayList<>(sections);
+        this.requiredComponents = requiredComponents;
+        this.sections = sections;
     }
 
     public boolean isAllianceShipDesign() {
@@ -72,11 +68,11 @@ public class ShipDesign {
         return allowBuildableTrigger;
     }
 
-    public List<String> getRequiredComponents() {
-        return requiredComponents.getView();
+    public ImmutableList<String> getRequiredComponents() {
+        return requiredComponents;
     }
 
-    public List<ShipDesignSection> getSections() {
-        return sections.getView();
+    public ImmutableList<ShipDesignSection> getSections() {
+        return sections;
     }
 }

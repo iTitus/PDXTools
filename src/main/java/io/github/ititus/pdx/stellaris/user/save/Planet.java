@@ -3,18 +3,18 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 public class Planet {
 
-    public static final Set<String> habitablePlanetClasses = CollectionUtil.setOf(
+    public static final ImmutableSet<String> habitablePlanetClasses = Sets.immutable.of(
             "pc_desert",
             "pc_tropical",
             "pc_arid",
@@ -38,11 +38,11 @@ public class Planet {
     private final double orbit, bombardmentDamage, unrest, alienSlavery, ownSpeciesSlavery;
     private final String name, planetClass, anomaly, entityName, picture;
     private final Date lastBombardment, colonizeDate;
-    private final ViewableList<Integer> moons, pops, orbitals, armies;
-    private final ViewableList<String> planetModifiers;
-    private final ViewableList<BuildingConstructionQueueItem> buildingConstructionQueue;
-    private final ViewableList<TimedModifier> timedModifiers;
-    private final ViewableList<Edict> edicts;
+    private final ImmutableIntList moons, pops, orbitals, armies;
+    private final ImmutableList<String> planetModifiers;
+    private final ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue;
+    private final ImmutableList<TimedModifier> timedModifiers;
+    private final ImmutableList<Edict> edicts;
     private final Coordinate coordinate;
     private final Pop colonizerPop;
     private final Flags flags;
@@ -66,7 +66,7 @@ public class Planet {
         this.lastBombardment = o.getDate("last_bombardment");
         this.unrest = o.getDouble("unrest");
         PdxScriptList l = o.getList("moons");
-        this.moons = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.moons = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.planetClassChanged = o.getBoolean("planet_class_changed");
         this.owner = o.getInt("owner", -1);
         this.originalOwner = o.getInt("original_owner", -1);
@@ -79,14 +79,14 @@ public class Planet {
         this.anomaly = o.getString("anomaly");
         this.colonyTile = o.getLong("colony_tile", -1);
         l = o.getList("pop");
-        this.pops = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.pops = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.colonizeDate = o.getDate("colonize_date");
         l = o.getList("building_construction_queue");
-        this.buildingConstructionQueue = l != null ? l.getAsList(BuildingConstructionQueueItem::new) : CollectionUtil.viewableListOf();
+        this.buildingConstructionQueue = l != null ? l.getAsList(BuildingConstructionQueueItem::new) : Lists.immutable.empty();
         l = o.getList("orbitals");
-        this.orbitals = l != null ? l.getAsUnsignedIntegerList() : CollectionUtil.viewableListOf();
+        this.orbitals = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("army");
-        this.armies = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.armies = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.builtArmies = o.getInt("built_armies");
         this.alienSlavery = o.getDouble("alien_slavery");
         this.ownSpeciesSlavery = o.getDouble("own_species_slavery");
@@ -109,7 +109,7 @@ public class Planet {
         this.tiles = o.getObject("tiles").getAs(Tiles::new);
         this.spaceport = o.getObject("spaceport").getAs(Spaceport::new);
         l = o.getList("edicts");
-        this.edicts = l != null ? l.getAsList(Edict::new) : CollectionUtil.viewableListOf();
+        this.edicts = l != null ? l.getAsList(Edict::new) : Lists.immutable.empty();
         this.surveyedBy = o.getInt("surveyed_by", -1);
         this.surveyed = o.getBoolean("surveyed");
         this.preventAnomaly = o.getBoolean("prevent_anomaly");
@@ -117,7 +117,7 @@ public class Planet {
         this.orbitalDepositTile = o.getLong("orbital_deposit_tile");
     }
 
-    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean hasOwnerPops, boolean hasOwnedPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int immigratingPop, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, long colonyTile, long orbitalDepositTile, double orbit, double bombardmentDamage, double unrest, double alienSlavery, double ownSpeciesSlavery, String name, String planetClass, String anomaly, String entityName, String picture, Date lastBombardment, Date colonizeDate, Collection<Integer> moons, Collection<Integer> pops, Collection<Integer> orbitals, Collection<Integer> armies, Collection<String> planetModifiers, Collection<BuildingConstructionQueueItem> buildingConstructionQueue, Collection<TimedModifier> timedModifiers, Collection<Edict> edicts, Coordinate coordinate, Pop colonizerPop, Flags flags, Variables variables, DelayedEvent delayedEvent, Tiles tiles, Spaceport spaceport) {
+    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean hasOwnerPops, boolean hasOwnedPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int immigratingPop, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, long colonyTile, long orbitalDepositTile, double orbit, double bombardmentDamage, double unrest, double alienSlavery, double ownSpeciesSlavery, String name, String planetClass, String anomaly, String entityName, String picture, Date lastBombardment, Date colonizeDate, ImmutableIntList moons, ImmutableIntList pops, ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers, ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue, ImmutableList<TimedModifier> timedModifiers, ImmutableList<Edict> edicts, Coordinate coordinate, Pop colonizerPop, Flags flags, Variables variables, DelayedEvent delayedEvent, Tiles tiles, Spaceport spaceport) {
         this.customName = customName;
         this.planetClassChanged = planetClassChanged;
         this.isMoon = isMoon;
@@ -152,14 +152,14 @@ public class Planet {
         this.picture = picture;
         this.lastBombardment = new Date(lastBombardment.getTime());
         this.colonizeDate = new Date(colonizeDate.getTime());
-        this.moons = new ViewableUnmodifiableArrayList<>(moons);
-        this.pops = new ViewableUnmodifiableArrayList<>(pops);
-        this.orbitals = new ViewableUnmodifiableArrayList<>(orbitals);
-        this.armies = new ViewableUnmodifiableArrayList<>(armies);
-        this.planetModifiers = new ViewableUnmodifiableArrayList<>(planetModifiers);
-        this.buildingConstructionQueue = new ViewableUnmodifiableArrayList<>(buildingConstructionQueue);
-        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
-        this.edicts = new ViewableUnmodifiableArrayList<>(edicts);
+        this.moons = moons;
+        this.pops = pops;
+        this.orbitals = orbitals;
+        this.armies = armies;
+        this.planetModifiers = planetModifiers;
+        this.buildingConstructionQueue = buildingConstructionQueue;
+        this.timedModifiers = timedModifiers;
+        this.edicts = edicts;
         this.coordinate = coordinate;
         this.colonizerPop = colonizerPop;
         this.flags = flags;
@@ -305,36 +305,36 @@ public class Planet {
         return new Date(colonizeDate.getTime());
     }
 
-    public List<Integer> getMoons() {
-        return moons.getView();
+    public ImmutableIntList getMoons() {
+        return moons;
     }
 
-    public List<Integer> getPops() {
-        return pops.getView();
+    public ImmutableIntList getPops() {
+        return pops;
     }
 
-    public List<Integer> getOrbitals() {
-        return orbitals.getView();
+    public ImmutableIntList getOrbitals() {
+        return orbitals;
     }
 
-    public List<Integer> getArmies() {
-        return armies.getView();
+    public ImmutableIntList getArmies() {
+        return armies;
     }
 
-    public List<String> getPlanetModifiers() {
-        return planetModifiers.getView();
+    public ImmutableList<String> getPlanetModifiers() {
+        return planetModifiers;
     }
 
-    public List<BuildingConstructionQueueItem> getBuildingConstructionQueue() {
-        return buildingConstructionQueue.getView();
+    public ImmutableList<BuildingConstructionQueueItem> getBuildingConstructionQueue() {
+        return buildingConstructionQueue;
     }
 
-    public List<TimedModifier> getTimedModifiers() {
-        return timedModifiers.getView();
+    public ImmutableList<TimedModifier> getTimedModifiers() {
+        return timedModifiers;
     }
 
-    public List<Edict> getEdicts() {
-        return edicts.getView();
+    public ImmutableList<Edict> getEdicts() {
+        return edicts;
     }
 
     public Coordinate getCoordinate() {

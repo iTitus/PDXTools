@@ -2,16 +2,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class ShipDesignSection {
 
     private final String template, slot;
-    private final ViewableList<ShipDesignComponent> components;
+    private final ImmutableList<ShipDesignComponent> components;
 
     public ShipDesignSection(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -24,10 +20,10 @@ public class ShipDesignSection {
         this.components = o.getImplicitList("component").getAsList(ShipDesignComponent::new);
     }
 
-    public ShipDesignSection(String template, String slot, Collection<ShipDesignComponent> components) {
+    public ShipDesignSection(String template, String slot, ImmutableList<ShipDesignComponent> components) {
         this.template = template;
         this.slot = slot;
-        this.components = new ViewableUnmodifiableArrayList<>(components);
+        this.components = components;
     }
 
     public String getTemplate() {
@@ -38,7 +34,7 @@ public class ShipDesignSection {
         return slot;
     }
 
-    public List<ShipDesignComponent> getComponents() {
-        return components.getView();
+    public ImmutableList<ShipDesignComponent> getComponents() {
+        return components;
     }
 }

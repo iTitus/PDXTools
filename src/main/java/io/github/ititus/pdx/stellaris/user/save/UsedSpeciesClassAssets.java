@@ -3,17 +3,13 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
 
 public class UsedSpeciesClassAssets {
 
     private final String speciesClass;
-    private final ViewableList<Integer> values;
+    private final ImmutableIntList values;
 
     public UsedSpeciesClassAssets(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -23,19 +19,19 @@ public class UsedSpeciesClassAssets {
 
         this.speciesClass = o.getString("class");
         PdxScriptList l = o.getList("values");
-        this.values = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.values = l != null ? l.getAsIntList() : IntLists.immutable.empty();
     }
 
-    public UsedSpeciesClassAssets(String speciesClass, Collection<Integer> values) {
+    public UsedSpeciesClassAssets(String speciesClass, ImmutableIntList values) {
         this.speciesClass = speciesClass;
-        this.values = new ViewableUnmodifiableArrayList<>(values);
+        this.values = values;
     }
 
     public String getSpeciesClass() {
         return speciesClass;
     }
 
-    public List<Integer> getValues() {
-        return values.getView();
+    public ImmutableIntList getValues() {
+        return values;
     }
 }

@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class DebrisMap {
 
-    private final IntObjMap<Debris> debrisMap;
+    private final ImmutableIntObjectMap<Debris> debrisMap;
 
     public DebrisMap(PdxScriptObject o) {
-        this.debrisMap = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Debris::new));
+        this.debrisMap = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Debris::new));
     }
 
-    public DebrisMap(IntObjMap<Debris> debrisMap) {
-        this.debrisMap = HashIntObjMaps.newImmutableMap(debrisMap);
+    public DebrisMap(ImmutableIntObjectMap<Debris> debrisMap) {
+        this.debrisMap = debrisMap;
     }
 
-    public IntObjMap<Debris> getDebrisMap() {
+    public ImmutableIntObjectMap<Debris> getDebrisMap() {
         return debrisMap;
     }
 }

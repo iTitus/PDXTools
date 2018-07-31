@@ -2,17 +2,13 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class Cluster {
 
     private final double radius;
     private final String id;
-    private final ViewableList<Integer> objects;
+    private final ImmutableIntList objects;
     private final Coordinate position;
 
     public Cluster(IPdxScript s) {
@@ -24,13 +20,13 @@ public class Cluster {
         this.id = o.getString("id");
         this.position = o.getObject("position").getAs(Coordinate::new);
         this.radius = o.getDouble("radius");
-        this.objects = o.getList("objects").getAsIntegerList();
+        this.objects = o.getList("objects").getAsIntList();
     }
 
-    public Cluster(double radius, String id, Collection<Integer> objects, Coordinate position) {
+    public Cluster(double radius, String id, ImmutableIntList objects, Coordinate position) {
         this.radius = radius;
         this.id = id;
-        this.objects = new ViewableUnmodifiableArrayList<>(objects);
+        this.objects = objects;
         this.position = position;
     }
 
@@ -42,8 +38,8 @@ public class Cluster {
         return id;
     }
 
-    public List<Integer> getObjects() {
-        return objects.getView();
+    public ImmutableIntList getObjects() {
+        return objects;
     }
 
     public Coordinate getPosition() {

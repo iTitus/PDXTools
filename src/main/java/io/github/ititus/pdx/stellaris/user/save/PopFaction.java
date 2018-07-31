@@ -2,11 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class PopFaction {
 
@@ -14,9 +11,9 @@ public class PopFaction {
     private final int country, leader;
     private final double support, happiness;
     private final String type, name;
-    private final ViewableList<Integer> members;
-    private final ViewableList<Parameter> parameters;
-    private final ViewableList<TimedModifier> timedModifiers;
+    private final ImmutableIntList members;
+    private final ImmutableList<Parameter> parameters;
+    private final ImmutableList<TimedModifier> timedModifiers;
 
     public PopFaction(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -32,11 +29,11 @@ public class PopFaction {
         this.support = o.getDouble("support");
         this.happiness = o.getDouble("happiness");
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
-        this.members = o.getList("members").getAsIntegerList();
+        this.members = o.getList("members").getAsIntList();
         this.modifierDirty = o.getBoolean("modifier_dirty");
     }
 
-    public PopFaction(boolean modifierDirty, int country, int leader, double support, double happiness, String type, String name, Collection<Integer> members, Collection<Parameter> parameters, Collection<TimedModifier> timedModifiers) {
+    public PopFaction(boolean modifierDirty, int country, int leader, double support, double happiness, String type, String name, ImmutableIntList members, ImmutableList<Parameter> parameters, ImmutableList<TimedModifier> timedModifiers) {
         this.modifierDirty = modifierDirty;
         this.country = country;
         this.leader = leader;
@@ -44,9 +41,9 @@ public class PopFaction {
         this.happiness = happiness;
         this.type = type;
         this.name = name;
-        this.members = new ViewableUnmodifiableArrayList<>(members);
-        this.parameters = new ViewableUnmodifiableArrayList<>(parameters);
-        this.timedModifiers = new ViewableUnmodifiableArrayList<>(timedModifiers);
+        this.members = members;
+        this.parameters = parameters;
+        this.timedModifiers = timedModifiers;
     }
 
     public boolean isModifierDirty() {
@@ -77,15 +74,15 @@ public class PopFaction {
         return name;
     }
 
-    public List<Integer> getMembers() {
-        return members.getView();
+    public ImmutableIntList getMembers() {
+        return members;
     }
 
-    public List<Parameter> getParameters() {
-        return parameters.getView();
+    public ImmutableList<Parameter> getParameters() {
+        return parameters;
     }
 
-    public List<TimedModifier> getTimedModifiers() {
-        return timedModifiers.getView();
+    public ImmutableList<TimedModifier> getTimedModifiers() {
+        return timedModifiers;
     }
 }

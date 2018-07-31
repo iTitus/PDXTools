@@ -3,12 +3,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
 
 public class Fleet {
 
@@ -17,7 +13,7 @@ public class Fleet {
     private final long sector;
     private final double aggroRange, hitPoints;
     private final String name, groundSupportStance, fleetStance;
-    private final ViewableList<Integer> ships, incomingMerges;
+    private final ImmutableIntList ships, incomingMerges;
     private final FleetActions actions;
     private final FleetCombat combat;
     private final FleetAutoMovement autoMovement;
@@ -42,7 +38,7 @@ public class Fleet {
         this.actionInitialized = o.getBoolean("action_initialized");
         PdxScriptObject o1 = o.getObject("actions");
         this.actions = o1 != null ? o1.getAs(FleetActions::new) : null;
-        this.ships = o.getList("ships").getAsIntegerList();
+        this.ships = o.getList("ships").getAsIntList();
         this.combat = o.getObject("combat").getAs(FleetCombat::new);
         o1 = o.getObject("auto_movement");
         this.autoMovement = o1 != null ? o1.getAs(FleetAutoMovement::new) : null;
@@ -65,14 +61,14 @@ public class Fleet {
         this.orders = o1 != null ? o1.getAs(FleetOrders::new) : null;
         this.sector = o.getLong("sector", -1);
         PdxScriptList l = o.getList("incoming_merges");
-        this.incomingMerges = l != null ? l.getAsIntegerList() : CollectionUtil.viewableListOf();
+        this.incomingMerges = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.friendsShouldFollow = o.getBoolean("friends_should_follow");
         o1 = o.getObject("settings");
         this.settings = o1 != null ? o1.getAs(Settings::new) : null;
         this.hitPoints = o.getDouble("hit_points");
     }
 
-    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, Collection<Integer> ships, Collection<Integer> incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetOrders orders, Settings settings) {
+    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetOrders orders, Settings settings) {
         this.actionInitialized = actionInitialized;
         this.civilian = civilian;
         this.station = station;
@@ -88,8 +84,8 @@ public class Fleet {
         this.name = name;
         this.groundSupportStance = groundSupportStance;
         this.fleetStance = fleetStance;
-        this.ships = new ViewableUnmodifiableArrayList<>(ships);
-        this.incomingMerges = new ViewableUnmodifiableArrayList<>(incomingMerges);
+        this.ships = ships;
+        this.incomingMerges = incomingMerges;
         this.actions = actions;
         this.combat = combat;
         this.autoMovement = autoMovement;
@@ -162,12 +158,12 @@ public class Fleet {
         return fleetStance;
     }
 
-    public List<Integer> getShips() {
-        return ships.getView();
+    public ImmutableIntList getShips() {
+        return ships;
     }
 
-    public List<Integer> getIncomingMerges() {
-        return incomingMerges.getView();
+    public ImmutableIntList getIncomingMerges() {
+        return incomingMerges;
     }
 
     public FleetActions getActions() {

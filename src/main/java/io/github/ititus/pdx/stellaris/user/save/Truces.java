@@ -1,22 +1,21 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import com.koloboke.collect.map.IntObjMap;
-import com.koloboke.collect.map.hash.HashIntObjMaps;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class Truces {
 
-    private final IntObjMap<Truce> truces;
+    private final ImmutableIntObjectMap<Truce> truces;
 
     public Truces(PdxScriptObject o) {
-        this.truces = o.getAsIntObjMap(Integer::parseInt, PdxScriptObject.nullOr(Truce::new));
+        this.truces = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Truce::new));
     }
 
-    public Truces(IntObjMap<Truce> truces) {
-        this.truces = HashIntObjMaps.newImmutableMap(truces);
+    public Truces(ImmutableIntObjectMap<Truce> truces) {
+        this.truces = truces;
     }
 
-    public IntObjMap<Truce> getTruces() {
+    public ImmutableIntObjectMap<Truce> getTruces() {
         return truces;
     }
 }

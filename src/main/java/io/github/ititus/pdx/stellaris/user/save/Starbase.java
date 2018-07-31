@@ -2,17 +2,13 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class Starbase {
 
     private final int updateFlag, nextBuildItemId, nextShipyardBuildItemId, shipDesign, station, system, owner;
     private final String level;
-    private final ViewableList<BuildQueueItem> buildQueue, shipyardBuildQueue;
+    private final ImmutableList<BuildQueueItem> buildQueue, shipyardBuildQueue;
     private final StarbaseBuildings modules, buildings;
 
     public Starbase(IPdxScript s) {
@@ -37,7 +33,7 @@ public class Starbase {
         this.owner = o.getInt("owner");
     }
 
-    public Starbase(int updateFlag, int nextBuildItemId, int nextShipyardBuildItemId, int shipDesign, int station, int system, int owner, String level, Collection<BuildQueueItem> buildQueue, Collection<BuildQueueItem> shipyardBuildQueue, StarbaseBuildings modules, StarbaseBuildings buildings) {
+    public Starbase(int updateFlag, int nextBuildItemId, int nextShipyardBuildItemId, int shipDesign, int station, int system, int owner, String level, ImmutableList<BuildQueueItem> buildQueue, ImmutableList<BuildQueueItem> shipyardBuildQueue, StarbaseBuildings modules, StarbaseBuildings buildings) {
         this.updateFlag = updateFlag;
         this.nextBuildItemId = nextBuildItemId;
         this.nextShipyardBuildItemId = nextShipyardBuildItemId;
@@ -46,8 +42,8 @@ public class Starbase {
         this.system = system;
         this.owner = owner;
         this.level = level;
-        this.buildQueue = new ViewableUnmodifiableArrayList<>(buildQueue);
-        this.shipyardBuildQueue = new ViewableUnmodifiableArrayList<>(shipyardBuildQueue);
+        this.buildQueue = buildQueue;
+        this.shipyardBuildQueue = shipyardBuildQueue;
         this.modules = modules;
         this.buildings = buildings;
     }
@@ -84,12 +80,12 @@ public class Starbase {
         return level;
     }
 
-    public List<BuildQueueItem> getBuildQueue() {
-        return buildQueue.getView();
+    public ImmutableList<BuildQueueItem> getBuildQueue() {
+        return buildQueue;
     }
 
-    public List<BuildQueueItem> getShipyardBuildQueue() {
-        return shipyardBuildQueue.getView();
+    public ImmutableList<BuildQueueItem> getShipyardBuildQueue() {
+        return shipyardBuildQueue;
     }
 
     public StarbaseBuildings getModules() {

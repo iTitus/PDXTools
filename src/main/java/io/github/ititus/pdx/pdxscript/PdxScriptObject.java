@@ -1,28 +1,30 @@
 package io.github.ititus.pdx.pdxscript;
 
-import com.koloboke.collect.map.*;
-import com.koloboke.collect.map.hash.*;
-import com.koloboke.collect.set.hash.HashObjSet;
-import com.koloboke.collect.set.hash.HashObjSets;
+import org.eclipse.collections.api.collection.MutableCollection;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.map.primitive.*;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.multimap.MutableMultimap;
+import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.Multimaps;
+import org.eclipse.collections.impl.factory.primitive.*;
+import org.eclipse.collections.impl.utility.Iterate;
 
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Collectors;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    private final ObjObjMap<String, HashObjSet<String>> used;
-    private final ObjObjMap<String, HashObjSet<String>> wronglyUsed;
-
     private final PdxRelation relation;
-    private final ObjObjMap<String, IPdxScript> map;
+    private final ImmutableMap<String, IPdxScript> map;
 
-    public PdxScriptObject(PdxRelation relation, Map<String, IPdxScript> map) {
-        this.used = HashObjObjMaps.newUpdatableMap();
-        this.wronglyUsed = HashObjObjMaps.newUpdatableMap();
+    private MutableMultimap<String, String> used;
+    private MutableMultimap<String, String> wronglyUsed;
 
+    public PdxScriptObject(PdxRelation relation, ImmutableMap<String, IPdxScript> map) {
         this.relation = relation;
-        this.map = HashObjObjMaps.newImmutableMap(map);
+        this.map = map;
     }
 
     public static <T> Function<IPdxScript, T> nullOr(Function<IPdxScript, T> fct) {
@@ -73,7 +75,19 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     public void use(String key, String usage) {
-        used.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(usage);
+        if (used == null) {
+            used = Multimaps.mutable.set.with(key, usage);
+        } else {
+            used.put(key, usage);
+        }
+    }
+
+    private void useWrongly(String key, String usage) {
+        if (wronglyUsed == null) {
+            wronglyUsed = Multimaps.mutable.set.with(key, usage);
+        } else {
+            wronglyUsed.put(key, usage);
+        }
     }
 
     public boolean hasKey(String key) {
@@ -98,7 +112,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, OBJECT);
             return (PdxScriptObject) o;
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(OBJECT);
+        useWrongly(key, OBJECT);
         return null;
     }
 
@@ -111,7 +125,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, getTypeString(s));
             return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(IMPLICIT_LIST);
+        useWrongly(key, IMPLICIT_LIST);
         return PdxScriptList.builder().build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
@@ -121,7 +135,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, LIST);
             return (PdxScriptList) o;
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(LIST);
+        useWrongly(key, LIST);
         return null;
     }
 
@@ -134,7 +148,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (String) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(STRING);
+        useWrongly(key, STRING);
         return null;
     }
 
@@ -151,7 +165,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (boolean) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(BOOLEAN);
+        useWrongly(key, BOOLEAN);
         return def;
     }
 
@@ -174,7 +188,7 @@ public final class PdxScriptObject implements IPdxScript {
                 }
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(UNSIGNED_INT);
+        useWrongly(key, UNSIGNED_INT);
         return def;
     }
 
@@ -191,7 +205,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (int) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(INT);
+        useWrongly(key, INT);
         return def;
     }
 
@@ -208,7 +222,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return ((Number) v).longValue();
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(LONG);
+        useWrongly(key, LONG);
         return def;
     }
 
@@ -225,7 +239,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (double) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(DOUBLE);
+        useWrongly(key, DOUBLE);
         return def;
     }
 
@@ -238,7 +252,7 @@ public final class PdxScriptObject implements IPdxScript {
                 return (Date) v;
             }
         }
-        wronglyUsed.computeIfAbsent(key, k -> HashObjSets.newUpdatableSet()).add(DATE);
+        useWrongly(key, DATE);
         return null;
     }
 
@@ -246,116 +260,104 @@ public final class PdxScriptObject implements IPdxScript {
         return fct.apply(this);
     }
 
-    public <V> IntObjMap<V> getAsIntObjMap(ToIntFunction<String> keyFct, Function<IPdxScript, V> valueFct) {
-        IntObjMap<V> map = HashIntObjMaps.newUpdatableMap();
-        this.map.forEach((oldK, oldV) -> {
-            int k = keyFct.applyAsInt(oldK);
-            // if (k != null) {
-            V v = valueFct.apply(oldV);
-            map.put(k, v);
+    public <V> ImmutableIntObjectMap<V> getAsIntObjectMap(ToIntFunction<String> keyFct, Function<IPdxScript, V> valueFct) {
+        MutableIntObjectMap<V> map = IntObjectMaps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
+            map.put(keyFct.applyAsInt(oldK), valueFct.apply(oldV));
             use(oldK, getTypeString(oldV));
-            // }
         });
-        return HashIntObjMaps.newImmutableMap(map);
+        return map.toImmutable();
     }
 
-    public <V> LongObjMap<V> getAsLongObjMap(ToLongFunction<String> keyFct, Function<IPdxScript, V> valueFct) {
-        LongObjMap<V> map = HashLongObjMaps.newUpdatableMap();
-        this.map.forEach((oldK, oldV) -> {
-            long k = keyFct.applyAsLong(oldK);
-            // if (k != null) {
-            V v = valueFct.apply(oldV);
-            map.put(k, v);
+    public <V> ImmutableLongObjectMap<V> getAsLongObjectMap(ToLongFunction<String> keyFct, Function<IPdxScript, V> valueFct) {
+        MutableLongObjectMap<V> map = LongObjectMaps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
+            map.put(keyFct.applyAsLong(oldK), valueFct.apply(oldV));
             use(oldK, getTypeString(oldV));
-            // }
         });
-        return HashLongObjMaps.newImmutableMap(map);
+        return map.toImmutable();
     }
 
-    public <K> ObjByteMap<K> getAsObjBooleanMap(Function<String, K> keyFct, Predicate<IPdxScript> valueFct) {
-        ObjByteMap<K> map = HashObjByteMaps.newUpdatableMap();
-        this.map.forEach((oldK, oldV) -> {
+    public <K> ImmutableObjectBooleanMap<K> getAsObjectBooleanMap(Function<String, K> keyFct, Predicate<IPdxScript> valueFct) {
+        MutableObjectBooleanMap<K> map = ObjectBooleanMaps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
-                boolean v = valueFct.test(oldV);
-                map.put(k, (byte) (v ? 1 : 0));
+                map.put(k, valueFct.test(oldV));
                 use(oldK, getTypeString(oldV));
             }
         });
-        return HashObjByteMaps.newImmutableMap(map);
+        return map.toImmutable();
     }
 
-    public <K> ObjIntMap<K> getAsObjIntMap(Function<String, K> keyFct, ToIntFunction<IPdxScript> valueFct) {
-        ObjIntMap<K> map = HashObjIntMaps.newUpdatableMap();
-        this.map.forEach((oldK, oldV) -> {
+    public <K> ImmutableObjectIntMap<K> getAsObjectIntMap(Function<String, K> keyFct, ToIntFunction<IPdxScript> valueFct) {
+        MutableObjectIntMap<K> map = ObjectIntMaps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
-                int v = valueFct.applyAsInt(oldV);
-                map.put(k, v);
+                map.put(k, valueFct.applyAsInt(oldV));
                 use(oldK, getTypeString(oldV));
             }
         });
-        return HashObjIntMaps.newImmutableMap(map);
+        return map.toImmutable();
     }
 
-    public <K> ObjDoubleMap<K> getAsObjDoubleMap(Function<String, K> keyFct, ToDoubleFunction<IPdxScript> valueFct) {
-        ObjDoubleMap<K> map = HashObjDoubleMaps.newUpdatableMap();
-        this.map.forEach((oldK, oldV) -> {
+    public <K> ImmutableObjectDoubleMap<K> getAsObjectDoubleMap(Function<String, K> keyFct, ToDoubleFunction<IPdxScript> valueFct) {
+        MutableObjectDoubleMap<K> map = ObjectDoubleMaps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
-                double v = valueFct.applyAsDouble(oldV);
-                map.put(k, v);
+                map.put(k, valueFct.applyAsDouble(oldV));
                 use(oldK, getTypeString(oldV));
             }
         });
-        return HashObjDoubleMaps.newImmutableMap(map);
+        return map.toImmutable();
     }
 
-    public <K, V> ObjObjMap<K, V> getAsMap(Function<String, K> keyFct, Function<IPdxScript, V> valueFct) {
-        ObjObjMap<K, V> map = HashObjObjMaps.newUpdatableMap();
-        this.map.forEach((oldK, oldV) -> {
+    public <K, V> ImmutableMap<K, V> getAsMap(Function<String, K> keyFct, Function<IPdxScript, V> valueFct) {
+        MutableMap<K, V> map = Maps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
-                V v = valueFct.apply(oldV);
-                map.put(k, v);
+                map.put(k, valueFct.apply(oldV));
                 use(oldK, getTypeString(oldV));
             }
         });
-        return HashObjObjMaps.newImmutableMap(map);
+        return map.toImmutable();
     }
 
-    public ObjObjMap<String, HashObjSet<String>> getErrors() {
-        ObjObjMap<String, HashObjSet<String>> errors = HashObjObjMaps.newUpdatableMap();
-        for (Map.Entry<String, IPdxScript> entry : map.entrySet()) {
-            String type = getTypeString(entry.getValue());
-            Set<String> toAdd = wronglyUsed.get(entry.getKey());
+    public ImmutableMultimap<String, String> getErrors() {
+        MutableMultimap<String, String> errors = Multimaps.mutable.set.empty();
+        map.forEachKeyValue((key, s) -> {
+            String type = getTypeString(s);
+            MutableCollection<String> toAdd = wronglyUsed != null ? wronglyUsed.get(key) : null;
             if (toAdd != null && !toAdd.isEmpty()) {
-                errors.computeIfAbsent(entry.getKey(), k -> HashObjSets.newUpdatableSet()).addAll(toAdd.stream().map(s -> "wrongly_used_as=" + s + SLASH_CHAR + "was=" + type).collect(Collectors.toSet()));
+                errors.putAll(key, toAdd.collect(s1 -> "wrongly_used_as=" + s1 + SLASH_CHAR + "was=" + type));
             }
-            boolean id = DIGITS_PATTERN.matcher(entry.getKey()).matches();
-            Set<String> usages = used.getOrDefault(entry.getKey(), null);
+            boolean id = DIGITS_PATTERN.matcher(key).matches();
+            MutableCollection<String> usages = used != null ? used.get(key) : null;
             if (!id && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
-                errors.computeIfAbsent(entry.getKey(), k -> HashObjSets.newUpdatableSet()).add("unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
+                errors.put(key, "unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
             } else {
-                if (entry.getValue() instanceof PdxScriptObject) {
-                    ((PdxScriptObject) entry.getValue()).getErrors().forEach((k, v) -> {
-                        if (v != null && !v.isEmpty()) {
-                            errors.computeIfAbsent((id ? EMPTY : entry.getKey() + DOT_CHAR) + k, k_ -> HashObjSets.newUpdatableSet()).addAll(v);
+                if (s instanceof PdxScriptObject) {
+                    ((PdxScriptObject) s).getErrors().forEachKeyMultiValues((k, v) -> {
+                        if (!Iterate.isEmpty(v)) {
+                            errors.putAll((id ? EMPTY : key + DOT_CHAR) + k, v);
                         }
                     });
-                } else if (entry.getValue() instanceof PdxScriptList) {
+                } else if (s instanceof PdxScriptList) {
                     Queue<PdxScriptList> lists = new LinkedList<>();
-                    lists.offer((PdxScriptList) entry.getValue());
+                    lists.offer((PdxScriptList) s);
                     while (lists.peek() != null) {
                         PdxScriptList l = lists.poll();
                         for (int i = 0; i < l.size(); i++) {
-                            IPdxScript s = l.get(i);
-                            if (s instanceof PdxScriptList && !lists.contains(s)) {
-                                lists.offer((PdxScriptList) s);
-                            } else if (s instanceof PdxScriptObject) {
-                                ((PdxScriptObject) s).getErrors().forEach((k, v) -> {
-                                    if (v != null && !v.isEmpty()) {
-                                        errors.computeIfAbsent(entry.getKey() + DOT_CHAR + k, k_ -> HashObjSets.newUpdatableSet()).addAll(v);
+                            IPdxScript s1 = l.get(i);
+                            if (s1 instanceof PdxScriptList && !lists.contains(s1)) {
+                                lists.offer((PdxScriptList) s1);
+                            } else if (s1 instanceof PdxScriptObject) {
+                                ((PdxScriptObject) s1).getErrors().forEachKeyMultiValues((k, v) -> {
+                                    if (!Iterate.isEmpty(v)) {
+                                        errors.putAll(key + DOT_CHAR + k, v);
                                     }
                                 });
                             }
@@ -363,8 +365,8 @@ public final class PdxScriptObject implements IPdxScript {
                     }
                 }
             }
-        }
-        return errors;
+        });
+        return errors.toImmutable();
     }
 
     public int size() {
@@ -381,8 +383,10 @@ public final class PdxScriptObject implements IPdxScript {
 
         IPdxScript.listObjectOpen(indent, root, key, b, relation, map.isEmpty());
 
-        map.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEachOrdered(entry -> {
-            b.append(entry.getValue().toPdxScript(root ? indent : indent + 1, false, entry.getKey()));
+
+        // TODO: print alphabetically sorted by k
+        map.forEachKeyValue((k, v) -> {
+            b.append(v.toPdxScript(root ? indent : indent + 1, false, k));
             b.append(LINE_FEED);
         });
 
@@ -418,14 +422,25 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static class Builder {
 
-        private final ObjObjMap<String, IPdxScript> map;
+        private static final ImmutableMap<PdxRelation, PdxScriptObject> EMPTY_CACHE;
+
+        static {
+            Map<PdxRelation, PdxScriptObject> map = new EnumMap<>(PdxRelation.class);
+            Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation, Maps.immutable.empty())));
+            EMPTY_CACHE = Maps.adapt(map).toImmutable();
+        }
+
+        private final MutableMap<String, IPdxScript> map;
 
         public Builder() {
-            this.map = HashObjObjMaps.newUpdatableMap();
+            this.map = Maps.mutable.empty();
         }
 
         public PdxScriptObject build(PdxRelation relation) {
-            return new PdxScriptObject(relation, map);
+            if (map.isEmpty()) {
+                return EMPTY_CACHE.get(relation);
+            }
+            return new PdxScriptObject(relation, map.toImmutable());
         }
 
         public Builder add(String key, IPdxScript value) {

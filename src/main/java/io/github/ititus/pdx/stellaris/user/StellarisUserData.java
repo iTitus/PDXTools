@@ -3,16 +3,16 @@ package io.github.ititus.pdx.stellaris.user;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.stellaris.user.mod.StellarisMods;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSaves;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import java.io.File;
-import java.util.Set;
 
 public class StellarisUserData {
 
-    private static final Set<String> BLACKLIST = CollectionUtil.setOf(
+    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
             "cache", "dumps", "pops_filestorage", "screenshots", "shadercache",
             // Handled separately

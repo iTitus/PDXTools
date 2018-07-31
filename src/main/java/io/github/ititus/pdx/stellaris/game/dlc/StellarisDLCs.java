@@ -1,15 +1,16 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
-import com.koloboke.collect.map.hash.HashObjObjMaps;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.factory.Maps;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Map;
 
 public class StellarisDLCs {
 
     private final File installDir, dlcDir;
-    private final Map<String, StellarisDLC> dlcs;
+    private final ImmutableMap<String, StellarisDLC> dlcs;
 
     public StellarisDLCs(File installDir, File dlcDir) {
         if (installDir == null || !installDir.isDirectory() || dlcDir == null || !dlcDir.isDirectory()) {
@@ -18,8 +19,9 @@ public class StellarisDLCs {
         this.installDir = installDir;
         this.dlcDir = dlcDir;
 
-        File[] files = dlcDir.listFiles(f -> f != null && f.isDirectory());
-        this.dlcs = HashObjObjMaps.newImmutableMap(Arrays.stream(files).map(File::getName)::iterator, Arrays.stream(files).map(dlcFolder -> new StellarisDLC(installDir, dlcFolder))::iterator);
+        MutableMap<String, StellarisDLC> map = Maps.mutable.empty();
+        Arrays.stream(dlcDir.listFiles(f -> f != null && f.isDirectory())).forEach(f -> map.put(f.getName(), new StellarisDLC(installDir, f)));
+        this.dlcs = map.toImmutable();
     }
 
     public File getInstallDir() {
@@ -30,7 +32,7 @@ public class StellarisDLCs {
         return dlcDir;
     }
 
-    public Map<String, StellarisDLC> getDLCs() {
+    public ImmutableMap<String, StellarisDLC> getDLCs() {
         return dlcs;
     }
 }

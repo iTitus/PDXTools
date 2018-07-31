@@ -1,32 +1,28 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.collection.ViewableList;
-import io.github.ititus.pdx.util.collection.ViewableUnmodifiableArrayList;
-
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class Spaceport {
 
     private final int nextBuildItemId;
-    private final ViewableList<BuildQueueItem> buildQueue;
+    private final ImmutableList<BuildQueueItem> buildQueue;
 
     public Spaceport(PdxScriptObject o) {
         this.nextBuildItemId = o.getInt("next_build_item_id");
         this.buildQueue = o.getImplicitList("build_queue_item").getAsList(BuildQueueItem::new);
     }
 
-    public Spaceport(int nextBuildItemId, Collection<BuildQueueItem> buildQueue) {
+    public Spaceport(int nextBuildItemId, ImmutableList<BuildQueueItem> buildQueue) {
         this.nextBuildItemId = nextBuildItemId;
-        this.buildQueue = new ViewableUnmodifiableArrayList<>(buildQueue);
+        this.buildQueue = buildQueue;
     }
 
     public int getNextBuildItemId() {
         return nextBuildItemId;
     }
 
-    public List<BuildQueueItem> getBuildQueue() {
-        return buildQueue.getView();
+    public ImmutableList<BuildQueueItem> getBuildQueue() {
+        return buildQueue;
     }
 }
