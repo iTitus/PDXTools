@@ -1,27 +1,26 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-
-import java.util.Arrays;
+import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 
 public class Properties {
 
     private final double scale;
-    private final double[] offset;
+    private final ImmutableDoubleList offset;
     private final Coordinate coordinate;
     private final Property attach, entityFaceObject;
 
     public Properties(PdxScriptObject o) {
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
         this.attach = o.getObject("attach").getAs(Property::new);
-        this.offset = o.getList("offset").getAsDoubleArray();
+        this.offset = o.getList("offset").getAsDoubleList();
         this.scale = o.getDouble("scale");
         this.entityFaceObject = o.getObject("entity_face_object").getAs(Property::new);
     }
 
-    public Properties(double scale, double[] offset, Coordinate coordinate, Property attach, Property entityFaceObject) {
+    public Properties(double scale, ImmutableDoubleList offset, Coordinate coordinate, Property attach, Property entityFaceObject) {
         this.scale = scale;
-        this.offset = Arrays.copyOf(offset, offset.length);
+        this.offset = offset;
         this.coordinate = coordinate;
         this.attach = attach;
         this.entityFaceObject = entityFaceObject;
@@ -31,8 +30,8 @@ public class Properties {
         return scale;
     }
 
-    public double[] getOffset() {
-        return Arrays.copyOf(offset, offset.length);
+    public ImmutableDoubleList getOffset() {
+        return offset;
     }
 
     public Coordinate getCoordinate() {

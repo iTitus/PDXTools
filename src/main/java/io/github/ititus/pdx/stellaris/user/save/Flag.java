@@ -2,31 +2,28 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-
-import java.util.Arrays;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class Flag {
 
     private final Texture icon, background;
-    private final String[] colors;
+    private final ImmutableList<String> colors;
 
     public Flag(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
-        this.icon = new Texture(o.getObject("icon"));
+
+        this.icon = o.getObject("icon").getAs(Texture::new);
         this.background = o.getObject("background").getAs(Texture::new);
-        this.colors = o.getList("colors").getAsStringArray();
+        this.colors = o.getList("colors").getAsStringList();
     }
 
-    public Flag(Texture icon, Texture background, String[] colors) {
+    public Flag(Texture icon, Texture background, ImmutableList<String> colors) {
         this.icon = icon;
         this.background = background;
-        if (colors.length != 4) {
-            throw new IllegalArgumentException(Arrays.toString(colors));
-        }
-        this.colors = Arrays.copyOf(colors, 4);
+        this.colors = colors;
     }
 
     public Texture getIcon() {
@@ -37,7 +34,7 @@ public class Flag {
         return background;
     }
 
-    public String[] getColors() {
-        return Arrays.copyOf(colors, 4);
+    public ImmutableList<String> getColors() {
+        return colors;
     }
 }
