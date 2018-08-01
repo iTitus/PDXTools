@@ -9,7 +9,6 @@ import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.factory.primitive.*;
-import org.eclipse.collections.impl.utility.Iterate;
 
 import java.util.*;
 import java.util.function.*;
@@ -341,9 +340,11 @@ public final class PdxScriptObject implements IPdxScript {
         MutableMultimap<String, String> errors = Multimaps.mutable.set.empty();
         map.forEachKeyValue((key, s) -> {
             String type = getTypeString(s);
-            MutableCollection<String> toAdd = wronglyUsed != null ? wronglyUsed.get(key) : null;
-            if (toAdd != null && !toAdd.isEmpty()) {
-                errors.putAll(key, toAdd.collect(s1 -> "wrongly_used_as=" + s1 + SLASH_CHAR + "was=" + type));
+            if (!type.equals(NULL)) {
+                MutableCollection<String> toAdd = wronglyUsed != null ? wronglyUsed.get(key) : null;
+                if (toAdd != null && !toAdd.isEmpty()) {
+                    errors.putAll(key, toAdd.collect(s1 -> "wrongly_used_as=" + s1 + SLASH_CHAR + "was=" + type));
+                }
             }
             boolean id = DIGITS_PATTERN.matcher(key).matches();
             MutableCollection<String> usages = used != null ? used.get(key) : null;
@@ -351,29 +352,9 @@ public final class PdxScriptObject implements IPdxScript {
                 errors.put(key, "unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
             } else {
                 if (s instanceof PdxScriptObject) {
-                    ((PdxScriptObject) s).getErrors().forEachKeyMultiValues((k, v) -> {
-                        if (!Iterate.isEmpty(v)) {
-                            errors.putAll((id ? EMPTY : key + DOT_CHAR) + k, v);
-                        }
-                    });
+                    ((PdxScriptObject) s).getErrors().forEachKeyMultiValues((k, v) -> errors.putAll((id ? EMPTY : key + DOT_CHAR) + k, v));
                 } else if (s instanceof PdxScriptList) {
-                    Queue<PdxScriptList> lists = new LinkedList<>();
-                    lists.offer((PdxScriptList) s);
-                    while (lists.peek() != null) {
-                        PdxScriptList l = lists.poll();
-                        for (int i = 0; i < l.size(); i++) {
-                            IPdxScript s1 = l.get(i);
-                            if (s1 instanceof PdxScriptList && !lists.contains(s1)) {
-                                lists.offer((PdxScriptList) s1);
-                            } else if (s1 instanceof PdxScriptObject) {
-                                ((PdxScriptObject) s1).getErrors().forEachKeyMultiValues((k, v) -> {
-                                    if (!Iterate.isEmpty(v)) {
-                                        errors.putAll(key + DOT_CHAR + k, v);
-                                    }
-                                });
-                            }
-                        }
-                    }
+                    ((PdxScriptList) s).getErrors().forEachKeyMultiValues((k, v) -> errors.putAll(key + DOT_CHAR + k, v));
                 }
             }
         });

@@ -8,9 +8,12 @@ import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.Multimaps;
 
 import java.util.*;
 import java.util.stream.DoubleStream;
@@ -47,19 +50,20 @@ public final class PdxScriptList implements IPdxScript {
         return list.size();
     }
 
-    public IPdxScript getRaw(int i) {
+    private IPdxScript getRaw(int i) {
         return i >= 0 && i < size() ? list.get(i) : null;
     }
 
     public IPdxScript get(int i) {
-        IPdxScript o = getRaw(i);
-        if (o instanceof PdxScriptList) {
-            PdxScriptList l = (PdxScriptList) o;
-            if (l.size() == 1) {
-                return l.get(0);
-            }
+        return getRaw(i);
+    }
+
+    public Object getValue(int i) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            return ((PdxScriptValue) o).getValue();
         }
-        return o;
+        return null;
     }
 
     public String getString(int i) {
@@ -68,6 +72,97 @@ public final class PdxScriptList implements IPdxScript {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof String) {
                 return (String) v;
+            }
+        }
+        return null;
+    }
+
+    public boolean getBoolean(int i) {
+        return getBoolean(i, false);
+    }
+
+    public boolean getBoolean(int i, boolean def) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Boolean) {
+                return (boolean) v;
+            }
+        }
+        return def;
+    }
+
+    public int getUnsignedInt(int i) {
+        return getUnsignedInt(i, 0);
+    }
+
+    public int getUnsignedInt(int i, int def) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Integer) {
+                return (int) v;
+            } else if (v instanceof Long) {
+                long l = (long) v;
+                if (l >= 0 && l <= UNSIGNED_INT_MAX_LONG) {
+                    return (int) l;
+                }
+            }
+        }
+        return def;
+    }
+
+    public int getInt(int i) {
+        return getInt(i, 0);
+    }
+
+    public int getInt(int i, int def) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Integer) {
+                return (int) v;
+            }
+        }
+        return def;
+    }
+
+    public long getLong(int i) {
+        return getLong(i, 0);
+    }
+
+    public long getLong(int i, long def) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Long || v instanceof Integer) {
+                return ((Number) v).longValue();
+            }
+        }
+        return def;
+    }
+
+    public double getDouble(int i) {
+        return getDouble(i, 0);
+    }
+
+    public double getDouble(int i, double def) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Double) {
+                return (double) v;
+            }
+        }
+        return def;
+    }
+
+    public Date getDate(int i) {
+        IPdxScript o = get(i);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            if (v instanceof Date) {
+                return (Date) v;
             }
         }
         return null;
@@ -169,6 +264,18 @@ public final class PdxScriptList implements IPdxScript {
         IPdxScript.listObjectClose(indent, root || mode == Mode.IMPLICIT, b, list.isEmpty());
 
         return b.toString();
+    }
+
+    public ImmutableMultimap<String, String> getErrors() {
+        MutableMultimap<String, String> errors = Multimaps.mutable.set.empty();
+        list.forEach(s -> {
+            if (s instanceof PdxScriptObject) {
+                errors.putAll(((PdxScriptObject) s).getErrors());
+            } else if (s instanceof PdxScriptList) {
+                errors.putAll(((PdxScriptList) s).getErrors());
+            }
+        });
+        return errors.toImmutable();
     }
 
     @Override
