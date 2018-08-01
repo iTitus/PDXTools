@@ -59,6 +59,7 @@ public class Main {
         System.out.println("done2");
 
         System.out.println("-------------------------");
+        ImmutableMultimap<String, String> saveParseErrors = null;
         StellarisSave stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
         if (stellarisSave != null) {
             GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
@@ -95,9 +96,12 @@ public class Main {
             System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
             System.out.println("done3");
 
-            System.out.println("-------------------------");
-            ImmutableMultimap<String, String> errors = stellarisSave.getErrors();
-            errors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
+            saveParseErrors = stellarisSave.getErrors();
+        }
+
+        System.out.println("-------------------------");
+        if (saveParseErrors != null) {
+            saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
         }
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");

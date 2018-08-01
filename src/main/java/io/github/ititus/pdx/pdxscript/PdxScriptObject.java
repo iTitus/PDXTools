@@ -384,7 +384,7 @@ public final class PdxScriptObject implements IPdxScript {
         IPdxScript.listObjectOpen(indent, root, key, b, relation, map.isEmpty());
 
 
-        // TODO: print alphabetically sorted by k
+        // TODO: Print alphabetically sorted by k
         map.forEachKeyValue((k, v) -> {
             b.append(v.toPdxScript(root ? indent : indent + 1, false, k));
             b.append(LINE_FEED);

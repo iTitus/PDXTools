@@ -6,6 +6,10 @@ import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.iterator.DoubleIterator;
 import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.iterator.LongIterator;
+import org.eclipse.collections.api.list.primitive.*;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
+import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -70,5 +74,17 @@ public class CollectionUtil {
                 return it.hasNext();
             }
         }, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
+    }
+
+    public static ImmutableIntList toImmutableList(IntStream stream) {
+        return stream.collect(IntLists.mutable::empty, MutableIntList::add, MutableIntList::withAll).toImmutable();
+    }
+
+    public static ImmutableLongList toImmutableList(LongStream stream) {
+        return stream.collect(LongLists.mutable::empty, MutableLongList::add, MutableLongList::withAll).toImmutable();
+    }
+
+    public static ImmutableDoubleList toImmutableList(DoubleStream stream) {
+        return stream.collect(DoubleLists.mutable::empty, MutableDoubleList::add, MutableDoubleList::withAll).toImmutable();
     }
 }

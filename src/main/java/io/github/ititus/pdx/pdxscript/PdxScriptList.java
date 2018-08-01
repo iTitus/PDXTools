@@ -1,20 +1,22 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 import org.eclipse.collections.api.block.function.Function;
-import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
-import org.eclipse.collections.impl.factory.primitive.DoubleLists;
-import org.eclipse.collections.impl.factory.primitive.IntLists;
-import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 import java.util.*;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 public final class PdxScriptList implements IPdxScript {
 
@@ -71,60 +73,72 @@ public final class PdxScriptList implements IPdxScript {
         return null;
     }
 
-    public ImmutableList<PdxScriptValue> getAsValueList() {
-        return getAsList(PdxScriptValue.class);
+    public Stream<PdxScriptValue> getAsValueStream() {
+        return list.stream().filter(s -> s instanceof PdxScriptValue).map(s -> (PdxScriptValue) s);
+    }
+
+    public Stream<String> getAsStringStream() {
+        return getAsValueStream().filter(v -> v.getValue() instanceof String).map(v -> (String) v.getValue());
     }
 
     public String[] getAsStringArray() {
-        return getAsStringList().toArray(new String[0]);
+        return getAsStringStream().toArray(String[]::new);
     }
 
     public ImmutableList<String> getAsStringList() {
-        return getAsValueList().collectIf(v -> v.getValue() instanceof String, v -> (String) v.getValue());
+        return getAsStringStream().collect(Collectors2.toImmutableList());
+    }
+
+    public Stream<Number> getAsNumberStream() {
+        return getAsValueStream().filter(v -> v.getValue() instanceof Number).map(v -> (Number) v.getValue());
     }
 
     public Number[] getAsNumberArray() {
-        return getAsNumberList().toArray(new Number[0]);
+        return getAsNumberStream().toArray(Number[]::new);
     }
 
     public ImmutableList<Number> getAsNumberList() {
-        return getAsValueList().collectIf(v -> v.getValue() instanceof Number, v -> (Number) v.getValue());
+        return getAsNumberStream().collect(Collectors2.toImmutableList());
+    }
+
+    public IntStream getAsIntStream() {
+        return getAsNumberStream().mapToInt(Number::intValue);
     }
 
     public int[] getAsIntArray() {
-        return getAsNumberList().stream().mapToInt(Number::intValue).toArray();
+        return getAsIntStream().toArray();
     }
 
     public ImmutableIntList getAsIntList() {
-        return IntLists.immutable.with(getAsIntArray());
+        return CollectionUtil.toImmutableList(getAsIntStream());
+    }
+
+    public LongStream getAsLongStream() {
+        return getAsNumberStream().mapToLong(Number::longValue);
     }
 
     public long[] getAsLongArray() {
-        return getAsNumberList().stream().mapToLong(Number::longValue).toArray();
+        return getAsLongStream().toArray();
     }
 
     public ImmutableLongList getAsLongList() {
-        return LongLists.immutable.with(getAsLongArray());
+        return CollectionUtil.toImmutableList(getAsLongStream());
+    }
+
+    public DoubleStream getAsDoubleStream() {
+        return getAsNumberStream().mapToDouble(Number::doubleValue);
     }
 
     public double[] getAsDoubleArray() {
-        return getAsNumberList().stream().mapToDouble(Number::doubleValue).toArray();
+        return getAsDoubleStream().toArray();
     }
 
     public ImmutableDoubleList getAsDoubleList() {
-        return DoubleLists.immutable.with(getAsDoubleArray());
+        return CollectionUtil.toImmutableList(getAsDoubleStream());
     }
 
     public <T> ImmutableList<T> getAsList(Function<IPdxScript, T> fct) {
         return list.collect(fct);
-    }
-
-    public <T> ImmutableList<T> getAsList(Predicate<IPdxScript> prdct, Function<IPdxScript, T> fct) {
-        return list.collectIf(prdct, fct);
-    }
-
-    public <T> ImmutableList<T> getAsList(Class<T> clazz) {
-        return list.selectInstancesOf(clazz);
     }
 
     @Override
@@ -142,7 +156,7 @@ public final class PdxScriptList implements IPdxScript {
 
         IPdxScript.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
 
-        // TODO: Maybe add support for printing lists in comma mode
+        // TODO: Add support for printing lists in comma mode
         if (mode == Mode.COMMA) {
             b.append(PdxScriptParser.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
         }
