@@ -26,11 +26,7 @@ public class Pop {
         this.growthState = o.getString("growth_state");
         this.growth = o.getDouble("growth");
         PdxScriptObject o1 = o.getObject("ethos");
-        if (o1 != null) {
-            this.ethos = o1.getAs(Ethos::new);
-        } else {
-            this.ethos = null;
-        }
+        this.ethos = o1 != null ? o1.getAs(Ethos::new) : null;
         o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.buildablePop = o.getBoolean("buildable_pop");

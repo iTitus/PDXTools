@@ -45,7 +45,6 @@ public class GameState {
     private final StrikeCrafts strikeCrafts;
     private final AmbientObjects ambientObjects;
     private final RandomNameDatabase randomNameDatabase;
-    private final NameList nameList;
     private final Galaxy galaxy;
     private final Flags flags;
     private final ShipDesigns shipDesigns;
@@ -112,7 +111,10 @@ public class GameState {
         this.lastNotificationId = o.getInt("last_notification_id", -1);
         this.lastEventId = o.getInt("last_event_id", -1);
         this.randomNameDatabase = o.getObject("random_name_database").getAs(RandomNameDatabase::new);
-        this.nameList = o.getObject("name_list").getAs(NameList::new);
+        PdxScriptObject o1 = o.getObject("name_list");
+        if (o1 != null && o1.size() > 0) {
+            throw new RuntimeException("Unexpected content '" + o1 + "'for name_list");
+        }
         // }
         this.galaxy = o.getObject("galaxy").getAs(Galaxy::new); // 1_623_968
         // {
@@ -138,7 +140,7 @@ public class GameState {
         // }
     }
 
-    public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount, int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName, Date date, ImmutableIntList firedEvents, ImmutableIntList rimGalacticObjects, ImmutableLongList usedSymbols, ImmutableList<String> requiredDLCs, ImmutableList<String> usedColors, ImmutableList<Player> players, ImmutableList<Species> species, ImmutableList<Nebula> nebulas, ImmutableList<Message> messages, ImmutableList<SavedEventTarget> savedEventTargets, ImmutableList<GlobalShipDesign> globalShipDesigns, ImmutableList<Cluster> clusters, ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, NameList nameList, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
+    public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount, int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName, Date date, ImmutableIntList firedEvents, ImmutableIntList rimGalacticObjects, ImmutableLongList usedSymbols, ImmutableList<String> requiredDLCs, ImmutableList<String> usedColors, ImmutableList<Player> players, ImmutableList<Species> species, ImmutableList<Nebula> nebulas, ImmutableList<Message> messages, ImmutableList<SavedEventTarget> savedEventTargets, ImmutableList<GlobalShipDesign> globalShipDesigns, ImmutableList<Cluster> clusters, ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {
         this.versionControlRevision = versionControlRevision;
         this.tick = tick;
         this.randomLogDay = randomLogDay;
@@ -198,7 +200,6 @@ public class GameState {
         this.strikeCrafts = strikeCrafts;
         this.ambientObjects = ambientObjects;
         this.randomNameDatabase = randomNameDatabase;
-        this.nameList = nameList;
         this.galaxy = galaxy;
         this.flags = flags;
         this.shipDesigns = shipDesigns;
@@ -442,10 +443,6 @@ public class GameState {
 
     public RandomNameDatabase getRandomNameDatabase() {
         return randomNameDatabase;
-    }
-
-    public NameList getNameList() {
-        return nameList;
     }
 
     public Galaxy getGalaxy() {

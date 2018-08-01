@@ -139,6 +139,17 @@ public final class PdxScriptObject implements IPdxScript {
         return null;
     }
 
+    public Object getValue(String key) {
+        IPdxScript o = get(key);
+        if (o instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) o).getValue();
+            use(key, getTypeString(o));
+            return v;
+        }
+        useWrongly(key, NULL);
+        return null;
+    }
+
     public String getString(String key) {
         IPdxScript o = get(key);
         if (o instanceof PdxScriptValue) {
@@ -336,7 +347,7 @@ public final class PdxScriptObject implements IPdxScript {
             }
             boolean id = DIGITS_PATTERN.matcher(key).matches();
             MutableCollection<String> usages = used != null ? used.get(key) : null;
-            if (!id && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
+            if (!id && (!type.equals(NULL) || (usages != null && !usages.isEmpty())) && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
                 errors.put(key, "unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
             } else {
                 if (s instanceof PdxScriptObject) {

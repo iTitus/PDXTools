@@ -49,17 +49,17 @@ public class Species {
             if (v instanceof String) {
                 this.popEthics = (String) v;
                 if (!"random".equals(this.popEthics)) {
-                    throw new RuntimeException("Unexpected value for popEthics: " + this.popEthics);
+                    throw new RuntimeException("Unexpected value for pop_ethics: " + this.popEthics);
                 }
                 o.use("pop_ethics", PdxConstants.STRING);
             } else if (v instanceof Boolean) {
                 this.popEthics = (boolean) v ? PdxConstants.YES : PdxConstants.NO;
                 o.use("pop_ethics", PdxConstants.BOOLEAN);
             } else {
-                throw new RuntimeException("Unexpected value '" + v + "'for popEthics");
+                throw new RuntimeException("Unexpected value '" + v + "'for pop_ethics");
             }
         } else {
-            throw new RuntimeException("Unexpected value '" + s1 + "' for popEthics");
+            throw new RuntimeException("Unexpected value '" + s1 + "' for pop_ethics");
         }
         PdxScriptObject o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : null;

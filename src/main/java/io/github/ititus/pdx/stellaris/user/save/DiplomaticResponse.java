@@ -2,8 +2,9 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-public class NameList {
+public class DiplomaticResponse {
 
-    public NameList(PdxScriptObject o) {
+    public DiplomaticResponse(PdxScriptObject o) {
+        // TODO: this
     }
 }
