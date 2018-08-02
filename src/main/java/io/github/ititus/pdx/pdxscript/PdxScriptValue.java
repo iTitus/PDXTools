@@ -17,6 +17,8 @@ public final class PdxScriptValue implements IPdxScript {
         this.relation = relation;
         if (value instanceof String) {
             this.value = ((String) value).intern();
+        } else if (value instanceof Date && value.equals(START_DATE)) {
+            this.value = START_DATE;
         } else {
             this.value = value;
         }

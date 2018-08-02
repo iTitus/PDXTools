@@ -16,7 +16,7 @@ public class MegaStructure {
         PdxScriptObject o = (PdxScriptObject) s;
 
         this.type = o.getString("type");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.owner = o.getInt("owner", -1);
         this.planet = o.getUnsignedInt("planet");
         this.bypass = o.getInt("bypass", -1);

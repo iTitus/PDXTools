@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class Ship {
 
-    private final boolean isBeingRepaired, createdThisUpdate, disabled, disabled_by_event, upgradable;
+    private final boolean isBeingRepaired, createdThisUpdate, killed, disabled, disabled_by_event, upgradable;
     private final int fleet, reserve, shipDesign, designUpgrade, army, nextWeaponIndex, leader, combatAction;
     private final double speed, experience, postMoveAngle, hitpoints, shieldHitpoints, armorHitpoints, maxHitpoints, maxShieldHitpoints, maxArmorHitpoints, rotation, forwardX, forwardY, upgradeProgress, disableAtHealth, enableAtHealth, targeting;
     private final String name, key, graphicalCulture;
@@ -33,18 +33,18 @@ public class Ship {
         PdxScriptList l = o.getList("auras");
         this.auras = l != null ? l.getAsList(Aura::new) : Lists.immutable.empty();
         this.isBeingRepaired = o.getBoolean("is_being_repaired");
-        this.fleet = o.getInt("fleet");
+        this.fleet = o.getUnsignedInt("fleet");
         this.name = o.getString("name");
         this.key = o.getString("key");
         this.reserve = o.getInt("reserve", -1);
         this.shipDesign = o.getInt("ship_design");
         this.designUpgrade = o.getInt("design_upgrade", -1);
         this.graphicalCulture = o.getString("graphical_culture");
-        this.sections = o.getImplicitList("section").getAsList(ShipSection::new);
+        this.sections = o.getImplicitList("section").getAsList(ShipSection::of);
         this.speed = o.getDouble("speed");
         this.experience = o.getDouble("experience");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
-        this.targetCoordinate = o.getObject("target_coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
+        this.targetCoordinate = o.getObject("target_coordinate").getAs(Coordinate::of);
         this.postMoveAngle = o.getDouble("post_move_angle");
         this.hitpoints = o.getDouble("hitpoints");
         this.shieldHitpoints = o.getDouble("shield_hitpoints");
@@ -63,11 +63,12 @@ public class Ship {
         o1 = o.getObject("homepop");
         this.homepop = o1 != null ? o1.getAs(Homepop::new) : null;
         this.createdThisUpdate = o.getBoolean("created_this_update");
+        this.killed = o.getBoolean("killed");
         this.leader = o.getInt("leader", -1);
         this.lastDamage = o.getDate("last_damage");
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         o1 = o.getObject("formation_pos");
-        this.formationPos = o1 != null ? o1.getAs(FormationPos::new) : null;
+        this.formationPos = o1 != null ? o1.getAs(FormationPos::of) : null;
         this.combatAction = o.getInt("combat_action", -1);
         this.disabled = o.getBoolean("disabled");
         this.disabled_by_event = o.getBoolean("disabled_by_event");
@@ -79,9 +80,10 @@ public class Ship {
         this.upgradable = o.getBoolean("upgradable", true);
     }
 
-    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean disabled, boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign, int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed, double experience, double postMoveAngle, double hitpoints, double shieldHitpoints, double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints, double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth, double enableAtHealth, double targeting, String name, String key, String graphicalCulture, Date lastDamage, ImmutableList<Aura> auras, ImmutableList<ShipSection> sections, ImmutableList<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate, Flags flags, Homepop homepop, FormationPos formationPos, Variables auraModifier) {
+    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean killed, boolean disabled, boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign, int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed, double experience, double postMoveAngle, double hitpoints, double shieldHitpoints, double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints, double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth, double enableAtHealth, double targeting, String name, String key, String graphicalCulture, Date lastDamage, ImmutableList<Aura> auras, ImmutableList<ShipSection> sections, ImmutableList<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate, Flags flags, Homepop homepop, FormationPos formationPos, Variables auraModifier) {
         this.isBeingRepaired = isBeingRepaired;
         this.createdThisUpdate = createdThisUpdate;
+        this.killed = killed;
         this.disabled = disabled;
         this.disabled_by_event = disabled_by_event;
         this.upgradable = upgradable;
@@ -130,6 +132,10 @@ public class Ship {
 
     public boolean isCreatedThisUpdate() {
         return createdThisUpdate;
+    }
+
+    public boolean isKilled() {
+        return killed;
     }
 
     public boolean isDisabled() {

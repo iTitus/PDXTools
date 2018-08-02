@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class DelayedEvent {
@@ -8,7 +9,12 @@ public class DelayedEvent {
     private final String event;
     private final Scope scope;
 
-    public DelayedEvent(PdxScriptObject o) {
+    public DelayedEvent(IPdxScript s) {
+        if (!(s instanceof PdxScriptObject)) {
+            throw new IllegalArgumentException(String.valueOf(s));
+        }
+        PdxScriptObject o = (PdxScriptObject) s;
+
         this.event = o.getString("event");
         this.days = o.getInt("days");
         this.scope = o.getObject("scope").getAs(Scope::new);

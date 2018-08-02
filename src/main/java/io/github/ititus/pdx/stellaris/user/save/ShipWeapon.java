@@ -2,15 +2,20 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.Deduplicator;
+
+import java.util.Objects;
 
 public class ShipWeapon {
+
+    private static final Deduplicator<ShipWeapon> DEDUPLICATOR = new Deduplicator<>(w -> w.getTarget() == null && w.getCooldown() == 0 && w.getShotsFired() == 0);
 
     private final int index, shotsFired;
     private final double cooldown;
     private final String template, componentSlot;
     private final Property target;
 
-    public ShipWeapon(IPdxScript s) {
+    private ShipWeapon(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException(String.valueOf(s));
         }
@@ -25,13 +30,21 @@ public class ShipWeapon {
         this.shotsFired = o.getInt("shots_fired");
     }
 
-    public ShipWeapon(int index, int shotsFired, double cooldown, String template, String componentSlot, Property target) {
+    private ShipWeapon(int index, int shotsFired, double cooldown, String template, String componentSlot, Property target) {
         this.index = index;
         this.shotsFired = shotsFired;
         this.cooldown = cooldown;
         this.template = template;
         this.componentSlot = componentSlot;
         this.target = target;
+    }
+
+    public static ShipWeapon of(IPdxScript s) {
+        return DEDUPLICATOR.deduplicate(new ShipWeapon(s));
+    }
+
+    public static ShipWeapon of(int index, int shotsFired, double cooldown, String template, String componentSlot, Property target) {
+        return DEDUPLICATOR.deduplicate(new ShipWeapon(index, shotsFired, cooldown, template, componentSlot, target));
     }
 
     public int getIndex() {
@@ -56,5 +69,22 @@ public class ShipWeapon {
 
     public Property getTarget() {
         return target;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ShipWeapon)) {
+            return false;
+        }
+        ShipWeapon that = (ShipWeapon) o;
+        return index == that.index && shotsFired == that.shotsFired && Double.compare(that.cooldown, cooldown) == 0 && Objects.equals(template, that.template) && Objects.equals(componentSlot, that.componentSlot) && Objects.equals(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, shotsFired, cooldown, template, componentSlot, target);
     }
 }

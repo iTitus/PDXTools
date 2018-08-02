@@ -12,10 +12,10 @@ public class FleetCombat {
     private final Formation formation;
 
     public FleetCombat(PdxScriptObject o) {
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
-        this.formationPos = o.getObject("formation_pos").getAs(FormationPos::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
+        this.formationPos = o.getObject("formation_pos").getAs(FormationPos::of);
         this.formation = o.getObject("formation").getAs(Formation::new);
-        this.startCoordinate = o.getObject("start_coordinate").getAs(Coordinate::new);
+        this.startCoordinate = o.getObject("start_coordinate").getAs(Coordinate::of);
         this.startDate = o.getDate("start_date");
     }
 

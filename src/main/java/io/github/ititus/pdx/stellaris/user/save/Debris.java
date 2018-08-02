@@ -20,7 +20,7 @@ public class Debris {
         PdxScriptObject o = (PdxScriptObject) s;
 
         this.country = o.getInt("country");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.components = o.getImplicitList("component").getAsStringList();
         this.date = o.getDate("date");
     }

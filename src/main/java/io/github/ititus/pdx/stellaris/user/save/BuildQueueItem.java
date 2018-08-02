@@ -22,7 +22,7 @@ public class BuildQueueItem {
         this.planet = o.getInt("planet");
         this.slot = o.getInt("slot", -1);
         this.sector = o.getLong("sector");
-        this.cost = o.getObject("cost").getAs(Resources::new);
+        this.cost = o.getObject("cost").getAs(Resources::of);
         this.id = o.getInt("id");
     }
 

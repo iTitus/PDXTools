@@ -9,7 +9,7 @@ public class FleetMovementTarget {
 
     public FleetMovementTarget(PdxScriptObject o) {
         PdxScriptObject o1 = o.getObject("coordinate");
-        this.coordinate = o1 != null ? o1.getAs(Coordinate::new) : null;
+        this.coordinate = o1 != null ? o1.getAs(Coordinate::of) : null;
         o1 = o.getObject("target");
         this.target = o1 != null ? o1.getAs(Property::new) : null;
     }

@@ -14,7 +14,7 @@ public class FleetMovementPathNode {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.ftl = o.getString("ftl");
     }
 

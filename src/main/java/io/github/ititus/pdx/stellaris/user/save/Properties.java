@@ -11,7 +11,7 @@ public class Properties {
     private final Property attach, entityFaceObject;
 
     public Properties(PdxScriptObject o) {
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.attach = o.getObject("attach").getAs(Property::new);
         this.offset = o.getList("offset").getAsDoubleList();
         this.scale = o.getDouble("scale");

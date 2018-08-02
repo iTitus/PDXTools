@@ -26,7 +26,7 @@ public class GalacticObject {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.type = o.getString("type");
         this.name = o.getString("name");
         this.planets = o.getImplicitList("planet").getAsIntList();

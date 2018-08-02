@@ -16,7 +16,7 @@ public class Nebula {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.name = o.getString("name");
         this.radius = o.getDouble("radius");
         this.galacticObjects = o.getImplicitList("galactic_object").getAsIntList();

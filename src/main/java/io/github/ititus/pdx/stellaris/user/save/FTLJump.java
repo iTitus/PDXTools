@@ -9,9 +9,9 @@ public class FTLJump {
     private final Coordinate from;
 
     public FTLJump(PdxScriptObject o) {
-        this.from = o.getObject("from").getAs(Coordinate::new);
+        this.from = o.getObject("from").getAs(Coordinate::of);
         this.to = o.getInt("to");
-        this.fleet = o.getInt("fleet");
+        this.fleet = o.getUnsignedInt("fleet");
         this.jumpMethod = o.getString("jump_method");
         this.bypassFrom = o.getUnsignedInt("bypass_from");
         this.bypassTo = o.getUnsignedInt("bypass_to");

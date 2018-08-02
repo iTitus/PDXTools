@@ -6,23 +6,26 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 
+import java.util.Date;
+
 public class Fleet {
 
-    private final boolean actionInitialized, civilian, station, friendsShouldFollow;
+    private final boolean actionInitialized, civilian, station, mia, friendsShouldFollow;
     private final int aggroRangeMeasureFrom, fleetTemplate, owner, previousOwner, orderId;
     private final long sector;
     private final double aggroRange, hitPoints;
-    private final String name, groundSupportStance, fleetStance;
+    private final String name, groundSupportStance, fleetStance, miaType;
+    private final Date returnDate;
     private final ImmutableIntList ships, incomingMerges;
     private final FleetActions actions;
     private final FleetCombat combat;
     private final FleetAutoMovement autoMovement;
     private final FleetStats fleetStats;
-    private final FleetOrders currentOrder;
+    private final FleetOrders currentOrder, orders;
+    private final Coordinate miaFrom;
     private final Flags flags;
     private final FleetMovementManager movementManager;
     private final FleetMission mission;
-    private final FleetOrders orders;
     private final Settings settings;
 
     public Fleet(IPdxScript s) {
@@ -51,6 +54,11 @@ public class Fleet {
         this.station = o.getBoolean("station");
         this.groundSupportStance = o.getString("ground_support_stance");
         this.fleetStance = o.getString("fleet_stance");
+        this.mia = o.getBoolean("mia");
+        this.miaType = o.getString("mia_type");
+        this.returnDate = o.getDate("returnDate");
+        o1 = o.getObject("mia_from");
+        this.miaFrom = o1 != null ? o1.getAs(Coordinate::of) : null;
         o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         this.movementManager = o.getObject("movement_manager").getAs(FleetMovementManager::new);
@@ -68,10 +76,11 @@ public class Fleet {
         this.hitPoints = o.getDouble("hit_points");
     }
 
-    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetOrders orders, Settings settings) {
+    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, String miaType, Date returnDate, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders, Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission, Settings settings) {
         this.actionInitialized = actionInitialized;
         this.civilian = civilian;
         this.station = station;
+        this.mia = mia;
         this.friendsShouldFollow = friendsShouldFollow;
         this.aggroRangeMeasureFrom = aggroRangeMeasureFrom;
         this.fleetTemplate = fleetTemplate;
@@ -84,6 +93,8 @@ public class Fleet {
         this.name = name;
         this.groundSupportStance = groundSupportStance;
         this.fleetStance = fleetStance;
+        this.miaType = miaType;
+        this.returnDate = returnDate;
         this.ships = ships;
         this.incomingMerges = incomingMerges;
         this.actions = actions;
@@ -91,10 +102,11 @@ public class Fleet {
         this.autoMovement = autoMovement;
         this.fleetStats = fleetStats;
         this.currentOrder = currentOrder;
+        this.orders = orders;
+        this.miaFrom = miaFrom;
         this.flags = flags;
         this.movementManager = movementManager;
         this.mission = mission;
-        this.orders = orders;
         this.settings = settings;
     }
 
@@ -108,6 +120,10 @@ public class Fleet {
 
     public boolean isStation() {
         return station;
+    }
+
+    public boolean isMia() {
+        return mia;
     }
 
     public boolean isFriendsShouldFollow() {
@@ -158,6 +174,14 @@ public class Fleet {
         return fleetStance;
     }
 
+    public String getMiaType() {
+        return miaType;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
     public ImmutableIntList getShips() {
         return ships;
     }
@@ -186,6 +210,14 @@ public class Fleet {
         return currentOrder;
     }
 
+    public FleetOrders getOrders() {
+        return orders;
+    }
+
+    public Coordinate getMiaFrom() {
+        return miaFrom;
+    }
+
     public Flags getFlags() {
         return flags;
     }
@@ -196,10 +228,6 @@ public class Fleet {
 
     public FleetMission getMission() {
         return mission;
-    }
-
-    public FleetOrders getOrders() {
-        return orders;
     }
 
     public Settings getSettings() {

@@ -18,7 +18,7 @@ public class Cluster {
         PdxScriptObject o = (PdxScriptObject) s;
 
         this.id = o.getString("id");
-        this.position = o.getObject("position").getAs(Coordinate::new);
+        this.position = o.getObject("position").getAs(Coordinate::of);
         this.radius = o.getDouble("radius");
         this.objects = o.getList("objects").getAsIntList();
     }

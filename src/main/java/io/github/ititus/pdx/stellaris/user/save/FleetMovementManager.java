@@ -19,9 +19,9 @@ public class FleetMovementManager {
 
     public FleetMovementManager(PdxScriptObject o) {
         this.formation = o.getObject("formation").getAs(FormationType::new);
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.target = o.getObject("target").getAs(FleetMovementTarget::new);
-        this.targetCoordinate = o.getObject("target_coordinate").getAs(Coordinate::new);
+        this.targetCoordinate = o.getObject("target_coordinate").getAs(Coordinate::of);
         this.timeSinceLastPathUpdate = o.getInt("time_since_last_path_update", -1);
         this.state = o.getString("state");
         this.ftlWindup = o.getInt("ftl_windup", -1);

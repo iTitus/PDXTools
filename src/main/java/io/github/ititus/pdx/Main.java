@@ -31,7 +31,7 @@ public class Main {
     private static final String USER_DATA_DIR = USER_HOME + "/Documents/Paradox Interactive/Stellaris";
 
     private static final String SAVE_FOLDER = "mpomnidirective_20173703";
-    private static final String SAVE_GAME = "2270.04.10";
+    private static final String SAVE_GAME = "mature_save"; // "2270.04.10";
 
     public static void main(String[] args) {
         List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
@@ -146,7 +146,7 @@ public class Main {
                             array[i] += r.getBetharian().getD1();
                         },
                         Util::addArrays,
-                        Resources::new
+                        Resources::of
                 ));
     }
 

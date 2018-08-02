@@ -19,14 +19,14 @@ public class StellarisSaves {
 
     private final File saveGameFolder;
     private final ImmutableMap<String, ImmutableMap<String, StellarisSave>> saves;
-    private final MutableList<Pair<String, Throwable>> errors;
+
+    private MutableList<Pair<String, Throwable>> errors;
 
     public StellarisSaves(File saveGameFolder) {
         if (saveGameFolder == null || !saveGameFolder.isDirectory()) {
             throw new IllegalArgumentException();
         }
         this.saveGameFolder = saveGameFolder;
-        this.errors = Lists.mutable.empty();
 
         MutableMap<String, ImmutableMap<String, StellarisSave>> saves = Maps.mutable.empty();
         File[] files = saveGameFolder.listFiles();
@@ -47,6 +47,9 @@ public class StellarisSaves {
                                     Throwable[] suppressed = t.getSuppressed();
                                     Throwable cause = t.getCause();
                                     System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                                    if (errors == null) {
+                                        errors = Lists.mutable.empty();
+                                    }
                                     errors.add(Tuples.pair(path, t));
                                 }
                             }
@@ -70,7 +73,7 @@ public class StellarisSaves {
     }
 
     public ImmutableList<Pair<String, Throwable>> getErrors() {
-        return errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList());
+        return errors != null ? errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList()) : Lists.immutable.empty();
     }
 
     public StellarisSave getSave(String saveFolder, String saveGame) {

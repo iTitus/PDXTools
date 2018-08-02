@@ -1,13 +1,18 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.*;
+import io.github.ititus.pdx.util.Deduplicator;
 import io.github.ititus.pdx.util.Tuple3D;
+
+import java.util.Objects;
 
 public class Resources {
 
+    private static final Deduplicator<Resources> DEDUPLICATOR = new Deduplicator<>();
+
     private final Tuple3D energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
 
-    public Resources(PdxScriptObject o) {
+    private Resources(PdxScriptObject o) {
         this.energy = get(o, "energy");
         this.minerals = get(o, "minerals");
         this.food = get(o, "food");
@@ -34,11 +39,11 @@ public class Resources {
         this.betharian = get(o, "sr_betharian");
     }
 
-    public Resources(double... array) {
+    private Resources(double... array) {
         this(Tuple3D.of(array[0]), Tuple3D.of(array[1]), Tuple3D.of(array[2]), Tuple3D.of(array[3]), Tuple3D.of(array[4]), Tuple3D.of(array[5]), Tuple3D.of(array[6]), Tuple3D.of(array[7]), Tuple3D.of(array[8]), Tuple3D.of(array[9]), Tuple3D.of(array[10]), Tuple3D.of(array[11]), Tuple3D.of(array[12]), Tuple3D.of(array[13]), Tuple3D.of(array[14]), Tuple3D.of(array[15]), Tuple3D.of(array[16]), Tuple3D.of(array[17]), Tuple3D.of(array[18]), Tuple3D.of(array[19]), Tuple3D.of(array[20]), Tuple3D.of(array[21]), Tuple3D.of(array[22]), Tuple3D.of(array[23]));
     }
 
-    public Resources(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
+    private Resources(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
         this.energy = energy;
         this.minerals = minerals;
         this.food = food;
@@ -75,6 +80,18 @@ public class Resources {
         }
         o.use(resource, PdxConstants.DOUBLE);
         return Tuple3D.of(((Number) ((PdxScriptValue) s).getValue()).doubleValue());
+    }
+
+    public static Resources of(PdxScriptObject o) {
+        return DEDUPLICATOR.deduplicate(new Resources(o));
+    }
+
+    public static Resources of(double... array) {
+        return DEDUPLICATOR.deduplicate(new Resources(array));
+    }
+
+    public static Resources of(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
+        return DEDUPLICATOR.deduplicate(new Resources(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian));
     }
 
     public Tuple3D getEnergy() {
@@ -171,5 +188,45 @@ public class Resources {
 
     public Tuple3D getBetharian() {
         return betharian;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Resources)) {
+            return false;
+        }
+        Resources resources = (Resources) o;
+        return Objects.equals(energy, resources.energy) &&
+                Objects.equals(minerals, resources.minerals) &&
+                Objects.equals(food, resources.food) &&
+                Objects.equals(physicsResearch, resources.physicsResearch) &&
+                Objects.equals(societyResearch, resources.societyResearch) &&
+                Objects.equals(engineeringResearch, resources.engineeringResearch) &&
+                Objects.equals(influence, resources.influence) &&
+                Objects.equals(unity, resources.unity) &&
+                Objects.equals(aldar, resources.aldar) &&
+                Objects.equals(darkMatter, resources.darkMatter) &&
+                Objects.equals(engos, resources.engos) &&
+                Objects.equals(garanthium, resources.garanthium) &&
+                Objects.equals(livingMetal, resources.livingMetal) &&
+                Objects.equals(lythuric, resources.lythuric) &&
+                Objects.equals(orillium, resources.orillium) &&
+                Objects.equals(pitharan, resources.pitharan) &&
+                Objects.equals(satramene, resources.satramene) &&
+                Objects.equals(teldar, resources.teldar) &&
+                Objects.equals(terraformGases, resources.terraformGases) &&
+                Objects.equals(terraformLiquids, resources.terraformLiquids) &&
+                Objects.equals(yurantic, resources.yurantic) &&
+                Objects.equals(zro, resources.zro) &&
+                Objects.equals(alienPets, resources.alienPets) &&
+                Objects.equals(betharian, resources.betharian);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian);
     }
 }

@@ -30,7 +30,7 @@ public class Message {
         this.variables = l != null ? l.getAsList(VariablePair::new) : Lists.immutable.empty();
         this.receiver = o.getInt("receiver");
         this.technology = o.getString("technology");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.end = o.getDate("end");
         this.date = o.getDate("date");
         this.notification = o.getInt("notification");

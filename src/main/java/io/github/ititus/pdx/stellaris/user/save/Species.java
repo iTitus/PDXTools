@@ -7,7 +7,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 
 public class Species {
 
-    private final boolean immortal, popsCanBeColonizers, popsCanMigrate, popsCanReproduce, popsCanJoinFactions, canGenerateLeaders, popsCanBeSlaves, popsHaveHappiness;
+    private final boolean immortal, popsCanBeColonizers, popsCanMigrate, popsCanReproduce, popsCanJoinFactions, canGenerateLeaders, popsCanBeSlaves, popsHaveHappiness, consumerGoods;
     private final int base, homePlanet;
     private final double popMaintenance, popsAutoGrowth;
     private final String nameList, name, plural, adjective, class_, portrait, nameData, popsAutoUpgradeTo, buildablePop, popEthics;
@@ -39,6 +39,7 @@ public class Species {
         this.canGenerateLeaders = o.getBoolean("can_generate_leaders", true);
         this.popsCanBeSlaves = o.getBoolean("pops_can_be_slaves", true);
         this.popsHaveHappiness = o.getBoolean("pops_have_happiness", true);
+        this.consumerGoods = o.getBoolean("consumer_goods", true);
         this.newPopResourceRequirement = o.getObject("new_pop_resource_requirement").getAs(PopResourceRequirement::new);
         this.popsAutoGrowth = o.getDouble("pops_auto_growth");
         this.popsAutoUpgradeTo = o.getString("pops_auto_upgrade_to");
@@ -65,7 +66,7 @@ public class Species {
         this.flags = o1 != null ? o1.getAs(Flags::new) : null;
     }
 
-    public Species(boolean immortal, boolean popsCanBeColonizers, boolean popsCanMigrate, boolean popsCanReproduce, boolean popsCanJoinFactions, boolean canGenerateLeaders, boolean popsCanBeSlaves, boolean popsHaveHappiness, int base, int homePlanet, double popMaintenance, double popsAutoGrowth, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popsAutoUpgradeTo, String buildablePop, String popEthics, Traits traits, PopResourceRequirement newPopResourceRequirement, Flags flags) {
+    public Species(boolean immortal, boolean popsCanBeColonizers, boolean popsCanMigrate, boolean popsCanReproduce, boolean popsCanJoinFactions, boolean canGenerateLeaders, boolean popsCanBeSlaves, boolean popsHaveHappiness, boolean consumerGoods, int base, int homePlanet, double popMaintenance, double popsAutoGrowth, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popsAutoUpgradeTo, String buildablePop, String popEthics, Traits traits, PopResourceRequirement newPopResourceRequirement, Flags flags) {
         this.immortal = immortal;
         this.popsCanBeColonizers = popsCanBeColonizers;
         this.popsCanMigrate = popsCanMigrate;
@@ -74,6 +75,7 @@ public class Species {
         this.canGenerateLeaders = canGenerateLeaders;
         this.popsCanBeSlaves = popsCanBeSlaves;
         this.popsHaveHappiness = popsHaveHappiness;
+        this.consumerGoods = consumerGoods;
         this.base = base;
         this.homePlanet = homePlanet;
         this.popMaintenance = popMaintenance;
@@ -123,6 +125,10 @@ public class Species {
 
     public boolean isPopsHaveHappiness() {
         return popsHaveHappiness;
+    }
+
+    public boolean isConsumerGoods() {
+        return consumerGoods;
     }
 
     public int getBase() {

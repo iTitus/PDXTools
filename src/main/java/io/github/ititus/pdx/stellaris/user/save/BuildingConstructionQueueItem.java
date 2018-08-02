@@ -29,7 +29,7 @@ public class BuildingConstructionQueueItem {
         }
         this.start = o.getBoolean("start");
         this.sector = o.getLong("sector");
-        this.resources = o.getObject("resources").getAs(Resources::new);
+        this.resources = o.getObject("resources").getAs(Resources::of);
         this.progress = o.getDouble("progress");
     }
 

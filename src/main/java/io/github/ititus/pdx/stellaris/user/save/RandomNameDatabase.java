@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class RandomNameDatabase {
 
+    private final boolean usePrefix;
     private final ImmutableList<String> speciesModificationPrefix, speciesModificationPostfix, starNames, blackHoleNames, nebulaNames, asteroidPrefix;
     private final ImmutableList<ImmutableList<String>> asteroidPostfix;
 
@@ -22,9 +23,11 @@ public class RandomNameDatabase {
             }
             return null;
         });
+        this.usePrefix = o.getBoolean("prefix", true);
     }
 
-    public RandomNameDatabase(ImmutableList<String> speciesModificationPrefix, ImmutableList<String> speciesModificationPostfix, ImmutableList<String> starNames, ImmutableList<String> blackHoleNames, ImmutableList<String> nebulaNames, ImmutableList<String> asteroidPrefix, ImmutableList<ImmutableList<String>> asteroidPostfix) {
+    public RandomNameDatabase(boolean usePrefix, ImmutableList<String> speciesModificationPrefix, ImmutableList<String> speciesModificationPostfix, ImmutableList<String> starNames, ImmutableList<String> blackHoleNames, ImmutableList<String> nebulaNames, ImmutableList<String> asteroidPrefix, ImmutableList<ImmutableList<String>> asteroidPostfix) {
+        this.usePrefix = usePrefix;
         this.speciesModificationPrefix = speciesModificationPrefix;
         this.speciesModificationPostfix = speciesModificationPostfix;
         this.starNames = starNames;
@@ -32,6 +35,10 @@ public class RandomNameDatabase {
         this.nebulaNames = nebulaNames;
         this.asteroidPrefix = asteroidPrefix;
         this.asteroidPostfix = asteroidPostfix;
+    }
+
+    public boolean isUsePrefix() {
+        return usePrefix;
     }
 
     public ImmutableList<String> getSpeciesModificationPrefix() {

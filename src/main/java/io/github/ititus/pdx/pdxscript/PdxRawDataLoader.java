@@ -8,6 +8,7 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.tuple.Tuples;
 
@@ -23,19 +24,18 @@ import java.util.zip.ZipFile;
 
 public class PdxRawDataLoader implements PdxConstants {
 
-    private final MutableSet<Pair<String, Throwable>> errors;
-
     private final File file;
     private final ImmutableSet<String> blacklist;
     private final IFileFilter filter;
 
     private final PdxScriptObject rawData;
 
+    private MutableSet<Pair<String, Throwable>> errors;
+
     public PdxRawDataLoader(File file, ImmutableSet<String> blacklist, IFileFilter filter) {
         if (file == null || !file.exists()) {
             throw new IllegalArgumentException();
         }
-        this.errors = Sets.mutable.empty();
         this.file = file;
         this.blacklist = Sets.immutable.ofAll(blacklist);
         this.filter = filter;
@@ -70,7 +70,7 @@ public class PdxRawDataLoader implements PdxConstants {
     }
 
     public ImmutableList<Pair<String, Throwable>> getErrors() {
-        return errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList());
+        return errors != null ? errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList()) : Lists.immutable.empty();
     }
 
     private PdxScriptObject load() {
@@ -107,6 +107,9 @@ public class PdxRawDataLoader implements PdxConstants {
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();
                     System.out.println("Error while parsing " + new File(zipFile.getName(), zipEntry.getName()) + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
+                    if (errors == null) {
+                        errors = Sets.mutable.empty();
+                    }
                     errors.add(Tuples.pair(zipEntry.getName(), t));
                     s = null;
                 }
@@ -172,6 +175,9 @@ public class PdxRawDataLoader implements PdxConstants {
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();
                     System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
+                    if (errors == null) {
+                        errors = Sets.mutable.empty();
+                    }
                     errors.add(Tuples.pair(path, t));
                     s = null;
                 }

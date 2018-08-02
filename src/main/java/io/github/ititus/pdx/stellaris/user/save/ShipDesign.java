@@ -19,7 +19,7 @@ public class ShipDesign {
 
         this.name = o.getString("name");
         this.shipSize = o.getString("ship_size");
-        this.sections = o.getImplicitList("section").getAsList(ShipDesignSection::new);
+        this.sections = o.getImplicitList("section").getAsList(ShipDesignSection::of);
         this.allianceShipDesign = o.getBoolean("alliance_ship_design");
         this.autoGenDesigns = o.getBoolean("auto_gen_design");
         this.requiredComponents = o.getImplicitList("required_component").getAsStringList();

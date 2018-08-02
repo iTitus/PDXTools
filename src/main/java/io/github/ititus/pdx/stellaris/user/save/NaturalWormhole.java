@@ -14,7 +14,7 @@ public class NaturalWormhole {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.bypass = o.getInt("bypass");
     }
 

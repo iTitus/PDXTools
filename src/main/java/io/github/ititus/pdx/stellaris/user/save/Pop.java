@@ -38,7 +38,7 @@ public class Pop {
         this.requiredGrowth = o.getObject("required_growth").getAs(PopResourceRequirement::new);
         this.payingSector = o.getLong("paying_sector", -1);
         o1 = o.getObject("resources");
-        this.resources = o1 != null ? o1.getAs(Resources::new) : null;
+        this.resources = o1 != null ? o1.getAs(Resources::of) : null;
         this.aiRightsServitude = o.getBoolean("ai_rights_servitude");
         this.daysEnslaved = o.getInt("days_enslaved");
     }

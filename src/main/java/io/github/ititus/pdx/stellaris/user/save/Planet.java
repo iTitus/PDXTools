@@ -33,7 +33,7 @@ public class Planet {
     );
 
     private final boolean customName, planetClassChanged, isMoon, hasRing, hasOwnerPops, hasOwnedPops, explicitEntity, surveyed, preventAnomaly;
-    private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, immigratingPop, shipClassOrbitalStation, entity, surveyedBy, nextBuildItemId;
+    private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, immigratingPop, migratingPop, migratingTarget, shipClassOrbitalStation, entity, surveyedBy, nextBuildItemId;
     private final long colonyTile, orbitalDepositTile;
     private final double orbit, bombardmentDamage, unrest, alienSlavery, ownSpeciesSlavery;
     private final String name, planetClass, anomaly, entityName, picture;
@@ -41,13 +41,14 @@ public class Planet {
     private final ImmutableIntList moons, pops, orbitals, armies;
     private final ImmutableList<String> planetModifiers;
     private final ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue;
+    private final ImmutableList<BuildQueueItem> buildQueue;
     private final ImmutableList<TimedModifier> timedModifiers;
+    private final ImmutableList<DelayedEvent> delayedEvents;
     private final ImmutableList<Edict> edicts;
     private final Coordinate coordinate;
     private final Pop colonizerPop;
     private final Flags flags;
     private final Variables variables;
-    private final DelayedEvent delayedEvent;
     private final Tiles tiles;
     private final Spaceport spaceport;
 
@@ -56,10 +57,11 @@ public class Planet {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
+
         this.name = o.getString("name");
         this.customName = o.getBoolean("custom_name");
         this.planetClass = o.getString("planet_class");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::new);
+        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.orbit = o.getDouble("orbit");
         this.planetSize = o.getInt("planet_size");
         this.bombardmentDamage = o.getDouble("bombardment_damage");
@@ -83,6 +85,7 @@ public class Planet {
         this.colonizeDate = o.getDate("colonize_date");
         l = o.getList("building_construction_queue");
         this.buildingConstructionQueue = l != null ? l.getAsList(BuildingConstructionQueueItem::new) : Lists.immutable.empty();
+        this.buildQueue = o.getImplicitList("build_queue_item").getAsList(BuildQueueItem::new);
         l = o.getList("orbitals");
         this.orbitals = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("army");
@@ -91,14 +94,15 @@ public class Planet {
         this.alienSlavery = o.getDouble("alien_slavery");
         this.ownSpeciesSlavery = o.getDouble("own_species_slavery");
         this.immigratingPop = o.getInt("immigrating_pop", -1);
+        this.migratingPop = o.getInt("migrating_pop", -1);
+        this.migratingTarget = o.getInt("migrating_target", -1);
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         this.shipClassOrbitalStation = o.getInt("shipclass_orbital_station", -1);
         o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::new) : null;
         o1 = o.getObject("variables");
         this.variables = o1 != null ? o1.getAs(Variables::new) : null;
-        o1 = o.getObject("delayed_event");
-        this.delayedEvent = o1 != null ? o1.getAs(DelayedEvent::new) : null;
+        this.delayedEvents = o.getImplicitList("delayed_event").getAsList(DelayedEvent::new);
         this.entity = o.getInt("entity", -1);
         this.planetModifiers = o.getImplicitList("planet_modifier").getAsStringList();
         this.hasOwnerPops = o.getBoolean("has_owner_pops");
@@ -117,7 +121,7 @@ public class Planet {
         this.orbitalDepositTile = o.getLong("orbital_deposit_tile");
     }
 
-    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean hasOwnerPops, boolean hasOwnedPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int immigratingPop, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, long colonyTile, long orbitalDepositTile, double orbit, double bombardmentDamage, double unrest, double alienSlavery, double ownSpeciesSlavery, String name, String planetClass, String anomaly, String entityName, String picture, Date lastBombardment, Date colonizeDate, ImmutableIntList moons, ImmutableIntList pops, ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers, ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue, ImmutableList<TimedModifier> timedModifiers, ImmutableList<Edict> edicts, Coordinate coordinate, Pop colonizerPop, Flags flags, Variables variables, DelayedEvent delayedEvent, Tiles tiles, Spaceport spaceport) {
+    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean hasOwnerPops, boolean hasOwnedPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int immigratingPop, int migratingPop, int migratingTarget, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, long colonyTile, long orbitalDepositTile, double orbit, double bombardmentDamage, double unrest, double alienSlavery, double ownSpeciesSlavery, String name, String planetClass, String anomaly, String entityName, String picture, Date lastBombardment, Date colonizeDate, ImmutableIntList moons, ImmutableIntList pops, ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers, ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue, ImmutableList<BuildQueueItem> buildQueue, ImmutableList<TimedModifier> timedModifiers, ImmutableList<DelayedEvent> delayedEvents, ImmutableList<Edict> edicts, Coordinate coordinate, Pop colonizerPop, Flags flags, Variables variables, Tiles tiles, Spaceport spaceport) {
         this.customName = customName;
         this.planetClassChanged = planetClassChanged;
         this.isMoon = isMoon;
@@ -134,6 +138,8 @@ public class Planet {
         this.moonOf = moonOf;
         this.builtArmies = builtArmies;
         this.immigratingPop = immigratingPop;
+        this.migratingPop = migratingPop;
+        this.migratingTarget = migratingTarget;
         this.shipClassOrbitalStation = shipClassOrbitalStation;
         this.entity = entity;
         this.surveyedBy = surveyedBy;
@@ -150,21 +156,22 @@ public class Planet {
         this.anomaly = anomaly;
         this.entityName = entityName;
         this.picture = picture;
-        this.lastBombardment = new Date(lastBombardment.getTime());
-        this.colonizeDate = new Date(colonizeDate.getTime());
+        this.lastBombardment = lastBombardment;
+        this.colonizeDate = colonizeDate;
         this.moons = moons;
         this.pops = pops;
         this.orbitals = orbitals;
         this.armies = armies;
         this.planetModifiers = planetModifiers;
         this.buildingConstructionQueue = buildingConstructionQueue;
+        this.buildQueue = buildQueue;
         this.timedModifiers = timedModifiers;
+        this.delayedEvents = delayedEvents;
         this.edicts = edicts;
         this.coordinate = coordinate;
         this.colonizerPop = colonizerPop;
         this.flags = flags;
         this.variables = variables;
-        this.delayedEvent = delayedEvent;
         this.tiles = tiles;
         this.spaceport = spaceport;
     }
@@ -233,6 +240,14 @@ public class Planet {
         return immigratingPop;
     }
 
+    public int getMigratingPop() {
+        return migratingPop;
+    }
+
+    public int getMigratingTarget() {
+        return migratingTarget;
+    }
+
     public int getShipClassOrbitalStation() {
         return shipClassOrbitalStation;
     }
@@ -298,11 +313,11 @@ public class Planet {
     }
 
     public Date getLastBombardment() {
-        return new Date(lastBombardment.getTime());
+        return lastBombardment;
     }
 
     public Date getColonizeDate() {
-        return new Date(colonizeDate.getTime());
+        return colonizeDate;
     }
 
     public ImmutableIntList getMoons() {
@@ -329,8 +344,16 @@ public class Planet {
         return buildingConstructionQueue;
     }
 
+    public ImmutableList<BuildQueueItem> getBuildQueue() {
+        return buildQueue;
+    }
+
     public ImmutableList<TimedModifier> getTimedModifiers() {
         return timedModifiers;
+    }
+
+    public ImmutableList<DelayedEvent> getDelayedEvents() {
+        return delayedEvents;
     }
 
     public ImmutableList<Edict> getEdicts() {
@@ -351,10 +374,6 @@ public class Planet {
 
     public Variables getVariables() {
         return variables;
-    }
-
-    public DelayedEvent getDelayedEvent() {
-        return delayedEvent;
     }
 
     public Tiles getTiles() {
