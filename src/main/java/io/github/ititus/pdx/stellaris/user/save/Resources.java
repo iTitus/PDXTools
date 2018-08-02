@@ -35,7 +35,7 @@ public class Resources {
     }
 
     public Resources(double... array) {
-        this(Tuple3D.of(array[0], 0, 0), Tuple3D.of(array[1], 0, 0), Tuple3D.of(array[2], 0, 0), Tuple3D.of(array[3], 0, 0), Tuple3D.of(array[4], 0, 0), Tuple3D.of(array[5], 0, 0), Tuple3D.of(array[6], 0, 0), Tuple3D.of(array[7], 0, 0), Tuple3D.of(array[8], 0, 0), Tuple3D.of(array[9], 0, 0), Tuple3D.of(array[10], 0, 0), Tuple3D.of(array[11], 0, 0), Tuple3D.of(array[12], 0, 0), Tuple3D.of(array[13], 0, 0), Tuple3D.of(array[14], 0, 0), Tuple3D.of(array[15], 0, 0), Tuple3D.of(array[16], 0, 0), Tuple3D.of(array[17], 0, 0), Tuple3D.of(array[18], 0, 0), Tuple3D.of(array[19], 0, 0), Tuple3D.of(array[20], 0, 0), Tuple3D.of(array[21], 0, 0), Tuple3D.of(array[22], 0, 0), Tuple3D.of(array[23], 0, 0));
+        this(Tuple3D.of(array[0]), Tuple3D.of(array[1]), Tuple3D.of(array[2]), Tuple3D.of(array[3]), Tuple3D.of(array[4]), Tuple3D.of(array[5]), Tuple3D.of(array[6]), Tuple3D.of(array[7]), Tuple3D.of(array[8]), Tuple3D.of(array[9]), Tuple3D.of(array[10]), Tuple3D.of(array[11]), Tuple3D.of(array[12]), Tuple3D.of(array[13]), Tuple3D.of(array[14]), Tuple3D.of(array[15]), Tuple3D.of(array[16]), Tuple3D.of(array[17]), Tuple3D.of(array[18]), Tuple3D.of(array[19]), Tuple3D.of(array[20]), Tuple3D.of(array[21]), Tuple3D.of(array[22]), Tuple3D.of(array[23]));
     }
 
     public Resources(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
@@ -71,10 +71,10 @@ public class Resources {
             o.use(resource, PdxConstants.LIST);
             return Tuple3D.of(((PdxScriptList) s).getAsDoubleArray());
         } else if (s == null) {
-            return Tuple3D.of(0, 0, 0);
+            return Tuple3D.of();
         }
         o.use(resource, PdxConstants.DOUBLE);
-        return Tuple3D.of(((Number) ((PdxScriptValue) s).getValue()).doubleValue(), 0, 0);
+        return Tuple3D.of(((Number) ((PdxScriptValue) s).getValue()).doubleValue());
     }
 
     public Tuple3D getEnergy() {

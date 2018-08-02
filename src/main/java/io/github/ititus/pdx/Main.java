@@ -151,6 +151,6 @@ public class Main {
     }
 
     private static Tuple3D combineResource(Tuple3D t1, Tuple3D t2) {
-        return Tuple3D.of(t1.getD1() + t2.getD1(), 0, 0);
+        return Tuple3D.of(t1.getD1() + t2.getD1());
     }
 }

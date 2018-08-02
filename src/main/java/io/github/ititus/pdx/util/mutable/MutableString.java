@@ -58,6 +58,6 @@ public class MutableString {
 
     @Override
     public String toString() {
-        return String.valueOf(s);
+        return Objects.toString(s);
     }
 }

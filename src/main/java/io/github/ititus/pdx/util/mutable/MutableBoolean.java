@@ -72,7 +72,7 @@ public final class MutableBoolean {
 
     @Override
     public int hashCode() {
-        return b ? 1 : 0;
+        return Boolean.hashCode(b);
     }
 
     @Override

@@ -118,7 +118,7 @@ public final class PDXLocalisation implements PdxConstants {
 
     @Override
     public int hashCode() {
-        return Objects.hash(localisation);
+        return Objects.hashCode(localisation);
     }
 
     @Override
