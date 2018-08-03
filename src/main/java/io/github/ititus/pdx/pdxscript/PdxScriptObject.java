@@ -10,8 +10,7 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.factory.primitive.*;
 
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.*;
 
 public final class PdxScriptObject implements IPdxScript {
@@ -418,6 +417,14 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static class Builder {
 
+        private static final ImmutableMap<PdxRelation, PdxScriptObject> EMPTY_CACHE;
+
+        static {
+            Map<PdxRelation, PdxScriptObject> map = new EnumMap<>(PdxRelation.class);
+            Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation, Maps.immutable.empty())));
+            EMPTY_CACHE = Maps.immutable.withAll(map);
+        }
+
         private final MutableMap<String, IPdxScript> map;
 
         public Builder() {
@@ -438,6 +445,9 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public PdxScriptObject build(PdxRelation relation) {
+            if (map.isEmpty()) {
+                return EMPTY_CACHE.get(relation);
+            }
             return /*DEDUPLICATOR.deduplicate(*/new PdxScriptObject(relation, map.toImmutable())/*)*/;
         }
     }
