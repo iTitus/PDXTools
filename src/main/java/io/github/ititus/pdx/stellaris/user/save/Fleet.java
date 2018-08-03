@@ -56,7 +56,7 @@ public class Fleet {
         this.fleetStance = o.getString("fleet_stance");
         this.mia = o.getBoolean("mia");
         this.miaType = o.getString("mia_type");
-        this.returnDate = o.getDate("returnDate");
+        this.returnDate = o.getDate("return_date");
         o1 = o.getObject("mia_from");
         this.miaFrom = o1 != null ? o1.getAs(Coordinate::of) : null;
         o1 = o.getObject("flags");
