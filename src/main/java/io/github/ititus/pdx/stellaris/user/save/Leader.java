@@ -35,11 +35,11 @@ public class Leader {
         this.experience = o.getDouble("experience");
         this.level = o.getInt("level");
         PdxScriptObject o1 = o.getObject("location");
-        this.location = o1 != null ? o1.getAs(Location::new) : null;
+        this.location = o1 != null ? o1.getAs(Location::of) : null;
         o1 = o.getObject("pre_ruler_location");
-        this.preRulerLocation = o1 != null ? o1.getAs(Location::new) : null;
+        this.preRulerLocation = o1 != null ? o1.getAs(Location::of) : null;
         o1 = o.getObject("target_coordinate");
-        this.targetCoordinate = o1 != null ? o1.getAs(Location::new) : null;
+        this.targetCoordinate = o1 != null ? o1.getAs(Location::of) : null;
         this.start = o.getDate("start");
         this.end = o.getDate("end");
         this.leaderTerms = o.getInt("leader_terms", 1);
@@ -48,7 +48,7 @@ public class Leader {
         this.age = o.getInt("age");
         this.popFaction = o.getInt("pop_faction", -1);
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         this.agenda = o.getString("agenda");
         o1 = o.getObject("mandate");
         this.mandate = o1 != null ? o1.getAs(LeaderMandate::new) : null;

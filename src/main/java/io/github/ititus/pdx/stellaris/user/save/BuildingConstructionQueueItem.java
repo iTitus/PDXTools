@@ -22,11 +22,8 @@ public class BuildingConstructionQueueItem {
         this.tile = o.getLong("tile");
         this.time = o.getInt("time");
         this.type = o.getString("type");
-        if (this.type != null && this.type.equals("building")) {
-            this.building = o.getObject("building").getAs(Building::new);
-        } else {
-            this.building = null;
-        }
+        PdxScriptObject o1 = o.getObject("building");
+        this.building = o1 != null ? o1.getAs(Building::of) : null;
         this.start = o.getBoolean("start");
         this.sector = o.getLong("sector");
         this.resources = o.getObject("resources").getAs(Resources::of);

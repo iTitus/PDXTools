@@ -8,7 +8,7 @@ public class Tiles {
     private final ImmutableIntObjectMap<Tile> tiles;
 
     public Tiles(PdxScriptObject o) {
-        this.tiles = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Tile::new));
+        this.tiles = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Tile::of));
     }
 
     public Tiles(ImmutableIntObjectMap<Tile> tiles) {

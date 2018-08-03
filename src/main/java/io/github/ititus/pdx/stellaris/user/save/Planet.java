@@ -99,7 +99,7 @@ public class Planet {
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         this.shipClassOrbitalStation = o.getInt("shipclass_orbital_station", -1);
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         o1 = o.getObject("variables");
         this.variables = o1 != null ? o1.getAs(Variables::new) : null;
         this.delayedEvents = o.getImplicitList("delayed_event").getAsList(DelayedEvent::new);

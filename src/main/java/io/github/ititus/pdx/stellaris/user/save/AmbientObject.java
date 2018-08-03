@@ -19,7 +19,7 @@ public class AmbientObject {
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.data = o.getString("data");
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         this.properties = o.getObject("properties").getAs(Properties::new);
     }
 

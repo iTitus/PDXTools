@@ -24,7 +24,7 @@ public class LeaderRoles {
 
     private static Traits get(PdxScriptObject o, String key) {
         PdxScriptObject o1 = o.getObject(key);
-        return o1 != null ? o1.getAs(Traits::new) : null;
+        return o1 != null ? o1.getAs(Traits::of) : null;
     }
 
     public Traits getAdmiral() {

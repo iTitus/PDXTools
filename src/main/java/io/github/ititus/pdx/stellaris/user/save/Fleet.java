@@ -60,7 +60,7 @@ public class Fleet {
         o1 = o.getObject("mia_from");
         this.miaFrom = o1 != null ? o1.getAs(Coordinate::of) : null;
         o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         this.movementManager = o.getObject("movement_manager").getAs(FleetMovementManager::new);
         o1 = o.getObject("mission");
         this.mission = o1 != null ? o1.getAs(FleetMission::new) : null;

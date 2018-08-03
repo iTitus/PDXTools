@@ -103,7 +103,7 @@ public interface PdxConstants {
                 return (boolean) o;
             }
         }
-        return false;
+        throw new IllegalArgumentException();
     };
     Function<IPdxScript, Boolean> NULL_OR_BOOLEAN = s -> {
         if (s instanceof PdxScriptValue) {
@@ -121,7 +121,7 @@ public interface PdxConstants {
                 return (int) o;
             }
         }
-        return 0;
+        throw new IllegalArgumentException();
     };
     Function<IPdxScript, Integer> NULL_OR_INTEGER = s -> {
         if (s instanceof PdxScriptValue) {
@@ -139,7 +139,7 @@ public interface PdxConstants {
                 return (double) o;
             }
         }
-        return 0;
+        throw new IllegalArgumentException();
     };
     Function<IPdxScript, Double> NULL_OR_DOUBLE = s -> {
         if (s instanceof PdxScriptValue) {
@@ -149,6 +149,15 @@ public interface PdxConstants {
             }
         }
         return null;
+    };
+    Function<IPdxScript, String> TO_STRING = s -> {
+        if (s instanceof PdxScriptValue) {
+            Object o = ((PdxScriptValue) s).getValue();
+            if (o instanceof String) {
+                return (String) o;
+            }
+        }
+        throw new IllegalArgumentException();
     };
     Function<IPdxScript, String> NULL_OR_STRING = s -> {
         if (s instanceof PdxScriptValue) {

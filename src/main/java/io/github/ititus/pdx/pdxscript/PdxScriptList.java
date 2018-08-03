@@ -8,15 +8,15 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 public final class PdxScriptList implements IPdxScript {
 
-    private static final Deduplicator<PdxScriptList> DEDUPLICATOR = new Deduplicator<>();
+    private static final Deduplicator<PdxScriptList> DEDUPLICATOR = new Deduplicator<>(l -> !l.list.isEmpty());
 
     private final Mode mode;
     private final PdxRelation relation;
@@ -313,6 +313,18 @@ public final class PdxScriptList implements IPdxScript {
 
     public static class Builder {
 
+        private static final ImmutableMap<Mode, ImmutableMap<PdxRelation, PdxScriptList>> EMPTY_CACHE;
+
+        static {
+            Map<Mode, ImmutableMap<PdxRelation, PdxScriptList>> map = new EnumMap<>(Mode.class);
+            Arrays.stream(Mode.values()).forEach(mode -> {
+                Map<PdxRelation, PdxScriptList> map1 = new EnumMap<>(PdxRelation.class);
+                Arrays.stream(PdxRelation.values()).forEach(relation -> map1.put(relation, new PdxScriptList(mode, relation, Lists.immutable.empty())));
+                map.put(mode, Maps.immutable.withAll(map1));
+            });
+            EMPTY_CACHE = Maps.immutable.withAll(map);
+        }
+
         private final MutableList<IPdxScript> list;
 
         public Builder() {
@@ -341,7 +353,14 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         public PdxScriptList build(Mode mode, PdxRelation relation) {
-            return DEDUPLICATOR.deduplicate(new PdxScriptList(mode, relation, list.toImmutable()));
+            return DEDUPLICATOR.deduplicate(buildRaw(mode, relation));
+        }
+
+        public PdxScriptList buildRaw(Mode mode, PdxRelation relation) {
+            if (list.isEmpty()) {
+                return EMPTY_CACHE.get(mode).get(relation);
+            }
+            return new PdxScriptList(mode, relation, list.toImmutable());
         }
     }
 }

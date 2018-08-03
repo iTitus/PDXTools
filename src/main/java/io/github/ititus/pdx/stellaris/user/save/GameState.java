@@ -119,7 +119,7 @@ public class GameState {
         this.galaxy = o.getObject("galaxy").getAs(Galaxy::new); // 1_623_968
         // {
         this.galaxyRadius = o.getDouble("galaxy_radius");
-        this.flags = o.getObject("flags").getAs(Flags::new);
+        this.flags = o.getObject("flags").getAs(Flags::of);
         this.savedEventTargets = o.getImplicitList("saved_event_target").getAsList(SavedEventTarget::new);
         this.shipDesigns = o.getObject("ship_design").getAs(ShipDesigns::new);
         this.popFactions = o.getObject("pop_factions").getAs(PopFactions::new);

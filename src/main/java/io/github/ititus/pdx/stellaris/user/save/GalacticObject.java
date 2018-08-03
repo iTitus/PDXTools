@@ -49,7 +49,7 @@ public class GalacticObject {
         this.discoveries = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.arm = o.getInt("arm");
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         this.initializer = o.getString("initializer");
         this.initParent = o.getInt("init_parent", -1);
         l = o.getList("fleet_presence");

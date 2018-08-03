@@ -19,7 +19,7 @@ public class FleetTemplate {
 
         this.fleet = o.getInt("fleet");
         PdxScriptObject o1 = o.getObject("home_base");
-        this.homeBase = o1 != null ? o1.getAs(Location::new) : null;
+        this.homeBase = o1 != null ? o1.getAs(Location::of) : null;
         this.fleetTemplateDesigns = o.getList("fleet_template_design").getAsList(FleetTemplateDesign::new);
         this.queued = o.getInt("queued");
         this.count = o.getInt("count");

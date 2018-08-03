@@ -27,7 +27,7 @@ public class Species {
         this.adjective = o.getString("adjective");
         this.class_ = o.getString("class");
         this.portrait = o.getString("portrait");
-        this.traits = o.getObject("traits").getAs(Traits::new);
+        this.traits = o.getObject("traits").getAs(Traits::of);
         this.immortal = o.getBoolean("immortal");
         this.homePlanet = o.getInt("home_planet", -1);
         this.nameData = o.getString("name_data");
@@ -40,7 +40,7 @@ public class Species {
         this.popsCanBeSlaves = o.getBoolean("pops_can_be_slaves", true);
         this.popsHaveHappiness = o.getBoolean("pops_have_happiness", true);
         this.consumerGoods = o.getBoolean("consumer_goods", true);
-        this.newPopResourceRequirement = o.getObject("new_pop_resource_requirement").getAs(PopResourceRequirement::new);
+        this.newPopResourceRequirement = o.getObject("new_pop_resource_requirement").getAs(PopResourceRequirement::of);
         this.popsAutoGrowth = o.getDouble("pops_auto_growth");
         this.popsAutoUpgradeTo = o.getString("pops_auto_upgrade_to");
         this.buildablePop = o.getString("buildable_pop");
@@ -63,7 +63,7 @@ public class Species {
             throw new RuntimeException("Unexpected value '" + s1 + "' for pop_ethics");
         }
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
     }
 
     public Species(boolean immortal, boolean popsCanBeColonizers, boolean popsCanMigrate, boolean popsCanReproduce, boolean popsCanJoinFactions, boolean canGenerateLeaders, boolean popsCanBeSlaves, boolean popsHaveHappiness, boolean consumerGoods, int base, int homePlanet, double popMaintenance, double popsAutoGrowth, String nameList, String name, String plural, String adjective, String class_, String portrait, String nameData, String popsAutoUpgradeTo, String buildablePop, String popEthics, Traits traits, PopResourceRequirement newPopResourceRequirement, Flags flags) {

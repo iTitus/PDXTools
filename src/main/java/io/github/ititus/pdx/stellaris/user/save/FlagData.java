@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.Util;
 
 public class FlagData {
 
@@ -22,5 +23,22 @@ public class FlagData {
 
     public int getFlagDays() {
         return flagDays;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FlagData)) {
+            return false;
+        }
+        FlagData flagData = (FlagData) o;
+        return flagDate == flagData.flagDate && flagDays == flagData.flagDays;
+    }
+
+    @Override
+    public int hashCode() {
+        return Util.hash(flagDate, flagDays);
     }
 }

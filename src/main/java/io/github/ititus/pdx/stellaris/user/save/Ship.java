@@ -59,7 +59,7 @@ public class Ship {
         this.army = o.getInt("army", -1);
         this.nextWeaponIndex = o.getInt("next_weapon_index");
         PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::new) : null;
+        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         o1 = o.getObject("homepop");
         this.homepop = o1 != null ? o1.getAs(Homepop::new) : null;
         this.createdThisUpdate = o.getBoolean("created_this_update");

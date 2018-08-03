@@ -23,7 +23,7 @@ public class RandomNameDatabase {
             }
             return null;
         });
-        this.usePrefix = o.getBoolean("prefix", true);
+        this.usePrefix = o.getBoolean("use_prefix", true);
     }
 
     public RandomNameDatabase(boolean usePrefix, ImmutableList<String> speciesModificationPrefix, ImmutableList<String> speciesModificationPostfix, ImmutableList<String> starNames, ImmutableList<String> blackHoleNames, ImmutableList<String> nebulaNames, ImmutableList<String> asteroidPrefix, ImmutableList<ImmutableList<String>> asteroidPostfix) {

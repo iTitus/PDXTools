@@ -16,7 +16,7 @@ import java.util.function.*;
 public final class PdxScriptObject implements IPdxScript {
 
     // Disabled because of debug: used/usedWrongly
-    // private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>();
+    // private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>(o -> !o.map.isEmpty());
 
     private final PdxRelation relation;
     private final ImmutableMap<String, IPdxScript> map;
@@ -125,10 +125,10 @@ public final class PdxScriptObject implements IPdxScript {
             return (PdxScriptList) s;
         } else if (s != null) {
             use(key, getTypeString(s));
-            return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+            return PdxScriptList.builder().add(s).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
         }
         useWrongly(key, IMPLICIT_LIST);
-        return PdxScriptList.builder().build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+        return PdxScriptList.builder().buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
     public PdxScriptList getList(String key) {
