@@ -3,6 +3,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
+import java.util.Objects;
+
 public class BuildQueueItem {
 
     private final int planet, slot, id;
@@ -62,5 +64,22 @@ public class BuildQueueItem {
 
     public Resources getCost() {
         return cost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BuildQueueItem)) {
+            return false;
+        }
+        BuildQueueItem that = (BuildQueueItem) o;
+        return planet == that.planet && slot == that.slot && id == that.id && sector == that.sector && Double.compare(that.progress, progress) == 0 && Objects.equals(item, that.item) && Objects.equals(cost, that.cost);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(planet, slot, id, sector, progress, item, cost);
     }
 }

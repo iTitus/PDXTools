@@ -111,7 +111,7 @@ public class Planet {
         this.explicitEntity = o.getBoolean("explicit_entity");
         this.picture = o.getString("picture");
         this.tiles = o.getObject("tiles").getAs(Tiles::new);
-        this.spaceport = o.getObject("spaceport").getAs(Spaceport::new);
+        this.spaceport = o.getObject("spaceport").getAs(Spaceport::of);
         l = o.getList("edicts");
         this.edicts = l != null ? l.getAsList(Edict::new) : Lists.immutable.empty();
         this.surveyedBy = o.getInt("surveyed_by", -1);

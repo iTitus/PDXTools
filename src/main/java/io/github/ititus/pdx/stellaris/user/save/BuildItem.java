@@ -5,6 +5,8 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 
+import java.util.Objects;
+
 public class BuildItem {
 
     private final int shipDesign, pop, speciesIndex;
@@ -70,5 +72,22 @@ public class BuildItem {
 
     public ImmutableIntList getShips() {
         return ships;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BuildItem)) {
+            return false;
+        }
+        BuildItem buildItem = (BuildItem) o;
+        return shipDesign == buildItem.shipDesign && pop == buildItem.pop && speciesIndex == buildItem.speciesIndex && Objects.equals(type, buildItem.type) && Objects.equals(army, buildItem.army) && Objects.equals(starbaseBuilding, buildItem.starbaseBuilding) && Objects.equals(starbaseLevel, buildItem.starbaseLevel) && Objects.equals(starbaseModule, buildItem.starbaseModule) && Objects.equals(ships, buildItem.ships);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(shipDesign, pop, speciesIndex, type, army, starbaseBuilding, starbaseLevel, starbaseModule, ships);
     }
 }

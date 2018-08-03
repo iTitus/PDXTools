@@ -238,7 +238,7 @@ public final class PdxScriptParser implements PdxConstants {
                 }
             }
 
-            object = new PdxScriptValue(relation, value);
+            object = PdxScriptValue.of(relation, value);
         }
 
         return PrimitiveTuples.pair(object, i);

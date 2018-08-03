@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.pdx.util.Deduplicator;
 import org.eclipse.collections.api.collection.MutableCollection;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -10,10 +11,13 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.factory.primitive.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 import java.util.function.*;
 
 public final class PdxScriptObject implements IPdxScript {
+
+    private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>();
 
     private final PdxRelation relation;
     private final ImmutableMap<String, IPdxScript> map;
@@ -21,7 +25,7 @@ public final class PdxScriptObject implements IPdxScript {
     private MutableMultimap<String, String> used;
     private MutableMultimap<String, String> wronglyUsed;
 
-    public PdxScriptObject(PdxRelation relation, ImmutableMap<String, IPdxScript> map) {
+    private PdxScriptObject(PdxRelation relation, ImmutableMap<String, IPdxScript> map) {
         this.relation = relation;
         this.map = map;
     }
@@ -414,25 +418,10 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static class Builder {
 
-        private static final ImmutableMap<PdxRelation, PdxScriptObject> EMPTY_CACHE;
-
-        static {
-            Map<PdxRelation, PdxScriptObject> map = new EnumMap<>(PdxRelation.class);
-            Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation, Maps.immutable.empty())));
-            EMPTY_CACHE = Maps.adapt(map).toImmutable();
-        }
-
         private final MutableMap<String, IPdxScript> map;
 
         public Builder() {
             this.map = Maps.mutable.empty();
-        }
-
-        public PdxScriptObject build(PdxRelation relation) {
-            if (map.isEmpty()) {
-                return EMPTY_CACHE.get(relation);
-            }
-            return new PdxScriptObject(relation, map.toImmutable());
         }
 
         public Builder add(String key, IPdxScript value) {
@@ -446,6 +435,10 @@ public final class PdxScriptObject implements IPdxScript {
                 throw new UnsupportedOperationException("key=" + interned + ", existing=" + object + ", appendix=" + value);
             }
             return this;
+        }
+
+        public PdxScriptObject build(PdxRelation relation) {
+            return DEDUPLICATOR.deduplicate(new PdxScriptObject(relation, map.toImmutable()));
         }
     }
 }

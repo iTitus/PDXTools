@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.pdx.util.Deduplicator;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -7,21 +9,28 @@ import java.util.Objects;
 
 public final class PdxScriptValue implements IPdxScript {
 
+    private static final Deduplicator<Date> DATE_DEDUPLICATOR = new Deduplicator<>();
+    private static final Deduplicator<PdxScriptValue> DEDUPLICATOR = new Deduplicator<>();
+
     private final PdxRelation relation;
     private final Object value;
 
-    public PdxScriptValue(PdxRelation relation, Object value) {
+    private PdxScriptValue(PdxRelation relation, Object value) {
         if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof PdxColorWrapper) && !(value instanceof String))) {
             throw new IllegalArgumentException(String.valueOf(value));
         }
         this.relation = relation;
         if (value instanceof String) {
             this.value = ((String) value).intern();
-        } else if (value instanceof Date && value.equals(START_DATE)) {
-            this.value = START_DATE;
+        } else if (value instanceof Date) {
+            this.value = DATE_DEDUPLICATOR.deduplicate((Date) value);
         } else {
             this.value = value;
         }
+    }
+
+    public static PdxScriptValue of(PdxRelation relation, Object value) {
+        return DEDUPLICATOR.deduplicate(new PdxScriptValue(relation, value));
     }
 
     @Override

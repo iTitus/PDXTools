@@ -59,7 +59,6 @@ public final class PDXLocalisation implements PdxConstants {
 
     public ImmutableMap<String, ImmutableMap<String, String>> getExtraLocalisation() {
         ImmutableMap<String, String> defaultLangMap = localisation.get(DEFAULT_LANGUAGE);
-        ImmutableMap<String, String> tets;
         MutableMap<String, MutableMap<String, String>> map = Maps.mutable.empty();
         localisation.forEachKeyValue((lang, langMap) -> {
             if (!DEFAULT_LANGUAGE.equals(lang)) {

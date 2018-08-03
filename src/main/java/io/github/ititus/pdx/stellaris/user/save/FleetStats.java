@@ -4,6 +4,8 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class FleetStats {
 
+    // TODO: Deduplicate
+
     private final FleetCombatStats combatStats;
 
     public FleetStats(PdxScriptObject o) {

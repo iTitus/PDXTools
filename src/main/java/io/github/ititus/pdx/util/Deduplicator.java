@@ -1,29 +1,33 @@
 package io.github.ititus.pdx.util;
 
-import org.eclipse.collections.impl.block.factory.Predicates;
-
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
 public class Deduplicator<T> {
 
-    private static final boolean ENABLED = true;
+    private static final boolean DISABLED = false, RESPECT_DEDUPLICATION_CONDITION = false;
 
-    private final DeduplicatingCountingSet<T> map;
     private final Predicate<? super T> allowDeduplication;
 
+    private Map<T, WeakReference<T>> map;
+
     public Deduplicator() {
-        this(Predicates.alwaysTrue());
+        this(null);
     }
 
     public Deduplicator(Predicate<? super T> allowDeduplication) {
-        this.map = new DeduplicatingCountingSet<>();
         this.allowDeduplication = allowDeduplication;
     }
 
     public T deduplicate(T t) {
-        if (!ENABLED || !allowDeduplication.test(t)) {
+        if (DISABLED || t == null || (RESPECT_DEDUPLICATION_CONDITION && allowDeduplication != null && !allowDeduplication.test(t))) {
             return t;
         }
-        return map.addDeduplicate(t);
+        if (map == null) {
+            map = new WeakHashMap<>();
+        }
+        return map.computeIfAbsent(t, WeakReference::new).get();
     }
 }

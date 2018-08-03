@@ -1,4 +1,7 @@
-package io.github.ititus.pdx.util;
+package io.github.ititus.pdx.util.collection;
+
+import io.github.ititus.pdx.util.Deduplicator;
+import io.github.ititus.pdx.util.Util;
 
 public class Tuple3D {
 
@@ -60,9 +63,7 @@ public class Tuple3D {
             return false;
         }
         Tuple3D tuple3D = (Tuple3D) o;
-        return Double.compare(tuple3D.d1, d1) == 0 &&
-                Double.compare(tuple3D.d2, d2) == 0 &&
-                Double.compare(tuple3D.d3, d3) == 0;
+        return Double.compare(tuple3D.d1, d1) == 0 && Double.compare(tuple3D.d2, d2) == 0 && Double.compare(tuple3D.d3, d3) == 0;
     }
 
     @Override

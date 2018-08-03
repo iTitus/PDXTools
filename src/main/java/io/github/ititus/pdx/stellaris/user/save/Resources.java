@@ -2,7 +2,7 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.Deduplicator;
-import io.github.ititus.pdx.util.Tuple3D;
+import io.github.ititus.pdx.util.collection.Tuple3D;
 
 import java.util.Objects;
 

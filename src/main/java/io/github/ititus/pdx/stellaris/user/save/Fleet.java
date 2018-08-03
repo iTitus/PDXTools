@@ -42,7 +42,7 @@ public class Fleet {
         PdxScriptObject o1 = o.getObject("actions");
         this.actions = o1 != null ? o1.getAs(FleetActions::new) : null;
         this.ships = o.getList("ships").getAsIntList();
-        this.combat = o.getObject("combat").getAs(FleetCombat::new);
+        this.combat = o.getObject("combat").getAs(FleetCombat::of);
         o1 = o.getObject("auto_movement");
         this.autoMovement = o1 != null ? o1.getAs(FleetAutoMovement::new) : null;
         this.fleetStats = o.getObject("fleet_stats").getAs(FleetStats::new);
