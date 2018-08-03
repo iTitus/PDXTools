@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public class Deduplicator<T> {
 
-    private static final boolean DISABLED = false, RESPECT_DEDUPLICATION_CONDITION = false;
+    private static final boolean DISABLED = false, RESPECT_DEDUPLICATION_CONDITION = true;
 
     private final Predicate<? super T> allowDeduplication;
 
