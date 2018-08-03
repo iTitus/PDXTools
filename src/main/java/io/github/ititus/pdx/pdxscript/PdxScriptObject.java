@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.Deduplicator;
 import org.eclipse.collections.api.collection.MutableCollection;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -17,7 +16,8 @@ import java.util.function.*;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>();
+    // Disabled because of debug: used/usedWrongly
+    // private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>();
 
     private final PdxRelation relation;
     private final ImmutableMap<String, IPdxScript> map;
@@ -438,7 +438,7 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public PdxScriptObject build(PdxRelation relation) {
-            return DEDUPLICATOR.deduplicate(new PdxScriptObject(relation, map.toImmutable()));
+            return /*DEDUPLICATOR.deduplicate(*/new PdxScriptObject(relation, map.toImmutable())/*)*/;
         }
     }
 }
