@@ -6,10 +6,10 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class Nebula {
 
-    private final Coordinate coordinate;
-    private final String name;
     private final double radius;
+    private final String name;
     private final ImmutableIntList galacticObjects;
+    private final Coordinate coordinate;
 
     public Nebula(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -22,26 +22,26 @@ public class Nebula {
         this.galacticObjects = o.getImplicitList("galactic_object").getAsIntList();
     }
 
-    public Nebula(Coordinate coordinate, String name, double radius, ImmutableIntList galacticObjects) {
-        this.coordinate = coordinate;
-        this.name = name;
+    public Nebula(double radius, String name, ImmutableIntList galacticObjects, Coordinate coordinate) {
         this.radius = radius;
+        this.name = name;
         this.galacticObjects = galacticObjects;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
+        this.coordinate = coordinate;
     }
 
     public double getRadius() {
         return radius;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public ImmutableIntList getGalacticObjects() {
         return galacticObjects;
     }
 
-    public String getName() {
-        return name;
+    public Coordinate getCoordinate() {
+        return coordinate;
     }
 }

@@ -5,13 +5,13 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class BuildingConstructionQueueItem {
 
-    private final long tile, sector;
+    private final boolean start;
     private final int time;
+    private final long tile, sector;
+    private final double progress;
     private final String type;
     private final Building building;
-    private final boolean start;
     private final Resources resources;
-    private final double progress;
 
     public BuildingConstructionQueueItem(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -30,15 +30,23 @@ public class BuildingConstructionQueueItem {
         this.progress = o.getDouble("progress");
     }
 
-    public BuildingConstructionQueueItem(long tile, long sector, int time, String type, Building building, boolean start, Resources resources, double progress) {
+    public BuildingConstructionQueueItem(boolean start, int time, long tile, long sector, double progress, String type, Building building, Resources resources) {
+        this.start = start;
+        this.time = time;
         this.tile = tile;
         this.sector = sector;
-        this.time = time;
+        this.progress = progress;
         this.type = type;
         this.building = building;
-        this.start = start;
         this.resources = resources;
-        this.progress = progress;
+    }
+
+    public boolean isStart() {
+        return start;
+    }
+
+    public int getTime() {
+        return time;
     }
 
     public long getTile() {
@@ -49,8 +57,8 @@ public class BuildingConstructionQueueItem {
         return sector;
     }
 
-    public int getTime() {
-        return time;
+    public double getProgress() {
+        return progress;
     }
 
     public String getType() {
@@ -61,15 +69,7 @@ public class BuildingConstructionQueueItem {
         return building;
     }
 
-    public boolean isStart() {
-        return start;
-    }
-
     public Resources getResources() {
         return resources;
-    }
-
-    public double getProgress() {
-        return progress;
     }
 }

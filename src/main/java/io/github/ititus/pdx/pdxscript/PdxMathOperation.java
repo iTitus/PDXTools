@@ -31,10 +31,10 @@ public enum PdxMathOperation implements PdxConstants {
         return n1.intValue() * n2.intValue();
     }),
     DIVIDE(PdxConstants.DIVIDE, (n1, n2) -> {
-        if (n1 instanceof Double || n2 instanceof Double) {
-            return n1.doubleValue() / n2.doubleValue();
-        }
         double d = n1.doubleValue() / n2.doubleValue();
+        if (n1 instanceof Double || n2 instanceof Double) {
+            return d;
+        }
         if (n1 instanceof Long || n2 instanceof Long) {
             long l = n1.longValue() / n2.longValue();
             if (d != l) {

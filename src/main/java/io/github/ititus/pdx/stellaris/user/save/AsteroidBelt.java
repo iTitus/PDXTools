@@ -5,8 +5,8 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class AsteroidBelt {
 
-    private final String type;
     private final double innerRadius;
+    private final String type;
 
     public AsteroidBelt(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -17,16 +17,16 @@ public class AsteroidBelt {
         this.innerRadius = o.getDouble("inner_radius");
     }
 
-    public AsteroidBelt(String type, double innerRadius) {
-        this.type = type;
+    public AsteroidBelt(double innerRadius, String type) {
         this.innerRadius = innerRadius;
-    }
-
-    public String getType() {
-        return type;
+        this.type = type;
     }
 
     public double getInnerRadius() {
         return innerRadius;
+    }
+
+    public String getType() {
+        return type;
     }
 }

@@ -8,15 +8,12 @@ import java.util.Date;
 
 public class Meta {
 
-    private final String version;
-    private final int versionControlRevision;
-    private final String name;
+    private final int versionControlRevision, planets;
+    private final double fleets;
+    private final String version, name, playerPortrait;
     private final Date date;
     private final ImmutableList<String> requiredDLCs;
-    private final String playerPortrait;
     private final Flag flag;
-    private final double fleets;
-    private final int planets;
 
     public Meta(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -35,51 +32,51 @@ public class Meta {
         this.planets = o.getInt("meta_planets");
     }
 
-    public Meta(String version, int versionControlRevision, String name, Date date, ImmutableList<String> requiredDLCs, String playerPortrait, Flag flag, double fleets, int planets) {
-        this.version = version;
+    public Meta(int versionControlRevision, int planets, double fleets, String version, String name, String playerPortrait, Date date, ImmutableList<String> requiredDLCs, Flag flag) {
         this.versionControlRevision = versionControlRevision;
-        this.name = name;
-        this.date = new Date(date.getTime());
-        this.requiredDLCs = requiredDLCs;
-        this.playerPortrait = playerPortrait;
-        this.flag = flag;
-        this.fleets = fleets;
         this.planets = planets;
-    }
-
-    public String getVersion() {
-        return version;
+        this.fleets = fleets;
+        this.version = version;
+        this.name = name;
+        this.playerPortrait = playerPortrait;
+        this.date = date;
+        this.requiredDLCs = requiredDLCs;
+        this.flag = flag;
     }
 
     public int getVersionControlRevision() {
         return versionControlRevision;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Date getDate() {
-        return new Date(date.getTime());
-    }
-
-    public ImmutableList<String> getRequiredDLCs() {
-        return requiredDLCs;
-    }
-
-    public String getPlayerPortrait() {
-        return playerPortrait;
-    }
-
-    public Flag getFlag() {
-        return flag;
+    public int getPlanets() {
+        return planets;
     }
 
     public double getFleets() {
         return fleets;
     }
 
-    public int getPlanets() {
-        return planets;
+    public String getVersion() {
+        return version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlayerPortrait() {
+        return playerPortrait;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public ImmutableList<String> getRequiredDLCs() {
+        return requiredDLCs;
+    }
+
+    public Flag getFlag() {
+        return flag;
     }
 }

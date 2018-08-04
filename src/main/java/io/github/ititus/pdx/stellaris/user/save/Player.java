@@ -5,8 +5,8 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Player {
 
-    private final String name;
     private final int country;
+    private final String name;
 
     public Player(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -17,16 +17,16 @@ public class Player {
         this.country = o.getInt("country");
     }
 
-    public Player(String name, int country) {
-        this.name = name;
+    public Player(int country, String name) {
         this.country = country;
-    }
-
-    public String getName() {
-        return name;
+        this.name = name;
     }
 
     public int getCountry() {
         return country;
+    }
+
+    public String getName() {
+        return name;
     }
 }

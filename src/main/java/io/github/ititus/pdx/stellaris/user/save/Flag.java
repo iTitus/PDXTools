@@ -6,8 +6,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Flag {
 
-    private final Texture icon, background;
     private final ImmutableList<String> colors;
+    private final Texture icon, background;
 
     public Flag(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -20,10 +20,14 @@ public class Flag {
         this.colors = o.getList("colors").getAsStringList();
     }
 
-    public Flag(Texture icon, Texture background, ImmutableList<String> colors) {
+    public Flag(ImmutableList<String> colors, Texture icon, Texture background) {
+        this.colors = colors;
         this.icon = icon;
         this.background = background;
-        this.colors = colors;
+    }
+
+    public ImmutableList<String> getColors() {
+        return colors;
     }
 
     public Texture getIcon() {
@@ -32,9 +36,5 @@ public class Flag {
 
     public Texture getBackground() {
         return background;
-    }
-
-    public ImmutableList<String> getColors() {
-        return colors;
     }
 }
