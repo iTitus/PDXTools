@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import java.util.Date;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
@@ -87,6 +88,8 @@ public interface PdxConstants {
     String KEY_INDENT = "indent";
     String KEY_KEY = "key";
     String KEY_VALUE = "value";
+
+    Date NULL_DATE = new Date(-62135773200000L);
 
     Pattern EMPTY_PATTERN = Pattern.compile(EMPTY);
     Pattern DIGITS_PATTERN = Pattern.compile("\\d+");

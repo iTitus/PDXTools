@@ -55,7 +55,7 @@ public class GameState {
 
     public GameState(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
@@ -112,7 +112,7 @@ public class GameState {
         this.lastEventId = o.getInt("last_event_id", -1);
         this.randomNameDatabase = o.getObject("random_name_database").getAs(RandomNameDatabase::new);
         PdxScriptObject o1 = o.getObject("name_list");
-        if (o1 != null && o1.size() > 0) {
+        if (o1 == null || o1.size() > 0) {
             throw new RuntimeException("Unexpected content '" + o1 + "'for name_list");
         }
         // }

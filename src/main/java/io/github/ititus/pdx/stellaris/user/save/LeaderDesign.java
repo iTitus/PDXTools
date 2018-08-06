@@ -2,6 +2,8 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
+import java.util.Objects;
+
 public class LeaderDesign {
 
     private final int texture, hair, clothes;
@@ -53,5 +55,22 @@ public class LeaderDesign {
 
     public String getRulerTitle() {
         return rulerTitle;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LeaderDesign)) {
+            return false;
+        }
+        LeaderDesign that = (LeaderDesign) o;
+        return texture == that.texture && hair == that.hair && clothes == that.clothes && Objects.equals(gender, that.gender) && Objects.equals(name, that.name) && Objects.equals(portrait, that.portrait) && Objects.equals(rulerTitle, that.rulerTitle);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(texture, hair, clothes, gender, name, portrait, rulerTitle);
     }
 }

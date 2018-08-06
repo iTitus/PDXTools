@@ -45,7 +45,7 @@ public class Fleet {
         this.combat = o.getObject("combat").getAs(FleetCombat::of);
         o1 = o.getObject("auto_movement");
         this.autoMovement = o1 != null ? o1.getAs(FleetAutoMovement::new) : null;
-        this.fleetStats = o.getObject("fleet_stats").getAs(FleetStats::new);
+        this.fleetStats = o.getObject("fleet_stats").getAs(FleetStats::of);
         o1 = o.getObject("current_order");
         this.currentOrder = o1 != null ? o1.getAs(FleetOrders::new) : null;
         this.owner = o.getInt("owner");

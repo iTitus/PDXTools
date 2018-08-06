@@ -4,6 +4,8 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 
+import java.util.Objects;
+
 public class Flag {
 
     private final ImmutableList<String> colors;
@@ -36,5 +38,22 @@ public class Flag {
 
     public Texture getBackground() {
         return background;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Flag)) {
+            return false;
+        }
+        Flag flag = (Flag) o;
+        return Objects.equals(colors, flag.colors) && Objects.equals(icon, flag.icon) && Objects.equals(background, flag.background);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(colors, icon, background);
     }
 }

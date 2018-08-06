@@ -14,7 +14,7 @@ public class ShipDesignComponent {
 
     private ShipDesignComponent(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
 

@@ -10,7 +10,7 @@ public class FleetMovementPathNode {
 
     public FleetMovementPathNode(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
