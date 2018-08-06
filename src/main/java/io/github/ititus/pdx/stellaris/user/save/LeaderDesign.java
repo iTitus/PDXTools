@@ -7,7 +7,7 @@ import java.util.Objects;
 public class LeaderDesign {
 
     private final int texture, hair, clothes;
-    private final String gender, name, portrait, rulerTitle;
+    private final String gender, name, portrait, rulerTitle, rulerTitleFemale;
 
     public LeaderDesign(PdxScriptObject o) {
         this.gender = o.getString("gender");
@@ -17,9 +17,10 @@ public class LeaderDesign {
         this.hair = o.getInt("hair");
         this.clothes = o.getInt("clothes");
         this.rulerTitle = o.getString("ruler_title");
+        this.rulerTitleFemale = o.getString("ruler_title_female");
     }
 
-    public LeaderDesign(int texture, int hair, int clothes, String gender, String name, String portrait, String rulerTitle) {
+    public LeaderDesign(int texture, int hair, int clothes, String gender, String name, String portrait, String rulerTitle, String rulerTitleFemale) {
         this.texture = texture;
         this.hair = hair;
         this.clothes = clothes;
@@ -27,6 +28,7 @@ public class LeaderDesign {
         this.name = name;
         this.portrait = portrait;
         this.rulerTitle = rulerTitle;
+        this.rulerTitleFemale = rulerTitleFemale;
     }
 
     public int getTexture() {
@@ -57,6 +59,10 @@ public class LeaderDesign {
         return rulerTitle;
     }
 
+    public String getRulerTitleFemale() {
+        return rulerTitleFemale;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -66,11 +72,11 @@ public class LeaderDesign {
             return false;
         }
         LeaderDesign that = (LeaderDesign) o;
-        return texture == that.texture && hair == that.hair && clothes == that.clothes && Objects.equals(gender, that.gender) && Objects.equals(name, that.name) && Objects.equals(portrait, that.portrait) && Objects.equals(rulerTitle, that.rulerTitle);
+        return texture == that.texture && hair == that.hair && clothes == that.clothes && Objects.equals(gender, that.gender) && Objects.equals(name, that.name) && Objects.equals(portrait, that.portrait) && Objects.equals(rulerTitle, that.rulerTitle) && Objects.equals(rulerTitleFemale, that.rulerTitleFemale);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(texture, hair, clothes, gender, name, portrait, rulerTitle);
+        return Objects.hash(texture, hair, clothes, gender, name, portrait, rulerTitle, rulerTitleFemale);
     }
 }

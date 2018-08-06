@@ -5,6 +5,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.Deduplicator;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.impl.factory.Lists;
 
 import java.util.Date;
 import java.util.Objects;
@@ -27,15 +28,15 @@ public class FleetCombatStats {
             throw new RuntimeException("Unexpected date: " + date);
         }
         PdxScriptList l = o.getList("enemy");
-        this.enemy = l != null ? l.getAsList(FleetCombatEnemy::new) : null;
+        this.enemy = l != null ? l.getAsList(FleetCombatEnemy::new) : Lists.immutable.empty();
         l = o.getList("damage_incoming");
-        this.damageIncoming = l != null ? l.getAsList(FleetCombatDamage::new) : null;
+        this.damageIncoming = l != null ? l.getAsList(FleetCombatDamage::new) : Lists.immutable.empty();
         l = o.getList("damage_outgoing");
-        this.damageOutgoing = l != null ? l.getAsList(FleetCombatDamage::new) : null;
+        this.damageOutgoing = l != null ? l.getAsList(FleetCombatDamage::new) : Lists.immutable.empty();
         l = o.getList("hit_ratio_incoming");
-        this.hitRatioIncoming = l != null ? l.getAsList(FleetCombatHitRatio::new) : null;
+        this.hitRatioIncoming = l != null ? l.getAsList(FleetCombatHitRatio::new) : Lists.immutable.empty();
         l = o.getList("hit_ratio_outgoing");
-        this.hitRatioOutgoing = l != null ? l.getAsList(FleetCombatHitRatio::new) : null;
+        this.hitRatioOutgoing = l != null ? l.getAsList(FleetCombatHitRatio::new) : Lists.immutable.empty();
     }
 
     private FleetCombatStats(ImmutableList<FleetCombatEnemy> enemy, ImmutableList<FleetCombatDamage> damageIncoming, ImmutableList<FleetCombatDamage> damageOutgoing, ImmutableList<FleetCombatHitRatio> hitRatioIncoming, ImmutableList<FleetCombatHitRatio> hitRatioOutgoing) {
