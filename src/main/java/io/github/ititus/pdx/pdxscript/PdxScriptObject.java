@@ -33,6 +33,10 @@ public final class PdxScriptObject implements IPdxScript {
         return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.apply(s) : null;
     }
 
+    public static <T> org.eclipse.collections.api.block.function.Function<IPdxScript, T> nullOr(org.eclipse.collections.api.block.function.Function<IPdxScript, T> fct) {
+        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.valueOf(s) : null;
+    }
+
     public static <T> Function<IPdxScript, T> objectOrNull(Function<IPdxScript, T> fct) {
         return s -> s instanceof PdxScriptObject ? fct.apply(s) : null;
     }
@@ -334,6 +338,20 @@ public final class PdxScriptObject implements IPdxScript {
             if (k != null) {
                 map.put(k, valueFct.apply(oldV));
                 use(oldK, getTypeString(oldV));
+            }
+        });
+        return map.toImmutable();
+    }
+
+    public <K, V> ImmutableMultimap<K, V> getAsMultimap(Function<String, K> keyFct, org.eclipse.collections.api.block.function.Function<IPdxScript, V> valueFct) {
+        MutableMultimap<K, V> map = Multimaps.mutable.list.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
+            if (oldV instanceof PdxScriptList) {
+                K k = keyFct.apply(oldK);
+                if (k != null) {
+                    map.putAll(k, ((PdxScriptList) oldV).getAsList(valueFct));
+                    use(oldK, getTypeString(oldV));
+                }
             }
         });
         return map.toImmutable();

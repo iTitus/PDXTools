@@ -35,7 +35,7 @@ public class Planet {
     private final boolean customName, planetClassChanged, isMoon, hasRing, hasOwnerPops, hasOwnedPops, explicitEntity, surveyed, preventAnomaly;
     private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, immigratingPop, migratingPop, migratingTarget, shipClassOrbitalStation, entity, surveyedBy, nextBuildItemId;
     private final long colonyTile, orbitalDepositTile;
-    private final double orbit, bombardmentDamage, unrest, alienSlavery, ownSpeciesSlavery;
+    private final double orbit, bombardmentDamage, unrest, alienSlavery, ownSpeciesSlavery, migratingProgress;
     private final String name, planetClass, anomaly, entityName, picture;
     private final Date lastBombardment, colonizeDate;
     private final ImmutableIntList moons, pops, orbitals, armies;
@@ -96,6 +96,7 @@ public class Planet {
         this.immigratingPop = o.getInt("immigrating_pop", -1);
         this.migratingPop = o.getInt("migrating_pop", -1);
         this.migratingTarget = o.getInt("migrating_target", -1);
+        this.migratingProgress = o.getDouble("migrating_progress");
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
         this.shipClassOrbitalStation = o.getInt("shipclass_orbital_station", -1);
         o1 = o.getObject("flags");
@@ -121,7 +122,7 @@ public class Planet {
         this.orbitalDepositTile = o.getLong("orbital_deposit_tile");
     }
 
-    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean hasOwnerPops, boolean hasOwnedPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int immigratingPop, int migratingPop, int migratingTarget, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, long colonyTile, long orbitalDepositTile, double orbit, double bombardmentDamage, double unrest, double alienSlavery, double ownSpeciesSlavery, String name, String planetClass, String anomaly, String entityName, String picture, Date lastBombardment, Date colonizeDate, ImmutableIntList moons, ImmutableIntList pops, ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers, ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue, ImmutableList<BuildQueueItem> buildQueue, ImmutableList<TimedModifier> timedModifiers, ImmutableList<DelayedEvent> delayedEvents, ImmutableList<Edict> edicts, Coordinate coordinate, Pop colonizerPop, Flags flags, Variables variables, Tiles tiles, Spaceport spaceport) {
+    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean hasOwnerPops, boolean hasOwnedPops, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int immigratingPop, int migratingPop, int migratingTarget, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, long colonyTile, long orbitalDepositTile, double orbit, double bombardmentDamage, double unrest, double alienSlavery, double ownSpeciesSlavery, double migratingProgress, String name, String planetClass, String anomaly, String entityName, String picture, Date lastBombardment, Date colonizeDate, ImmutableIntList moons, ImmutableIntList pops, ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers, ImmutableList<BuildingConstructionQueueItem> buildingConstructionQueue, ImmutableList<BuildQueueItem> buildQueue, ImmutableList<TimedModifier> timedModifiers, ImmutableList<DelayedEvent> delayedEvents, ImmutableList<Edict> edicts, Coordinate coordinate, Pop colonizerPop, Flags flags, Variables variables, Tiles tiles, Spaceport spaceport) {
         this.customName = customName;
         this.planetClassChanged = planetClassChanged;
         this.isMoon = isMoon;
@@ -151,6 +152,7 @@ public class Planet {
         this.unrest = unrest;
         this.alienSlavery = alienSlavery;
         this.ownSpeciesSlavery = ownSpeciesSlavery;
+        this.migratingProgress = migratingProgress;
         this.name = name;
         this.planetClass = planetClass;
         this.anomaly = anomaly;
@@ -290,6 +292,10 @@ public class Planet {
 
     public double getOwnSpeciesSlavery() {
         return ownSpeciesSlavery;
+    }
+
+    public double getMigratingProgress() {
+        return migratingProgress;
     }
 
     public String getName() {

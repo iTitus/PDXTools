@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.util.Objects;
@@ -8,7 +9,12 @@ public class Property {
 
     private final int type, id;
 
-    public Property(PdxScriptObject o) {
+    public Property(IPdxScript s) {
+        if (!(s instanceof PdxScriptObject)) {
+            throw new IllegalArgumentException(String.valueOf(s));
+        }
+        PdxScriptObject o = (PdxScriptObject) s;
+
         this.type = o.getInt("type");
         this.id = o.getUnsignedInt("id");
     }

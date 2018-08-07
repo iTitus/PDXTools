@@ -115,9 +115,7 @@ public class GameState {
         if (o1 == null || o1.size() > 0) {
             throw new RuntimeException("Unexpected content '" + o1 + "'for name_list");
         }
-        // }
-        this.galaxy = o.getObject("galaxy").getAs(Galaxy::new); // 1_623_968
-        // {
+        this.galaxy = o.getObject("galaxy").getAs(Galaxy::new);
         this.galaxyRadius = o.getDouble("galaxy_radius");
         this.flags = o.getObject("flags").getAs(Flags::of);
         this.savedEventTargets = o.getImplicitList("saved_event_target").getAsList(SavedEventTarget::new);
@@ -135,7 +133,7 @@ public class GameState {
         this.usedSymbols = o.getList("used_symbols").getAsLongList();
         this.usedSpeciesNames = o.getImplicitList("used_species_names").getAsList(UsedSpeciesClassAssets::new);
         this.usedSpeciesPortraits = o.getImplicitList("used_species_portrait").getAsList(UsedSpeciesClassAssets::new);
-        this.randomSeed = o.getInt("random_seed");
+        this.randomSeed = o.getUnsignedInt("random_seed");
         this.randomCount = o.getInt("random_count");
         // }
     }
