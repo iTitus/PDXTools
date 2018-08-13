@@ -367,13 +367,12 @@ public final class PdxScriptObject implements IPdxScript {
                     errors.putAll(key, toAdd.collect(s1 -> "wrongly_used_as=" + s1 + SLASH_CHAR + "was=" + type));
                 }
             }
-            boolean id = DIGITS_PATTERN.matcher(key).matches();
             MutableCollection<String> usages = used != null ? used.get(key) : null;
-            if (!id && (!type.equals(NULL) || (usages != null && !usages.isEmpty())) && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
+            if ((!type.equals(NULL) || (usages != null && !usages.isEmpty())) && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(UNSIGNED_INT) && !usages.contains(LONG)))))) {
                 errors.put(key, "unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
             } else {
                 if (s instanceof PdxScriptObject) {
-                    ((PdxScriptObject) s).getErrors().forEachKeyMultiValues((k, v) -> errors.putAll((id ? EMPTY : key + DOT_CHAR) + k, v));
+                    ((PdxScriptObject) s).getErrors().forEachKeyMultiValues((k, v) -> errors.putAll((DIGITS_PATTERN.matcher(key).matches() ? EMPTY : key + DOT_CHAR) + k, v));
                 } else if (s instanceof PdxScriptList) {
                     ((PdxScriptList) s).getErrors().forEachKeyMultiValues((k, v) -> errors.putAll(key + DOT_CHAR + k, v));
                 }

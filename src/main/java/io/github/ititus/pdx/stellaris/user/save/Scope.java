@@ -15,7 +15,7 @@ public class Scope {
 
     public Scope(PdxScriptObject o) {
         this.type = o.getString("type");
-        this.id = o.getInt("id");
+        this.id = o.getUnsignedInt("id");
         this.random = o.getList("random").getAsIntList();
         PdxScriptObject o1 = o.getObject("root");
         this.root = o1 != null ? o1.getAs(Scope::new) : null;
