@@ -3,9 +3,9 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-public class Missile {
+public class Sector {
 
-    public Missile(IPdxScript s) {
+    public Sector(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException(String.valueOf(s));
         }

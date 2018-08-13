@@ -346,12 +346,10 @@ public final class PdxScriptObject implements IPdxScript {
     public <K, V> ImmutableMultimap<K, V> getAsMultimap(Function<String, K> keyFct, org.eclipse.collections.api.block.function.Function<IPdxScript, V> valueFct) {
         MutableMultimap<K, V> map = Multimaps.mutable.list.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
-            if (oldV instanceof PdxScriptList) {
-                K k = keyFct.apply(oldK);
-                if (k != null) {
-                    map.putAll(k, ((PdxScriptList) oldV).getAsList(valueFct));
-                    use(oldK, getTypeString(oldV));
-                }
+            K k = keyFct.apply(oldK);
+            if (k != null) {
+                map.putAll(k, (oldV instanceof PdxScriptList ? (PdxScriptList) oldV : PdxScriptList.builder().add(oldV).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS)).getAsList(valueFct));
+                use(oldK, getTypeString(oldV));
             }
         });
         return map.toImmutable();

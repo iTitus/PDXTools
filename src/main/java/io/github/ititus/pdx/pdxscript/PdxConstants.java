@@ -1,7 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
+import org.eclipse.collections.api.block.function.Function;
+
 import java.util.Date;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
