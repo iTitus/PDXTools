@@ -319,6 +319,18 @@ public final class PdxScriptObject implements IPdxScript {
         return map.toImmutable();
     }
 
+    public <K> ImmutableObjectLongMap<K> getAsObjectDoubleMap(Function<String, K> keyFct, ToLongFunction<IPdxScript> valueFct) {
+        MutableObjectLongMap<K> map = ObjectLongMaps.mutable.empty();
+        this.map.forEachKeyValue((oldK, oldV) -> {
+            K k = keyFct.apply(oldK);
+            if (k != null) {
+                map.put(k, valueFct.applyAsLong(oldV));
+                use(oldK, getTypeString(oldV));
+            }
+        });
+        return map.toImmutable();
+    }
+
     public <K> ImmutableObjectDoubleMap<K> getAsObjectDoubleMap(Function<String, K> keyFct, ToDoubleFunction<IPdxScript> valueFct) {
         MutableObjectDoubleMap<K> map = ObjectDoubleMaps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {

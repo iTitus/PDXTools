@@ -20,6 +20,7 @@ public class Species {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
+
         this.base = o.getInt("base", -1);
         this.nameList = o.getString("name_list");
         this.name = o.getString("name");

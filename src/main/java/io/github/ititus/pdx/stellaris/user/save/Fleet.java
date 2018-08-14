@@ -26,7 +26,7 @@ public class Fleet {
     private final Flags flags;
     private final FleetMovementManager movementManager;
     private final FleetMission mission;
-    private final Settings settings;
+    private final FleetSettings settings;
 
     public Fleet(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -72,11 +72,11 @@ public class Fleet {
         this.incomingMerges = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.friendsShouldFollow = o.getBoolean("friends_should_follow");
         o1 = o.getObject("settings");
-        this.settings = o1 != null ? o1.getAs(Settings::new) : null;
+        this.settings = o1 != null ? o1.getAs(FleetSettings::new) : null;
         this.hitPoints = o.getDouble("hit_points");
     }
 
-    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, String miaType, Date returnDate, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders, Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission, Settings settings) {
+    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, String miaType, Date returnDate, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders, Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetSettings settings) {
         this.actionInitialized = actionInitialized;
         this.civilian = civilian;
         this.station = station;
@@ -230,7 +230,7 @@ public class Fleet {
         return mission;
     }
 
-    public Settings getSettings() {
+    public FleetSettings getSettings() {
         return settings;
     }
 }

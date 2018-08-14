@@ -74,6 +74,7 @@ public class Ship {
         this.disabled_by_event = o.getBoolean("disabled_by_event");
         this.disableAtHealth = o.getDouble("disable_at_health", -1);
         this.enableAtHealth = o.getDouble("enable_at_health", -1);
+        // TODO: consider custom object here
         o1 = o.getObject("aura_modifier");
         this.auraModifier = o1 != null ? o1.getAs(Variables::new) : null;
         this.targeting = o.getDouble("targeting");
