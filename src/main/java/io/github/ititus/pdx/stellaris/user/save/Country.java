@@ -28,7 +28,7 @@ public class Country {
     private final ImmutableList<Species> speciesModTemplates;
     private final Flag flag;
     private final TechStatus techStatus;
-    private final Budget budget;
+    private final CountryBudget budget;
     private final Events events;
     private final TerraIncognita terraIncognita;
     private final AI ai;
@@ -69,7 +69,7 @@ public class Country {
         this.starvation = o.getBoolean("starvation");
         this.foodSurplus = o.getDouble("food_surplus");
         this.producedFood = o.getDouble("produced_food");
-        this.budget = o.getObject("budget").getAs(Budget::new);
+        this.budget = o.getObject("budget").getAs(CountryBudget::new);
         this.events = o.getObject("events").getAs(Events::new);
         this.terraIncognita = o.getObject("terra_incognita").getAs(TerraIncognita::new);
         this.militaryPower = o.getDouble("military_power");
@@ -176,7 +176,7 @@ public class Country {
         this.hyperlaneSystems = l != null ? l.getAsIntList() : IntLists.immutable.empty();
     }
 
-    public Country(boolean customName, boolean autoShipDesigns, boolean starvation, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int nextTransportFleetNumber, int ruler, int alliance, int startingSystem, int nextSectorId, double foodSurplus, double producedFood, double militaryPower, double fleetSize, double powerScore, double piracyRisk, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String advisorVoiceType, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, Date lastDateWasHuman, Date lastDateWarLost, Date lastDateAtWar, Date starvationDate, Date lastPirateSpawn, Date nextElection, Date governmentDate, Date lastChangedCountryType, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<TradeDealListItem> tradeDeals, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, Budget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, SectorManager sectorManager, FleetTemplateManager fleetTemplateManager, Government government, DemocraticElection democraticElection, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, Sectors sectors, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
+    public Country(boolean customName, boolean autoShipDesigns, boolean starvation, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int nextTransportFleetNumber, int ruler, int alliance, int startingSystem, int nextSectorId, double foodSurplus, double producedFood, double militaryPower, double fleetSize, double powerScore, double piracyRisk, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String advisorVoiceType, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, Date lastDateWasHuman, Date lastDateWarLost, Date lastDateAtWar, Date starvationDate, Date lastPirateSpawn, Date nextElection, Date governmentDate, Date lastChangedCountryType, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<TradeDealListItem> tradeDeals, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, SectorManager sectorManager, FleetTemplateManager fleetTemplateManager, Government government, DemocraticElection democraticElection, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, Sectors sectors, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
         this.customName = customName;
         this.autoShipDesigns = autoShipDesigns;
         this.starvation = starvation;
@@ -543,7 +543,7 @@ public class Country {
         return techStatus;
     }
 
-    public Budget getBudget() {
+    public CountryBudget getBudget() {
         return budget;
     }
 

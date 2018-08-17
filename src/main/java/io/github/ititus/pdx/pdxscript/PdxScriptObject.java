@@ -10,12 +10,13 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.factory.primitive.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 import java.util.function.*;
 
 public final class PdxScriptObject implements IPdxScript {
 
-    // Disabled because of debug: used/usedWrongly
+    // Disabled because of mutability due to debug usage tracking
     // private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>(o -> !o.map.isEmpty());
 
     private final PdxRelation relation;
@@ -23,6 +24,7 @@ public final class PdxScriptObject implements IPdxScript {
 
     private MutableMultimap<String, String> used;
     private MutableMultimap<String, String> wronglyUsed;
+    private MutableMultimap<String, String> nullUsed;
 
     private PdxScriptObject(PdxRelation relation, ImmutableMap<String, IPdxScript> map) {
         this.relation = relation;
@@ -96,6 +98,14 @@ public final class PdxScriptObject implements IPdxScript {
         }
     }
 
+    private void useNull(String key, String usage) {
+        if (nullUsed == null) {
+            nullUsed = Multimaps.mutable.set.with(key, usage);
+        } else {
+            nullUsed.put(key, usage);
+        }
+    }
+
     public boolean hasKey(String key) {
         return map.containsKey(key);
     }
@@ -118,7 +128,11 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, OBJECT);
             return (PdxScriptObject) o;
         }
-        useWrongly(key, OBJECT);
+        if (o == null) {
+            useNull(key, OBJECT);
+        } else {
+            useWrongly(key, OBJECT);
+        }
         return null;
     }
 
@@ -131,7 +145,7 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, getTypeString(s));
             return PdxScriptList.builder().add(s).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
         }
-        useWrongly(key, IMPLICIT_LIST);
+        useNull(key, IMPLICIT_LIST);
         return PdxScriptList.builder().buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
@@ -141,7 +155,11 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, LIST);
             return (PdxScriptList) o;
         }
-        useWrongly(key, LIST);
+        if (o == null) {
+            useNull(key, LIST);
+        } else {
+            useWrongly(key, LIST);
+        }
         return null;
     }
 
@@ -152,7 +170,11 @@ public final class PdxScriptObject implements IPdxScript {
             use(key, getTypeString(o));
             return v;
         }
-        useWrongly(key, NULL);
+        if (o == null) {
+            useNull(key, NULL);
+        } else {
+            useWrongly(key, NULL);
+        }
         return null;
     }
 
@@ -165,7 +187,11 @@ public final class PdxScriptObject implements IPdxScript {
                 return (String) v;
             }
         }
-        useWrongly(key, STRING);
+        if (o == null) {
+            useNull(key, STRING);
+        } else {
+            useWrongly(key, STRING);
+        }
         return null;
     }
 
@@ -182,7 +208,11 @@ public final class PdxScriptObject implements IPdxScript {
                 return (boolean) v;
             }
         }
-        useWrongly(key, BOOLEAN);
+        if (o == null) {
+            useNull(key, BOOLEAN);
+        } else {
+            useWrongly(key, BOOLEAN);
+        }
         return def;
     }
 
@@ -205,7 +235,11 @@ public final class PdxScriptObject implements IPdxScript {
                 }
             }
         }
-        useWrongly(key, UNSIGNED_INT);
+        if (o == null) {
+            useNull(key, UNSIGNED_INT);
+        } else {
+            useWrongly(key, UNSIGNED_INT);
+        }
         return def;
     }
 
@@ -222,7 +256,11 @@ public final class PdxScriptObject implements IPdxScript {
                 return (int) v;
             }
         }
-        useWrongly(key, INT);
+        if (o == null) {
+            useNull(key, INT);
+        } else {
+            useWrongly(key, INT);
+        }
         return def;
     }
 
@@ -239,7 +277,11 @@ public final class PdxScriptObject implements IPdxScript {
                 return ((Number) v).longValue();
             }
         }
-        useWrongly(key, LONG);
+        if (o == null) {
+            useNull(key, LONG);
+        } else {
+            useWrongly(key, LONG);
+        }
         return def;
     }
 
@@ -256,7 +298,11 @@ public final class PdxScriptObject implements IPdxScript {
                 return (double) v;
             }
         }
-        useWrongly(key, DOUBLE);
+        if (o == null) {
+            useNull(key, DOUBLE);
+        } else {
+            useWrongly(key, DOUBLE);
+        }
         return def;
     }
 
@@ -269,7 +315,11 @@ public final class PdxScriptObject implements IPdxScript {
                 return (Date) v;
             }
         }
-        useWrongly(key, DATE);
+        if (o == null) {
+            useNull(key, DATE);
+        } else {
+            useWrongly(key, DATE);
+        }
         return null;
     }
 
@@ -388,6 +438,16 @@ public final class PdxScriptObject implements IPdxScript {
                 }
             }
         });
+        /*if (nullUsed != null && !nullUsed.isEmpty()) {
+            nullUsed.forEachKeyMultiValues((key, toAdd) -> {
+                if (!Iterate.isEmpty(toAdd)) {
+                    if (map.containsKey(key)) {
+                        throw new RuntimeException();
+                    }
+                    errors.put(key, "null" + SLASH_CHAR + "used_as=" + toAdd);
+                }
+            });
+        }*/
         return errors.toImmutable();
     }
 
@@ -444,13 +504,13 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static class Builder {
 
-        private static final ImmutableMap<PdxRelation, PdxScriptObject> EMPTY_CACHE;
+        /*private static final ImmutableMap<PdxRelation, PdxScriptObject> EMPTY_CACHE;
 
         static {
             Map<PdxRelation, PdxScriptObject> map = new EnumMap<>(PdxRelation.class);
             Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation, Maps.immutable.empty())));
             EMPTY_CACHE = Maps.immutable.withAll(map);
-        }
+        }*/
 
         private final MutableMap<String, IPdxScript> map;
 
@@ -472,9 +532,9 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public PdxScriptObject build(PdxRelation relation) {
-            if (map.isEmpty()) {
+            /*if (map.isEmpty()) {
                 return EMPTY_CACHE.get(relation);
-            }
+            }*/
             return /*DEDUPLICATOR.deduplicate(*/new PdxScriptObject(relation, map.toImmutable())/*)*/;
         }
     }
