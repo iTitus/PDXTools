@@ -8,6 +8,8 @@ import io.github.ititus.pdx.stellaris.user.save.*;
 import io.github.ititus.pdx.util.Util;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.collection.Tuple3D;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
@@ -23,7 +25,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Main {
+public class Main extends Application {
 
     private static final String USER_HOME = System.getProperty("user.home");
     private static final String[] TEST_FILES = {USER_HOME + "/Desktop/test.txt"};
@@ -34,6 +36,57 @@ public class Main {
     private static final String SAVE_GAME = "mature_save"; // "2270.04.10";
 
     public static void main(String[] args) {
+        launch(args);
+    }
+
+    private static Resources getResources(GameState gameState, GalacticObject system) {
+        Planets planets = gameState.getPlanets();
+        return CollectionUtil.stream(system.getPlanets())
+                .mapToObj(planets.getPlanets()::get)
+                .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()::get).stream()))
+                .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
+                .map(Tile::getResources)
+                .filter(Objects::nonNull)
+                .collect(Collector.of(
+                        () -> new double[24],
+                        (array, r) -> {
+                            int i = 0;
+                            array[i++] += r.getEnergy().getD1();
+                            array[i++] += r.getMinerals().getD1();
+                            array[i++] += r.getFood().getD1();
+                            array[i++] += r.getPhysicsResearch().getD1();
+                            array[i++] += r.getSocietyResearch().getD1();
+                            array[i++] += r.getEngineeringResearch().getD1();
+                            array[i++] += r.getInfluence().getD1();
+                            array[i++] += r.getUnity().getD1();
+                            array[i++] += r.getAldar().getD1();
+                            array[i++] += r.getDarkMatter().getD1();
+                            array[i++] += r.getEngos().getD1();
+                            array[i++] += r.getGaranthium().getD1();
+                            array[i++] += r.getLivingMetal().getD1();
+                            array[i++] += r.getLythuric().getD1();
+                            array[i++] += r.getOrillium().getD1();
+                            array[i++] += r.getPitharan().getD1();
+                            array[i++] += r.getSatramene().getD1();
+                            array[i++] += r.getTeldar().getD1();
+                            array[i++] += r.getTerraformGases().getD1();
+                            array[i++] += r.getTerraformLiquids().getD1();
+                            array[i++] += r.getYurantic().getD1();
+                            array[i++] += r.getZro().getD1();
+                            array[i++] += r.getAlienPets().getD1();
+                            array[i] += r.getBetharian().getD1();
+                        },
+                        Util::addArrays,
+                        Resources::of
+                ));
+    }
+
+    private static Tuple3D combineResource(Tuple3D t1, Tuple3D t2) {
+        return Tuple3D.of(t1.getD1() + t2.getD1());
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
         List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
         testOutput.forEach(System.out::println);
@@ -106,51 +159,9 @@ public class Main {
 
         System.out.println((System.currentTimeMillis() - time) / 1000D + " s");
         System.out.println("done4");
-    }
 
-    private static Resources getResources(GameState gameState, GalacticObject system) {
-        Planets planets = gameState.getPlanets();
-        return CollectionUtil.stream(system.getPlanets())
-                .mapToObj(planets.getPlanets()::get)
-                .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()::get).stream()))
-                .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
-                .map(Tile::getResources)
-                .filter(Objects::nonNull)
-                .collect(Collector.of(
-                        () -> new double[24],
-                        (array, r) -> {
-                            int i = 0;
-                            array[i++] += r.getEnergy().getD1();
-                            array[i++] += r.getMinerals().getD1();
-                            array[i++] += r.getFood().getD1();
-                            array[i++] += r.getPhysicsResearch().getD1();
-                            array[i++] += r.getSocietyResearch().getD1();
-                            array[i++] += r.getEngineeringResearch().getD1();
-                            array[i++] += r.getInfluence().getD1();
-                            array[i++] += r.getUnity().getD1();
-                            array[i++] += r.getAldar().getD1();
-                            array[i++] += r.getDarkMatter().getD1();
-                            array[i++] += r.getEngos().getD1();
-                            array[i++] += r.getGaranthium().getD1();
-                            array[i++] += r.getLivingMetal().getD1();
-                            array[i++] += r.getLythuric().getD1();
-                            array[i++] += r.getOrillium().getD1();
-                            array[i++] += r.getPitharan().getD1();
-                            array[i++] += r.getSatramene().getD1();
-                            array[i++] += r.getTeldar().getD1();
-                            array[i++] += r.getTerraformGases().getD1();
-                            array[i++] += r.getTerraformLiquids().getD1();
-                            array[i++] += r.getYurantic().getD1();
-                            array[i++] += r.getZro().getD1();
-                            array[i++] += r.getAlienPets().getD1();
-                            array[i] += r.getBetharian().getD1();
-                        },
-                        Util::addArrays,
-                        Resources::of
-                ));
-    }
 
-    private static Tuple3D combineResource(Tuple3D t1, Tuple3D t2) {
-        return Tuple3D.of(t1.getD1() + t2.getD1());
+        primaryStage.setTitle("Test");
+        primaryStage.show();
     }
 }
