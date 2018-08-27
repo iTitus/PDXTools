@@ -9,19 +9,16 @@ public class Budget {
 
     private final double popMineralMaintenance, consumerGoods, shipMineralMaintenances;
     private final ImmutableDoubleList popMaintenance;
-    private final BudgetValues values;
-    private final BudgetBuildingMaintenances buildingMaintenances;
-    private final BudgetArmyMaintenances armyMaintenances;
-    private final BudgetShipMaintenances shipMaintenances;
+    private final Variables values, buildingMaintenances, armyMaintenances, shipMaintenances;
 
     public Budget(PdxScriptObject o) {
-        this.values = o.getObject("values").getAs(BudgetValues::new);
+        this.values = o.getObject("values").getAs(Variables::new);
         PdxScriptObject o1 = o.getObject("building_maintenances");
-        this.buildingMaintenances = o1 != null ? o1.getAs(BudgetBuildingMaintenances::new) : null;
+        this.buildingMaintenances = o1 != null ? o1.getAs(Variables::new) : null;
         o1 = o.getObject("army_maintenances");
-        this.armyMaintenances = o1 != null ? o1.getAs(BudgetArmyMaintenances::new) : null;
+        this.armyMaintenances = o1 != null ? o1.getAs(Variables::new) : null;
         o1 = o.getObject("ship_maintenances");
-        this.shipMaintenances = o1 != null ? o1.getAs(BudgetShipMaintenances::new) : null;
+        this.shipMaintenances = o1 != null ? o1.getAs(Variables::new) : null;
         PdxScriptList l = o.getList("pop_maintenance");
         this.popMaintenance = l != null ? l.getAsDoubleList() : DoubleLists.immutable.empty();
         this.popMineralMaintenance = o.getDouble("pop_mineral_maintenance");
@@ -29,7 +26,7 @@ public class Budget {
         this.shipMineralMaintenances = o.getDouble("ship_mineral_maintenances");
     }
 
-    public Budget(double popMineralMaintenance, double consumerGoods, double shipMineralMaintenances, ImmutableDoubleList popMaintenance, BudgetValues values, BudgetBuildingMaintenances buildingMaintenances, BudgetArmyMaintenances armyMaintenances, BudgetShipMaintenances shipMaintenances) {
+    public Budget(double popMineralMaintenance, double consumerGoods, double shipMineralMaintenances, ImmutableDoubleList popMaintenance, Variables values, Variables buildingMaintenances, Variables armyMaintenances, Variables shipMaintenances) {
         this.popMineralMaintenance = popMineralMaintenance;
         this.consumerGoods = consumerGoods;
         this.shipMineralMaintenances = shipMineralMaintenances;
@@ -56,19 +53,19 @@ public class Budget {
         return popMaintenance;
     }
 
-    public BudgetValues getValues() {
+    public Variables getValues() {
         return values;
     }
 
-    public BudgetBuildingMaintenances getBuildingMaintenances() {
+    public Variables getBuildingMaintenances() {
         return buildingMaintenances;
     }
 
-    public BudgetArmyMaintenances getArmyMaintenances() {
+    public Variables getArmyMaintenances() {
         return armyMaintenances;
     }
 
-    public BudgetShipMaintenances getShipMaintenances() {
+    public Variables getShipMaintenances() {
         return shipMaintenances;
     }
 }
