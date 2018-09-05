@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.IOUtil;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -22,43 +23,54 @@ public class StellarisSaves {
 
     private MutableList<Pair<String, Throwable>> errors;
 
-    public StellarisSaves(File saveGameFolder) {
+    public StellarisSaves(File saveGameFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (saveGameFolder == null || !saveGameFolder.isDirectory()) {
             throw new IllegalArgumentException();
         }
         this.saveGameFolder = saveGameFolder;
 
         MutableMap<String, ImmutableMap<String, StellarisSave>> saves = Maps.mutable.empty();
-        File[] files = saveGameFolder.listFiles();
-        if (files != null) {
-            for (File saveGame : files) {
-                if (saveGame != null && saveGame.isDirectory()) {
-                    MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
+        File[] saveFolders = saveGameFolder.listFiles(f -> f != null && f.isDirectory());
 
-                    File[] saveGames = saveGame.listFiles();
-                    if (saveGames != null) {
-                        for (File saveGameFile : saveGames) {
-                            if (StellarisSave.isValidSaveFile(saveGameFile)) {
-                                try {
-                                    saveMap.put(IOUtil.getNameWithoutExtension(saveGameFile), new StellarisSave(saveGameFile));
-                                } catch (Exception e) {
-                                    String path = saveGame.getName() + '/' + IOUtil.getNameWithoutExtension(saveGameFile);
-                                    Throwable t = e.getCause() != null ? e.getCause() : e;
-                                    Throwable[] suppressed = t.getSuppressed();
-                                    Throwable cause = t.getCause();
-                                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
-                                    if (errors == null) {
-                                        errors = Lists.mutable.empty();
-                                    }
-                                    errors.add(Tuples.pair(path, t));
-                                }
+        if (saveFolders != null) {
+            int SAVE_FOLDER_COUNT = saveFolders.length;
+            int progress0 = 0;
+
+            for (File saveFolder : saveFolders) {
+                progressMessageUpdater.updateProgressMessage(index, true, progress0++, SAVE_FOLDER_COUNT, "Loading Save Game Folder " + saveFolder.getName());
+
+                MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
+                File[] saveGames = saveFolder.listFiles(StellarisSave::isValidSaveFile);
+
+                if (saveGames != null) {
+                    int SAVE_GAME_COUNT = saveFolders.length;
+                    int progress1 = 0;
+
+                    for (File saveFile : saveGames) {
+                        progressMessageUpdater.updateProgressMessage(index + 1, true, progress1++, SAVE_GAME_COUNT, "Loading Save Game " + saveFile.getName());
+
+                        try {
+                            saveMap.put(IOUtil.getNameWithoutExtension(saveFile), new StellarisSave(saveFile));
+                        } catch (Exception e) {
+                            String path = saveFolder.getName() + '/' + IOUtil.getNameWithoutExtension(saveFile);
+                            Throwable t = e.getCause() != null ? e.getCause() : e;
+                            Throwable[] suppressed = t.getSuppressed();
+                            Throwable cause = t.getCause();
+                            System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                            if (errors == null) {
+                                errors = Lists.mutable.empty();
                             }
+                            errors.add(Tuples.pair(path, t));
                         }
                     }
 
-                    saves.put(saveGame.getName(), saveMap.toImmutable());
+                    progressMessageUpdater.updateProgressMessage(index + 1, false, SAVE_GAME_COUNT, SAVE_GAME_COUNT, "Done");
                 }
+
+                saves.put(saveFolder.getName(), saveMap.toImmutable());
             }
+
+            progressMessageUpdater.updateProgressMessage(index, false, SAVE_FOLDER_COUNT, SAVE_FOLDER_COUNT, "Done");
         }
 
         this.saves = saves.toImmutable();

@@ -26,7 +26,7 @@ public class FileExtensionFilter implements IFileFilter {
     public boolean accept(File f) {
         if (f != null && !f.isDirectory()) {
             String ext = IOUtil.getExtension(f);
-            return !ext.isEmpty() && Arrays.stream(extensions).anyMatch(ext::equals);
+            return !ext.isEmpty() && Arrays.asList(extensions).contains(ext);
         }
         return false;
     }

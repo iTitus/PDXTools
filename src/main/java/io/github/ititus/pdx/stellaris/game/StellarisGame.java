@@ -3,6 +3,7 @@ package io.github.ititus.pdx.stellaris.game;
 import io.github.ititus.pdx.pdxlocalisation.PDXLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
+import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IFileFilter;
@@ -36,20 +37,28 @@ public class StellarisGame {
 
     private final PdxRawDataLoader rawDataLoader;
 
-    public StellarisGame(String installDirPath) {
-        this(new File(installDirPath));
+    public StellarisGame(String installDirPath, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        this(new File(installDirPath), index, progressMessageUpdater);
     }
 
-    public StellarisGame(File installDir) {
+    public StellarisGame(File installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !installDir.isDirectory()) {
             throw new IllegalArgumentException();
         }
         this.installDir = installDir;
 
-        this.dlcs = new StellarisDLCs(installDir, new File(installDir, "dlc"));
-        this.localisation = PdxLocalisationParser.parse(installDir);
+        int STEPS = 3;
 
-        this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER);
+        progressMessageUpdater.updateProgressMessage(index, true, 0, STEPS, "Loading DLCs");
+        this.dlcs = new StellarisDLCs(installDir, new File(installDir, "dlc"), index + 1, progressMessageUpdater);
+
+        progressMessageUpdater.updateProgressMessage(index, true, 1, STEPS, "Loading Localisation");
+        this.localisation = PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);
+
+        progressMessageUpdater.updateProgressMessage(index, true, 2, STEPS, "Loading Game Data");
+        this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+
+        progressMessageUpdater.updateProgressMessage(index, false, 3, STEPS, "Done");
     }
 
     public File getInstallDir() {

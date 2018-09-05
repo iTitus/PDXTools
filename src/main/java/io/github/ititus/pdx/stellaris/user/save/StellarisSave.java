@@ -35,7 +35,7 @@ public class StellarisSave {
         }
 
         this.save = saveFile;
-        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER);
+        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, 0, null);
         this.meta = this.saveDataLoader.getRawData().getObject(META).getAs(Meta::new);
         this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
     }

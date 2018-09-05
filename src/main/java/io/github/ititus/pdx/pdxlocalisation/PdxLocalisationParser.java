@@ -1,9 +1,11 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
 import io.github.ititus.pdx.pdxscript.PdxConstants;
+import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
+import io.github.ititus.pdx.util.mutable.MutableInt;
 import io.github.ititus.pdx.util.mutable.MutableString;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -28,44 +30,52 @@ public final class PdxLocalisationParser implements PdxConstants {
     private PdxLocalisationParser() {
     }
 
-    public static PDXLocalisation parse(File installDir) {
-        return parse(installDir, new FileExtensionFilter("yml"));
+    public static PDXLocalisation parse(File installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        return parse(installDir, new FileExtensionFilter("yml"), index, progressMessageUpdater);
     }
 
-    public static PDXLocalisation parse(File installDir, FileFilter filter) {
+    public static PDXLocalisation parse(File installDir, FileFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         File[] validFiles;
         try (Stream<Path> stream = Files.walk(installDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
-            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).distinct().sorted(IOUtil.asciibetical(installDir)).toArray(File[]::new);
+            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).sorted(IOUtil.asciibetical(installDir)).toArray(File[]::new);
         } catch (IOException e) {
-            e.printStackTrace();
-            validFiles = null;
+            throw new UncheckedIOException(e);
         }
-        return parseAll(validFiles);
-    }
 
-    public static PDXLocalisation parseAll(File... localisationFiles) {
-        return localisationFiles != null ?
-                new PDXLocalisation(
-                        Arrays.stream(localisationFiles)
-                                .filter(Objects::nonNull)
-                                .filter(File::isFile)
-                                .map(PdxLocalisationParser::parseInternal)
-                                .collect(Collector.of(
-                                        Maps.mutable::<String, MutableMap<String, String>>of,
-                                        (mutableMap, map) -> map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap)),
-                                        (mutableMap, map) -> {
-                                            map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap));
-                                            return mutableMap;
-                                        },
-                                        mutableMap -> {
-                                            MutableMap<String, ImmutableMap<String, String>> map = Maps.mutable.empty();
-                                            mutableMap.forEachKeyValue((lang, langMap) -> map.put(lang, langMap.toImmutable()));
-                                            return map.toImmutable();
-                                        }
-                                        )
+        int FILE_COUNT = validFiles.length;
+        MutableInt progress = new MutableInt();
+        String installDirPath;
+        try {
+            installDirPath = installDir.getCanonicalPath();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        PDXLocalisation localisation = new PDXLocalisation(
+                Arrays.stream(validFiles)
+                        .filter(Objects::nonNull)
+                        .filter(File::isFile)
+                        .map(f -> {
+                            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), FILE_COUNT, "Loading Localisation File " + IOUtil.getRelativePath(installDirPath, f));
+                            return parseInternal(f);
+                        })
+                        .collect(Collector.of(
+                                Maps.mutable::<String, MutableMap<String, String>>of,
+                                (mutableMap, map) -> map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap)),
+                                (mutableMap, map) -> {
+                                    map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap));
+                                    return mutableMap;
+                                },
+                                mutableMap -> {
+                                    MutableMap<String, ImmutableMap<String, String>> map = Maps.mutable.empty();
+                                    mutableMap.forEachKeyValue((lang, langMap) -> map.put(lang, langMap.toImmutable()));
+                                    return map.toImmutable();
+                                }
                                 )
-                ) :
-                null;
+                        )
+        );
+        progressMessageUpdater.updateProgressMessage(index, false, FILE_COUNT, FILE_COUNT, "Done");
+        return localisation;
     }
 
     private static MutableMap<String, MutableMap<String, String>> parseInternal(File localisationFile) {
