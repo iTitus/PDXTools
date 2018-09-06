@@ -32,7 +32,10 @@ public class GalacticObjectFX extends Group {
         this.galaxySphere = new Sphere(2);
         this.galaxySphere.getTransforms().add(new Translate(systemPair.getTwo().getCoordinate().getX(), systemPair.getTwo().getCoordinate().getY(), 0));
         this.galaxyTooltip = new Tooltip(systemPair.getTwo().getName() + " (#" + systemPair.getOne() + ")");
-        this.galaxySphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> galaxyView.setInfoText(systemPair.getTwo().getName() + " (#" + systemPair.getOne() + ")"));
+        this.galaxySphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            galaxyView.onClickInGalaxyView(systemPair);
+            event.consume();
+        });
 
         this.hyperlaneGroup = new Group();
 

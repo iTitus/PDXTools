@@ -26,14 +26,10 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.tuple.Tuples;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StellarisSaveAnalyser implements Runnable {
 
@@ -64,7 +60,7 @@ public class StellarisSaveAnalyser implements Runnable {
         Planets planets = gameState.getPlanets();
         return CollectionUtil.stream(system.getPlanets())
                 .mapToObj(planets.getPlanets()::get)
-                .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()::get).stream()))
+                // .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()::get).stream()))
                 .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
                 .map(Tile::getResources)
                 .filter(Objects::nonNull)
@@ -134,7 +130,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
         List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
-        // testOutput.forEach(System.out::println);
+        testOutput.forEach(System.out::println);
         updateProgressMessage(0, true, 1, STEPS, "Loading Game Data");
 
         game = new StellarisGame(INSTALL_DIR, 1, this::updateProgressMessage);
@@ -175,8 +171,8 @@ public class StellarisSaveAnalyser implements Runnable {
                                 .limit(10)
                                 .collect(Collectors.toList());
 
-                // resourceRichSystems.stream().map(pair -> pair.getOne().getName() + ": " + p.getOne().apply(pair.getTwo()).getD1() + " " + p.getTwo()).forEachOrdered(System.out::println);
-                // System.out.println("-------------------------");
+                resourceRichSystems.stream().map(pair -> pair.getOne().getName() + ": " + p.getOne().apply(pair.getTwo()).getD1() + " " + p.getTwo()).forEachOrdered(System.out::println);
+                System.out.println("-------------------------");
             });
         }
         updateProgressMessage(0, true, 4, STEPS, "Gathering Errors");
@@ -224,7 +220,7 @@ public class StellarisSaveAnalyser implements Runnable {
         updateProgressMessage(3, true, 1, SAVE_ERROR_STEPS, "Gathering Save Parsing Errors");
         ImmutableMultimap<String, String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrors() : null;
         if (saveParseErrors != null) {
-            // saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
+            saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
         }
 
         updateProgressMessage(3, false, 2, SAVE_ERROR_STEPS, "Done");

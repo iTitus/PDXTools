@@ -1,102 +1,140 @@
 package io.github.ititus.pdx.stellaris.view;
 
-import io.github.ititus.pdx.stellaris.user.save.GalacticObject;
-import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
+import io.github.ititus.pdx.stellaris.user.save.*;
+import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.mutable.MutableInt;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
-import javafx.util.Duration;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
+import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
+
+import java.util.Comparator;
 
 public class GalaxyView extends BorderPane {
 
     private static final double INFO_PANEL_WIDTH = 200;
+    private static final double PADDING = 5;
+    private static final double INFO_PANEL_TOTAL_WIDTH = INFO_PANEL_WIDTH + 2 * PADDING;
 
     private final MutableSet<VisualHyperlane> hyperlanes = Sets.mutable.empty();
     private final StellarisSave save;
-    private final SubScene scene3D, scene2D;
+    private final SubScene galaxyScene, systemScene, scene2D;
+    private final Group galaxyGroup, systemGroup, group2D;
     private final Label infoLabel;
+    private final Button viewSystemButton;
+
+    private IntObjectPair<GalacticObject> selectedSystem, systemInScene;
 
     public GalaxyView(StellarisSave save) {
         this.save = save;
 
-        Group group3D = new Group();
-        Group group2D = new Group();
+        this.galaxyGroup = new Group();
+        this.systemGroup = new Group();
+        this.group2D = new Group();
 
-        this.scene3D = new SubScene(group3D, getWidth() - INFO_PANEL_WIDTH, getHeight(), true, SceneAntialiasing.BALANCED);
-        this.scene3D.setFill(Color.BLACK);
-        PerspectiveCamera camera3D = new PerspectiveCamera(true);
-        this.scene3D.setCamera(camera3D);
-        group3D.getChildren().add(camera3D);
+        this.galaxyScene = new SubScene(this.galaxyGroup, getWidth() - INFO_PANEL_TOTAL_WIDTH, getHeight(), true, SceneAntialiasing.BALANCED);
+        this.galaxyScene.setFill(Color.BLACK);
+        PerspectiveCamera galaxyCamera = new PerspectiveCamera(true);
+        this.galaxyScene.setCamera(galaxyCamera);
+        this.galaxyScene.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onClickInGalaxyView(null));
+        this.galaxyGroup.getChildren().add(galaxyCamera);
 
-        this.scene2D = new SubScene(group2D, INFO_PANEL_WIDTH, getHeight());
+        this.systemScene = new SubScene(this.systemGroup, getWidth() - INFO_PANEL_TOTAL_WIDTH, getHeight(), true, SceneAntialiasing.BALANCED);
+        this.systemScene.setFill(Color.BLACK);
+        PerspectiveCamera systemCamera = new PerspectiveCamera(true);
+        this.systemScene.setCamera(systemCamera);
+        this.systemGroup.getChildren().add(systemCamera);
+
+        this.scene2D = new SubScene(this.group2D, INFO_PANEL_TOTAL_WIDTH, getHeight());
         this.scene2D.setFill(Color.WHITE);
         PerspectiveCamera camera2D = new PerspectiveCamera();
         this.scene2D.setCamera(camera2D);
-        group2D.getChildren().add(camera2D);
+        this.group2D.getChildren().add(camera2D);
 
-        this.setCenter(this.scene3D);
+        this.setCenter(new StackPane(this.galaxyScene, this.systemScene));
         this.setRight(this.scene2D);
 
         this.widthProperty().addListener(this::onWidthChange);
         this.heightProperty().addListener(this::onHeightChange);
 
-        camera3D.setFieldOfView(35);
-        camera3D.setFarClip(3000);
+        galaxyCamera.setFieldOfView(35);
+        galaxyCamera.setFarClip(3000);
+        systemCamera.setFieldOfView(35);
+        systemCamera.setFarClip(3000);
 
-        Translate translate = new Translate(0, 0, -1500);
-        Rotate xRotate = new Rotate(0, Rotate.X_AXIS);
-        Rotate yRotate = new Rotate(180, Rotate.Y_AXIS); // To align to Stellaris' coordinate system
-        Rotate zRotate = new Rotate(0, Rotate.Z_AXIS);
-        camera3D.getTransforms().addAll(
-                xRotate,
-                yRotate,
-                zRotate,
-                translate
+        Translate galaxyCameraTranslate = new Translate(0, 0, -1500);
+        Rotate galaxyCameraRotateX = new Rotate(0, Rotate.X_AXIS);
+        Rotate galaxyCameraRotateY = new Rotate(180, Rotate.Y_AXIS); // To align to Stellaris' coordinate system
+        Rotate galaxyCameraRotateZ = new Rotate(0, Rotate.Z_AXIS);
+        galaxyCamera.getTransforms().addAll(
+                galaxyCameraRotateX,
+                galaxyCameraRotateY,
+                galaxyCameraRotateZ,
+                galaxyCameraTranslate
         );
 
-        Timeline timeline = new Timeline(
-                new KeyFrame(
-                        Duration.ZERO,
-                        new KeyValue(xRotate.angleProperty(), 0)
-                ),
-                new KeyFrame(
-                        Duration.seconds(10),
-                        new KeyValue(xRotate.angleProperty(), -89)
-                )
+        Translate systemCameraTranslate = new Translate(0, 0, -1500);
+        Rotate systemCameraRotateX = new Rotate(0, Rotate.X_AXIS);
+        Rotate systemCameraRotateY = new Rotate(180, Rotate.Y_AXIS); // To align to Stellaris' coordinate system
+        Rotate systemCameraRotateZ = new Rotate(0, Rotate.Z_AXIS);
+        systemCamera.getTransforms().addAll(
+                systemCameraRotateX,
+                systemCameraRotateY,
+                systemCameraRotateZ,
+                systemCameraTranslate
         );
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.setAutoReverse(true);
 
-        VBox vb = new VBox();
+        VBox infoVb = new VBox();
         ProgressBar pb1 = new ProgressBar(ProgressBar.INDETERMINATE_PROGRESS);
-        pb1.setMaxWidth(INFO_PANEL_WIDTH);
+        pb1.setPrefWidth(INFO_PANEL_WIDTH);
         Label l1 = new Label();
-        l1.setMaxWidth(INFO_PANEL_WIDTH);
+        l1.setPrefWidth(INFO_PANEL_WIDTH);
+        l1.setWrapText(true);
 
         this.infoLabel = new Label();
-        infoLabel.setVisible(false);
+        this.infoLabel.setVisible(false);
+        this.infoLabel.setPrefWidth(INFO_PANEL_WIDTH);
+        this.infoLabel.setWrapText(true);
 
-        vb.getChildren().addAll(pb1, l1, infoLabel);
-        group2D.getChildren().add(vb);
+        infoVb.getChildren().addAll(pb1, l1, this.infoLabel);
+
+        HBox infoButtonHb = new HBox();
+        this.viewSystemButton = new Button();
+        this.viewSystemButton.setAlignment(Pos.BOTTOM_CENTER);
+        infoButtonHb.getChildren().add(this.viewSystemButton);
+
+        BorderPane infoBorderPane = new BorderPane();
+        infoBorderPane.setPadding(new Insets(PADDING));
+        infoBorderPane.setCenter(infoVb);
+        infoBorderPane.setBottom(infoButtonHb);
+        infoBorderPane.prefWidthProperty().bind(scene2D.widthProperty());
+        infoBorderPane.prefHeightProperty().bind(scene2D.heightProperty());
+
+        this.group2D.getChildren().add(infoBorderPane);
 
         Task<Void> task = new Task<Void>() {
 
@@ -117,15 +155,14 @@ public class GalaxyView extends BorderPane {
 
                     GalacticObjectFX galacticObjectFX = new GalacticObjectFX(GalaxyView.this, pair);
 
-                    Platform.runLater(() -> group3D.getChildren().add(galacticObjectFX));
+                    Platform.runLater(() -> galaxyGroup.getChildren().add(galacticObjectFX));
                 }
 
                 Platform.runLater(() -> {
                     updateProgress(SYSTEM_COUNT, SYSTEM_COUNT);
                     updateMessage("Done");
-                    vb.getChildren().removeAll(pb1, l1);
-                    infoLabel.setVisible(true);
-                    // timeline.play();
+                    infoVb.getChildren().removeAll(pb1, l1);
+                    GalaxyView.this.infoLabel.setVisible(true);
                 });
 
                 return null;
@@ -138,6 +175,39 @@ public class GalaxyView extends BorderPane {
         Thread t = new Thread(task);
         t.setDaemon(true);
         t.start();
+
+        switchToGalaxyView();
+    }
+
+    private void switchToGalaxyView() {
+        systemScene.setVisible(false);
+        galaxyScene.setVisible(true);
+
+        onClickInGalaxyView(selectedSystem);
+        viewSystemButton.setText("View System");
+        viewSystemButton.setOnAction(event -> switchToSystemView(selectedSystem));
+    }
+
+    private void switchToSystemView(IntObjectPair<GalacticObject> systemPair) {
+        if (systemPair == null) {
+            return;
+        }
+
+        galaxyScene.setVisible(false);
+        systemScene.setVisible(true);
+
+        infoLabel.setText("");
+        viewSystemButton.setDisable(false);
+        viewSystemButton.setText("View Galaxy");
+        viewSystemButton.setOnAction(event -> switchToGalaxyView());
+
+        if (systemInScene == null || systemPair.getOne() != systemInScene.getOne()) {
+            systemInScene = systemPair;
+            systemGroup.getChildren().clear();
+
+            // TODO: show system
+            systemGroup.getChildren().add(new Sphere(100));
+        }
     }
 
     public boolean containsHyperlane(VisualHyperlane hyperlane) {
@@ -149,19 +219,137 @@ public class GalaxyView extends BorderPane {
     }
 
     public void onWidthChange(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        scene3D.setWidth(newValue.doubleValue() - INFO_PANEL_WIDTH);
+        galaxyScene.setWidth(newValue.doubleValue() - INFO_PANEL_TOTAL_WIDTH);
+        systemScene.setWidth(newValue.doubleValue() - INFO_PANEL_TOTAL_WIDTH);
     }
 
     public void onHeightChange(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        scene3D.setHeight(newValue.doubleValue());
+        galaxyScene.setHeight(newValue.doubleValue());
+        systemScene.setHeight(newValue.doubleValue());
         scene2D.setHeight(newValue.doubleValue());
     }
 
-    public void setInfoText(String text) {
-        if (Platform.isFxApplicationThread()) {
-            infoLabel.setText(text);
-        } else {
-            Platform.runLater(() -> infoLabel.setText(text));
+    public void onClickInGalaxyView(IntObjectPair<GalacticObject> systemPair) {
+        selectedSystem = systemPair;
+        viewSystemButton.setDisable(selectedSystem == null && galaxyScene.isVisible());
+        StringBuilder text = new StringBuilder();
+        if (systemPair != null) {
+            MutableSet<String> properties = Sets.mutable.empty();
+            text.append(systemPair.getTwo().getName()).append(" (#").append(systemPair.getOne()).append(")");
+
+            if (!properties.isEmpty()) {
+                text.append(" |");
+                properties.forEach(property -> text.append(" ").append(property));
+            }
+            properties.clear();
+            text.append("\n");
+
+            ImmutableIntObjectMap<GalacticObject> systems = save.getGameState().getGalacticObjects().getGalacticObjects();
+            ImmutableIntObjectMap<NaturalWormhole> wormholes = save.getGameState().getNaturalWormholes().getNaturalWormholes();
+            ImmutableIntObjectMap<Bypass> bypasses = save.getGameState().getBypasses().getBypasses();
+            ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+
+            ImmutableList<Hyperlane> hyperlanes = systemPair.getTwo().getHyperlanes().stream()
+                    .sorted(Comparator.comparingInt(Hyperlane::getTo))
+                    .collect(Collectors2.toImmutableList());
+            if (!hyperlanes.isEmpty()) {
+                if (hyperlanes.size() == 1) {
+                    text.append("\nHyperlane to:\n");
+                } else {
+                    text.append("\nHyperlanes to:\n");
+                }
+                hyperlanes.stream()
+                        .map(hyperlane -> {
+                            int id = hyperlane.getTo();
+                            GalacticObject system = systems.get(id);
+
+                            StringBuilder b = new StringBuilder(" - ").append(system.getName()).append(" (#").append(id).append(")");
+
+                            properties.add("length=" + Math.round(hyperlane.getLength()));
+                            if (hyperlane.isBridge()) {
+                                properties.add("bridge");
+                            }
+
+                            if (!properties.isEmpty()) {
+                                b.append(" |");
+                                properties.forEach(property -> b.append(" ").append(property));
+                            }
+                            properties.clear();
+                            return b.append("\n").toString();
+                        })
+                        .forEachOrdered(text::append);
+            }
+
+            ImmutableList<NaturalWormhole> naturalWormholes = CollectionUtil.stream(systemPair.getTwo().getNaturalWormholes())
+                    .sorted()
+                    .mapToObj(wormholes::get)
+                    .collect(Collectors2.toImmutableList());
+            if (!naturalWormholes.isEmpty()) {
+                if (naturalWormholes.size() == 1) {
+                    text.append("\nNatural Wormhole to:\n");
+                } else {
+                    text.append("\nNatural Wormholes to:\n");
+                }
+                naturalWormholes.stream()
+                        .mapToInt(NaturalWormhole::getBypass)
+                        .mapToObj(bypasses::get)
+                        .mapToInt(Bypass::getLinkedTo)
+                        .mapToObj(bypassId -> {
+                            int to = wormholes.stream().filter(wormhole -> wormhole.getBypass() == bypassId).findAny().get().getCoordinate().getOrigin();
+                            GalacticObject system = systems.get(to);
+
+                            StringBuilder b = new StringBuilder(" - ").append(system.getName()).append(" (#").append(to).append(")");
+
+                            if (!properties.isEmpty()) {
+                                b.append(" |");
+                                properties.forEach(property -> b.append(" ").append(property));
+                            }
+                            properties.clear();
+                            return b.append("\n").toString();
+                        })
+                        .forEachOrdered(text::append);
+            }
+
+            // TODO: sort by type (stars, planets)
+            ImmutableList<IntObjectPair<Planet>> systemPlanets = CollectionUtil.stream(systemPair.getTwo().getPlanets())
+                    .sorted()
+                    .mapToObj(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)))
+                    /*.flatMap(planetPair -> Stream.concat(
+                            Stream.of(planetPair),
+                            CollectionUtil.stream(planetPair.getTwo().getMoons())
+                                    .mapToObj(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)))
+                    ))*/
+                    .collect(Collectors2.toImmutableList());
+            if (!systemPlanets.isEmpty()) {
+                if (systemPlanets.size() == 1) {
+                    text.append("\nPlanet:\n");
+                } else {
+                    text.append("\nPlanets & Moons:\n");
+                }
+                systemPlanets.stream()
+                        .map(planetPair -> {
+                            StringBuilder b = new StringBuilder(" - ").append(planetPair.getTwo().getName()).append(" (#").append(planetPair.getOne()).append(")");
+
+                            if (planetPair.getTwo().isMoon()) {
+                                properties.add("moon");
+                            }
+                            properties.add(planetPair.getTwo().getPlanetClass());
+
+                            if (!properties.isEmpty()) {
+                                b.append(" |");
+                                properties.forEach(property -> b.append(" ").append(property));
+                            }
+                            properties.clear();
+                            return b.append("\n").toString();
+                        })
+                        .forEachOrdered(text::append);
+            }
         }
+
+        infoLabel.setText(text.toString());
+    }
+
+    public void onClickInSystemView(IntObjectPair<Planet> planetPair) {
+        // TODO: this
     }
 }
