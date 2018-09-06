@@ -14,6 +14,7 @@ public class Test extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        long time = System.currentTimeMillis();
         GalaxyView galaxyView = new GalaxyView(getStellarisSave());
 
         Scene scene = new Scene(galaxyView);
@@ -21,12 +22,13 @@ public class Test extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
+        System.out.println("Total Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
     }
 
     private static StellarisSave getStellarisSave() {
         long time = System.currentTimeMillis();
         StellarisSave save = new StellarisSave(new File("C:/Users/Vella/Desktop/test_save"));
-        System.out.println("Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
+        System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return save;
     }
 
