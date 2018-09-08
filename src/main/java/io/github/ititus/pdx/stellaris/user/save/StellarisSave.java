@@ -26,6 +26,7 @@ public class StellarisSave {
 
     private final File save;
     private final PdxRawDataLoader saveDataLoader;
+
     private Meta meta;
     private GameState gameState;
 
@@ -35,7 +36,7 @@ public class StellarisSave {
         }
 
         this.save = saveFile;
-        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, 0, null);
+        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, -1, null);
         this.meta = this.saveDataLoader.getRawData().getObject(META).getAs(Meta::new);
         this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
     }

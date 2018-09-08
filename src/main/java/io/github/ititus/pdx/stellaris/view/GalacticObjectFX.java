@@ -21,21 +21,22 @@ public class GalacticObjectFX extends Group {
 
     private final GalaxyView galaxyView;
     private final IntObjectPair<GalacticObject> systemPair;
-    private final Sphere galaxySphere;
-    private final Tooltip galaxyTooltip;
+    private final Sphere systemSphere;
+    private final Tooltip systemTooltip;
     private final Group hyperlaneGroup;
 
     public GalacticObjectFX(GalaxyView galaxyView, IntObjectPair<GalacticObject> systemPair) {
         this.galaxyView = galaxyView;
         this.systemPair = systemPair;
 
-        this.galaxySphere = new Sphere(2);
-        this.galaxySphere.getTransforms().add(new Translate(systemPair.getTwo().getCoordinate().getX(), systemPair.getTwo().getCoordinate().getY(), 0));
-        this.galaxyTooltip = new Tooltip(systemPair.getTwo().getName() + " (#" + systemPair.getOne() + ")");
-        this.galaxySphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        this.systemSphere = new Sphere(2);
+        this.systemSphere.getTransforms().add(new Translate(systemPair.getTwo().getCoordinate().getX(), systemPair.getTwo().getCoordinate().getY(), 0));
+        this.systemSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             galaxyView.onClickInGalaxyView(systemPair);
             event.consume();
         });
+
+        this.systemTooltip = new Tooltip(systemPair.getTwo().getName() + " (#" + systemPair.getOne() + ")");
 
         this.hyperlaneGroup = new Group();
 
@@ -58,9 +59,8 @@ public class GalacticObjectFX extends Group {
 
 
         Platform.runLater(() -> {
-            IntObjectPair<GalacticObject> pair = systemPair;
-            Tooltip.install(this.galaxySphere, this.galaxyTooltip);
-            this.getChildren().add(this.galaxySphere);
+            Tooltip.install(this.systemSphere, this.systemTooltip);
+            this.getChildren().add(this.systemSphere);
             for (VisualHyperlane visualHyperlane : visualHyperlanes) {
                 if (!galaxyView.containsHyperlane(visualHyperlane)) {
                     hyperlaneGroup.getChildren().add(new HyperlaneFX(galaxyView, visualHyperlane));

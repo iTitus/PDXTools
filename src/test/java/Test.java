@@ -1,3 +1,4 @@
+import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import io.github.ititus.pdx.stellaris.view.GalaxyView;
 import javafx.application.Application;
@@ -15,7 +16,7 @@ public class Test extends Application {
     @Override
     public void start(Stage primaryStage) {
         long time = System.currentTimeMillis();
-        GalaxyView galaxyView = new GalaxyView(getStellarisSave());
+        GalaxyView galaxyView = new GalaxyView(getStellarisGame(), getStellarisSave());
 
         Scene scene = new Scene(galaxyView);
         primaryStage.setTitle("Galaxy View");
@@ -23,6 +24,13 @@ public class Test extends Application {
         primaryStage.setMaximized(true);
         primaryStage.show();
         System.out.println("Total Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
+    }
+
+    private StellarisGame getStellarisGame() {
+        long time = System.currentTimeMillis();
+        StellarisGame game = null; // TODO:  maybe hack something together here
+        System.out.println("Game Data Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
+        return game;
     }
 
     private static StellarisSave getStellarisSave() {

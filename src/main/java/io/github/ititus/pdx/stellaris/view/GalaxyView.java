@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.view;
 
+import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.*;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.mutable.MutableInt;
@@ -21,10 +22,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Sphere;
+import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
@@ -41,6 +43,7 @@ public class GalaxyView extends BorderPane {
     private static final double INFO_PANEL_TOTAL_WIDTH = INFO_PANEL_WIDTH + 2 * PADDING;
 
     private final MutableSet<VisualHyperlane> hyperlanes = Sets.mutable.empty();
+    private final StellarisGame game;
     private final StellarisSave save;
     private final SubScene galaxyScene, systemScene, scene2D;
     private final Group galaxyGroup, systemGroup, group2D;
@@ -48,8 +51,10 @@ public class GalaxyView extends BorderPane {
     private final Button viewSystemButton;
 
     private IntObjectPair<GalacticObject> selectedSystem, systemInScene;
+    private IntObjectPair<Planet> selectedPlanet;
 
-    public GalaxyView(StellarisSave save) {
+    public GalaxyView(StellarisGame game, StellarisSave save) {
+        this.game = game;
         this.save = save;
 
         this.galaxyGroup = new Group();
@@ -67,6 +72,7 @@ public class GalaxyView extends BorderPane {
         this.systemScene.setFill(Color.BLACK);
         PerspectiveCamera systemCamera = new PerspectiveCamera(true);
         this.systemScene.setCamera(systemCamera);
+        this.systemScene.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onClickInSystemView(null));
         this.systemGroup.getChildren().add(systemCamera);
 
         this.scene2D = new SubScene(this.group2D, INFO_PANEL_TOTAL_WIDTH, getHeight());
@@ -116,7 +122,6 @@ public class GalaxyView extends BorderPane {
         l1.setWrapText(true);
 
         this.infoLabel = new Label();
-        this.infoLabel.setVisible(false);
         this.infoLabel.setPrefWidth(INFO_PANEL_WIDTH);
         this.infoLabel.setWrapText(true);
 
@@ -140,7 +145,7 @@ public class GalaxyView extends BorderPane {
 
             @Override
             protected Void call() {
-                ImmutableIntObjectMap<GalacticObject> systems = save.getGameState().getGalacticObjects().getGalacticObjects().reject((i, s) -> s == null);
+                ImmutableIntObjectMap<GalacticObject> systems = save.getGameState().getGalacticObjects().getGalacticObjects();
 
                 int SYSTEM_COUNT = systems.size();
                 MutableInt progress = new MutableInt();
@@ -162,7 +167,6 @@ public class GalaxyView extends BorderPane {
                     updateProgress(SYSTEM_COUNT, SYSTEM_COUNT);
                     updateMessage("Done");
                     infoVb.getChildren().removeAll(pb1, l1);
-                    GalaxyView.this.infoLabel.setVisible(true);
                 });
 
                 return null;
@@ -205,13 +209,66 @@ public class GalaxyView extends BorderPane {
             systemInScene = systemPair;
             systemGroup.getChildren().clear();
 
-            // TODO: show system
-            systemGroup.getChildren().add(new Sphere(100));
+            Task<Void> task = new Task<Void>() {
+
+                @Override
+                protected Void call() {
+                    ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+                    ImmutableList<IntObjectPair<Planet>> systemPlanets = systemPair.getTwo().getPlanets().collect(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)));
+
+                    int MAX_PROGRESS = systemPlanets.size() + 1;
+                    MutableInt progress = new MutableInt();
+
+                    for (IntObjectPair<Planet> pair : systemPlanets) {
+                        if (isCancelled()) {
+                            break;
+                        }
+
+                        updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
+                        updateMessage("Adding planet " + pair.getTwo().getName() + " [" + progress.get() + "/" + MAX_PROGRESS + "]");
+
+                        PlanetFX planetFX = new PlanetFX(GalaxyView.this, pair);
+
+                        Platform.runLater(() -> systemGroup.getChildren().add(planetFX));
+                    }
+
+                    updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
+                    updateMessage("Adding inner & outer radius [" + progress.get() + "/" + MAX_PROGRESS + "]");
+
+                    Circle innerRadius = new Circle(systemPair.getTwo().getInnerRadius());
+                    innerRadius.setFill(null);
+                    innerRadius.setStroke(Color.LIGHTGRAY);
+                    innerRadius.setStrokeWidth(0.25);
+                    innerRadius.getStrokeDashArray().add(10D);
+
+                    Circle outerRadius = new Circle(systemPair.getTwo().getOuterRadius());
+                    outerRadius.setFill(null);
+                    outerRadius.setStroke(Color.LIGHTGRAY);
+                    outerRadius.setStrokeWidth(0.25);
+                    outerRadius.getStrokeDashArray().add(10D);
+
+                    Platform.runLater(() -> {
+                        systemGroup.getChildren().addAll(innerRadius, outerRadius);
+                        updateProgress(MAX_PROGRESS, MAX_PROGRESS);
+                        updateMessage("Done");
+                    });
+
+                    return null;
+                }
+            };
+
+            Thread t = new Thread(task);
+            t.setDaemon(true);
+            t.start();
         }
     }
 
     public boolean containsHyperlane(VisualHyperlane hyperlane) {
         return !hyperlanes.add(hyperlane);
+    }
+
+    public StellarisGame getGame() {
+        return game;
     }
 
     public StellarisSave getSave() {
@@ -350,6 +407,33 @@ public class GalaxyView extends BorderPane {
     }
 
     public void onClickInSystemView(IntObjectPair<Planet> planetPair) {
-        // TODO: this
+        selectedPlanet = planetPair;
+        StringBuilder text = new StringBuilder();
+        if (planetPair != null) {
+            text.append(planetPair.getTwo().getName()).append(" (#").append(planetPair.getOne()).append(")\n\n");
+
+            ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+
+            text.append("class=").append(planetPair.getTwo().getPlanetClass()).append("\n");
+            text.append("size=").append(planetPair.getTwo().getPlanetSize()).append("\n");
+            text.append("orbit=").append(planetPair.getTwo().getOrbit()).append("\n");
+            if (planetPair.getTwo().isMoon()) {
+                int moonOfId = planetPair.getTwo().getMoonOf();
+                Planet moonOf = planets.get(moonOfId);
+                text.append("moon_of=").append(moonOf.getName()).append(" (#").append(moonOfId).append(")\n");
+            }
+            ImmutableIntList moonIds = planetPair.getTwo().getMoons();
+            if (!moonIds.isEmpty()) {
+                ImmutableList<IntObjectPair<Planet>> moons = moonIds.collect(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)));
+                if (moons.size() == 1) {
+                    IntObjectPair<Planet> moonPair = moons.get(0);
+                    text.append("moon=").append(moonPair.getTwo().getName()).append(" (#").append(moonPair.getOne()).append(")\n");
+                } else {
+                    text.append("moons=").append(moons.collect(moonPair -> moonPair.getTwo().getName() + " (#" + moonPair.getOne() + ")")).append("\n");
+                }
+            }
+        }
+
+        infoLabel.setText(text.toString());
     }
 }

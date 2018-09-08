@@ -43,7 +43,7 @@ public class Main extends Application {
     public void transition() {
         vb = null;
 
-        GalaxyView galaxyView = new GalaxyView(analyser.getStellarisSave());
+        GalaxyView galaxyView = new GalaxyView(analyser.getGame(), analyser.getStellarisSave());
 
         Scene scene = new Scene(galaxyView);
         primaryStage.setTitle("Galaxy View");
