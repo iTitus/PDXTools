@@ -25,13 +25,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
+import org.eclipse.collections.api.block.function.primitive.IntFunction;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.factory.primitive.IntIntMaps;
 import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.util.Comparator;
@@ -42,7 +47,6 @@ public class GalaxyView extends BorderPane {
     private static final double PADDING = 5;
     private static final double INFO_PANEL_TOTAL_WIDTH = INFO_PANEL_WIDTH + 2 * PADDING;
 
-    private final MutableSet<VisualHyperlane> hyperlanes = Sets.mutable.empty();
     private final StellarisGame game;
     private final StellarisSave save;
     private final SubScene galaxyScene, systemScene, scene2D;
@@ -52,6 +56,20 @@ public class GalaxyView extends BorderPane {
 
     private IntObjectPair<GalacticObject> selectedSystem, systemInScene;
     private IntObjectPair<Planet> selectedPlanet;
+
+    private final MutableSet<VisualHyperlane> hyperlanes = Sets.mutable.empty();
+    private final MutableIntIntMap ownerCache = IntIntMaps.mutable.empty();
+    private final IntFunction<GalacticObject> CACHE_FUNCTION = system -> {
+        int starbaseId = system.getStarbase();
+        if (starbaseId == -1) {
+            return -1;
+        }
+        Starbase starbase = GalaxyView.this.getSave().getGameState().getStarbases().getStarbases().get(starbaseId);
+        if (starbase == null) {
+            return -1;
+        }
+        return starbase.getOwner();
+    };
 
     public GalaxyView(StellarisGame game, StellarisSave save) {
         this.game = game;
@@ -146,8 +164,9 @@ public class GalaxyView extends BorderPane {
             @Override
             protected Void call() {
                 ImmutableIntObjectMap<GalacticObject> systems = save.getGameState().getGalacticObjects().getGalacticObjects();
+                ImmutableIntObjectMap<Country> countries = save.getGameState().getCountries().getCountries();
 
-                int SYSTEM_COUNT = systems.size();
+                int MAX_PROGRESS = systems.size() + countries.size();
                 MutableInt progress = new MutableInt();
 
                 for (IntObjectPair<GalacticObject> pair : systems.keyValuesView()) {
@@ -155,16 +174,32 @@ public class GalaxyView extends BorderPane {
                         break;
                     }
 
-                    updateProgress(progress.getAndIncrement(), SYSTEM_COUNT);
-                    updateMessage("Adding system " + pair.getTwo().getName() + " [" + progress.get() + "/" + SYSTEM_COUNT + "]");
+                    updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
+                    updateMessage("Adding system " + pair.getTwo().getName() + " [" + progress.get() + "/" + MAX_PROGRESS + "]");
 
                     GalacticObjectFX galacticObjectFX = new GalacticObjectFX(GalaxyView.this, pair);
 
                     Platform.runLater(() -> galaxyGroup.getChildren().add(galacticObjectFX));
                 }
 
+                for (IntObjectPair<Country> pair : countries.keyValuesView()) {
+                    if (isCancelled()) {
+                        break;
+                    }
+                    if (pair.getTwo() == null) {
+                        continue;
+                    }
+
+                    updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
+                    updateMessage("Adding country " + pair.getTwo().getName() + " [" + progress.get() + "/" + MAX_PROGRESS + "]");
+
+                    CountryFX countryFX = new CountryFX(GalaxyView.this, pair);
+
+                    Platform.runLater(() -> galaxyGroup.getChildren().add(countryFX));
+                }
+
                 Platform.runLater(() -> {
-                    updateProgress(SYSTEM_COUNT, SYSTEM_COUNT);
+                    updateProgress(MAX_PROGRESS, MAX_PROGRESS);
                     updateMessage("Done");
                     infoVb.getChildren().removeAll(pb1, l1);
                 });
@@ -237,15 +272,15 @@ public class GalaxyView extends BorderPane {
 
                     Circle innerRadius = new Circle(systemPair.getTwo().getInnerRadius());
                     innerRadius.setFill(null);
-                    innerRadius.setStroke(Color.LIGHTGRAY);
-                    innerRadius.setStrokeWidth(0.25);
-                    innerRadius.getStrokeDashArray().add(10D);
+                    innerRadius.setStroke(Color.BLUEVIOLET);
+                    innerRadius.setStrokeWidth(0.2);
+                    // innerRadius.getStrokeDashArray().addAll(10D, 5D);
 
                     Circle outerRadius = new Circle(systemPair.getTwo().getOuterRadius());
                     outerRadius.setFill(null);
-                    outerRadius.setStroke(Color.LIGHTGRAY);
-                    outerRadius.setStrokeWidth(0.25);
-                    outerRadius.getStrokeDashArray().add(10D);
+                    outerRadius.setStroke(Color.BLUEVIOLET);
+                    outerRadius.setStrokeWidth(0.2);
+                    // outerRadius.getStrokeDashArray().addAll(10D, 5D);
 
                     Platform.runLater(() -> {
                         systemGroup.getChildren().addAll(innerRadius, outerRadius);
@@ -265,6 +300,10 @@ public class GalaxyView extends BorderPane {
 
     public boolean containsHyperlane(VisualHyperlane hyperlane) {
         return !hyperlanes.add(hyperlane);
+    }
+
+    public int getOwnerId(int systemId, GalacticObject system) {
+        return ownerCache.getIfAbsentPutWith(systemId, CACHE_FUNCTION, system);
     }
 
     public StellarisGame getGame() {
@@ -291,20 +330,34 @@ public class GalaxyView extends BorderPane {
         viewSystemButton.setDisable(selectedSystem == null && galaxyScene.isVisible());
         StringBuilder text = new StringBuilder();
         if (systemPair != null) {
-            MutableSet<String> properties = Sets.mutable.empty();
-            text.append(systemPair.getTwo().getName()).append(" (#").append(systemPair.getOne()).append(")");
-
-            if (!properties.isEmpty()) {
-                text.append(" |");
-                properties.forEach(property -> text.append(" ").append(property));
-            }
-            properties.clear();
-            text.append("\n");
-
+            ImmutableIntObjectMap<Starbase> starbases = save.getGameState().getStarbases().getStarbases();
+            ImmutableIntObjectMap<Country> countries = save.getGameState().getCountries().getCountries();
             ImmutableIntObjectMap<GalacticObject> systems = save.getGameState().getGalacticObjects().getGalacticObjects();
             ImmutableIntObjectMap<NaturalWormhole> wormholes = save.getGameState().getNaturalWormholes().getNaturalWormholes();
             ImmutableIntObjectMap<Bypass> bypasses = save.getGameState().getBypasses().getBypasses();
+            ImmutableIntObjectMap<MegaStructure> megaStructures = save.getGameState().getMegaStructures().getMegaStructures();
             ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+
+            MutableList<String> properties = Lists.mutable.empty();
+            text.append(systemPair.getTwo().getName()).append(" (#").append(systemPair.getOne()).append(")\n");
+
+            properties.add("type=" + systemPair.getTwo().getType());
+            properties.add("initializer=" + systemPair.getTwo().getInitializer());
+            int starbaseId = systemPair.getTwo().getStarbase();
+            if (starbaseId != -1) {
+                Starbase starbase = starbases.get(starbaseId);
+                if (starbase != null) {
+                    int ownerId = starbase.getOwner();
+                    Country owner = countries.get(ownerId);
+                    properties.add("owner=" + owner.getName() + " (#" + ownerId + ")");
+                    properties.add("starbase=" + starbase.getLevel() + " (#" + starbaseId + ")");
+                }
+            }
+
+            if (!properties.isEmpty()) {
+                properties.forEach(property -> text.append(" - ").append(property).append("\n"));
+            }
+            properties.clear();
 
             ImmutableList<Hyperlane> hyperlanes = systemPair.getTwo().getHyperlanes().stream()
                     .sorted(Comparator.comparingInt(Hyperlane::getTo))
@@ -337,9 +390,9 @@ public class GalaxyView extends BorderPane {
                         .forEachOrdered(text::append);
             }
 
-            ImmutableList<NaturalWormhole> naturalWormholes = CollectionUtil.stream(systemPair.getTwo().getNaturalWormholes())
+            ImmutableList<IntObjectPair<NaturalWormhole>> naturalWormholes = CollectionUtil.stream(systemPair.getTwo().getNaturalWormholes())
                     .sorted()
-                    .mapToObj(wormholes::get)
+                    .mapToObj(wormholeId -> PrimitiveTuples.pair(wormholeId, wormholes.get(wormholeId)))
                     .collect(Collectors2.toImmutableList());
             if (!naturalWormholes.isEmpty()) {
                 if (naturalWormholes.size() == 1) {
@@ -348,14 +401,56 @@ public class GalaxyView extends BorderPane {
                     text.append("\nNatural Wormholes to:\n");
                 }
                 naturalWormholes.stream()
-                        .mapToInt(NaturalWormhole::getBypass)
-                        .mapToObj(bypasses::get)
-                        .mapToInt(Bypass::getLinkedTo)
-                        .mapToObj(bypassId -> {
-                            int to = wormholes.stream().filter(wormhole -> wormhole.getBypass() == bypassId).findAny().get().getCoordinate().getOrigin();
+                        .map(wormhole -> {
+                            int bypassId = wormhole.getTwo().getBypass();
+                            Bypass bypass = bypasses.get(bypassId);
+                            int linkedTo = bypass.getLinkedTo();
+
+                            int to = wormholes.stream().filter(w -> w.getBypass() == linkedTo).findAny().get().getCoordinate().getOrigin();
                             GalacticObject system = systems.get(to);
 
                             StringBuilder b = new StringBuilder(" - ").append(system.getName()).append(" (#").append(to).append(")");
+
+                            properties.add("bypass=" + bypass.getType() + " (#" + bypassId + ")");
+
+                            if (!properties.isEmpty()) {
+                                b.append(" |");
+                                properties.forEach(property -> b.append(" ").append(property));
+                            }
+                            properties.clear();
+                            return b.append("\n").toString();
+                        })
+                        .forEachOrdered(text::append);
+            }
+
+            ImmutableList<IntObjectPair<Bypass>> systemBypasses = CollectionUtil.stream(systemPair.getTwo().getBypasses())
+                    .sorted()
+                    .mapToObj(bypassId -> PrimitiveTuples.pair(bypassId, bypasses.get(bypassId)))
+                    .collect(Collectors2.toImmutableList());
+            if (!systemBypasses.isEmpty()) {
+                if (systemBypasses.size() == 1) {
+                    text.append("\nBypass:\n");
+                } else {
+                    text.append("\nBypasses:\n");
+                }
+                systemBypasses.stream()
+                        .map(bypassPair -> {
+                            String type = bypassPair.getTwo().getType();
+                            int id = bypassPair.getOne();
+                            boolean active = bypassPair.getTwo().isActive();
+                            int to = bypassPair.getTwo().getLinkedTo();
+
+                            StringBuilder b = new StringBuilder(" - ").append(type).append(" (#").append(id).append(")");
+
+                            properties.add("active=" + active);
+
+                            if (to != -1) {
+                                Bypass bypass = bypasses.get(to);
+                                properties.add("linked_to=" + bypass.getType() + " (#" + to + ")");
+                                int target = wormholes.stream().filter(wormhole -> wormhole.getBypass() == to).findAny().get().getCoordinate().getOrigin();
+                                GalacticObject system = systems.get(target);
+                                properties.add("target_system=" + system.getName() + " (#" + target + ")");
+                            }
 
                             if (!properties.isEmpty()) {
                                 b.append(" |");
@@ -391,6 +486,35 @@ public class GalaxyView extends BorderPane {
                                 properties.add("moon");
                             }
                             properties.add(planetPair.getTwo().getPlanetClass());
+                            properties.add("size=" + planetPair.getTwo().getPlanetSize());
+
+                            if (!properties.isEmpty()) {
+                                b.append(" |");
+                                properties.forEach(property -> b.append(" ").append(property));
+                            }
+                            properties.clear();
+                            return b.append("\n").toString();
+                        })
+                        .forEachOrdered(text::append);
+            }
+
+            ImmutableList<IntObjectPair<MegaStructure>> systemMegaStructures = CollectionUtil.stream(systemPair.getTwo().getMegaStructures())
+                    .sorted()
+                    .mapToObj(megaStructureId -> PrimitiveTuples.pair(megaStructureId, megaStructures.get(megaStructureId)))
+                    .collect(Collectors2.toImmutableList());
+            if (!systemMegaStructures.isEmpty()) {
+                if (systemMegaStructures.size() == 1) {
+                    text.append("\nMega Structure:\n");
+                } else {
+                    text.append("\nMega Structures:\n");
+                }
+                systemMegaStructures.stream()
+                        .map(megaStructurePair -> {
+                            String type = megaStructurePair.getTwo().getType();
+                            int id = megaStructurePair.getOne();
+                            // TODO: add more info
+
+                            StringBuilder b = new StringBuilder(" - ").append(type).append(" (#").append(id).append(")");
 
                             if (!properties.isEmpty()) {
                                 b.append(" |");
@@ -417,6 +541,7 @@ public class GalaxyView extends BorderPane {
             text.append("class=").append(planetPair.getTwo().getPlanetClass()).append("\n");
             text.append("size=").append(planetPair.getTwo().getPlanetSize()).append("\n");
             text.append("orbit=").append(planetPair.getTwo().getOrbit()).append("\n");
+            text.append("ring=").append(planetPair.getTwo().isHasRing()).append("\n");
             if (planetPair.getTwo().isMoon()) {
                 int moonOfId = planetPair.getTwo().getMoonOf();
                 Planet moonOf = planets.get(moonOfId);

@@ -17,6 +17,8 @@ public class PlanetFX extends Group {
 
     private static final double PLANET_STANDARD_SCALE = 11;
 
+    // private final Color color;
+
     private final GalaxyView galaxyView;
     private final IntObjectPair<Planet> planetPair;
 
@@ -27,8 +29,13 @@ public class PlanetFX extends Group {
         this.galaxyView = galaxyView;
         this.planetPair = planetPair;
 
+        // int hash = planetPair.hashCode();
+        // hash = (hash ^ (hash >>> 8)) & 0xFFFFFF;
+        // this.color = Color.rgb((hash >>> 16) & 0xFF, (hash >>> 8) & 0xFF, hash & 0xFF);
+
         this.planetSphere = new Sphere(getPlanetVisualSize(planetPair));
         this.planetSphere.getTransforms().add(new Translate(planetPair.getTwo().getCoordinate().getX(), planetPair.getTwo().getCoordinate().getY(), 0));
+        // this.planetSphere.setMaterial(new PhongMaterial(this.color));
         this.planetSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             galaxyView.onClickInSystemView(planetPair);
             event.consume();
@@ -36,7 +43,7 @@ public class PlanetFX extends Group {
 
         this.planetTooltip = new Tooltip(planetPair.getTwo().getName() + " (#" + planetPair.getOne() + ")");
 
-        Circle orbit = createOrbit();
+        Circle orbit = createOrbit(Color.LIGHTGRAY);
 
         Platform.runLater(() -> {
             Tooltip.install(this.planetSphere, this.planetTooltip);
@@ -44,7 +51,7 @@ public class PlanetFX extends Group {
         });
     }
 
-    private Circle createOrbit() {
+    private Circle createOrbit(Color color) {
         Coordinate c = planetPair.getTwo().getCoordinate();
         Point3D p = new Point3D(c.getX(), c.getY(), 0);
 
@@ -62,8 +69,8 @@ public class PlanetFX extends Group {
         orbit.setCenterY(center.getY());
         orbit.setRadius(p.distance(center));
         orbit.setFill(null);
-        orbit.setStroke(Color.LIGHTGRAY);
-        orbit.setStrokeWidth(0.25);
+        orbit.setStroke(color);
+        orbit.setStrokeWidth(0.3);
 
         return orbit;
     }
@@ -93,12 +100,11 @@ public class PlanetFX extends Group {
         }
 
         double assetScale;
-        if (pE.equals("asteroid_01_entity") /*|| pC.equals("pc_asteroid")*/) {
+        if (pE.equals("asteroid_01_entity") || pC.contains("_asteroid") /*|| pC.equals("pc_asteroid")*/) {
             assetScale = 30;
         } /*else if (pE.equals("black_hole_entity")) {
             assetScale = 20;
-        } else*/
-        if (pE.equals("pulsar_outbursts_entity")) {
+        }*/ else if (pE.equals("pulsar_outbursts_entity")) {
             assetScale = 2;
         } else if (pC.equals("pc_b_star")) {
             assetScale = 1.8;
