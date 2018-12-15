@@ -4,15 +4,22 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class CountryBudget {
 
-    private final Budget lastMonth;
+    private final Budget currentMonth, lastMonth;
 
     public CountryBudget(PdxScriptObject o) {
-        PdxScriptObject o1 = o.getObject("last_month");
+        PdxScriptObject o1 = o.getObject("current_month");
+        this.currentMonth = o1 != null ? o1.getAs(Budget::new) : null;
+        o1 = o.getObject("last_month");
         this.lastMonth = o1 != null ? o1.getAs(Budget::new) : null;
     }
 
-    public CountryBudget(Budget lastMonth) {
+    public CountryBudget(Budget currentMonth, Budget lastMonth) {
+        this.currentMonth = currentMonth;
         this.lastMonth = lastMonth;
+    }
+
+    public Budget getCurrentMonth() {
+        return currentMonth;
     }
 
     public Budget getLastMonth() {

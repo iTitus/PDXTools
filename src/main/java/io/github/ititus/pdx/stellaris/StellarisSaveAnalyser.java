@@ -5,9 +5,7 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
-import io.github.ititus.pdx.stellaris.user.save.*;
-import io.github.ititus.pdx.util.Util;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import io.github.ititus.pdx.util.collection.Tuple3D;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -21,14 +19,12 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.collector.Collectors2;
-import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.collections.impl.tuple.Tuples;
 
 import java.io.File;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collector;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class StellarisSaveAnalyser implements Runnable {
@@ -56,7 +52,7 @@ public class StellarisSaveAnalyser implements Runnable {
         this.main = main;
     }
 
-    private static Resources getResources(GameState gameState, GalacticObject system) {
+    /*private static Resources getResources(GameState gameState, GalacticObject system) {
         Planets planets = gameState.getPlanets();
         return CollectionUtil.stream(system.getPlanets())
                 .mapToObj(planets.getPlanets()::get)
@@ -96,7 +92,7 @@ public class StellarisSaveAnalyser implements Runnable {
                         Util::addArrays,
                         Resources::of
                 ));
-    }
+    }*/
 
     private static Tuple3D combineResource(Tuple3D t1, Tuple3D t2) {
         return Tuple3D.of(t1.getD1() + t2.getD1());
@@ -143,7 +139,7 @@ public class StellarisSaveAnalyser implements Runnable {
         updateProgressMessage(0, true, 3, STEPS, "Analysing Save Game");
 
         stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
-        if (stellarisSave != null) {
+        /*if (stellarisSave != null) {
             GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
             ImmutableList<Pair<GalacticObject, Resources>> resourcesInSystems = systems
@@ -174,7 +170,7 @@ public class StellarisSaveAnalyser implements Runnable {
                 resourceRichSystems.stream().map(pair -> pair.getOne().getName() + ": " + p.getOne().apply(pair.getTwo()).getD1() + " " + p.getTwo()).forEachOrdered(System.out::println);
                 System.out.println("-------------------------");
             });
-        }
+        }*/
         updateProgressMessage(0, true, 4, STEPS, "Gathering Errors");
 
         int ERROR_STEPS = 3;

@@ -9,7 +9,7 @@ public class FleetTemplate {
     private final int fleet, queued, count;
     private final double fleetSize;
     private final ImmutableList<FleetTemplateDesign> fleetTemplateDesigns;
-    private final Location homeBase;
+    private final HomeBase homeBase;
 
     public FleetTemplate(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -19,14 +19,14 @@ public class FleetTemplate {
 
         this.fleet = o.getInt("fleet");
         PdxScriptObject o1 = o.getObject("home_base");
-        this.homeBase = o1 != null ? o1.getAs(Location::of) : null;
+        this.homeBase = o1 != null ? o1.getAs(HomeBase::of) : null;
         this.fleetTemplateDesigns = o.getList("fleet_template_design").getAsList(FleetTemplateDesign::new);
         this.queued = o.getInt("queued");
         this.count = o.getInt("count");
         this.fleetSize = o.getDouble("fleet_size");
     }
 
-    public FleetTemplate(int fleet, int queued, int count, double fleetSize, ImmutableList<FleetTemplateDesign> fleetTemplateDesigns, Location homeBase) {
+    public FleetTemplate(int fleet, int queued, int count, double fleetSize, ImmutableList<FleetTemplateDesign> fleetTemplateDesigns, HomeBase homeBase) {
         this.fleet = fleet;
         this.queued = queued;
         this.count = count;
@@ -55,7 +55,7 @@ public class FleetTemplate {
         return fleetTemplateDesigns;
     }
 
-    public Location getHomeBase() {
+    public HomeBase getHomeBase() {
         return homeBase;
     }
 }

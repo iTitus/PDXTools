@@ -9,6 +9,7 @@ public class TradeDeals {
 
     public TradeDeals(PdxScriptObject o) {
         this.tradeDeals = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(TradeDeal::new));
+        // TODO: always none
     }
 
     public TradeDeals(ImmutableIntObjectMap<TradeDeal> tradeDeals) {

@@ -37,6 +37,7 @@ public class Resources {
         this.zro = get(o, "sr_zro");
         this.alienPets = get(o, "sr_alien_pets");
         this.betharian = get(o, "sr_betharian");
+        // TODO: fix
     }
 
     private Resources(double... array) {

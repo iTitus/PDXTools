@@ -16,6 +16,7 @@ public class Nebula {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
+
         this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
         this.name = o.getString("name");
         this.radius = o.getDouble("radius");

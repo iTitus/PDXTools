@@ -25,14 +25,15 @@ public class FleetCombatEnemy {
         this.fleet = o.getInt("fleet");
         this.shipClass = o.getString("ship_class");
         this.country = o.getInt("country", -1);
-        this.empireFlag = o.getObject("empire_flag").getAs(Flag::new);
+        PdxScriptObject o1 = o.getObject("empire_flag");
+        this.empireFlag = o1 != null ? o1.getAs(Flag::new) : null;
         this.countryName = o.getString("country_name");
         this.fleetName = o.getString("fleet_name");
         this.shipSizeKey = o.getList("ship_size_key").getAsStringList();
         this.shipSizeName = o.getList("ship_size_name").getAsStringList();
         this.shipSizeCount = o.getList("ship_size_count").getAsIntList();
         this.shipSizeCountLost = o.getList("ship_size_count_lost").getAsIntList();
-        PdxScriptObject o1 = o.getObject("leader");
+        o1 = o.getObject("leader");
         this.leader = o1 != null ? o1.getAs(FleetCombatEnemyLeader::new) : null;
     }
 

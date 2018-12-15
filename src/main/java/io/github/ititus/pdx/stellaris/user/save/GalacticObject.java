@@ -61,6 +61,7 @@ public class GalacticObject {
         this.innerRadius = o.getDouble("inner_radius");
         this.outerRadius = o.getDouble("outer_radius");
         this.starbase = o.getUnsignedInt("starbase");
+        // TODO: trade_hub, trade_collection, trade_piracy, sector
     }
 
     public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer, ImmutableIntList planets, ImmutableIntList ambientObjects, ImmutableIntList megaStructures, ImmutableIntList naturalWormholes, ImmutableIntList bypasses, ImmutableIntList discoveries, ImmutableIntList fleetPresence, ImmutableIntList auraPresence, ImmutableIntList ftlInhibitorPresence, ImmutableList<Claim> claims, ImmutableList<Hyperlane> hyperlanes, ImmutableList<AsteroidBelt> asteroidBelts, int arm, int initParent, int starbase, double innerRadius, double outerRadius, Flags flags) {

@@ -46,7 +46,8 @@ public class EmpireDesign {
         this.room = o.getString("room");
         this.spawnEnabled = o.getBoolean("spawn_enabled");
         this.ethics = o.getImplicitList("ethic").getAsStringList();
-        this.civics = o.getList("civics").getAsStringList();
+        l = o.getList("civics");
+        this.civics = l != null ? l.getAsStringList() : Lists.immutable.empty();
     }
 
     public EmpireDesign(boolean spawnAsFallen, boolean ignorePortraitDuplication, boolean spawnEnabled, String key, String shipPrefix, String name, String adjective, String authority, String government, String advisorVoiceType, String planetName, String planetClass, String systemName, String initializer, String graphicalCulture, String cityGraphicalCulture, String room, ImmutableList<String> flags, ImmutableList<String> ethics, ImmutableList<String> civics, SpeciesDesign species, SpeciesDesign secondarySpecies, Flag empireFlag, LeaderDesign ruler) {

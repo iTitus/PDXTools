@@ -53,10 +53,6 @@ public class GalaxyView extends BorderPane {
     private final Group galaxyGroup, systemGroup, group2D;
     private final Label infoLabel;
     private final Button viewSystemButton;
-
-    private IntObjectPair<GalacticObject> selectedSystem, systemInScene;
-    private IntObjectPair<Planet> selectedPlanet;
-
     private final MutableSet<VisualHyperlane> hyperlanes = Sets.mutable.empty();
     private final MutableIntIntMap ownerCache = IntIntMaps.mutable.empty();
     private final IntFunction<GalacticObject> CACHE_FUNCTION = system -> {
@@ -70,6 +66,9 @@ public class GalaxyView extends BorderPane {
         }
         return starbase.getOwner();
     };
+
+    private IntObjectPair<GalacticObject> selectedSystem, systemInScene;
+    private IntObjectPair<Planet> selectedPlanet;
 
     public GalaxyView(StellarisGame game, StellarisSave save) {
         this.game = game;

@@ -10,9 +10,9 @@ import java.util.Date;
 
 public class Alliance {
 
-    private final int leader, nextLeader;
+    private final int leader;
     private final String name;
-    private final Date startDate, nextRotation;
+    private final Date startDate;
     private final ImmutableIntList members, associates, shipDesigns;
 
     public Alliance(IPdxScript s) {
@@ -26,18 +26,14 @@ public class Alliance {
         PdxScriptList l = o.getList("associates");
         this.associates = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         this.startDate = o.getDate("start_date");
-        this.nextRotation = o.getDate("next_rotation");
         this.shipDesigns = o.getList("ship_design").getAsIntList();
         this.leader = o.getInt("leader");
-        this.nextLeader = o.getInt("next_leader");
     }
 
-    public Alliance(int leader, int nextLeader, String name, Date startDate, Date nextRotation, ImmutableIntList members, ImmutableIntList associates, ImmutableIntList shipDesigns) {
+    public Alliance(int leader, String name, Date startDate, ImmutableIntList members, ImmutableIntList associates, ImmutableIntList shipDesigns) {
         this.leader = leader;
-        this.nextLeader = nextLeader;
         this.name = name;
         this.startDate = startDate;
-        this.nextRotation = nextRotation;
         this.members = members;
         this.associates = associates;
         this.shipDesigns = shipDesigns;
@@ -47,20 +43,12 @@ public class Alliance {
         return leader;
     }
 
-    public int getNextLeader() {
-        return nextLeader;
-    }
-
     public String getName() {
         return name;
     }
 
     public Date getStartDate() {
         return startDate;
-    }
-
-    public Date getNextRotation() {
-        return nextRotation;
     }
 
     public ImmutableIntList getMembers() {

@@ -24,6 +24,7 @@ public class BuildItem {
         this.starbaseModule = o.getString("starbase_module");
         PdxScriptList l = o.getList("ships");
         this.ships = l != null ? l.getAsIntList() : IntLists.immutable.empty();
+        // TODO: district
     }
 
     public BuildItem(int shipDesign, int pop, int speciesIndex, String type, String army, String starbaseBuilding, String starbaseLevel, String starbaseModule, ImmutableIntList ships) {

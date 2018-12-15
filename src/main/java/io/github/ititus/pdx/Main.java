@@ -3,12 +3,9 @@ package io.github.ititus.pdx;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.view.GalaxyView;
 import javafx.application.Application;
-import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 public class Main extends Application {

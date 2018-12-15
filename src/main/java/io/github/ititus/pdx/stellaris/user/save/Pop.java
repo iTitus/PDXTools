@@ -6,76 +6,53 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Pop {
 
-    private final boolean buildablePop, enslaved, forceFactionEvaluation, aiRightsServitude;
-    private final int speciesIndex, popFaction, daysEnslaved;
-    private final long tile, payingSector;
-    private final double growth;
-    private final String growthState;
+    private final boolean forceFactionEvaluation;
+    private final int speciesIndex, popFaction, planet;
+    private final double crime, power, happiness;
+    private final String job, category;
     private final ImmutableList<TimedModifier> timedModifiers;
     private final Ethos ethos;
     private final Flags flags;
-    private final PopResourceRequirement requiredGrowth;
-    private final Resources resources;
 
     public Pop(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException(String.valueOf(s));
         }
         PdxScriptObject o = (PdxScriptObject) s;
+
         this.speciesIndex = o.getInt("species_index");
-        this.growthState = o.getString("growth_state");
-        this.growth = o.getDouble("growth");
         PdxScriptObject o1 = o.getObject("ethos");
         this.ethos = o1 != null ? o1.getAs(Ethos::of) : null;
         o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::of) : null;
-        this.buildablePop = o.getBoolean("buildable_pop");
-        this.enslaved = o.getBoolean("enslaved");
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
-        this.tile = o.getLong("tile", -1);
         this.forceFactionEvaluation = o.getBoolean("force_faction_evaluation");
         this.popFaction = o.getInt("pop_faction", -1);
-        this.requiredGrowth = o.getObject("required_growth").getAs(PopResourceRequirement::of);
-        this.payingSector = o.getLong("paying_sector", -1);
-        o1 = o.getObject("resources");
-        this.resources = o1 != null ? o1.getAs(Resources::of) : null;
-        this.aiRightsServitude = o.getBoolean("ai_rights_servitude");
-        this.daysEnslaved = o.getInt("days_enslaved");
+        this.job = o.getString("job");
+        this.category = o.getString("category");
+        this.planet = o.getInt("planet");
+        this.crime = o.getDouble("crime");
+        this.power = o.getDouble("power");
+        this.happiness = o.getDouble("happiness");
     }
 
-    public Pop(boolean buildablePop, boolean enslaved, boolean forceFactionEvaluation, boolean aiRightsServitude, int speciesIndex, int popFaction, int daysEnslaved, long tile, long payingSector, double growth, String growthState, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags, PopResourceRequirement requiredGrowth, Resources resources) {
-        this.buildablePop = buildablePop;
-        this.enslaved = enslaved;
+    public Pop(boolean forceFactionEvaluation, int speciesIndex, int popFaction, int planet, double crime, double power, double happiness, String job, String category, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags) {
         this.forceFactionEvaluation = forceFactionEvaluation;
-        this.aiRightsServitude = aiRightsServitude;
         this.speciesIndex = speciesIndex;
         this.popFaction = popFaction;
-        this.daysEnslaved = daysEnslaved;
-        this.tile = tile;
-        this.payingSector = payingSector;
-        this.growth = growth;
-        this.growthState = growthState;
+        this.planet = planet;
+        this.crime = crime;
+        this.power = power;
+        this.happiness = happiness;
+        this.job = job;
+        this.category = category;
         this.timedModifiers = timedModifiers;
         this.ethos = ethos;
         this.flags = flags;
-        this.requiredGrowth = requiredGrowth;
-        this.resources = resources;
-    }
-
-    public boolean isBuildablePop() {
-        return buildablePop;
-    }
-
-    public boolean isEnslaved() {
-        return enslaved;
     }
 
     public boolean isForceFactionEvaluation() {
         return forceFactionEvaluation;
-    }
-
-    public boolean isAiRightsServitude() {
-        return aiRightsServitude;
     }
 
     public int getSpeciesIndex() {
@@ -86,24 +63,28 @@ public class Pop {
         return popFaction;
     }
 
-    public int getDaysEnslaved() {
-        return daysEnslaved;
+    public int getPlanet() {
+        return planet;
     }
 
-    public long getTile() {
-        return tile;
+    public double getCrime() {
+        return crime;
     }
 
-    public long getPayingSector() {
-        return payingSector;
+    public double getPower() {
+        return power;
     }
 
-    public double getGrowth() {
-        return growth;
+    public double getHappiness() {
+        return happiness;
     }
 
-    public String getGrowthState() {
-        return growthState;
+    public String getJob() {
+        return job;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public ImmutableList<TimedModifier> getTimedModifiers() {
@@ -116,13 +97,5 @@ public class Pop {
 
     public Flags getFlags() {
         return flags;
-    }
-
-    public PopResourceRequirement getRequiredGrowth() {
-        return requiredGrowth;
-    }
-
-    public Resources getResources() {
-        return resources;
     }
 }

@@ -12,17 +12,16 @@ import java.util.Date;
 
 public class Country {
 
-    private final boolean customName, autoShipDesigns, starvation, hasAdvisor, initialized;
-    private final int colorIndex, capital, speciesIndex, nextTransportFleetNumber, ruler, alliance, startingSystem, nextSectorId;
-    private final double foodSurplus, producedFood, militaryPower, fleetSize, powerScore, piracyRisk;
+    private final boolean customName, autoShipDesigns, hasAdvisor, initialized;
+    private final int colorIndex, capital, speciesIndex, nextTransportFleetNumber, ruler, alliance, startingSystem;
+    private final double militaryPower, fleetSize;
     private final String name, adjective, graphicalCulture, cityGraphicalCulture, room, lastAllianceName, advisorVoiceType, personality, rulerTitle, nameList, shipPrefix, type, customization;
-    private final Date lastDateWasHuman, lastDateWarLost, lastDateAtWar, starvationDate, lastPirateSpawn, nextElection, governmentDate, lastChangedCountryType;
+    private final Date lastDateWasHuman, lastDateWarLost, lastDateAtWar, nextElection, governmentDate;
     private final ImmutableIntList surveyed, visitedObjects, intelLevels, highestIntelLevels, sensorRangeFleets, ownedLeaders, ownedFleets, ownedMegastructures, ownedArmies, ownedPlanets, restrictedSystems, controlledPlanets, shipDesigns, usableBypasses, hyperlaneSystems;
     private final ImmutableList<String> policyFlags, shownMessageTypes, traditions, ascensionPerks, seenBypassTypes;
     private final ImmutableList<Intel> intel;
     private final ImmutableList<TimedModifier> timedModifiers;
     private final ImmutableList<ActivePolicy> activePolicies;
-    private final ImmutableList<TradeDealListItem> tradeDeals;
     private final ImmutableList<Edict> edicts;
     private final ImmutableList<RegnalNumber> regnalNumbers;
     private final ImmutableList<Species> speciesModTemplates;
@@ -33,17 +32,14 @@ public class Country {
     private final TerraIncognita terraIncognita;
     private final AI ai;
     private final Ethos ethos;
-    private final SectorManager sectorManager;
     private final FleetTemplateManager fleetTemplateManager;
     private final Government government;
-    private final DemocraticElection democraticElection;
     private final Flags flags;
     private final Variables variables;
     private final Faction faction;
     private final CountingList shipNames;
     private final ControlGroups controlGroups;
     private final Modules modules;
-    private final Sectors sectors;
     private final RandomNameVariables randomNameVariables;
     private final RelationsManager relationsManager;
     private final Property location;
@@ -64,27 +60,23 @@ public class Country {
         this.lastDateWasHuman = o.getDate("last_date_was_human");
         this.lastDateWarLost = o.getDate("last_date_war_lost");
         this.lastDateAtWar = o.getDate("last_date_at_war");
-        this.starvationDate = o.getDate("starvation_date");
-        this.lastPirateSpawn = o.getDate("last_pirate_spawn");
-        this.starvation = o.getBoolean("starvation");
-        this.foodSurplus = o.getDouble("food_surplus");
-        this.producedFood = o.getDouble("produced_food");
         this.budget = o.getObject("budget").getAs(CountryBudget::new);
         this.events = o.getObject("events").getAs(Events::new);
         this.terraIncognita = o.getObject("terra_incognita").getAs(TerraIncognita::new);
         this.militaryPower = o.getDouble("military_power");
+        // TODO: economy_power, victory_rank, victory_score, tech_power, immigration, emigration
         this.fleetSize = o.getDouble("fleet_size");
-        this.powerScore = o.getDouble("power_score");
+        // TODO: empire_size, empire_cohesion, new_colonies, sapient
         this.graphicalCulture = o.getString("graphical_culture");
         this.cityGraphicalCulture = o.getString("city_graphical_culture");
         this.room = o.getString("room");
         this.ai = o.getObject("ai").getAs(AI::new);
         this.capital = o.getInt("capital", -1);
         this.speciesIndex = o.getInt("species_index");
+        // TODO: built_species
         PdxScriptObject o1 = o.getObject("ethos");
         this.ethos = o1 != null ? o1.getAs(Ethos::of) : null;
         this.lastAllianceName = o.getString("last_alliance_name");
-        this.sectorManager = o.getObject("sector_manager").getAs(SectorManager::new);
         this.fleetTemplateManager = o.getObject("fleet_template_manager").getAs(FleetTemplateManager::new);
         o1 = o.getObject("government");
         this.government = o1 != null ? o1.getAs(Government::new) : null;
@@ -92,8 +84,6 @@ public class Country {
         this.personality = o.getString("personality");
         this.rulerTitle = o.getString("ruler_title");
         this.nextElection = o.getDate("next_election");
-        o1 = o.getObject("democratic_election");
-        this.democraticElection = o1 != null ? o1.getAs(DemocraticElection::new) : null;
         this.governmentDate = o.getDate("government_date");
         PdxScriptList l = o.getList("surveyed");
         this.surveyed = l != null ? l.getAsIntList() : IntLists.immutable.empty();
@@ -122,6 +112,7 @@ public class Country {
         this.activePolicies = o.getList("active_policies").getAsList(ActivePolicy::new);
         this.policyFlags = o.getList("policy_flags").getAsStringList();
         this.alliance = o.getInt("alliance", -1);
+        // TODO: subjects
         this.startingSystem = o.getInt("starting_system", -1);
         this.hasAdvisor = o.getBoolean("has_advisor", true);
         l = o.getList("shown_message_types");
@@ -140,46 +131,42 @@ public class Country {
         this.ownedArmies = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("owned_planets");
         this.ownedPlanets = l != null ? l.getAsIntList() : IntLists.immutable.empty();
+        // TODO: branch_office_systems
         l = o.getList("restricted_systems");
         this.restrictedSystems = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("controlled_planets");
         this.controlledPlanets = l != null ? l.getAsIntList() : IntLists.immutable.empty();
-        l = o.getList("trade_deals");
-        this.tradeDeals = l != null ? l.getAsList(TradeDealListItem::new) : Lists.immutable.empty();
         l = o.getList("ship_design");
         this.shipDesigns = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("edicts");
         this.edicts = l != null ? l.getAsList(Edict::new) : Lists.immutable.empty();
         this.type = o.getString("type");
-        this.modules = o.getObject("modules").getAs(Modules::new);
+        this.modules = o.getObject("modules").getAs(Modules::new); // TODO: check
         o1 = o.getObject("sectors");
-        this.sectors = o1 != null ? o1.getAs(Sectors::new) : null;
-        this.nextSectorId = o.getInt("next_sector_id");
         this.initialized = o.getBoolean("initialized");
         l = o.getList("regnal_numbers");
         this.regnalNumbers = l != null ? l.getAsList(RegnalNumber::new) : Lists.immutable.empty();
         o1 = o.getObject("random_name_variables");
         this.randomNameVariables = o1 != null ? o1.getAs(RandomNameVariables::new) : null;
-        this.relationsManager = o.getObject("relations_manager").getAs(RelationsManager::new);
+        this.relationsManager = o.getObject("relations_manager").getAs(RelationsManager::new); // TODO: check
         o1 = o.getObject("location");
         this.location = o1 != null ? o1.getAs(Property::new) : null;
         l = o.getList("species_mod_templates");
         this.speciesModTemplates = l != null ? l.getAsList(Species::new) : Lists.immutable.empty();
         this.customization = o.getString("customization");
-        this.piracyRisk = o.getDouble("piracy_risk");
-        this.lastChangedCountryType = o.getDate("last_changed_country_type");
         l = o.getList("seen_bypass_types");
         this.seenBypassTypes = l != null ? l.getAsStringList() : Lists.immutable.empty();
+        // TODO: seen_bypasses
         l = o.getList("usable_bypasses");
         this.usableBypasses = l != null ? l.getAsIntList() : IntLists.immutable.empty();
         l = o.getList("hyperlane_systems");
         this.hyperlaneSystems = l != null ? l.getAsIntList() : IntLists.immutable.empty();
+        // TODO: owned_sectors, given_value
     }
 
-    public Country(boolean customName, boolean autoShipDesigns, boolean starvation, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int nextTransportFleetNumber, int ruler, int alliance, int startingSystem, int nextSectorId, double foodSurplus, double producedFood, double militaryPower, double fleetSize, double powerScore, double piracyRisk, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String advisorVoiceType, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, Date lastDateWasHuman, Date lastDateWarLost, Date lastDateAtWar, Date starvationDate, Date lastPirateSpawn, Date nextElection, Date governmentDate, Date lastChangedCountryType, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<TradeDealListItem> tradeDeals, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, SectorManager sectorManager, FleetTemplateManager fleetTemplateManager, Government government, DemocraticElection democraticElection, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, Sectors sectors, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
+    public Country(boolean customName, boolean autoShipDesigns, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int nextTransportFleetNumber, int ruler, int alliance, int startingSystem, double militaryPower, double fleetSize, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String advisorVoiceType, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, Date lastDateWasHuman, Date lastDateWarLost, Date lastDateAtWar, Date nextElection, Date governmentDate, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, FleetTemplateManager fleetTemplateManager, Government government, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
         this.customName = customName;
         this.autoShipDesigns = autoShipDesigns;
-        this.starvation = starvation;
         this.hasAdvisor = hasAdvisor;
         this.initialized = initialized;
         this.colorIndex = colorIndex;
@@ -189,13 +176,8 @@ public class Country {
         this.ruler = ruler;
         this.alliance = alliance;
         this.startingSystem = startingSystem;
-        this.nextSectorId = nextSectorId;
-        this.foodSurplus = foodSurplus;
-        this.producedFood = producedFood;
         this.militaryPower = militaryPower;
         this.fleetSize = fleetSize;
-        this.powerScore = powerScore;
-        this.piracyRisk = piracyRisk;
         this.name = name;
         this.adjective = adjective;
         this.graphicalCulture = graphicalCulture;
@@ -212,11 +194,8 @@ public class Country {
         this.lastDateWasHuman = lastDateWasHuman;
         this.lastDateWarLost = lastDateWarLost;
         this.lastDateAtWar = lastDateAtWar;
-        this.starvationDate = starvationDate;
-        this.lastPirateSpawn = lastPirateSpawn;
         this.nextElection = nextElection;
         this.governmentDate = governmentDate;
-        this.lastChangedCountryType = lastChangedCountryType;
         this.surveyed = surveyed;
         this.visitedObjects = visitedObjects;
         this.intelLevels = intelLevels;
@@ -240,7 +219,6 @@ public class Country {
         this.intel = intel;
         this.timedModifiers = timedModifiers;
         this.activePolicies = activePolicies;
-        this.tradeDeals = tradeDeals;
         this.edicts = edicts;
         this.regnalNumbers = regnalNumbers;
         this.speciesModTemplates = speciesModTemplates;
@@ -251,17 +229,14 @@ public class Country {
         this.terraIncognita = terraIncognita;
         this.ai = ai;
         this.ethos = ethos;
-        this.sectorManager = sectorManager;
         this.fleetTemplateManager = fleetTemplateManager;
         this.government = government;
-        this.democraticElection = democraticElection;
         this.flags = flags;
         this.variables = variables;
         this.faction = faction;
         this.shipNames = shipNames;
         this.controlGroups = controlGroups;
         this.modules = modules;
-        this.sectors = sectors;
         this.randomNameVariables = randomNameVariables;
         this.relationsManager = relationsManager;
         this.location = location;
@@ -273,10 +248,6 @@ public class Country {
 
     public boolean isAutoShipDesigns() {
         return autoShipDesigns;
-    }
-
-    public boolean isStarvation() {
-        return starvation;
     }
 
     public boolean isHasAdvisor() {
@@ -315,32 +286,12 @@ public class Country {
         return startingSystem;
     }
 
-    public int getNextSectorId() {
-        return nextSectorId;
-    }
-
-    public double getFoodSurplus() {
-        return foodSurplus;
-    }
-
-    public double getProducedFood() {
-        return producedFood;
-    }
-
     public double getMilitaryPower() {
         return militaryPower;
     }
 
     public double getFleetSize() {
         return fleetSize;
-    }
-
-    public double getPowerScore() {
-        return powerScore;
-    }
-
-    public double getPiracyRisk() {
-        return piracyRisk;
     }
 
     public String getName() {
@@ -407,24 +358,12 @@ public class Country {
         return lastDateAtWar;
     }
 
-    public Date getStarvationDate() {
-        return starvationDate;
-    }
-
-    public Date getLastPirateSpawn() {
-        return lastPirateSpawn;
-    }
-
     public Date getNextElection() {
         return nextElection;
     }
 
     public Date getGovernmentDate() {
         return governmentDate;
-    }
-
-    public Date getLastChangedCountryType() {
-        return lastChangedCountryType;
     }
 
     public ImmutableIntList getSurveyed() {
@@ -519,10 +458,6 @@ public class Country {
         return activePolicies;
     }
 
-    public ImmutableList<TradeDealListItem> getTradeDeals() {
-        return tradeDeals;
-    }
-
     public ImmutableList<Edict> getEdicts() {
         return edicts;
     }
@@ -563,20 +498,12 @@ public class Country {
         return ethos;
     }
 
-    public SectorManager getSectorManager() {
-        return sectorManager;
-    }
-
     public FleetTemplateManager getFleetTemplateManager() {
         return fleetTemplateManager;
     }
 
     public Government getGovernment() {
         return government;
-    }
-
-    public DemocraticElection getDemocraticElection() {
-        return democraticElection;
     }
 
     public Flags getFlags() {
@@ -601,10 +528,6 @@ public class Country {
 
     public Modules getModules() {
         return modules;
-    }
-
-    public Sectors getSectors() {
-        return sectors;
     }
 
     public RandomNameVariables getRandomNameVariables() {

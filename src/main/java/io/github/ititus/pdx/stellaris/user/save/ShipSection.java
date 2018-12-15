@@ -60,8 +60,12 @@ public class ShipSection {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShipSection)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ShipSection)) {
+            return false;
+        }
         ShipSection that = (ShipSection) o;
         return Objects.equals(design, that.design) && Objects.equals(slot, that.slot) && Objects.equals(weapons, that.weapons) && Objects.equals(strikeCrafts, that.strikeCrafts);
     }

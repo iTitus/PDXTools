@@ -8,7 +8,6 @@ import java.util.Objects;
 public class BuildQueueItem {
 
     private final int planet, slot, id;
-    private final long sector;
     private final double progress;
     private final BuildItem item;
     private final Resources cost;
@@ -22,17 +21,16 @@ public class BuildQueueItem {
         this.item = o.getObject("item").getAs(BuildItem::new);
         this.progress = o.getDouble("progress");
         this.planet = o.getInt("planet");
+        // TODO: paying_country, sector_build
         this.slot = o.getInt("slot", -1);
-        this.sector = o.getLong("sector");
         this.cost = o.getObject("cost").getAs(Resources::of);
         this.id = o.getInt("id");
     }
 
-    public BuildQueueItem(int planet, int slot, int id, long sector, double progress, BuildItem item, Resources cost) {
+    public BuildQueueItem(int planet, int slot, int id, double progress, BuildItem item, Resources cost) {
         this.planet = planet;
         this.slot = slot;
         this.id = id;
-        this.sector = sector;
         this.progress = progress;
         this.item = item;
         this.cost = cost;
@@ -48,10 +46,6 @@ public class BuildQueueItem {
 
     public int getId() {
         return id;
-    }
-
-    public long getSector() {
-        return sector;
     }
 
     public double getProgress() {
@@ -75,11 +69,11 @@ public class BuildQueueItem {
             return false;
         }
         BuildQueueItem that = (BuildQueueItem) o;
-        return planet == that.planet && slot == that.slot && id == that.id && sector == that.sector && Double.compare(that.progress, progress) == 0 && Objects.equals(item, that.item) && Objects.equals(cost, that.cost);
+        return planet == that.planet && slot == that.slot && id == that.id && Double.compare(that.progress, progress) == 0 && Objects.equals(item, that.item) && Objects.equals(cost, that.cost);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(planet, slot, id, sector, progress, item, cost);
+        return Objects.hash(planet, slot, id, progress, item, cost);
     }
 }

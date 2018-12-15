@@ -12,7 +12,7 @@ public class Message {
 
     private final boolean gameText;
     private final int receiver, notification;
-    private final String type, localization, technology;
+    private final String type, localization, technology, messageType;
     private final Date end, date;
     private final ImmutableList<VariablePair> variables;
     private final Coordinate coordinate;
@@ -39,19 +39,17 @@ public class Message {
         this.diplomaticAction3rdParty = o1 != null ? o1.getAs(DiplomaticResponse::new) : null;
         o1 = o.getObject("diplomatic_response");
         this.diplomaticResponse = o1 != null ? o1.getAs(DiplomaticResponse::new) : null;
-        Object o2 = o.getValue("message_type");
-        if (o2 != null) {
-            throw new RuntimeException("Unexpected value '" + o2 + "' for message_type");
-        }
+        this.messageType = o.getString("message_type");
     }
 
-    public Message(boolean gameText, int receiver, int notification, String type, String localization, String technology, Date end, Date date, ImmutableList<VariablePair> variables, Coordinate coordinate, DiplomaticResponse diplomaticAction3rdParty, DiplomaticResponse diplomaticResponse) {
+    public Message(boolean gameText, int receiver, int notification, String type, String localization, String technology, String messageType, Date end, Date date, ImmutableList<VariablePair> variables, Coordinate coordinate, DiplomaticResponse diplomaticAction3rdParty, DiplomaticResponse diplomaticResponse) {
         this.gameText = gameText;
         this.receiver = receiver;
         this.notification = notification;
         this.type = type;
         this.localization = localization;
         this.technology = technology;
+        this.messageType = messageType;
         this.end = end;
         this.date = date;
         this.variables = variables;
@@ -82,6 +80,10 @@ public class Message {
 
     public String getTechnology() {
         return technology;
+    }
+
+    public String getMessageType() {
+        return messageType;
     }
 
     public Date getEnd() {
