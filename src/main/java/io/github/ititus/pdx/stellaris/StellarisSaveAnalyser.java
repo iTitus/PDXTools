@@ -34,12 +34,12 @@ import java.util.stream.Collectors;
 public class StellarisSaveAnalyser implements Runnable {
 
     private static final String USER_HOME = System.getProperty("user.home");
-    private static final String[] TEST_FILES = {USER_HOME + "/Desktop/test.txt"};
+    private static final String[] TEST_FILES = { USER_HOME + "/Desktop/test.txt" };
     private static final String INSTALL_DIR = "D:/Miles/Programme/Steam/SteamApps/common/Stellaris";
     private static final String USER_DATA_DIR = USER_HOME + "/Documents/Paradox Interactive/Stellaris";
 
-    private static final String SAVE_FOLDER = "mpomnidirective_20173703";
-    private static final String SAVE_GAME = "mature_save"; // "2270.04.10";
+    private static final String SAVE_FOLDER = "mpawk_-16382568";
+    private static final String SAVE_GAME = "2357.01.15";
 
     private static final int PROGRESS_DEPTH = 4;
 

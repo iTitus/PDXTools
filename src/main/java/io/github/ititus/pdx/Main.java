@@ -52,7 +52,7 @@ public class Main extends Application {
         primaryStage.centerOnScreen();
     }
 
-    public void lookAt(Point3D lookAtPos, Rotate rX, Rotate rY, Translate translate) {
+    /*public void lookAt(Point3D lookAtPos, Rotate rX, Rotate rY, Translate translate) {
         Point3D camDirection = lookAtPos.subtract(translate.getX(), translate.getY(), translate.getZ()).normalize();
 
         double xRotation = Math.toDegrees(Math.asin(-camDirection.getY()));
@@ -69,5 +69,5 @@ public class Main extends Application {
         rY.setPivotY(translate.getY());
         rY.setPivotZ(translate.getZ());
         rY.setAxis(Rotate.Y_AXIS);
-    }
+    }*/
 }

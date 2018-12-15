@@ -1,11 +1,18 @@
+import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import io.github.ititus.pdx.stellaris.view.GalaxyView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.File;
+import java.util.Comparator;
+import java.util.Map;
 
 public class Test extends Application {
 
@@ -16,7 +23,20 @@ public class Test extends Application {
     @Override
     public void start(Stage primaryStage) {
         long time = System.currentTimeMillis();
-        GalaxyView galaxyView = new GalaxyView(getStellarisGame(), getStellarisSave());
+
+        StellarisGame game = getStellarisGame();
+        StellarisSave save = getStellarisSave();
+
+        ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
+        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ImmutableMultimap<String, String> saveParseErrors = save != null ? save.getErrors() : null;
+        if (saveParseErrors != null) {
+            saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
+        }
+
+        GalaxyView galaxyView = new GalaxyView(game, save);
 
         Scene scene = new Scene(galaxyView);
         primaryStage.setTitle("Galaxy View");
@@ -35,7 +55,7 @@ public class Test extends Application {
 
     private static StellarisSave getStellarisSave() {
         long time = System.currentTimeMillis();
-        StellarisSave save = new StellarisSave(new File("C:/Users/Vella/Desktop/test_save"));
+        StellarisSave save = new StellarisSave(new File("C:/Users/Vella/Desktop/new_save"));
         System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return save;
     }
