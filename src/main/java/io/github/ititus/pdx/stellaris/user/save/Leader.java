@@ -14,7 +14,7 @@ public class Leader {
     private final LeaderName name;
     private final Location location, preRulerLocation, targetCoordinate;
     private final Flags flags;
-    private final LeaderMandate mandate;
+    private final Type mandate;
     private final LeaderDesign design;
     private final LeaderRoles roles;
 
@@ -51,13 +51,13 @@ public class Leader {
         this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         this.agenda = o.getString("agenda");
         o1 = o.getObject("mandate");
-        this.mandate = o1 != null ? o1.getAs(LeaderMandate::new) : null;
+        this.mandate = o1 != null ? o1.getAs(Type::new) : null;
         o1 = o.getObject("design");
         this.design = o1 != null ? o1.getAs(LeaderDesign::new) : null;
         this.roles = o.getObject("roles").getAs(LeaderRoles::new);
     }
 
-    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction, double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass, String agenda, Date start, Date end, Date dateAdded, Date date, LeaderName name, Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, LeaderMandate mandate, LeaderDesign design, LeaderRoles roles) {
+    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction, double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass, String agenda, Date start, Date end, Date dateAdded, Date date, LeaderName name, Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, Type mandate, LeaderDesign design, LeaderRoles roles) {
         this.speciesIndex = speciesIndex;
         this.country = country;
         this.creator = creator;
@@ -173,7 +173,7 @@ public class Leader {
         return flags;
     }
 
-    public LeaderMandate getMandate() {
+    public Type getMandate() {
         return mandate;
     }
 

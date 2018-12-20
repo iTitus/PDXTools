@@ -92,6 +92,7 @@ public class GameState {
         this.lastCreatedArmy = o.getInt("last_created_army", -1);
         this.lastCreatedDesign = o.getInt("last_created_design", -1);
         this.armies = o.getObject("army").getAs(Armies::new);
+        // TODO: deposit
         this.groundCombats = o.getObject("ground_combat").getAs(GroundCombats::new);
         this.firedEvents = o.getList("fired_events").getAsIntList();
         this.wars = o.getObject("war").getAs(Wars::new);
@@ -104,6 +105,7 @@ public class GameState {
         this.lastDiploAction = o.getInt("last_diplo_action_id", -1);
         this.lastNotificationId = o.getInt("last_notification_id", -1);
         this.lastEventId = o.getInt("last_event_id", -1);
+        // TODO: player_event
         this.randomNameDatabase = o.getObject("random_name_database").getAs(RandomNameDatabase::new);
         PdxScriptObject o1 = o.getObject("name_list");
         if (o1 == null || o1.size() > 0) {
@@ -120,6 +122,7 @@ public class GameState {
         this.megaStructures = o.getObject("megastructures").getAs(MegaStructures::new);
         this.bypasses = o.getObject("bypasses").getAs(Bypasses::new);
         this.naturalWormholes = o.getObject("natural_wormholes").getAs(NaturalWormholes::new);
+        // TODO trade_routes, sectors
         this.globalShipDesigns = o.getList("global_ship_design").getAsList(GlobalShipDesign::new);
         this.clusters = o.getList("clusters").getAsList(Cluster::new);
         this.rimGalacticObjects = o.getList("rim_galactic_objects").getAsIntList();
@@ -129,6 +132,7 @@ public class GameState {
         this.usedSpeciesPortraits = o.getImplicitList("used_species_portrait").getAsList(UsedSpeciesClassAssets::new);
         this.randomSeed = o.getUnsignedInt("random_seed");
         this.randomCount = o.getInt("random_count");
+        // TODO: market, trade_routes_manager, slave_market_manager
     }
 
     public GameState(int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount, int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName, Date date, ImmutableIntList firedEvents, ImmutableIntList rimGalacticObjects, ImmutableLongList usedSymbols, ImmutableList<String> requiredDLCs, ImmutableList<String> usedColors, ImmutableList<Player> players, ImmutableList<Species> species, ImmutableList<Nebula> nebulas, ImmutableList<Message> messages, ImmutableList<SavedEventTarget> savedEventTargets, ImmutableList<GlobalShipDesign> globalShipDesigns, ImmutableList<Cluster> clusters, ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes) {

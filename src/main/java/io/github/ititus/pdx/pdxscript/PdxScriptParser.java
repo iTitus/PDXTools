@@ -123,10 +123,14 @@ public final class PdxScriptParser implements PdxConstants {
             if (token.charAt(0) == QUOTE_CHAR || token.charAt(l - 1) == QUOTE_CHAR) {
                 if (l >= 2 && token.charAt(0) == QUOTE_CHAR && token.charAt(l - 1) == QUOTE_CHAR) {
                     token = token.substring(1, token.length() - 1);
-                    try {
-                        value = sdf.parse(token);
-                    } catch (ParseException e) {
-                        value = token; // fallback to string
+                    if (DATE_PATTERN.matcher(token).matches()) {
+                        try {
+                            value = sdf.parse(token);
+                        } catch (ParseException e) {
+                            value = token; // fallback to string
+                        }
+                    } else {
+                        value = token;
                     }
                 } else {
                     throw new RuntimeException("Quote not closed at token " + token);

@@ -12,6 +12,7 @@ import org.eclipse.collections.impl.factory.Sets;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -42,7 +43,7 @@ public class StellarisSave {
     }
 
     private static IPdxScript parse(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
-        return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry))));
+        return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry), StandardCharsets.UTF_8)));
     }
 
     public static StellarisSave loadNewest(String saveDirPath) {

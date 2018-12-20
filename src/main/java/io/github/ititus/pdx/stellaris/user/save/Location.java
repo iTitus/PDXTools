@@ -15,7 +15,7 @@ public class Location {
     private Location(PdxScriptObject o) {
         this.type = o.getString("type");
         this.area = o.getString("area");
-        this.id = o.getInt("id");
+        this.id = o.getUnsignedInt("id");
     }
 
     private Location(int id, String type, String area) {

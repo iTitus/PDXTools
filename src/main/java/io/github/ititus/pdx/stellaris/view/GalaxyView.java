@@ -41,7 +41,7 @@ import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.util.Comparator;
 
-public class GalaxyView extends BorderPane {
+public final class GalaxyView extends BorderPane {
 
     private static final double INFO_PANEL_WIDTH = 200;
     private static final double PADDING = 5;

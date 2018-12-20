@@ -28,7 +28,7 @@ public class Starbase {
         this.nextBuildItemId = o.getInt("next_build_item_id");
         this.nextShipyardBuildItemId = o.getInt("next_shipyard_build_item_id");
         this.shipDesign = o.getInt("ship_design");
-        this.station = o.getInt("station");
+        this.station = o.getUnsignedInt("station");
         this.system = o.getInt("system");
         this.owner = o.getInt("owner");
     }

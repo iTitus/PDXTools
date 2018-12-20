@@ -1,7 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.ImmutableLongObjectMap;
 
 public class Ships {

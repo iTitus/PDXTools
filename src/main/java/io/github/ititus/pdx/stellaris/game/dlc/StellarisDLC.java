@@ -14,7 +14,10 @@ import java.io.FileFilter;
 
 public class StellarisDLC {
 
-    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
+    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
+            // Missing relation sign in object
+            "sound/megacorp_vo.asset"
+    );
     private static final FileFilter DLC = new FileExtensionFilter("dlc");
     private static final IFileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
 

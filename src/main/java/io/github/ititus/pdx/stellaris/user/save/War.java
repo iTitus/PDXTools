@@ -11,6 +11,6 @@ public class War {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        // TODO: this
+        // TODO: name, start_date, attackers: Belligerent, defenders: Belligerent, attacker_war_goal: Type, defender_war_goal: Type, have_defender_war_goal, attacker_war_exhaustion, defender_war_exhaustion, defender_force_peace, defender_force_peace_date
     }
 }

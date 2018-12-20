@@ -44,7 +44,7 @@ public class MutableString {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MutableBoolean)) {
+        if (!(o instanceof MutableString)) {
             return false;
         }
         MutableString that = (MutableString) o;

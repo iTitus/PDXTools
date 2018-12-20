@@ -13,11 +13,13 @@ public class Common {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "HOW_TO_MAKE_NEW_SHIPS.txt", "common/edicts/README.txt",
+            "HOW_TO_MAKE_NEW_SHIPS.txt", "edicts/README.txt",
             // V value of HSV color is between 1.0 and 2.0
             "planet_classes/00_planet_classes.txt",
             // Missing relation sign in object
-            "map_modes/00_map_modes.txt", "random_names/00_empire_names.txt", "random_names/00_war_names.txt", "solar_system_initializers/hostile_system_initializers.txt"
+            "random_names/00_empire_names.txt", "random_names/00_war_names.txt", "solar_system_initializers/hostile_system_initializers.txt",
+            // No relation sign in list allowed
+            "name_lists/HUMAN1_SC.txt"
     );
     private static final IFileFilter FILTER = new FileExtensionFilter("txt");
 

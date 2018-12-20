@@ -95,6 +95,7 @@ public interface PdxConstants {
     Pattern EMPTY_PATTERN = Pattern.compile(EMPTY);
     Pattern DIGITS_PATTERN = Pattern.compile("\\d+");
     Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
+    Pattern DATE_PATTERN = Pattern.compile("(1|\\d{4})\\.((0[1-9])|(1[012]))\\.((0[1-9])|([12]\\d)|(3[01]))");
     Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");
     Pattern HEX_RGB_PATTERN = Pattern.compile("(0x|#)((([0-9A-Fa-f]{2})?)[0-9A-Fa-f]{6})");
     Pattern LANGUAGE_PATTERN = Pattern.compile("^(?<" + KEY_LANGUAGE + ">l_(\\w+)):$");

@@ -16,8 +16,17 @@ import java.util.Map;
 
 public class Test extends Application {
 
+    private static final String USER_HOME = System.getProperty("user.home");
+
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static StellarisSave getStellarisSave() {
+        long time = System.currentTimeMillis();
+        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/new_save"));
+        System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
+        return save;
     }
 
     @Override
@@ -51,13 +60,6 @@ public class Test extends Application {
         StellarisGame game = null; // TODO:  maybe hack something together here
         System.out.println("Game Data Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return game;
-    }
-
-    private static StellarisSave getStellarisSave() {
-        long time = System.currentTimeMillis();
-        StellarisSave save = new StellarisSave(new File("C:/Users/Vella/Desktop/new_save"));
-        System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
-        return save;
     }
 
     /*@Override

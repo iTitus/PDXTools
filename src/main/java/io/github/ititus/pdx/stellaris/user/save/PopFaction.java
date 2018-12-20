@@ -7,13 +7,11 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class PopFaction {
 
-    private final boolean modifierDirty;
     private final int country, leader;
-    private final double support, happiness;
+    private final double support, factionApproval;
     private final String type, name;
     private final ImmutableIntList members;
     private final ImmutableList<Parameter> parameters;
-    private final ImmutableList<TimedModifier> timedModifiers;
 
     public PopFaction(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -27,27 +25,19 @@ public class PopFaction {
         this.leader = o.getInt("leader");
         this.parameters = o.getList("parameters").getAsList(Parameter::new);
         this.support = o.getDouble("support");
-        this.happiness = o.getDouble("happiness");
-        this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
+        this.factionApproval = o.getDouble("faction_approval");
         this.members = o.getList("members").getAsIntList();
-        this.modifierDirty = o.getBoolean("modifier_dirty");
     }
 
-    public PopFaction(boolean modifierDirty, int country, int leader, double support, double happiness, String type, String name, ImmutableIntList members, ImmutableList<Parameter> parameters, ImmutableList<TimedModifier> timedModifiers) {
-        this.modifierDirty = modifierDirty;
+    public PopFaction(int country, int leader, double support, double factionApproval, String type, String name, ImmutableIntList members, ImmutableList<Parameter> parameters) {
         this.country = country;
         this.leader = leader;
         this.support = support;
-        this.happiness = happiness;
+        this.factionApproval = factionApproval;
         this.type = type;
         this.name = name;
         this.members = members;
         this.parameters = parameters;
-        this.timedModifiers = timedModifiers;
-    }
-
-    public boolean isModifierDirty() {
-        return modifierDirty;
     }
 
     public int getCountry() {
@@ -62,8 +52,8 @@ public class PopFaction {
         return support;
     }
 
-    public double getHappiness() {
-        return happiness;
+    public double getFactionApproval() {
+        return factionApproval;
     }
 
     public String getType() {
@@ -80,9 +70,5 @@ public class PopFaction {
 
     public ImmutableList<Parameter> getParameters() {
         return parameters;
-    }
-
-    public ImmutableList<TimedModifier> getTimedModifiers() {
-        return timedModifiers;
     }
 }

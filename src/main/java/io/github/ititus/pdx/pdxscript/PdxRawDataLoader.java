@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class PdxRawDataLoader implements PdxConstants {
     }
 
     private static IPdxScript parse(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
-        return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry))));
+        return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry), StandardCharsets.UTF_8)));
     }
 
     private static boolean containsParent(ImmutableSet<String> blacklist, String name) {
