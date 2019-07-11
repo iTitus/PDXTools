@@ -17,11 +17,13 @@ public class StellarisGame {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt", "gfx/fonts/arimo/LICENSE.txt", "interface/credits.txt", "interface/credits_l_simp_chinese.txt", "interface/reference.txt", "interface/startup_info.txt", "licenses", "pdx_launcher/game/motd.txt", "previewer_assets/previewer_filefilter.txt", "steam_appid.txt",
+            "augustus_branch.txt", "augustus_rev.txt", "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "clausewitz_branch.txt", "clausewitz_rev.txt","console_history.txt", "gfx/fonts/arimo/LICENSE.txt", "interface/credits.txt", "interface/credits_l_simphinese.txt", "interface/reference.txt", "interface/startup_info.txt", "licenses", "pdx_launcher/game/motd.txt", "previewer_assets/previewer_filefilter.txt", "steam_appid.txt",
             // Handled separately
             "common", "dlc", "localisation", "localisation_synced", "pdx_launcher/common/localisation", "pdx_online_assets/localisation",
             // Missing curly bracket at the end
             "gfx/models/add_ons/_add_ons_meshes.gfx",
+            // One too many curly brackets at the end
+            "gfx/models/planets/_planetary_entities.asset",
             // V value of HSV color is between 1.0 and 2.0
             "flags/colors.txt", "gfx/advisorwindow/advisorwindow_environment.txt", "gfx/worldgfx/customization_view_planet.txt", "gfx/worldgfx/ship_design_icon.txt", "gfx/worldgfx/ship_details_view.txt", "gfx/worldgfx/system_view.txt",
             // Missing relation sign in object

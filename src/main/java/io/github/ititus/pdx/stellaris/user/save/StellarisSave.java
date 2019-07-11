@@ -1,8 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
-import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
@@ -10,12 +8,7 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class StellarisSave {
 
@@ -40,10 +33,6 @@ public class StellarisSave {
         this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, -1, null);
         this.meta = this.saveDataLoader.getRawData().getObject(META).getAs(Meta::new);
         this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
-    }
-
-    private static IPdxScript parse(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
-        return PdxScriptParser.parse(IOUtil.getCharacterStream(new InputStreamReader(zipFile.getInputStream(zipEntry), StandardCharsets.UTF_8)));
     }
 
     public static StellarisSave loadNewest(String saveDirPath) {

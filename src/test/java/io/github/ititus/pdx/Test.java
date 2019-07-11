@@ -19,14 +19,24 @@ import java.util.Map;
 public class Test extends Application {
 
     private static final String USER_HOME = System.getProperty("user.home");
+    private static final String INSTALL_DIR = "C:/Program Files (x86)/Steam/steamapps/common/Stellaris";
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    private static StellarisGame getStellarisGame() {
+        long time = System.currentTimeMillis();
+        StellarisGame game = new StellarisGame(INSTALL_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
+            // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
+        });
+        System.out.println("Game Data Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
+        return game;
+    }
+
     private static StellarisSave getStellarisSave() {
         long time = System.currentTimeMillis();
-        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/pdx/new_save"));
+        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/pdx/first_converted_save_2.3.3"));
         System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return save;
     }
@@ -47,21 +57,19 @@ public class Test extends Application {
             saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
         }
 
-        GalaxyView galaxyView = new GalaxyView(game, save);
+        System.out.println("Total Loading Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
 
-        Scene scene = new Scene(galaxyView);
-        primaryStage.setTitle("Galaxy View");
-        primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
-        primaryStage.show();
-        System.out.println("Total Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
-    }
+        if (save != null) {
+            GalaxyView galaxyView = new GalaxyView(game, save);
 
-    private StellarisGame getStellarisGame() {
-        long time = System.currentTimeMillis();
-        StellarisGame game = null; // TODO:  maybe hack something together here
-        System.out.println("Game Data Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
-        return game;
+            Scene scene = new Scene(galaxyView);
+            primaryStage.setTitle("Galaxy View");
+            primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
+            primaryStage.show();
+        }
+
+        System.out.println("done");
     }
 
     /*@Override
