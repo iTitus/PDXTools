@@ -21,11 +21,13 @@ public class FleetCombatStats {
     private FleetCombatStats(PdxScriptObject o) {
         PdxScriptObject o1 = o.getObject("fleet");
         if (o1 == null || o1.size() > 0) {
-            throw new RuntimeException("Unexpected fleet: " + o1);
+            // TODO: there are some additional fields here (eg. ship_size_count_lost)
+            // throw new RuntimeException("Unexpected fleet: " + o1);
         }
         Date date = o.getDate("date");
         if (!PdxConstants.NULL_DATE.equals(date)) {
-            throw new RuntimeException("Unexpected date: " + date);
+            // TODO: not always null date
+            // throw new RuntimeException("Unexpected date: " + date);
         }
         PdxScriptList l = o.getList("enemy");
         this.enemy = l != null ? l.getAsList(FleetCombatEnemy::new) : Lists.immutable.empty();

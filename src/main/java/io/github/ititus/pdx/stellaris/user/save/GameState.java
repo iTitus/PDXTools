@@ -74,7 +74,7 @@ public class GameState {
         this.lastCreatedPop = o.getInt("last_created_pop", -1);
         this.galacticObjects = o.getObject("galactic_object").getAs(GalacticObjects::new);
         this.starbases = o.getObject("starbases").getAs(Starbases::new);
-        this.planets = o.getObject("planet").getAs(Planets::new);
+        this.planets = o.getObject("planets").getAs(Planets::new);
         this.countries = o.getObject("country").getAs(Countries::new);
         this.alliances = o.getObject("alliance").getAs(Alliances::new);
         this.truces = o.getObject("truce").getAs(Truces::new);

@@ -27,9 +27,9 @@ public class Test extends Application {
 
     private static StellarisGame getStellarisGame() {
         long time = System.currentTimeMillis();
-        StellarisGame game = new StellarisGame(INSTALL_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
+        StellarisGame game = null; /*new StellarisGame(INSTALL_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
             // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
-        });
+        });*/
         System.out.println("Game Data Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return game;
     }

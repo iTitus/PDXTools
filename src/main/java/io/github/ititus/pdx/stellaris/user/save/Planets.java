@@ -8,7 +8,7 @@ public class Planets {
     private final ImmutableIntObjectMap<Planet> planets;
 
     public Planets(PdxScriptObject o) {
-        this.planets = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Planet::new));
+        this.planets = o.getObject("planet").getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Planet::new));
     }
 
     public Planets(ImmutableIntObjectMap<Planet> planets) {
