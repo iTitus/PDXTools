@@ -15,9 +15,11 @@
 # IntelliJ IDEA
 .idea/
 target/
+out/
 
 # Gradle
 .gradle/
+build/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

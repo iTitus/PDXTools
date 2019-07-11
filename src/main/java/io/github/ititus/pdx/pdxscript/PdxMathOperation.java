@@ -37,13 +37,13 @@ public enum PdxMathOperation implements PdxConstants {
         }
         if (n1 instanceof Long || n2 instanceof Long) {
             long l = n1.longValue() / n2.longValue();
-            if (d != l) {
+            if (d != (double) l) {
                 return d;
             }
             return l;
         }
         int i = n1.intValue() / n2.intValue();
-        if (d != i) {
+        if (d != (double) i) {
             return d;
         }
         return i;

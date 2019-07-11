@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 public class StellarisSaveAnalyser implements Runnable {
 
     private static final String USER_HOME = System.getProperty("user.home");
-    private static final String[] TEST_FILES = { USER_HOME + "/Desktop/test.txt" };
-    private static final String INSTALL_DIR = "D:/Miles/Programme/Steam/SteamApps/common/Stellaris";
+    private static final String[] TEST_FILES = { USER_HOME + "/Desktop/pdx/test.txt" };
+    private static final String INSTALL_DIR = "C:/Program Files (x86)/Steam/steamapps/common/Stellaris";
     private static final String USER_DATA_DIR = USER_HOME + "/Documents/Paradox Interactive/Stellaris";
 
     private static final String SAVE_FOLDER = "mpawk_-16382568";

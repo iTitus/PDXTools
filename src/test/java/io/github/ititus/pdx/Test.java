@@ -1,3 +1,5 @@
+package io.github.ititus.pdx;
+
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
@@ -24,7 +26,7 @@ public class Test extends Application {
 
     private static StellarisSave getStellarisSave() {
         long time = System.currentTimeMillis();
-        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/new_save"));
+        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/pdx/new_save"));
         System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return save;
     }
