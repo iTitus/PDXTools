@@ -1,0 +1,26 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+}
+
+group = 'io.github.ititus.pdx'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_12
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.eclipse.collections:eclipse-collections-api:9.2.0'
+    compile 'org.eclipse.collections:eclipse-collections:9.2.0'
+    compile 'org.eclipse.collections:eclipse-collections-forkjoin:9.2.0'
+    testCompile 'org.eclipse.collections:eclipse-collections-testutils:9.2.0'
+}
+
+javafx {
+    version = '12.0.1'
+    modules = ['javafx.controls']
+}
+
+mainClassName = 'io.github.ititus.pdx.Main'
