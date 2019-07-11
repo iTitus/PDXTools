@@ -4,14 +4,16 @@ plugins {
 }
 
 group = 'io.github.ititus.pdx'
-version = '1.0-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 sourceCompatibility = JavaVersion.VERSION_12
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
+    compile 'io.github.ititus:math:1.0.0+'
     compile 'org.eclipse.collections:eclipse-collections-api:9.2.0'
     compile 'org.eclipse.collections:eclipse-collections:9.2.0'
     compile 'org.eclipse.collections:eclipse-collections-forkjoin:9.2.0'
