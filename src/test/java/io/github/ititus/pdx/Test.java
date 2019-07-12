@@ -36,7 +36,7 @@ public class Test extends Application {
 
     private static StellarisSave getStellarisSave() {
         long time = System.currentTimeMillis();
-        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/pdx/first_converted_save_2.3.3"));
+        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/pdx/nico_2.3.3"));
         System.out.println("Test Save Load Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
         return save;
     }

@@ -24,7 +24,8 @@ public class Leader {
         }
         PdxScriptObject o = (PdxScriptObject) s;
 
-        this.name = o.getObject("name").getAs(LeaderName::new);
+        PdxScriptObject o1 = o.getObject("name");
+        this.name = o1 != null ? o1.getAs(LeaderName::new) : null;
         this.speciesIndex = o.getInt("species_index");
         this.portrait = o.getString("portrait");
         this.gender = o.getString("gender");
@@ -34,7 +35,7 @@ public class Leader {
         this.preRulerLeaderClass = o.getString("pre_ruler_class");
         this.experience = o.getDouble("experience");
         this.level = o.getInt("level");
-        PdxScriptObject o1 = o.getObject("location");
+        o1 = o.getObject("location");
         this.location = o1 != null ? o1.getAs(Location::of) : null;
         o1 = o.getObject("pre_ruler_location");
         this.preRulerLocation = o1 != null ? o1.getAs(Location::of) : null;

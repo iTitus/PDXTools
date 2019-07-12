@@ -285,15 +285,13 @@ public final class PdxScriptParser implements PdxConstants {
                     }
 
                     if (openQuotes.get()) {
-                        if (isNewLine(c)) {
-                            throw new RuntimeException("No multi-line strings");
-                        }
                         b.append(c);
-                        if (c == QUOTE_CHAR && b.charAt(b.length() - 1) != ESCAPE_CHAR) {
+                        if (c == QUOTE_CHAR && b.charAt(b.length() - 2) != ESCAPE_CHAR) {
                             openQuotes.set(false);
                             tokens.add(b.toString());
                             b.setLength(0);
                         }
+
                         return;
                     }
 
