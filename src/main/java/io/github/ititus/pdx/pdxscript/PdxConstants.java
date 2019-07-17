@@ -130,14 +130,14 @@ public interface PdxConstants {
         }
         throw new IllegalArgumentException();
     };
-    Function<IPdxScript, Integer> ZERO_OR_INTEGER = s -> {
+    Function<IPdxScript, Integer> TO_INTEGER = s -> {
         if (s instanceof PdxScriptValue) {
             Object o = ((PdxScriptValue) s).getValue();
             if (o instanceof Integer) {
                 return (Integer) o;
             }
         }
-        return 0;
+        throw new IllegalArgumentException();
     };
     ToDoubleFunction<IPdxScript> TO_DOUBLE = s -> {
         if (s instanceof PdxScriptValue) {

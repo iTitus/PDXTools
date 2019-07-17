@@ -321,6 +321,8 @@ public final class PdxScriptObject implements IPdxScript {
                 map.put(Integer.parseInt(oldK), valueFct.apply((PdxScriptObject) oldV));
                 use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
+            } else {
+                usageStatistic.use(oldK, NULL, oldV);
             }
         });
         return map.toImmutable();
@@ -340,6 +342,8 @@ public final class PdxScriptObject implements IPdxScript {
                 map.put(Integer.parseInt(oldK), (String) v);
                 use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
+            } else {
+                usageStatistic.use(oldK, NULL, oldV);
             }
         });
         return map.toImmutable();
@@ -355,6 +359,8 @@ public final class PdxScriptObject implements IPdxScript {
                 map.put(Long.parseLong(oldK), valueFct.apply((PdxScriptObject) oldV));
                 use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
+            } else {
+                usageStatistic.use(oldK, NULL, oldV);
             }
         });
         return map.toImmutable();
@@ -413,8 +419,8 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected long in value, but got " + v);
                 }
                 map.put(k, (long) v);
-                use(oldK, PdxConstants.getTypeString(oldV));
-                usageStatistic.use(oldK, PdxConstants.getTypeString(oldV), oldV);
+                use(oldK, OBJECT);
+                usageStatistic.use(oldK, OBJECT, oldV);
             }
         });
         return map.toImmutable();
@@ -433,8 +439,8 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected double in value, but got " + v);
                 }
                 map.put(k, (double) v);
-                use(oldK, PdxConstants.getTypeString(oldV));
-                usageStatistic.use(oldK, PdxConstants.getTypeString(oldV), oldV);
+                use(oldK, DOUBLE);
+                usageStatistic.use(oldK, DOUBLE, oldV);
             }
         });
         return map.toImmutable();
@@ -444,13 +450,17 @@ public final class PdxScriptObject implements IPdxScript {
         MutableMap<K, V> map = Maps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
-            if (k != null && (!(oldV instanceof PdxScriptValue) || ((PdxScriptValue) oldV).getValue() != null)) {
-                if (!(oldV instanceof PdxScriptObject)) {
-                    throw new RuntimeException("expected object, but got " + oldV);
+            if (k != null) {
+                if (!(oldV instanceof PdxScriptValue) || ((PdxScriptValue) oldV).getValue() != null) {
+                    if (!(oldV instanceof PdxScriptObject)) {
+                        throw new RuntimeException("expected object, but got " + oldV);
+                    }
+                    map.put(k, valueFct.apply((PdxScriptObject) oldV));
+                    use(oldK, OBJECT);
+                    usageStatistic.use(oldK, OBJECT, oldV);
+                } else {
+                    usageStatistic.use(oldK, NULL, oldV);
                 }
-                map.put(k, valueFct.apply((PdxScriptObject) oldV));
-                use(oldK, PdxConstants.getTypeString(oldV));
-                usageStatistic.use(oldK, PdxConstants.getTypeString(oldV), oldV);
             }
         });
         return map.toImmutable();
@@ -458,10 +468,17 @@ public final class PdxScriptObject implements IPdxScript {
 
     public <K, V> ImmutableMultimap<K, V> getAsMultimap(Function<String, K> keyFct, org.eclipse.collections.api.block.function.Function<IPdxScript, V> valueFct) {
         MutableMultimap<K, V> map = Multimaps.mutable.list.empty();
-        this.map.forEachKey(oldK -> {
+        this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
             if (k != null) {
-                map.putAll(k, getImplicitList(oldK).getAsList(valueFct));
+                if (oldV instanceof PdxScriptList) {
+                    PdxScriptList l = (PdxScriptList) oldV;
+                    map.putAll(k, l.getAsList(valueFct));
+                    usageStatistic.use(oldK, l.getMode() == PdxScriptList.Mode.IMPLICIT ? IMPLICIT_LIST : LIST, oldV);
+                } else {
+                    map.putAll(k, PdxScriptList.builder().add(oldV).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS).getAsList(valueFct));
+                    usageStatistic.use(oldK, IMPLICIT_LIST, oldV);
+                }
             }
         });
         return map.toImmutable();

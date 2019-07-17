@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.SetIterable;
 import org.eclipse.collections.impl.factory.Sets;
@@ -43,10 +44,9 @@ public class PdxUsage implements PdxConstants {
     public boolean isError() {
         if (expectedTypes.size() == 1 && actualTypes.size() == 1 && expectedTypes.getOnly().equalsIgnoreCase(actualTypes.getOnly())) {
             return false;
-        }
-        if (expectedTypes.size() == 1) {
+        } else if (expectedTypes.size() == 1) {
             String expected = expectedTypes.getOnly();
-            List<String> list = actualTypes.stream().filter(t -> !NULL.equals(t)).collect(Collectors.toList());
+            List<String> actualNonNull = actualTypes.stream().filter(t -> !NULL.equals(t)).collect(Collectors.toList());
 
             if (INT.equals(expected) && actualTypes.difference(EXPECTED_INT).isEmpty()) {
                 return false;
@@ -54,10 +54,12 @@ public class PdxUsage implements PdxConstants {
                 return false;
             } else if (LONG.equals(expected) && actualTypes.difference(EXPECTED_LONG).isEmpty()) {
                 return false;
+            } else if (IMPLICIT_LIST.equals(expected) && !actualNonNull.isEmpty()) {
+                return false;
             }
 
-            if (list.size() == 1) {
-                String actual = list.get(0);
+            if (actualNonNull.size() == 1) {
+                String actual = actualNonNull.get(0);
                 if (expected.equals(actual)) {
                     return false;
                 }
@@ -69,6 +71,14 @@ public class PdxUsage implements PdxConstants {
 
     public boolean isObject() {
         return actualTypes.size() == 1 && OBJECT.equals(actualTypes.getOnly());
+    }
+
+    public ImmutableSet<String> getActualTypes() {
+        return actualTypes.toImmutable();
+    }
+
+    public ImmutableSet<String> getExpectedTypes() {
+        return expectedTypes.toImmutable();
     }
 
     @Override

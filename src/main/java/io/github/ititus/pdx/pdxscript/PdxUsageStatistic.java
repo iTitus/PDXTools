@@ -37,7 +37,17 @@ public class PdxUsageStatistic implements PdxConstants {
 
     public ImmutableList<String> getErrorStrings() {
         MutableList<String> strings = Lists.mutable.empty();
-        usages.entrySet().stream().filter(e -> e.getValue().isError()).sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(strings::add);
+        usages.entrySet().stream()
+                .filter(e -> e.getValue().isError())
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<String, PdxUsage> e) -> e.getValue().getExpectedTypes().size())
+                                .thenComparing((Map.Entry<String, PdxUsage> e) -> e.getValue().getExpectedTypes().toString())
+                                // .thenComparingInt((Map.Entry<String, PdxUsage> e) -> e.getValue().getActualTypes().size())
+                                // .thenComparing((Map.Entry<String, PdxUsage> e) -> e.getValue().getActualTypes().toString())
+                                .thenComparing(Map.Entry::getKey)
+                )
+                .map(p -> p.getKey() + " = " + p.getValue())
+                .forEachOrdered(strings::add);
         return strings.toImmutable();
     }
 }

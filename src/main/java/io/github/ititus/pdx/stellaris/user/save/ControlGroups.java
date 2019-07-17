@@ -8,7 +8,7 @@ public class ControlGroups {
     private final ImmutableMultimap<Integer, Property> controlGroups;
 
     public ControlGroups(PdxScriptObject o) {
-        this.controlGroups = o.getAsMultimap(Integer::valueOf, PdxScriptObject.nullOr(Property::new));
+        this.controlGroups = o.getAsMultimap(Integer::valueOf, Property::new);
     }
 
     public ControlGroups(ImmutableMultimap<Integer, Property> controlGroups) {

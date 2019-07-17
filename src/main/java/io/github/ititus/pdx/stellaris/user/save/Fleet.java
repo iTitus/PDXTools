@@ -10,9 +10,8 @@ import java.util.Date;
 
 public class Fleet {
 
-    private final boolean actionInitialized, civilian, station, mia, friendsShouldFollow;
+    private final boolean actionInitialized, civilian, station, mia;
     private final int aggroRangeMeasureFrom, fleetTemplate, owner, previousOwner, orderId;
-    private final long sector;
     private final double aggroRange, hitPoints;
     private final String name, groundSupportStance, fleetStance, miaType;
     private final Date returnDate;
@@ -67,27 +66,23 @@ public class Fleet {
         this.orderId = o.getInt("order_id", -1);
         o1 = o.getObject("order");
         this.orders = o1 != null ? o1.getAs(FleetOrders::new) : null;
-        this.sector = o.getLong("sector", -1);
         PdxScriptList l = o.getList("incoming_merges");
         this.incomingMerges = l != null ? l.getAsIntList() : IntLists.immutable.empty();
-        this.friendsShouldFollow = o.getBoolean("friends_should_follow");
         o1 = o.getObject("settings");
         this.settings = o1 != null ? o1.getAs(FleetSettings::new) : null;
         this.hitPoints = o.getDouble("hit_points");
     }
 
-    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, boolean friendsShouldFollow, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, long sector, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, String miaType, Date returnDate, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders, Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetSettings settings) {
+    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, String miaType, Date returnDate, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders, Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetSettings settings) {
         this.actionInitialized = actionInitialized;
         this.civilian = civilian;
         this.station = station;
         this.mia = mia;
-        this.friendsShouldFollow = friendsShouldFollow;
         this.aggroRangeMeasureFrom = aggroRangeMeasureFrom;
         this.fleetTemplate = fleetTemplate;
         this.owner = owner;
         this.previousOwner = previousOwner;
         this.orderId = orderId;
-        this.sector = sector;
         this.aggroRange = aggroRange;
         this.hitPoints = hitPoints;
         this.name = name;
@@ -126,10 +121,6 @@ public class Fleet {
         return mia;
     }
 
-    public boolean isFriendsShouldFollow() {
-        return friendsShouldFollow;
-    }
-
     public int getAggroRangeMeasureFrom() {
         return aggroRangeMeasureFrom;
     }
@@ -148,10 +139,6 @@ public class Fleet {
 
     public int getOrderId() {
         return orderId;
-    }
-
-    public long getSector() {
-        return sector;
     }
 
     public double getAggroRange() {

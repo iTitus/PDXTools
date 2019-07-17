@@ -64,10 +64,6 @@ public class Resources {
         this.betharian = betharian;
     }
 
-    private static double get(PdxScriptObject o, String resource) {
-        return o.getDouble(resource);
-    }
-
     public static Resources of(PdxScriptObject o) {
         return DEDUPLICATOR.deduplicate(new Resources(o));
     }

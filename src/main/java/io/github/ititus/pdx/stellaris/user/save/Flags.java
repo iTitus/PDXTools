@@ -17,7 +17,7 @@ public class Flags {
 
     private Flags(PdxScriptObject o) {
         this.intFlags = o.getAsObjectIntMap(s -> o.get(s) instanceof PdxScriptValue ? s : null);
-        this.complexFlags = o.getAsMap(s -> o.get(s) instanceof PdxScriptObject ? s : null, PdxScriptObject.objectOrNull(FlagData::new));
+        this.complexFlags = o.getAsMap(s -> o.get(s) instanceof PdxScriptObject ? s : null, FlagData::new);
     }
 
     private Flags(ImmutableObjectIntMap<String> intFlags, ImmutableMap<String, FlagData> complexFlags) {
