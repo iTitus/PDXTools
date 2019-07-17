@@ -8,7 +8,7 @@ public class GalacticObjects {
     private final ImmutableIntObjectMap<GalacticObject> galacticObjects;
 
     public GalacticObjects(PdxScriptObject o) {
-        this.galacticObjects = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(GalacticObject::new));
+        this.galacticObjects = o.getAsIntObjectMap(GalacticObject::new);
     }
 
     public GalacticObjects(ImmutableIntObjectMap<GalacticObject> galacticObjects) {

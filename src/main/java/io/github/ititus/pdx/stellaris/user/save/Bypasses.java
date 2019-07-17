@@ -8,7 +8,7 @@ public class Bypasses {
     private final ImmutableIntObjectMap<Bypass> bypasses;
 
     public Bypasses(PdxScriptObject o) {
-        this.bypasses = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Bypass::new));
+        this.bypasses = o.getAsIntObjectMap(Bypass::new);
     }
 
     public Bypasses(ImmutableIntObjectMap<Bypass> bypasses) {

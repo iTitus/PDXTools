@@ -6,7 +6,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Pop {
 
-    private final boolean forceFactionEvaluation;
     private final int speciesIndex, popFaction, planet;
     private final double crime, power, happiness;
     private final String job, category;
@@ -26,18 +25,19 @@ public class Pop {
         o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::of) : null;
         this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
-        this.forceFactionEvaluation = o.getBoolean("force_faction_evaluation");
         this.popFaction = o.getInt("pop_faction", -1);
         this.job = o.getString("job");
+        // TODO: former_job
         this.category = o.getString("category");
+        // TODO: demotion, demotion_time, promotion_date
         this.planet = o.getInt("planet");
         this.crime = o.getDouble("crime");
         this.power = o.getDouble("power");
         this.happiness = o.getDouble("happiness");
+        // TODO: can_migrate, amenities_usage, housing_usage
     }
 
-    public Pop(boolean forceFactionEvaluation, int speciesIndex, int popFaction, int planet, double crime, double power, double happiness, String job, String category, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags) {
-        this.forceFactionEvaluation = forceFactionEvaluation;
+    public Pop(int speciesIndex, int popFaction, int planet, double crime, double power, double happiness, String job, String category, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags) {
         this.speciesIndex = speciesIndex;
         this.popFaction = popFaction;
         this.planet = planet;
@@ -49,10 +49,6 @@ public class Pop {
         this.timedModifiers = timedModifiers;
         this.ethos = ethos;
         this.flags = flags;
-    }
-
-    public boolean isForceFactionEvaluation() {
-        return forceFactionEvaluation;
     }
 
     public int getSpeciesIndex() {

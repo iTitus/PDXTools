@@ -9,6 +9,7 @@ import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.collector.Collectors2;
@@ -269,16 +270,28 @@ public final class PdxScriptList implements IPdxScript {
         return b.toString();
     }
 
-    public ImmutableMultimap<String, String> getErrors() {
+    public ImmutableMultimap<String, String> getErrorsOld() {
         MutableMultimap<String, String> errors = Multimaps.mutable.set.empty();
         list.forEach(s -> {
             if (s instanceof PdxScriptObject) {
-                errors.putAll(((PdxScriptObject) s).getErrors());
+                errors.putAll(((PdxScriptObject) s).getErrorsOld());
             } else if (s instanceof PdxScriptList) {
-                errors.putAll(((PdxScriptList) s).getErrors());
+                errors.putAll(((PdxScriptList) s).getErrorsOld());
             }
         });
         return errors.toImmutable();
+    }
+
+    public PdxUsageStatistic getUsageStatistic() {
+        MutableMap<String, PdxUsage> usages = Maps.mutable.empty();
+        list.forEach(s -> {
+            if (s instanceof PdxScriptObject) {
+                ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k, usage, PdxUsage::merge));
+            } else if (s instanceof PdxScriptList) {
+                ((PdxScriptList) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k, usage, PdxUsage::merge));
+            }
+        });
+        return new PdxUsageStatistic(usages);
     }
 
     @Override

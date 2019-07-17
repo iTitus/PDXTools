@@ -8,7 +8,7 @@ public class NaturalWormholes {
     private final ImmutableIntObjectMap<NaturalWormhole> naturalWormholes;
 
     public NaturalWormholes(PdxScriptObject o) {
-        this.naturalWormholes = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(NaturalWormhole::new));
+        this.naturalWormholes = o.getAsIntObjectMap(NaturalWormhole::new);
     }
 
     public NaturalWormholes(ImmutableIntObjectMap<NaturalWormhole> naturalWormholes) {

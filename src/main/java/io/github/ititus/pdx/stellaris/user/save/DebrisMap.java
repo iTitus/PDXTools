@@ -8,7 +8,7 @@ public class DebrisMap {
     private final ImmutableIntObjectMap<Debris> debrisMap;
 
     public DebrisMap(PdxScriptObject o) {
-        this.debrisMap = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Debris::new));
+        this.debrisMap = o.getAsIntObjectMap(Debris::new);
     }
 
     public DebrisMap(ImmutableIntObjectMap<Debris> debrisMap) {

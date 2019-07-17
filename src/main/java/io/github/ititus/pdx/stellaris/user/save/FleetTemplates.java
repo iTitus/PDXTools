@@ -8,7 +8,7 @@ public class FleetTemplates {
     private final ImmutableIntObjectMap<FleetTemplate> fleetTemplates;
 
     public FleetTemplates(PdxScriptObject o) {
-        this.fleetTemplates = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(FleetTemplate::new));
+        this.fleetTemplates = o.getAsIntObjectMap(FleetTemplate::new);
     }
 
     public FleetTemplates(ImmutableIntObjectMap<FleetTemplate> fleetTemplates) {

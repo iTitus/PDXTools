@@ -8,7 +8,7 @@ public class Alliances {
     private final ImmutableIntObjectMap<Alliance> alliances;
 
     public Alliances(PdxScriptObject o) {
-        this.alliances = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Alliance::new));
+        this.alliances = o.getAsIntObjectMap(Alliance::new);
     }
 
     public Alliances(ImmutableIntObjectMap<Alliance> alliances) {

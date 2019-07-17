@@ -8,7 +8,7 @@ public class Armies {
     private final ImmutableIntObjectMap<Army> armies;
 
     public Armies(PdxScriptObject o) {
-        this.armies = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Army::new));
+        this.armies = o.getAsIntObjectMap(Army::new);
     }
 
     public Armies(ImmutableIntObjectMap<Army> armies) {

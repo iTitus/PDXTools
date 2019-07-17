@@ -5,10 +5,9 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Army {
 
-    private final int homePlanet, owner, speciesIndex, ship, leader, planet;
-    private final long tile;
-    private final double health, experience, morale;
-    private final String name, type, fleetName;
+    private final int homePlanet, owner, speciesIndex, ship, leader, planet, pop;
+    private final double health, maxHealth, experience, morale;
+    private final String name, type;
 
     public Army(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -19,7 +18,7 @@ public class Army {
         this.name = o.getString("name");
         this.type = o.getString("type");
         this.health = o.getDouble("health");
-        this.fleetName = o.getString("fleet_name");
+        this.maxHealth = o.getDouble("max_health");
         this.homePlanet = o.getInt("home_planet");
         this.owner = o.getInt("owner");
         this.speciesIndex = o.getInt("species_index");
@@ -28,23 +27,23 @@ public class Army {
         this.planet = o.getInt("planet");
         this.experience = o.getDouble("experience");
         this.morale = o.getDouble("morale");
-        this.tile = o.getLong("tile");
+        this.pop = o.getInt("pop");
     }
 
-    public Army(int homePlanet, int owner, int speciesIndex, int ship, int leader, int planet, long tile, double health, double experience, double morale, String name, String type, String fleetName) {
+    public Army(int homePlanet, int owner, int speciesIndex, int ship, int leader, int planet, int pop, double health, double maxHealth, double experience, double morale, String name, String type) {
         this.homePlanet = homePlanet;
         this.owner = owner;
         this.speciesIndex = speciesIndex;
         this.ship = ship;
         this.leader = leader;
         this.planet = planet;
-        this.tile = tile;
+        this.pop = pop;
         this.health = health;
+        this.maxHealth = maxHealth;
         this.experience = experience;
         this.morale = morale;
         this.name = name;
         this.type = type;
-        this.fleetName = fleetName;
     }
 
     public int getHomePlanet() {
@@ -71,12 +70,16 @@ public class Army {
         return planet;
     }
 
-    public long getTile() {
-        return tile;
+    public int getPop() {
+        return pop;
     }
 
     public double getHealth() {
         return health;
+    }
+
+    public double getMaxHealth() {
+        return maxHealth;
     }
 
     public double getExperience() {
@@ -93,9 +96,5 @@ public class Army {
 
     public String getType() {
         return type;
-    }
-
-    public String getFleetName() {
-        return fleetName;
     }
 }

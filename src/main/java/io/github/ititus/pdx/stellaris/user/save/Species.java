@@ -5,8 +5,9 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Species {
 
-    private final int base, homePlanet;
-    private final String nameList, name, plural, adjective, speciesClass, portrait, nameData;
+    private final boolean sapient;
+    private final int base, homePlanet, uplifter;
+    private final String nameList, name, plural, adjective, speciesBio, speciesClass, portrait, nameData;
     private final Traits traits;
     private final Flags flags;
 
@@ -21,27 +22,37 @@ public class Species {
         this.name = o.getString("name");
         this.plural = o.getString("plural");
         this.adjective = o.getString("adjective");
+        this.speciesBio = o.getString("species_bio");
         this.speciesClass = o.getString("class");
         this.portrait = o.getString("portrait");
         this.traits = o.getObject("traits").getAs(Traits::of);
         this.homePlanet = o.getInt("home_planet", -1);
+        this.uplifter = o.getInt("uplifter", -1);
+        this.sapient = o.getBoolean("sapient", true);
         this.nameData = o.getString("name_data");
         PdxScriptObject o1 = o.getObject("flags");
         this.flags = o1 != null ? o1.getAs(Flags::of) : null;
     }
 
-    public Species(int base, int homePlanet, String nameList, String name, String plural, String adjective, String speciesClass, String portrait, String nameData, Traits traits, Flags flags) {
+    public Species(boolean sapient, int base, int homePlanet, int uplifter, String nameList, String name, String plural, String adjective, String speciesBio, String speciesClass, String portrait, String nameData, Traits traits, Flags flags) {
+        this.sapient = sapient;
         this.base = base;
         this.homePlanet = homePlanet;
+        this.uplifter = uplifter;
         this.nameList = nameList;
         this.name = name;
         this.plural = plural;
         this.adjective = adjective;
+        this.speciesBio = speciesBio;
         this.speciesClass = speciesClass;
         this.portrait = portrait;
         this.nameData = nameData;
         this.traits = traits;
         this.flags = flags;
+    }
+
+    public boolean isSapient() {
+        return sapient;
     }
 
     public int getBase() {
@@ -50,6 +61,10 @@ public class Species {
 
     public int getHomePlanet() {
         return homePlanet;
+    }
+
+    public int getUplifter() {
+        return uplifter;
     }
 
     public String getNameList() {
@@ -66,6 +81,10 @@ public class Species {
 
     public String getAdjective() {
         return adjective;
+    }
+
+    public String getSpeciesBio() {
+        return speciesBio;
     }
 
     public String getSpeciesClass() {

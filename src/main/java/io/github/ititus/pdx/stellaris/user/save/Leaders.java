@@ -8,7 +8,7 @@ public class Leaders {
     private final ImmutableIntObjectMap<Leader> leaders;
 
     public Leaders(PdxScriptObject o) {
-        this.leaders = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Leader::new));
+        this.leaders = o.getAsIntObjectMap(Leader::new);
     }
 
     public Leaders(ImmutableIntObjectMap<Leader> leaders) {

@@ -8,7 +8,7 @@ public class GroundCombats {
     private final ImmutableIntObjectMap<GroundCombat> groundCombats;
 
     public GroundCombats(PdxScriptObject o) {
-        this.groundCombats = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(GroundCombat::new));
+        this.groundCombats = o.getAsIntObjectMap(GroundCombat::new);
     }
 
     public GroundCombats(ImmutableIntObjectMap<GroundCombat> groundCombats) {

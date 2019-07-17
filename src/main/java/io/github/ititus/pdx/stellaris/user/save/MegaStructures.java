@@ -8,7 +8,7 @@ public class MegaStructures {
     private final ImmutableIntObjectMap<MegaStructure> megaStructures;
 
     public MegaStructures(PdxScriptObject o) {
-        this.megaStructures = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(MegaStructure::new));
+        this.megaStructures = o.getAsIntObjectMap(MegaStructure::new);
     }
 
     public MegaStructures(ImmutableIntObjectMap<MegaStructure> megaStructures) {

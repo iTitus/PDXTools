@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris;
 
+import io.github.ititus.math.time.DurationFormatter;
+import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.Main;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -100,7 +102,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
     @Override
     public void run() {
-        long time = System.currentTimeMillis();
+        StopWatch s = StopWatch.createRunning();
         int STEPS = 5;
 
         Platform.runLater(() -> {
@@ -214,7 +216,7 @@ public class StellarisSaveAnalyser implements Runnable {
         ImmutableList<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
 
         updateProgressMessage(3, true, 1, SAVE_ERROR_STEPS, "Gathering Save Parsing Errors");
-        ImmutableMultimap<String, String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrors() : null;
+        ImmutableMultimap<String, String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrorsOld() : null;
         if (saveParseErrors != null) {
             saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
         }
@@ -227,7 +229,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
         updateProgressMessage(0, false, 5, STEPS, "Done");
 
-        System.out.println("Time: " + (System.currentTimeMillis() - time) / 1000D + " s");
+        System.out.println("Time: " + DurationFormatter.formatSeconds(s.stop()));
         Platform.runLater(main::transition);
     }
 

@@ -8,7 +8,7 @@ public class ShipDesigns {
     private final ImmutableIntObjectMap<ShipDesign> shipDesigns;
 
     public ShipDesigns(PdxScriptObject o) {
-        this.shipDesigns = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(ShipDesign::new));
+        this.shipDesigns = o.getAsIntObjectMap(ShipDesign::new);
     }
 
     public ShipDesigns(ImmutableIntObjectMap<ShipDesign> shipDesigns) {

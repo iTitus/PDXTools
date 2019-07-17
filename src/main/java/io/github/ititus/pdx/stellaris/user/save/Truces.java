@@ -8,7 +8,7 @@ public class Truces {
     private final ImmutableIntObjectMap<Truce> truces;
 
     public Truces(PdxScriptObject o) {
-        this.truces = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Truce::new));
+        this.truces = o.getAsIntObjectMap(Truce::new);
     }
 
     public Truces(ImmutableIntObjectMap<Truce> truces) {

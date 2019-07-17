@@ -1,50 +1,43 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.*;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.Deduplicator;
-import io.github.ititus.pdx.util.collection.Tuple3D;
-
-import java.util.Objects;
+import io.github.ititus.pdx.util.Util;
 
 public class Resources {
 
     private static final Deduplicator<Resources> DEDUPLICATOR = new Deduplicator<>();
 
-    private final Tuple3D energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
+    private final double energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
 
     private Resources(PdxScriptObject o) {
-        this.energy = get(o, "energy");
-        this.minerals = get(o, "minerals");
-        this.food = get(o, "food");
-        this.physicsResearch = get(o, "physics_research");
-        this.societyResearch = get(o, "society_research");
-        this.engineeringResearch = get(o, "engineering_research");
-        this.influence = get(o, "influence");
-        this.unity = get(o, "unity");
-        this.aldar = get(o, "sr_aldar");
-        this.darkMatter = get(o, "sr_dark_matter");
-        this.engos = get(o, "sr_engos");
-        this.garanthium = get(o, "sr_garanthium");
-        this.livingMetal = get(o, "sr_living_metal");
-        this.lythuric = get(o, "sr_lythuric");
-        this.orillium = get(o, "sr_orillium");
-        this.pitharan = get(o, "sr_pitharan");
-        this.satramene = get(o, "sr_satramene");
-        this.teldar = get(o, "sr_teldar");
-        this.terraformGases = get(o, "sr_terraform_gases");
-        this.terraformLiquids = get(o, "sr_terraform_liquids");
-        this.yurantic = get(o, "sr_yurantic");
-        this.zro = get(o, "sr_zro");
-        this.alienPets = get(o, "sr_alien_pets");
-        this.betharian = get(o, "sr_betharian");
-        // TODO: fix
+        this.energy = o.getDouble("energy");
+        this.minerals = o.getDouble("minerals");
+        this.food = o.getDouble("food");
+        this.physicsResearch = o.getDouble("physics_research");
+        this.societyResearch = o.getDouble("society_research");
+        this.engineeringResearch = o.getDouble("engineering_research");
+        this.influence = o.getDouble("influence");
+        this.unity = o.getDouble("unity");
+        this.aldar = o.getDouble("sr_aldar");
+        this.darkMatter = o.getDouble("sr_dark_matter");
+        this.engos = o.getDouble("sr_engos");
+        this.garanthium = o.getDouble("sr_garanthium");
+        this.livingMetal = o.getDouble("sr_living_metal");
+        this.lythuric = o.getDouble("sr_lythuric");
+        this.orillium = o.getDouble("sr_orillium");
+        this.pitharan = o.getDouble("sr_pitharan");
+        this.satramene = o.getDouble("sr_satramene");
+        this.teldar = o.getDouble("sr_teldar");
+        this.terraformGases = o.getDouble("sr_terraform_gases");
+        this.terraformLiquids = o.getDouble("sr_terraform_liquids");
+        this.yurantic = o.getDouble("sr_yurantic");
+        this.zro = o.getDouble("sr_zro");
+        this.alienPets = o.getDouble("sr_alien_pets");
+        this.betharian = o.getDouble("sr_betharian");
     }
 
-    private Resources(double... array) {
-        this(Tuple3D.of(array[0]), Tuple3D.of(array[1]), Tuple3D.of(array[2]), Tuple3D.of(array[3]), Tuple3D.of(array[4]), Tuple3D.of(array[5]), Tuple3D.of(array[6]), Tuple3D.of(array[7]), Tuple3D.of(array[8]), Tuple3D.of(array[9]), Tuple3D.of(array[10]), Tuple3D.of(array[11]), Tuple3D.of(array[12]), Tuple3D.of(array[13]), Tuple3D.of(array[14]), Tuple3D.of(array[15]), Tuple3D.of(array[16]), Tuple3D.of(array[17]), Tuple3D.of(array[18]), Tuple3D.of(array[19]), Tuple3D.of(array[20]), Tuple3D.of(array[21]), Tuple3D.of(array[22]), Tuple3D.of(array[23]));
-    }
-
-    private Resources(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
+    private Resources(double energy, double minerals, double food, double physicsResearch, double societyResearch, double engineeringResearch, double influence, double unity, double aldar, double darkMatter, double engos, double garanthium, double livingMetal, double lythuric, double orillium, double pitharan, double satramene, double teldar, double terraformGases, double terraformLiquids, double yurantic, double zro, double alienPets, double betharian) {
         this.energy = energy;
         this.minerals = minerals;
         this.food = food;
@@ -71,123 +64,111 @@ public class Resources {
         this.betharian = betharian;
     }
 
-    private static Tuple3D get(PdxScriptObject o, String resource) {
-        IPdxScript s = o.get(resource);
-        if (s instanceof PdxScriptList) {
-            o.use(resource, PdxConstants.LIST);
-            return Tuple3D.of(((PdxScriptList) s).getAsDoubleArray());
-        } else if (s == null) {
-            return Tuple3D.of();
-        }
-        o.use(resource, PdxConstants.DOUBLE);
-        return Tuple3D.of(((Number) ((PdxScriptValue) s).getValue()).doubleValue());
+    private static double get(PdxScriptObject o, String resource) {
+        return o.getDouble(resource);
     }
 
     public static Resources of(PdxScriptObject o) {
         return DEDUPLICATOR.deduplicate(new Resources(o));
     }
 
-    public static Resources of(double... array) {
-        return DEDUPLICATOR.deduplicate(new Resources(array));
-    }
-
-    public static Resources of(Tuple3D energy, Tuple3D minerals, Tuple3D food, Tuple3D physicsResearch, Tuple3D societyResearch, Tuple3D engineeringResearch, Tuple3D influence, Tuple3D unity, Tuple3D aldar, Tuple3D darkMatter, Tuple3D engos, Tuple3D garanthium, Tuple3D livingMetal, Tuple3D lythuric, Tuple3D orillium, Tuple3D pitharan, Tuple3D satramene, Tuple3D teldar, Tuple3D terraformGases, Tuple3D terraformLiquids, Tuple3D yurantic, Tuple3D zro, Tuple3D alienPets, Tuple3D betharian) {
+    public static Resources of(double energy, double minerals, double food, double physicsResearch, double societyResearch, double engineeringResearch, double influence, double unity, double aldar, double darkMatter, double engos, double garanthium, double livingMetal, double lythuric, double orillium, double pitharan, double satramene, double teldar, double terraformGases, double terraformLiquids, double yurantic, double zro, double alienPets, double betharian) {
         return DEDUPLICATOR.deduplicate(new Resources(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian));
     }
 
-    public Tuple3D getEnergy() {
+    public double getEnergy() {
         return energy;
     }
 
-    public Tuple3D getMinerals() {
+    public double getMinerals() {
         return minerals;
     }
 
-    public Tuple3D getFood() {
+    public double getFood() {
         return food;
     }
 
-    public Tuple3D getPhysicsResearch() {
+    public double getPhysicsResearch() {
         return physicsResearch;
     }
 
-    public Tuple3D getSocietyResearch() {
+    public double getSocietyResearch() {
         return societyResearch;
     }
 
-    public Tuple3D getEngineeringResearch() {
+    public double getEngineeringResearch() {
         return engineeringResearch;
     }
 
-    public Tuple3D getInfluence() {
+    public double getInfluence() {
         return influence;
     }
 
-    public Tuple3D getUnity() {
+    public double getUnity() {
         return unity;
     }
 
-    public Tuple3D getAldar() {
+    public double getAldar() {
         return aldar;
     }
 
-    public Tuple3D getDarkMatter() {
+    public double getDarkMatter() {
         return darkMatter;
     }
 
-    public Tuple3D getEngos() {
+    public double getEngos() {
         return engos;
     }
 
-    public Tuple3D getGaranthium() {
+    public double getGaranthium() {
         return garanthium;
     }
 
-    public Tuple3D getLivingMetal() {
+    public double getLivingMetal() {
         return livingMetal;
     }
 
-    public Tuple3D getLythuric() {
+    public double getLythuric() {
         return lythuric;
     }
 
-    public Tuple3D getOrillium() {
+    public double getOrillium() {
         return orillium;
     }
 
-    public Tuple3D getPitharan() {
+    public double getPitharan() {
         return pitharan;
     }
 
-    public Tuple3D getSatramene() {
+    public double getSatramene() {
         return satramene;
     }
 
-    public Tuple3D getTeldar() {
+    public double getTeldar() {
         return teldar;
     }
 
-    public Tuple3D getTerraformGases() {
+    public double getTerraformGases() {
         return terraformGases;
     }
 
-    public Tuple3D getTerraformLiquids() {
+    public double getTerraformLiquids() {
         return terraformLiquids;
     }
 
-    public Tuple3D getYurantic() {
+    public double getYurantic() {
         return yurantic;
     }
 
-    public Tuple3D getZro() {
+    public double getZro() {
         return zro;
     }
 
-    public Tuple3D getAlienPets() {
+    public double getAlienPets() {
         return alienPets;
     }
 
-    public Tuple3D getBetharian() {
+    public double getBetharian() {
         return betharian;
     }
 
@@ -200,34 +181,34 @@ public class Resources {
             return false;
         }
         Resources resources = (Resources) o;
-        return Objects.equals(energy, resources.energy) &&
-                Objects.equals(minerals, resources.minerals) &&
-                Objects.equals(food, resources.food) &&
-                Objects.equals(physicsResearch, resources.physicsResearch) &&
-                Objects.equals(societyResearch, resources.societyResearch) &&
-                Objects.equals(engineeringResearch, resources.engineeringResearch) &&
-                Objects.equals(influence, resources.influence) &&
-                Objects.equals(unity, resources.unity) &&
-                Objects.equals(aldar, resources.aldar) &&
-                Objects.equals(darkMatter, resources.darkMatter) &&
-                Objects.equals(engos, resources.engos) &&
-                Objects.equals(garanthium, resources.garanthium) &&
-                Objects.equals(livingMetal, resources.livingMetal) &&
-                Objects.equals(lythuric, resources.lythuric) &&
-                Objects.equals(orillium, resources.orillium) &&
-                Objects.equals(pitharan, resources.pitharan) &&
-                Objects.equals(satramene, resources.satramene) &&
-                Objects.equals(teldar, resources.teldar) &&
-                Objects.equals(terraformGases, resources.terraformGases) &&
-                Objects.equals(terraformLiquids, resources.terraformLiquids) &&
-                Objects.equals(yurantic, resources.yurantic) &&
-                Objects.equals(zro, resources.zro) &&
-                Objects.equals(alienPets, resources.alienPets) &&
-                Objects.equals(betharian, resources.betharian);
+        return Double.compare(energy, resources.energy) == 0 &&
+                Double.compare(minerals, resources.minerals) == 0 &&
+                Double.compare(food, resources.food) == 0 &&
+                Double.compare(physicsResearch, resources.physicsResearch) == 0 &&
+                Double.compare(societyResearch, resources.societyResearch) == 0 &&
+                Double.compare(engineeringResearch, resources.engineeringResearch) == 0 &&
+                Double.compare(influence, resources.influence) == 0 &&
+                Double.compare(unity, resources.unity) == 0 &&
+                Double.compare(aldar, resources.aldar) == 0 &&
+                Double.compare(darkMatter, resources.darkMatter) == 0 &&
+                Double.compare(engos, resources.engos) == 0 &&
+                Double.compare(garanthium, resources.garanthium) == 0 &&
+                Double.compare(livingMetal, resources.livingMetal) == 0 &&
+                Double.compare(lythuric, resources.lythuric) == 0 &&
+                Double.compare(orillium, resources.orillium) == 0 &&
+                Double.compare(pitharan, resources.pitharan) == 0 &&
+                Double.compare(satramene, resources.satramene) == 0 &&
+                Double.compare(teldar, resources.teldar) == 0 &&
+                Double.compare(terraformGases, resources.terraformGases) == 0 &&
+                Double.compare(terraformLiquids, resources.terraformLiquids) == 0 &&
+                Double.compare(yurantic, resources.yurantic) == 0 &&
+                Double.compare(zro, resources.zro) == 0 &&
+                Double.compare(alienPets, resources.alienPets) == 0 &&
+                Double.compare(betharian, resources.betharian) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian);
+        return Util.hash(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian);
     }
 }

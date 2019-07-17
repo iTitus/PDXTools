@@ -8,7 +8,7 @@ public class Ships {
     private final ImmutableLongObjectMap<Ship> ships;
 
     public Ships(PdxScriptObject o) {
-        this.ships = o.getAsLongObjectMap(Long::parseLong, PdxScriptObject.nullOr(Ship::new));
+        this.ships = o.getAsLongObjectMap(Ship::new);
     }
 
     public Ships(ImmutableLongObjectMap<Ship> ships) {

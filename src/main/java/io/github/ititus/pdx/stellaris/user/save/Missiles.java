@@ -8,7 +8,7 @@ public class Missiles {
     private final ImmutableLongObjectMap<Missile> missiles;
 
     public Missiles(PdxScriptObject o) {
-        this.missiles = o.getAsLongObjectMap(Long::parseLong, PdxScriptObject.nullOr(Missile::new));
+        this.missiles = o.getAsLongObjectMap(Missile::new);
     }
 
     public Missiles(ImmutableLongObjectMap<Missile> missiles) {

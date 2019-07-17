@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class Relation {
 
-    private final boolean contact, alliance, defensivePact, friendly, hostile, migrationAccess, neutral, nonAggressionPledge, borders, isRival, communications, closedBorders;
+    private final boolean contact, alliance, defensivePact, friendly, hostile, migrationAccess, neutral, borders, isRival, communications, closedBorders;
     private final int killedShips, owner, country, truce, borderRange;
     private final double trust;
     private final String preCommunicationsName;
@@ -33,7 +33,6 @@ public class Relation {
         this.hostile = o.getBoolean("hostile");
         this.migrationAccess = o.getBoolean("migration_access");
         this.neutral = o.getBoolean("neutral");
-        this.nonAggressionPledge = o.getBoolean("non_aggression_pledge");
         this.borders = o.getBoolean("borders");
         this.isRival = o.getBoolean("is_rival");
         this.rivalDate = o.getDate("rival_date");
@@ -48,7 +47,7 @@ public class Relation {
         this.closedBorders = o.getBoolean("closed_borders");
     }
 
-    public Relation(boolean contact, boolean alliance, boolean defensivePact, boolean friendly, boolean hostile, boolean migrationAccess, boolean neutral, boolean nonAggressionPledge, boolean borders, boolean isRival, boolean communications, boolean closedBorders, int killedShips, int owner, int country, int truce, int borderRange, double trust, String preCommunicationsName, Date rivalDate, Date forcedOpenBorders, ImmutableList<RelationModifier> modifiers, Flags flags) {
+    public Relation(boolean contact, boolean alliance, boolean defensivePact, boolean friendly, boolean hostile, boolean migrationAccess, boolean neutral, boolean borders, boolean isRival, boolean communications, boolean closedBorders, int killedShips, int owner, int country, int truce, int borderRange, double trust, String preCommunicationsName, Date rivalDate, Date forcedOpenBorders, ImmutableList<RelationModifier> modifiers, Flags flags) {
         this.contact = contact;
         this.alliance = alliance;
         this.defensivePact = defensivePact;
@@ -56,7 +55,6 @@ public class Relation {
         this.hostile = hostile;
         this.migrationAccess = migrationAccess;
         this.neutral = neutral;
-        this.nonAggressionPledge = nonAggressionPledge;
         this.borders = borders;
         this.isRival = isRival;
         this.communications = communications;
@@ -100,10 +98,6 @@ public class Relation {
 
     public boolean isNeutral() {
         return neutral;
-    }
-
-    public boolean isNonAggressionPledge() {
-        return nonAggressionPledge;
     }
 
     public boolean isBorders() {

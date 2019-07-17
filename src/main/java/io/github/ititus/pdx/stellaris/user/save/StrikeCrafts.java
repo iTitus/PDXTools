@@ -8,7 +8,7 @@ public class StrikeCrafts {
     private final ImmutableIntObjectMap<StrikeCraft> strikeCrafts;
 
     public StrikeCrafts(PdxScriptObject o) {
-        this.strikeCrafts = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(StrikeCraft::new));
+        this.strikeCrafts = o.getAsIntObjectMap(StrikeCraft::new);
     }
 
     public StrikeCrafts(ImmutableIntObjectMap<StrikeCraft> strikeCrafts) {

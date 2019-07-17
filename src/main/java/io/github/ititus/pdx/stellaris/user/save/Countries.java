@@ -8,7 +8,7 @@ public class Countries {
     private final ImmutableIntObjectMap<Country> countries;
 
     public Countries(PdxScriptObject o) {
-        this.countries = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Country::new));
+        this.countries = o.getAsIntObjectMap(Country::new);
     }
 
     public Countries(ImmutableIntObjectMap<Country> countries) {

@@ -8,7 +8,7 @@ public class Starbases {
     private final ImmutableIntObjectMap<Starbase> starbases;
 
     public Starbases(PdxScriptObject o) {
-        this.starbases = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Starbase::new));
+        this.starbases = o.getAsIntObjectMap(Starbase::new);
     }
 
     public Starbases(ImmutableIntObjectMap<Starbase> starbases) {

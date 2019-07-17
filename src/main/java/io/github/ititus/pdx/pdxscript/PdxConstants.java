@@ -69,11 +69,13 @@ public interface PdxConstants {
     String IMPLICIT_LIST = "list:implicit";
     String STRING = "value:string";
     String BOOLEAN = "value:boolean";
-    String UNSIGNED_INT = "value:u_int";
+    String U_INT = "value:u_int";
+    String NEG_INT = "value:-int";
     String INT = "value:int";
     String LONG = "value:long";
     String DOUBLE = "value:double";
     String DATE = "value:date";
+    String COLOR = "value:color";
     String NULL = "null";
 
     String ENGLISH = "l_english";
@@ -128,7 +130,7 @@ public interface PdxConstants {
         }
         throw new IllegalArgumentException();
     };
-    Function<IPdxScript, Integer> NULL_OR_INTEGER = s -> {
+    Function<IPdxScript, Integer> ZERO_OR_INTEGER = s -> {
         if (s instanceof PdxScriptValue) {
             Object o = ((PdxScriptValue) s).getValue();
             if (o instanceof Integer) {
@@ -173,4 +175,44 @@ public interface PdxConstants {
         }
         return null;
     };
+
+    static String getTypeString(IPdxScript s) {
+        if (s instanceof PdxScriptObject) {
+            return OBJECT;
+        }
+        if (s instanceof PdxScriptList) {
+            return ((PdxScriptList) s).getMode() == PdxScriptList.Mode.IMPLICIT ? IMPLICIT_LIST : LIST;
+        }
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Date) {
+                return DATE;
+            } else if (v instanceof Double) {
+                return DOUBLE;
+            } else if (v instanceof Long) {
+                long l = (long) v;
+                if (l >= Integer.MIN_VALUE && l < 0) {
+                    return NEG_INT;
+                } else if (l >= 0 && l <= Integer.MAX_VALUE) {
+                    return INT;
+                } else if (l > Integer.MAX_VALUE && l <= UNSIGNED_INT_MAX_LONG) {
+                    return U_INT;
+                } else {
+                    return LONG;
+                }
+            } else if (v instanceof Integer) {
+                int i = (int) v;
+                if (i < 0) {
+                    return NEG_INT;
+                } else {
+                    return INT;
+                }
+            } else if (v instanceof Boolean) {
+                return BOOLEAN;
+            } else if (v instanceof String) {
+                return STRING;
+            }
+        }
+        return NULL;
+    }
 }

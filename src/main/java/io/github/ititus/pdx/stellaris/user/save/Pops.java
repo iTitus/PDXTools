@@ -8,7 +8,7 @@ public class Pops {
     private final ImmutableIntObjectMap<Pop> pops;
 
     public Pops(PdxScriptObject o) {
-        this.pops = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Pop::new));
+        this.pops = o.getAsIntObjectMap(Pop::new);
     }
 
     public Pops(ImmutableIntObjectMap<Pop> pops) {

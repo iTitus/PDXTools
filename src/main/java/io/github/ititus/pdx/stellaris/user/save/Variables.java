@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 
@@ -11,7 +10,7 @@ public class Variables {
     private final ImmutableObjectDoubleMap<String> variables;
 
     public Variables(PdxScriptObject o) {
-        this.variables = o.getAsObjectDoubleMap(Function.identity(), PdxConstants.TO_DOUBLE);
+        this.variables = o.getAsObjectDoubleMap(Function.identity());
     }
 
     public Variables(ImmutableObjectDoubleMap<String> variables) {

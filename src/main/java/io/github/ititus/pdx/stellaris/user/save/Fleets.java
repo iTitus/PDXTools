@@ -8,7 +8,7 @@ public class Fleets {
     private final ImmutableIntObjectMap<Fleet> fleets;
 
     public Fleets(PdxScriptObject o) {
-        this.fleets = o.getAsIntObjectMap(Integer::parseInt, PdxScriptObject.nullOr(Fleet::new));
+        this.fleets = o.getAsIntObjectMap(Fleet::new);
     }
 
     public Fleets(ImmutableIntObjectMap<Fleet> fleets) {

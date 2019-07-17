@@ -9,7 +9,7 @@ import org.eclipse.collections.impl.factory.Lists;
 public class EmpireDesign {
 
     private final boolean spawnAsFallen, ignorePortraitDuplication, spawnEnabled;
-    private final String key, shipPrefix, name, adjective, authority, government, advisorVoiceType, planetName, planetClass, systemName, initializer, graphicalCulture, cityGraphicalCulture, room;
+    private final String key, shipPrefix, name, adjective, authority, government, planetName, planetClass, systemName, initializer, graphicalCulture, cityGraphicalCulture, room;
     private final ImmutableList<String> flags, ethics, civics;
     private final SpeciesDesign species, secondarySpecies;
     private final Flag empireFlag;
@@ -32,7 +32,6 @@ public class EmpireDesign {
         PdxScriptList l = o.getList("flags");
         this.flags = l != null ? l.getAsStringList() : Lists.immutable.empty();
         this.government = o.getString("government");
-        this.advisorVoiceType = o.getString("advisor_voice_type");
         this.planetName = o.getString("planet_name");
         this.planetClass = o.getString("planet_class");
         this.systemName = o.getString("system_name");
@@ -50,7 +49,7 @@ public class EmpireDesign {
         this.civics = l != null ? l.getAsStringList() : Lists.immutable.empty();
     }
 
-    public EmpireDesign(boolean spawnAsFallen, boolean ignorePortraitDuplication, boolean spawnEnabled, String key, String shipPrefix, String name, String adjective, String authority, String government, String advisorVoiceType, String planetName, String planetClass, String systemName, String initializer, String graphicalCulture, String cityGraphicalCulture, String room, ImmutableList<String> flags, ImmutableList<String> ethics, ImmutableList<String> civics, SpeciesDesign species, SpeciesDesign secondarySpecies, Flag empireFlag, LeaderDesign ruler) {
+    public EmpireDesign(boolean spawnAsFallen, boolean ignorePortraitDuplication, boolean spawnEnabled, String key, String shipPrefix, String name, String adjective, String authority, String government, String planetName, String planetClass, String systemName, String initializer, String graphicalCulture, String cityGraphicalCulture, String room, ImmutableList<String> flags, ImmutableList<String> ethics, ImmutableList<String> civics, SpeciesDesign species, SpeciesDesign secondarySpecies, Flag empireFlag, LeaderDesign ruler) {
         this.spawnAsFallen = spawnAsFallen;
         this.ignorePortraitDuplication = ignorePortraitDuplication;
         this.spawnEnabled = spawnEnabled;
@@ -60,7 +59,6 @@ public class EmpireDesign {
         this.adjective = adjective;
         this.authority = authority;
         this.government = government;
-        this.advisorVoiceType = advisorVoiceType;
         this.planetName = planetName;
         this.planetClass = planetClass;
         this.systemName = systemName;
@@ -111,10 +109,6 @@ public class EmpireDesign {
 
     public String getGovernment() {
         return government;
-    }
-
-    public String getAdvisorVoiceType() {
-        return advisorVoiceType;
     }
 
     public String getPlanetName() {

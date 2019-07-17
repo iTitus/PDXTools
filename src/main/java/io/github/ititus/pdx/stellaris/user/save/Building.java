@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.Deduplicator;
 
@@ -9,35 +10,34 @@ public class Building {
 
     private static final Deduplicator<Building> DEDUPLICATOR = new Deduplicator<>();
 
-    private final boolean ruined, modifier;
+    private final boolean ruined;
     private final String type;
 
-    private Building(PdxScriptObject o) {
+    private Building(IPdxScript s) {
+        if (!(s instanceof PdxScriptObject)) {
+            throw new IllegalArgumentException(String.valueOf(s));
+        }
+        PdxScriptObject o = (PdxScriptObject) s;
+
         this.type = o.getString("type");
         this.ruined = o.getBoolean("ruined");
-        this.modifier = o.getBoolean("modifier");
     }
 
-    private Building(boolean ruined, boolean modifier, String type) {
+    private Building(boolean ruined, String type) {
         this.ruined = ruined;
-        this.modifier = modifier;
         this.type = type;
     }
 
-    public static Building of(PdxScriptObject o) {
-        return DEDUPLICATOR.deduplicate(new Building(o));
+    public static Building of(IPdxScript s) {
+        return DEDUPLICATOR.deduplicate(new Building(s));
     }
 
-    public static Building of(boolean ruined, boolean modifier, String type) {
-        return DEDUPLICATOR.deduplicate(new Building(ruined, modifier, type));
+    public static Building of(boolean ruined, String type) {
+        return DEDUPLICATOR.deduplicate(new Building(ruined, type));
     }
 
     public boolean isRuined() {
         return ruined;
-    }
-
-    public boolean isModifier() {
-        return modifier;
     }
 
     public String getType() {
@@ -53,11 +53,11 @@ public class Building {
             return false;
         }
         Building building = (Building) o;
-        return ruined == building.ruined && modifier == building.modifier && Objects.equals(type, building.type);
+        return ruined == building.ruined && Objects.equals(type, building.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ruined, modifier, type);
+        return Objects.hash(ruined, type);
     }
 }

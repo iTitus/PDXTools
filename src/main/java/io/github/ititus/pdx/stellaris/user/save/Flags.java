@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 import io.github.ititus.pdx.util.Deduplicator;
@@ -17,7 +16,7 @@ public class Flags {
     private final ImmutableMap<String, FlagData> complexFlags;
 
     private Flags(PdxScriptObject o) {
-        this.intFlags = o.getAsObjectIntMap(s -> o.get(s) instanceof PdxScriptValue ? s : null, PdxConstants.TO_INT);
+        this.intFlags = o.getAsObjectIntMap(s -> o.get(s) instanceof PdxScriptValue ? s : null);
         this.complexFlags = o.getAsMap(s -> o.get(s) instanceof PdxScriptObject ? s : null, PdxScriptObject.objectOrNull(FlagData::new));
     }
 

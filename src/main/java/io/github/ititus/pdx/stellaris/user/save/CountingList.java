@@ -11,7 +11,7 @@ public class CountingList {
     private final ImmutableMultimap<String, Integer> map;
 
     public CountingList(PdxScriptObject o) {
-        this.map = o.getAsMultimap(Function.identity(), PdxConstants.NULL_OR_INTEGER);
+        this.map = o.getAsMultimap(Function.identity(), PdxConstants.ZERO_OR_INTEGER);
     }
 
     public CountingList(ImmutableMultimap<String, Integer> map) {
