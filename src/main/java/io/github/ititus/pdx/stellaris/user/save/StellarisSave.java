@@ -1,14 +1,20 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
-import io.github.ititus.pdx.util.io.IFileFilter;
+import io.github.ititus.pdx.util.io.FileNameFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.io.IPathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
-import java.io.File;
-import java.util.Date;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class StellarisSave {
 
@@ -16,16 +22,16 @@ public class StellarisSave {
     private static final String GAMESTATE = "gamestate";
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final IFileFilter FILTER = f -> f != null && (f.getName().equals(META) || f.getName().equals(GAMESTATE));
+    private static final IPathFilter FILTER = new FileNameFilter(n -> n.equals(META) || n.equals(GAMESTATE));
 
-    private final File save;
+    private final Path save;
     private final PdxRawDataLoader saveDataLoader;
 
     private Meta meta;
     private GameState gameState;
 
-    public StellarisSave(File saveFile) {
-        if (saveFile == null || !saveFile.exists() || !(saveFile.isDirectory() || IOUtil.getExtension(saveFile).equals("sav"))) {
+    public StellarisSave(Path saveFile) {
+        if (!isValidSaveFile(saveFile)) {
             throw new IllegalArgumentException();
         }
 
@@ -35,51 +41,38 @@ public class StellarisSave {
         this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
     }
 
-    public static StellarisSave loadNewest(String saveDirPath) {
-        File saveDir = new File(saveDirPath);
-        if (!saveDir.exists() || !saveDir.isDirectory()) {
-            throw new IllegalArgumentException(saveDirPath);
-        }
-
-        File[] files = saveDir.listFiles();
-        if (files == null) {
+    public static StellarisSave loadLastModified(Path saveDir) {
+        if (!Files.isDirectory(saveDir)) {
             throw new IllegalArgumentException();
         }
 
-
-        File newestSave = null;
-        Date newestDate = null;
-
-        for (File saveFile : files) {
-            if (!isValidSaveFile(saveFile)) {
-                System.out.println("Found non Stellaris save file " + saveFile + " in save directory, skipping...");
-                continue;
-            }
-            Date lastModified = new Date(saveFile.lastModified());
-            if (newestDate == null || newestDate.before(lastModified)) {
-                newestSave = saveFile;
-                newestDate = lastModified;
-            }
+        Optional<Path> latest;
+        try (Stream<Path> stream = Files.list(saveDir)) {
+            latest = stream
+                    .filter(StellarisSave::isValidSaveFile)
+                    .max(Comparator.comparing(p -> {
+                        try {
+                            return Files.getLastModifiedTime(p);
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    }));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
 
-        if (!isValidSaveFile(newestSave)) {
-            throw new RuntimeException("No valid save file found in save dir " + saveDir);
-        }
-
-        System.out.println("Found newest save file: " + newestSave);
-
-        return new StellarisSave(newestSave);
+        return latest.map(StellarisSave::new).get();
     }
 
-    public static boolean isValidSaveFile(File saveFile) {
-        return saveFile != null && ((saveFile.isFile() && IOUtil.getExtension(saveFile).equals("sav")) || saveFile.isDirectory());
+    public static boolean isValidSaveFile(Path saveFile) {
+        return saveFile != null && (Files.isDirectory(saveFile) || (Files.isRegularFile(saveFile) && IOUtil.getExtension(saveFile).equals("sav")));
     }
 
     public PdxRawDataLoader getSaveDataLoader() {
         return saveDataLoader;
     }
 
-    public File getSave() {
+    public Path getSave() {
         return save;
     }
 

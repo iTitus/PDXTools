@@ -12,71 +12,81 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 public class StellarisSaves {
 
-    private final File saveGameFolder;
+    private final Path saveGameFolder;
     private final ImmutableMap<String, ImmutableMap<String, StellarisSave>> saves;
 
     private MutableList<Pair<String, Throwable>> errors;
 
-    public StellarisSaves(File saveGameFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        if (saveGameFolder == null || !saveGameFolder.isDirectory()) {
+    public StellarisSaves(Path saveGameFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        if (saveGameFolder == null || !Files.isDirectory(saveGameFolder)) {
             throw new IllegalArgumentException();
         }
         this.saveGameFolder = saveGameFolder;
 
         MutableMap<String, ImmutableMap<String, StellarisSave>> saves = Maps.mutable.empty();
-        File[] saveFolders = saveGameFolder.listFiles(f -> f != null && f.isDirectory());
+        Path[] saveFolders;
+        try (Stream<Path> stream = Files.list(saveGameFolder)) {
+            saveFolders = stream.filter(Files::isDirectory).toArray(Path[]::new);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
 
-        if (saveFolders != null) {
-            int SAVE_FOLDER_COUNT = saveFolders.length;
-            int progress0 = 0;
+        int saveFolderCount = saveFolders.length;
+        int progress0 = 0;
 
-            for (File saveFolder : saveFolders) {
-                progressMessageUpdater.updateProgressMessage(index, true, progress0++, SAVE_FOLDER_COUNT, "Loading Save Game Folder " + saveFolder.getName());
+        for (Path saveFolder : saveFolders) {
+            progressMessageUpdater.updateProgressMessage(index, true, progress0++, saveFolderCount, "Loading Save Game Folder " + saveFolder.getFileName());
 
-                MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
-                File[] saveGames = saveFolder.listFiles(StellarisSave::isValidSaveFile);
-
-                if (saveGames != null) {
-                    int SAVE_GAME_COUNT = saveFolders.length;
-                    int progress1 = 0;
-
-                    for (File saveFile : saveGames) {
-                        progressMessageUpdater.updateProgressMessage(index + 1, true, progress1++, SAVE_GAME_COUNT, "Loading Save Game " + saveFile.getName());
-
-                        try {
-                            saveMap.put(IOUtil.getNameWithoutExtension(saveFile), new StellarisSave(saveFile));
-                        } catch (Exception e) {
-                            String path = saveFolder.getName() + '/' + IOUtil.getNameWithoutExtension(saveFile);
-                            Throwable t = e.getCause() != null ? e.getCause() : e;
-                            Throwable[] suppressed = t.getSuppressed();
-                            Throwable cause = t.getCause();
-                            System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
-                            if (errors == null) {
-                                errors = Lists.mutable.empty();
-                            }
-                            errors.add(Tuples.pair(path, t));
-                        }
-                    }
-
-                    progressMessageUpdater.updateProgressMessage(index + 1, false, SAVE_GAME_COUNT, SAVE_GAME_COUNT, "Done");
-                }
-
-                saves.put(saveFolder.getName(), saveMap.toImmutable());
+            MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
+            Path[] saveGames;
+            try (Stream<Path> stream = Files.list(saveGameFolder)) {
+                saveGames = stream.filter(StellarisSave::isValidSaveFile).toArray(Path[]::new);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
 
-            progressMessageUpdater.updateProgressMessage(index, false, SAVE_FOLDER_COUNT, SAVE_FOLDER_COUNT, "Done");
+            int saveGameCount = saveFolders.length;
+            int progress1 = 0;
+
+            for (Path saveFile : saveGames) {
+                progressMessageUpdater.updateProgressMessage(index + 1, true, progress1++, saveGameCount, "Loading Save Game " + saveFile.getFileName());
+
+                try {
+                    saveMap.put(IOUtil.getNameWithoutExtension(saveFile), new StellarisSave(saveFile));
+                } catch (Exception e) {
+                    String path = saveFolder.getFileName().toString() + '/' + IOUtil.getNameWithoutExtension(saveFile);
+                    Throwable t = e.getCause() != null ? e.getCause() : e;
+                    Throwable[] suppressed = t.getSuppressed();
+                    Throwable cause = t.getCause();
+                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                    if (errors == null) {
+                        errors = Lists.mutable.empty();
+                    }
+                    errors.add(Tuples.pair(path, t));
+                }
+            }
+
+            progressMessageUpdater.updateProgressMessage(index + 1, false, saveGameCount, saveGameCount, "Done");
+
+            saves.put(saveFolder.getFileName().toString(), saveMap.toImmutable());
         }
+
+        progressMessageUpdater.updateProgressMessage(index, false, saveFolderCount, saveFolderCount, "Done");
 
         this.saves = saves.toImmutable();
     }
 
-    public File getSaveGameFolder() {
+    public Path getSaveGameFolder() {
         return saveGameFolder;
     }
 

@@ -1,9 +1,9 @@
 package io.github.ititus.pdx.util.io;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Predicate;
 
-public class FileNameFilter implements IFileFilter {
+public class FileNameFilter implements IPathFilter {
 
     private final Predicate<String> nameFilter;
 
@@ -12,7 +12,7 @@ public class FileNameFilter implements IFileFilter {
     }
 
     @Override
-    public boolean accept(File f) {
-        return nameFilter.test(f.getName());
+    public boolean test(Path p) {
+        return nameFilter.test(p.getFileName().toString());
     }
 }

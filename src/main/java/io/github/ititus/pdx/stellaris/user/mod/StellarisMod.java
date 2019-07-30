@@ -2,31 +2,32 @@ package io.github.ititus.pdx.stellaris.user.mod;
 
 import io.github.ititus.pdx.pdxscript.*;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.io.IPathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Sets;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class StellarisMod {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final IFileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
+    private static final IPathFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
 
-    private final File userDataDir, modDescriptorFile;
+    private final Path userDataDir, modDescriptorFile;
 
     private final String name, supportedVersion;
-    private final File modFile;
+    private final Path modFile;
     private final ImmutableList<String> tags;
     private final int remoteFileId;
 
     private final PdxRawDataLoader modArchive;
 
-    public StellarisMod(File userDataDir, File modDescriptorFile) {
-        if (userDataDir == null || !userDataDir.isDirectory() || modDescriptorFile == null || !modDescriptorFile.isFile() || !IOUtil.getExtension(modDescriptorFile).equals("mod")) {
+    public StellarisMod(Path userDataDir, Path modDescriptorFile) {
+        if (userDataDir == null || !Files.isDirectory(userDataDir) || modDescriptorFile == null || !Files.isRegularFile(modDescriptorFile) || !IOUtil.getExtension(modDescriptorFile).equals("mod")) {
             throw new IllegalArgumentException();
         }
         this.userDataDir = userDataDir;
@@ -41,7 +42,7 @@ public class StellarisMod {
 
         this.name = o.getString("name");
         String str = o.getString("archive");
-        this.modFile = str != null ? new File(str) : new File(userDataDir, o.getString("path"));
+        this.modFile = str != null ? Path.of(str) : userDataDir.resolve(o.getString("path"));
         PdxScriptList l = o.getList("tags");
         this.tags = l != null ? l.getAsStringList() : Lists.immutable.empty();
         str = o.getString("remote_file_id");
@@ -49,14 +50,14 @@ public class StellarisMod {
         this.supportedVersion = o.getString("supported_version");
 
         // TODO: Fix this
-        this.modArchive = modFile.isDirectory() ? new PdxRawDataLoader(modFile, BLACKLIST, FILTER, -1, null) : null;
+        this.modArchive = Files.isDirectory(modFile) ? new PdxRawDataLoader(modFile, BLACKLIST, FILTER, -1, null) : null;
     }
 
-    public File getUserDataDir() {
+    public Path getUserDataDir() {
         return userDataDir;
     }
 
-    public File getModDescriptorFile() {
+    public Path getModDescriptorFile() {
         return modDescriptorFile;
     }
 
@@ -64,7 +65,7 @@ public class StellarisMod {
         return name;
     }
 
-    public File getModFile() {
+    public Path getModFile() {
         return modFile;
     }
 

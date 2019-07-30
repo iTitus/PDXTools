@@ -21,7 +21,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.tuple.Pair;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,7 +100,7 @@ public class StellarisSaveAnalyser implements Runnable {
     @Override
     public void run() {
         StopWatch s = StopWatch.createRunning();
-        int STEPS = 5;
+        int steps = 5;
 
         Platform.runLater(() -> {
             for (int i = 0; i < PROGRESS_DEPTH; i++) {
@@ -121,21 +121,21 @@ public class StellarisSaveAnalyser implements Runnable {
             }
         });
 
-        updateProgressMessage(0, true, 0, STEPS, "Running Tests");
+        updateProgressMessage(0, true, 0, steps, "Running Tests");
 
-        List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(File::new).map(PdxScriptParser::parse).collect(Collectors.toList());
+        List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(Path::of).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
         testOutput.forEach(System.out::println);
-        updateProgressMessage(0, true, 1, STEPS, "Loading Game Data");
+        updateProgressMessage(0, true, 1, steps, "Loading Game Data");
 
         game = new StellarisGame(INSTALL_DIR, 1, this::updateProgressMessage);
         String gameLocalisationString = game != null && game.getLocalisation() != null ? game.getLocalisation().toYML() : null;
         String gameString = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().toPdxScript() : null;
-        updateProgressMessage(0, true, 2, STEPS, "Loading User Data");
+        updateProgressMessage(0, true, 2, steps, "Loading User Data");
 
         userData = new StellarisUserData(USER_DATA_DIR, 1, this::updateProgressMessage);
         String userDataString = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().toPdxScript() : null;
-        updateProgressMessage(0, true, 3, STEPS, "Analysing Save Game");
+        updateProgressMessage(0, true, 3, steps, "Analysing Save Game");
 
         stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
         /*if (stellarisSave != null) {
@@ -170,61 +170,61 @@ public class StellarisSaveAnalyser implements Runnable {
                 System.out.println("-------------------------");
             });
         }*/
-        updateProgressMessage(0, true, 4, STEPS, "Gathering Errors");
+        updateProgressMessage(0, true, 4, steps, "Gathering Errors");
 
-        int ERROR_STEPS = 3;
+        int errorSteps = 3;
 
-        updateProgressMessage(1, true, 0, ERROR_STEPS, "Gathering Unknown Literals");
+        updateProgressMessage(1, true, 0, errorSteps, "Gathering Unknown Literals");
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
 
-        updateProgressMessage(1, true, 1, ERROR_STEPS, "Gathering Game Errors");
+        updateProgressMessage(1, true, 1, errorSteps, "Gathering Game Errors");
 
-        int GAME_ERROR_STEPS = 2;
+        int gameErrorSteps = 2;
 
-        updateProgressMessage(2, true, 0, GAME_ERROR_STEPS, "Gathering Game Errors");
+        updateProgressMessage(2, true, 0, gameErrorSteps, "Gathering Game Errors");
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
 
-        updateProgressMessage(2, true, 1, GAME_ERROR_STEPS, "Gathering Localisation Errors");
+        updateProgressMessage(2, true, 1, gameErrorSteps, "Gathering Localisation Errors");
 
-        int LOCALISATION_ERROR_STEPS = 2;
+        int localisationErrorSteps = 2;
 
-        updateProgressMessage(3, true, 0, LOCALISATION_ERROR_STEPS, "Gathering Missing Localisations");
+        updateProgressMessage(3, true, 0, localisationErrorSteps, "Gathering Missing Localisations");
         ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
 
-        updateProgressMessage(3, true, 1, LOCALISATION_ERROR_STEPS, "Gathering Extra Localisations");
+        updateProgressMessage(3, true, 1, localisationErrorSteps, "Gathering Extra Localisations");
         ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
 
-        updateProgressMessage(3, false, 3, LOCALISATION_ERROR_STEPS, "Done");
+        updateProgressMessage(3, false, 3, localisationErrorSteps, "Done");
 
-        updateProgressMessage(2, false, 2, GAME_ERROR_STEPS, "Done");
+        updateProgressMessage(2, false, 2, gameErrorSteps, "Done");
 
-        updateProgressMessage(1, true, 2, ERROR_STEPS, "Gathering User Errors");
+        updateProgressMessage(1, true, 2, errorSteps, "Gathering User Errors");
 
-        int USER_ERROR_STEPS = 2;
+        int userErrorSteps = 2;
 
-        updateProgressMessage(2, true, 0, USER_ERROR_STEPS, "Gathering User Errors");
+        updateProgressMessage(2, true, 0, userErrorSteps, "Gathering User Errors");
         ImmutableList<Pair<String, Throwable>> userErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
 
-        updateProgressMessage(2, true, 1, USER_ERROR_STEPS, "Gathering Save Errors");
+        updateProgressMessage(2, true, 1, userErrorSteps, "Gathering Save Errors");
 
-        int SAVE_ERROR_STEPS = 2;
+        int saveErrorSteps = 2;
 
-        updateProgressMessage(3, true, 0, SAVE_ERROR_STEPS, "Gathering Save Errors");
+        updateProgressMessage(3, true, 0, saveErrorSteps, "Gathering Save Errors");
         ImmutableList<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
 
-        updateProgressMessage(3, true, 1, SAVE_ERROR_STEPS, "Gathering Save Parsing Errors");
+        updateProgressMessage(3, true, 1, saveErrorSteps, "Gathering Save Parsing Errors");
         ImmutableList<String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrors() : null;
         if (saveParseErrors != null) {
             saveParseErrors.forEach(System.out::println);
         }
 
-        updateProgressMessage(3, false, 2, SAVE_ERROR_STEPS, "Done");
+        updateProgressMessage(3, false, 2, saveErrorSteps, "Done");
 
-        updateProgressMessage(2, false, 2, USER_ERROR_STEPS, "Done");
+        updateProgressMessage(2, false, 2, userErrorSteps, "Done");
 
-        updateProgressMessage(1, false, 3, ERROR_STEPS, "Done");
+        updateProgressMessage(1, false, 3, errorSteps, "Done");
 
-        updateProgressMessage(0, false, 5, STEPS, "Done");
+        updateProgressMessage(0, false, 5, steps, "Done");
 
         System.out.println("Time: " + DurationFormatter.formatSeconds(s.stop()));
         Platform.runLater(main::transition);

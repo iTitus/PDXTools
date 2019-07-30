@@ -7,13 +7,13 @@ import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import io.github.ititus.pdx.stellaris.view.GalaxyView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.tuple.Pair;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +38,7 @@ public class Test extends Application {
 
     private static StellarisSave getStellarisSave() {
         StopWatch s = StopWatch.createRunning();
-        StellarisSave save = new StellarisSave(new File(USER_HOME + "/Desktop/pdx/nico_2.3.3"));
+        StellarisSave save = new StellarisSave(Path.of(USER_HOME, "Desktop", "pdx", "nico_2.3.3"));
         System.out.println("Test Save Load Time: " + DurationFormatter.formatSeconds(s.stop()));
         return save;
     }
@@ -66,7 +66,7 @@ public class Test extends Application {
 
         System.out.println("Total Loading Time: " + DurationFormatter.formatSeconds(s.stop()));
 
-        if (save != null) {
+        if (false && save != null) {
             GalaxyView galaxyView = new GalaxyView(game, save);
 
             Scene scene = new Scene(galaxyView);
@@ -74,6 +74,8 @@ public class Test extends Application {
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.show();
+        } else {
+            Platform.exit();
         }
 
         System.out.println("done");

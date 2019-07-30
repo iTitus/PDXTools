@@ -10,12 +10,9 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.multimap.ImmutableMultimap;
-import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
-import org.eclipse.collections.impl.factory.Multimaps;
 
 import java.util.*;
 import java.util.stream.DoubleStream;
@@ -268,18 +265,6 @@ public final class PdxScriptList implements IPdxScript {
         IPdxScript.listObjectClose(indent, root || mode == Mode.IMPLICIT, b, list.isEmpty());
 
         return b.toString();
-    }
-
-    public ImmutableMultimap<String, String> getErrorsOld() {
-        MutableMultimap<String, String> errors = Multimaps.mutable.set.empty();
-        list.forEach(s -> {
-            if (s instanceof PdxScriptObject) {
-                errors.putAll(((PdxScriptObject) s).getErrorsOld());
-            } else if (s instanceof PdxScriptList) {
-                errors.putAll(((PdxScriptList) s).getErrorsOld());
-            }
-        });
-        return errors.toImmutable();
     }
 
     public PdxUsageStatistic getUsageStatistic() {

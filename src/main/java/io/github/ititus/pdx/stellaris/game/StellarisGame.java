@@ -7,11 +7,12 @@ import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.common.Common;
 import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IFileFilter;
+import io.github.ititus.pdx.util.io.IPathFilter;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class StellarisGame {
 
@@ -30,9 +31,9 @@ public class StellarisGame {
             "sound/soundeffects.asset"
 
     );
-    private static final IFileFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
+    private static final IPathFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
 
-    private final File installDir;
+    private final Path installDir;
 
     private final Common common;
     private final StellarisDLCs dlcs;
@@ -41,33 +42,33 @@ public class StellarisGame {
     private final PdxRawDataLoader rawDataLoader;
 
     public StellarisGame(String installDirPath, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        this(new File(installDirPath), index, progressMessageUpdater);
+        this(Path.of(installDirPath), index, progressMessageUpdater);
     }
 
-    public StellarisGame(File installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        if (installDir == null || !installDir.isDirectory()) {
+    public StellarisGame(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        if (installDir == null || !Files.isDirectory(installDir)) {
             throw new IllegalArgumentException();
         }
         this.installDir = installDir;
 
-        int STEPS = 4;
+        int steps = 4;
 
-        progressMessageUpdater.updateProgressMessage(index, true, 0, STEPS, "Loading common");
-        this.common = new Common(installDir, new File(installDir, "common"), index + 1, progressMessageUpdater);
+        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading common");
+        this.common = new Common(installDir, installDir.resolve("common"), index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 0, STEPS, "Loading DLCs");
-        this.dlcs = new StellarisDLCs(installDir, new File(installDir, "dlc"), index + 1, progressMessageUpdater);
+        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading DLCs");
+        this.dlcs = new StellarisDLCs(installDir, installDir.resolve("dlc"), index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 1, STEPS, "Loading Localisation");
+        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Localisation");
         this.localisation = PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 2, STEPS, "Loading Game Data");
+        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading Game Data");
         this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, false, 3, STEPS, "Done");
+        progressMessageUpdater.updateProgressMessage(index, false, 3, steps, "Done");
     }
 
-    public File getInstallDir() {
+    public Path getInstallDir() {
         return installDir;
     }
 

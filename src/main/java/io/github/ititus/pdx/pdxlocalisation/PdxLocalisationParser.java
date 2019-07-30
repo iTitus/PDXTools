@@ -4,6 +4,7 @@ import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.io.IPathFilter;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import io.github.ititus.pdx.util.mutable.MutableInt;
 import io.github.ititus.pdx.util.mutable.MutableString;
@@ -11,16 +12,14 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -30,33 +29,26 @@ public final class PdxLocalisationParser implements PdxConstants {
     private PdxLocalisationParser() {
     }
 
-    public static PDXLocalisation parse(File installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public static PDXLocalisation parse(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         return parse(installDir, new FileExtensionFilter("yml"), index, progressMessageUpdater);
     }
 
-    public static PDXLocalisation parse(File installDir, FileFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        File[] validFiles;
-        try (Stream<Path> stream = Files.walk(installDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
-            validFiles = stream.filter(Objects::nonNull).map(Path::toFile).filter(f -> !f.isDirectory() && (filter == null || filter.accept(f))).sorted(IOUtil.asciibetical(installDir)).toArray(File[]::new);
+    public static PDXLocalisation parse(Path installDir, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        Path[] validFiles;
+        try (Stream<Path> stream = Files.walk(installDir)) {
+            validFiles = stream.filter(Objects::nonNull).filter(Predicate.not(Files::isDirectory)).filter(p -> (filter == null || filter.test(p))).sorted(IOUtil.asciibetical(installDir)).toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 
-        int FILE_COUNT = validFiles.length;
+        int fileCount = validFiles.length;
         MutableInt progress = new MutableInt();
-        String installDirPath;
-        try {
-            installDirPath = installDir.getCanonicalPath();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
         PDXLocalisation localisation = new PDXLocalisation(
                 Arrays.stream(validFiles)
                         .filter(Objects::nonNull)
-                        .filter(File::isFile)
+                        .filter(Files::isRegularFile)
                         .map(f -> {
-                            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), FILE_COUNT, "Loading Localisation File " + IOUtil.getRelativePath(installDirPath, f));
+                            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading Localisation File " + installDir.relativize(f));
                             return parseInternal(f);
                         })
                         .collect(Collector.of(
@@ -74,17 +66,17 @@ public final class PdxLocalisationParser implements PdxConstants {
                                 )
                         )
         );
-        progressMessageUpdater.updateProgressMessage(index, false, FILE_COUNT, FILE_COUNT, "Done");
+        progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");
         return localisation;
     }
 
-    private static MutableMap<String, MutableMap<String, String>> parseInternal(File localisationFile) {
+    private static MutableMap<String, MutableMap<String, String>> parseInternal(Path localisationFile) {
         if (localisationFile != null) {
             MutableBoolean first = new MutableBoolean(true);
             MutableString language = new MutableString();
             Matcher m = EMPTY_PATTERN.matcher(EMPTY);
             MutableMap<String, MutableMap<String, String>> localisation = Maps.mutable.empty();
-            try (Stream<String> stream = Files.lines(localisationFile.toPath(), StandardCharsets.UTF_8)) {
+            try (Stream<String> stream = Files.lines(localisationFile, StandardCharsets.UTF_8)) {
                 stream
                         .filter(Objects::nonNull)
                         .filter(s -> !s.isEmpty())

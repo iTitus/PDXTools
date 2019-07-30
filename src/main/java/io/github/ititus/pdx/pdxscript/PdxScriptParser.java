@@ -10,11 +10,10 @@ import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -407,15 +406,19 @@ public final class PdxScriptParser implements PdxConstants {
         return EMPTY;
     }
 
-    public static IPdxScript parse(File scriptFile) {
-        try (Reader r = new InputStreamReader(new FileInputStream(scriptFile), StandardCharsets.UTF_8)) {
+    public static IPdxScript parse(Path scriptFile) {
+        if (!Files.isRegularFile(scriptFile)) {
+            throw new IllegalArgumentException();
+        }
+
+        try (Reader r = new BufferedReader(new InputStreamReader(Files.newInputStream(scriptFile), StandardCharsets.UTF_8))) {
             return parse(IOUtil.getCharacterStream(r));
-        } catch (Exception e) {
-            throw new RuntimeException("Error while reading file: " + scriptFile, e);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error while reading file: " + scriptFile, e);
         }
     }
 
-    public static IPdxScript parse(IntStream stream) {
+    private static IPdxScript parse(IntStream stream) {
         ImmutableList<String> tokens = tokenize(stream);
         ObjectIntPair<IPdxScript> pair = parse(tokens, 0);
         if ((!(pair.getOne() instanceof PdxScriptObject) && !(pair.getOne() instanceof PdxScriptList)) || pair.getTwo() != tokens.size()) {

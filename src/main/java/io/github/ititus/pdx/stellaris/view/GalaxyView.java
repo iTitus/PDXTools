@@ -165,7 +165,7 @@ public final class GalaxyView extends BorderPane {
                 ImmutableIntObjectMap<GalacticObject> systems = save.getGameState().getGalacticObjects().getGalacticObjects();
                 ImmutableIntObjectMap<Country> countries = save.getGameState().getCountries().getCountries();
 
-                int MAX_PROGRESS = systems.size() + countries.size();
+                int maxProgress = systems.size() + countries.size();
                 MutableInt progress = new MutableInt();
 
                 for (IntObjectPair<GalacticObject> pair : systems.keyValuesView()) {
@@ -173,8 +173,8 @@ public final class GalaxyView extends BorderPane {
                         break;
                     }
 
-                    updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
-                    updateMessage("Adding system " + pair.getTwo().getName() + " [" + progress.get() + "/" + MAX_PROGRESS + "]");
+                    updateProgress(progress.getAndIncrement(), maxProgress);
+                    updateMessage("Adding system " + pair.getTwo().getName() + " [" + progress.get() + "/" + maxProgress + "]");
 
                     GalacticObjectFX galacticObjectFX = new GalacticObjectFX(GalaxyView.this, pair);
 
@@ -189,8 +189,8 @@ public final class GalaxyView extends BorderPane {
                         continue;
                     }
 
-                    updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
-                    updateMessage("Adding country " + pair.getTwo().getName() + " [" + progress.get() + "/" + MAX_PROGRESS + "]");
+                    updateProgress(progress.getAndIncrement(), maxProgress);
+                    updateMessage("Adding country " + pair.getTwo().getName() + " [" + progress.get() + "/" + maxProgress + "]");
 
                     CountryFX countryFX = new CountryFX(GalaxyView.this, pair);
 
@@ -198,7 +198,7 @@ public final class GalaxyView extends BorderPane {
                 }
 
                 Platform.runLater(() -> {
-                    updateProgress(MAX_PROGRESS, MAX_PROGRESS);
+                    updateProgress(maxProgress, maxProgress);
                     updateMessage("Done");
                     infoVb.getChildren().removeAll(pb1, l1);
                 });
@@ -250,7 +250,7 @@ public final class GalaxyView extends BorderPane {
                     ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
                     ImmutableList<IntObjectPair<Planet>> systemPlanets = systemPair.getTwo().getPlanets().collect(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)));
 
-                    int MAX_PROGRESS = systemPlanets.size() + 1;
+                    int maxProgress = systemPlanets.size() + 1;
                     MutableInt progress = new MutableInt();
 
                     for (IntObjectPair<Planet> pair : systemPlanets) {
@@ -258,16 +258,16 @@ public final class GalaxyView extends BorderPane {
                             break;
                         }
 
-                        updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
-                        updateMessage("Adding planet " + pair.getTwo().getName() + " [" + progress.get() + "/" + MAX_PROGRESS + "]");
+                        updateProgress(progress.getAndIncrement(), maxProgress);
+                        updateMessage("Adding planet " + pair.getTwo().getName() + " [" + progress.get() + "/" + maxProgress + "]");
 
                         PlanetFX planetFX = new PlanetFX(GalaxyView.this, pair);
 
                         Platform.runLater(() -> systemGroup.getChildren().add(planetFX));
                     }
 
-                    updateProgress(progress.getAndIncrement(), MAX_PROGRESS);
-                    updateMessage("Adding inner & outer radius [" + progress.get() + "/" + MAX_PROGRESS + "]");
+                    updateProgress(progress.getAndIncrement(), maxProgress);
+                    updateMessage("Adding inner & outer radius [" + progress.get() + "/" + maxProgress + "]");
 
                     Circle innerRadius = new Circle(systemPair.getTwo().getInnerRadius());
                     innerRadius.setFill(null);
@@ -283,7 +283,7 @@ public final class GalaxyView extends BorderPane {
 
                     Platform.runLater(() -> {
                         systemGroup.getChildren().addAll(innerRadius, outerRadius);
-                        updateProgress(MAX_PROGRESS, MAX_PROGRESS);
+                        updateProgress(maxProgress, maxProgress);
                         updateMessage("Done");
                     });
 

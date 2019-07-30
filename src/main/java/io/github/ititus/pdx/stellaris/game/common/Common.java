@@ -3,11 +3,12 @@ package io.github.ititus.pdx.stellaris.game.common;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IFileFilter;
+import io.github.ititus.pdx.util.io.IPathFilter;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Common {
 
@@ -21,15 +22,15 @@ public class Common {
             // No relation sign in list allowed
             "name_lists/HUMAN1_SC.txt"
     );
-    private static final IFileFilter FILTER = new FileExtensionFilter("txt");
+    private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
-    private final File installDir, commonDir;
+    private final Path installDir, commonDir;
     private final PdxRawDataLoader commonDataLoader;
 
     private final PlanetClasses planetClasses;
 
-    public Common(File installDir, File commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        if (installDir == null || !installDir.isDirectory() || commonDir == null || !commonDir.isDirectory()) {
+    public Common(Path installDir, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        if (installDir == null || !Files.isDirectory(installDir) || commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }
         this.installDir = installDir;
@@ -39,11 +40,11 @@ public class Common {
         this.planetClasses = this.commonDataLoader.getRawData().getObject("planet_classes").getAs(PlanetClasses::new);
     }
 
-    public File getInstallDir() {
+    public Path getInstallDir() {
         return installDir;
     }
 
-    public File getCommonDir() {
+    public Path getCommonDir() {
         return commonDir;
     }
 

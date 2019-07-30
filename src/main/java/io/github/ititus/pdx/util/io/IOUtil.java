@@ -1,72 +1,48 @@
 package io.github.ititus.pdx.util.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 public class IOUtil {
 
-    public static Comparator<File> asciibetical(File dir) {
-        try {
-            return asciibetical(dir.getCanonicalPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static Comparator<Path> asciibetical(Path root) {
+        return Comparator.comparing(p -> (Files.isDirectory(p) ? (char) 1 : (char) 0) + root.relativize(p).toString());
     }
 
-    public static Comparator<File> asciibetical(String canonicalPath) {
-        return Comparator.comparing(f -> (f.isDirectory() ? (char) 1 : (char) 0) + getRelativePath(canonicalPath, f));
-    }
-
-    public static String getRelativePath(String installDirPath, File f) {
-        try {
-            String canonical = f.getCanonicalPath();
-            canonical = canonical.replace(installDirPath, "");
-            canonical = canonical.replace("\\", "/");
-            if (canonical.startsWith("/")) {
-                canonical = canonical.substring(1);
-            }
-            return canonical;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String getExtension(File file) {
-        if (file == null) {
+    public static String getExtension(Path p) {
+        if (p == null) {
             throw new IllegalArgumentException();
         }
-        if (file.isDirectory()) {
-            return "";
-        }
-        return getExtension(file.getName());
+        return getExtension(p.getFileName().toString());
     }
 
     public static String getExtension(String fileName) {
         int i = fileName.lastIndexOf('.');
         if (i > 0 && i < fileName.length() - 1) {
-            return fileName.substring(i + 1).toLowerCase(Locale.ENGLISH);
+            return fileName.substring(i + 1).toLowerCase(Locale.ROOT);
         }
         return "";
     }
 
-    public static String getNameWithoutExtension(File file) {
-        if (file == null) {
+    public static String getNameWithoutExtension(Path p) {
+        if (p == null) {
             throw new IllegalArgumentException();
         }
-        if (file.isDirectory()) {
-            return file.getName();
-        }
-        return getNameWithoutExtension(file.getName());
+        return getNameWithoutExtension(p.getFileName().toString());
     }
 
     public static String getNameWithoutExtension(String fileName) {
         int i = fileName.lastIndexOf('.');
-        if (i > 1 && i < fileName.length() - 1) {
+        if (i > 0 && i < fileName.length() - 1) {
             return fileName.substring(0, i);
         }
         return fileName;
@@ -100,5 +76,15 @@ public class IOUtil {
                 return next != -1;
             }
         }, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
+    }
+
+    public static FileSystem openZip(Path zip) throws IOException {
+        return openZip(zip, false);
+    }
+
+    public static FileSystem openZip(Path zip, boolean create) throws IOException {
+        URI uri = URI.create("jar:file:" + zip.toUri().getRawPath());
+        Map<String, Boolean> env = Collections.singletonMap("create", create);
+        return FileSystems.newFileSystem(uri, env);
     }
 }
