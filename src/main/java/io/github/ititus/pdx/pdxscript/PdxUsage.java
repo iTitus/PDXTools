@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 
 public class PdxUsage implements PdxConstants {
 
+    private static final SetIterable<String> EXPECTED_INT = Sets.immutable.of(INT, NEG_INT);
+    private static final SetIterable<String> EXPECTED_U_INT = Sets.immutable.of(U_INT, INT);
+    private static final SetIterable<String> EXPECTED_LONG = Sets.immutable.of(LONG, INT, NEG_INT, U_INT);
+
     private final MutableSet<String> expectedTypes;
     private final MutableSet<String> actualTypes;
 
@@ -37,10 +41,6 @@ public class PdxUsage implements PdxConstants {
         return this;
     }
 
-    private static final SetIterable<String> EXPECTED_INT = Sets.immutable.of(INT, NEG_INT);
-    private static final SetIterable<String> EXPECTED_U_INT = Sets.immutable.of(U_INT, INT);
-    private static final SetIterable<String> EXPECTED_LONG = Sets.immutable.of(LONG, INT, NEG_INT, U_INT);
-
     public boolean isError() {
         if (expectedTypes.size() == 1 && actualTypes.size() == 1 && expectedTypes.getOnly().equalsIgnoreCase(actualTypes.getOnly())) {
             return false;
@@ -60,9 +60,7 @@ public class PdxUsage implements PdxConstants {
 
             if (actualNonNull.size() == 1) {
                 String actual = actualNonNull.get(0);
-                if (expected.equals(actual)) {
-                    return false;
-                }
+                return !expected.equals(actual);
             }
         }
 

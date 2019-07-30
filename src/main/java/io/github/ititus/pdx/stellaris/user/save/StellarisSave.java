@@ -4,7 +4,6 @@ import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.util.io.IFileFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -90,10 +89,6 @@ public class StellarisSave {
 
     public GameState getGameState() {
         return gameState;
-    }
-
-    public ImmutableMultimap<String, String> getErrorsOld() {
-        return saveDataLoader.getRawData().getErrorsOld();
     }
 
     public ImmutableList<String> getErrors() {

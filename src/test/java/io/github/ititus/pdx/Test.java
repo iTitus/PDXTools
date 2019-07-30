@@ -11,15 +11,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.Map;
 
 public class Test extends Application {
 
@@ -57,11 +54,7 @@ public class Test extends Application {
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
         ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
         ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
-        ImmutableMultimap<String, String> saveParseErrorsOld = save != null ? save.getErrorsOld() : null;
         ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
-        if (saveParseErrorsOld != null) {
-            saveParseErrorsOld.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
-        }
         if (saveParseErrors != null) {
             try {
                 Files.write(Path.of(USER_HOME, "Desktop", "pdx", "out.txt"), saveParseErrors);

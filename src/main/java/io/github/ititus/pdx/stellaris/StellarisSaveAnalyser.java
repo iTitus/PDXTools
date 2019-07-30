@@ -19,14 +19,11 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class StellarisSaveAnalyser implements Runnable {
@@ -216,9 +213,9 @@ public class StellarisSaveAnalyser implements Runnable {
         ImmutableList<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
 
         updateProgressMessage(3, true, 1, SAVE_ERROR_STEPS, "Gathering Save Parsing Errors");
-        ImmutableMultimap<String, String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrorsOld() : null;
+        ImmutableList<String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrors() : null;
         if (saveParseErrors != null) {
-            saveParseErrors.toMap().entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(p -> p.getKey() + " = " + p.getValue()).forEachOrdered(System.out::println);
+            saveParseErrors.forEach(System.out::println);
         }
 
         updateProgressMessage(3, false, 2, SAVE_ERROR_STEPS, "Done");

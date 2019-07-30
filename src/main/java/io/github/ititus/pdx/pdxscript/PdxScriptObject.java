@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.pdxscript;
 
-import org.eclipse.collections.api.collection.MutableCollection;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.primitive.*;
@@ -482,40 +481,6 @@ public final class PdxScriptObject implements IPdxScript {
             }
         });
         return map.toImmutable();
-    }
-
-    public ImmutableMultimap<String, String> getErrorsOld() {
-        MutableMultimap<String, String> errors = Multimaps.mutable.set.empty();
-        map.forEachKeyValue((key, s) -> {
-            String type = PdxConstants.getTypeString(s);
-            if (!type.equals(NULL)) {
-                MutableCollection<String> toAdd = wronglyUsed != null ? wronglyUsed.get(key) : null;
-                if (toAdd != null && !toAdd.isEmpty()) {
-                    errors.putAll(key, toAdd.collect(s1 -> "wrongly_used_as=" + s1 + SLASH_CHAR + "was=" + type));
-                }
-            }
-            MutableCollection<String> usages = used != null ? used.get(key) : null;
-            if ((!type.equals(NULL) || (usages != null && !usages.isEmpty())) && (usages == null || (!usages.contains(type) && (!type.equals(INT) || (!usages.contains(U_INT) && !usages.contains(LONG)))))) {
-                errors.put(key, "unused=" + type + (usages != null && !usages.isEmpty() ? SLASH_CHAR + "was_used_as=" + usages : EMPTY));
-            } else {
-                if (s instanceof PdxScriptObject) {
-                    ((PdxScriptObject) s).getErrorsOld().forEachKeyMultiValues((k, v) -> errors.putAll((DIGITS_PATTERN.matcher(key).matches() ? EMPTY : key + DOT_CHAR) + k, v));
-                } else if (s instanceof PdxScriptList) {
-                    ((PdxScriptList) s).getErrorsOld().forEachKeyMultiValues((k, v) -> errors.putAll(key + DOT_CHAR + k, v));
-                }
-            }
-        });
-        /*if (nullUsed != null && !nullUsed.isEmpty()) {
-            nullUsed.forEachKeyMultiValues((key, toAdd) -> {
-                if (!Iterate.isEmpty(toAdd)) {
-                    if (map.containsKey(key)) {
-                        throw new RuntimeException();
-                    }
-                    errors.put(key, "null" + SLASH_CHAR + "used_as=" + toAdd);
-                }
-            });
-        }*/
-        return errors.toImmutable();
     }
 
     public PdxUsageStatistic getUsageStatistic() {
