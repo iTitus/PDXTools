@@ -262,7 +262,7 @@ public final class PdxScriptParser implements PdxConstants {
         return s.substring(beginIndex, endIndex).replace(ESCAPE + QUOTE, QUOTE);
     }
 
-    private static Iterator<String> tokenizeIterator(PrimitiveIterator.OfInt src) {
+    private static Iterator<String> tokenize(PrimitiveIterator.OfInt src) {
         return new Iterator<>() {
 
             StringBuilder b = new StringBuilder();
@@ -480,7 +480,7 @@ public final class PdxScriptParser implements PdxConstants {
     }
 
     private static IPdxScript parse(PrimitiveIterator.OfInt iterator) {
-        Iterator<String> tokenIterator = tokenizeIterator(iterator);
+        Iterator<String> tokenIterator = tokenize(iterator);
 
         // TODO: Implement some kind of ring buffer here
         MutableList<String> l = Lists.mutable.empty();
