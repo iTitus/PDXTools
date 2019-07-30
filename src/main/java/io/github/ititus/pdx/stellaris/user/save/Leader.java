@@ -3,14 +3,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Leader {
 
     private final int speciesIndex, country, creator, level, leaderTerms, age, popFaction;
     private final double experience;
     private final String portrait, gender, leaderClass, preRulerLeaderClass, agenda;
-    private final Date start, end, dateAdded, date;
+    private final LocalDate start, end, dateAdded, date;
     private final LeaderName name;
     private final Location location, preRulerLocation, targetCoordinate;
     private final Flags flags;
@@ -58,7 +58,7 @@ public class Leader {
         this.roles = o.getObject("roles").getAs(LeaderRoles::new);
     }
 
-    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction, double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass, String agenda, Date start, Date end, Date dateAdded, Date date, LeaderName name, Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, Type mandate, LeaderDesign design, LeaderRoles roles) {
+    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction, double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass, String agenda, LocalDate start, LocalDate end, LocalDate dateAdded, LocalDate date, LeaderName name, Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, Type mandate, LeaderDesign design, LeaderRoles roles) {
         this.speciesIndex = speciesIndex;
         this.country = country;
         this.creator = creator;
@@ -138,19 +138,19 @@ public class Leader {
         return agenda;
     }
 
-    public Date getStart() {
+    public LocalDate getStart() {
         return start;
     }
 
-    public Date getEnd() {
+    public LocalDate getEnd() {
         return end;
     }
 
-    public Date getDateAdded() {
+    public LocalDate getDateAdded() {
         return dateAdded;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

@@ -3,14 +3,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class RelationModifier {
 
     private final boolean decay;
     private final double value;
     private final String modifier;
-    private final Date startDate;
+    private final LocalDate startDate;
 
 
     public RelationModifier(IPdxScript s) {
@@ -25,7 +25,7 @@ public class RelationModifier {
         this.decay = o.getBoolean("decay");
     }
 
-    public RelationModifier(boolean decay, double value, String modifier, Date startDate) {
+    public RelationModifier(boolean decay, double value, String modifier, LocalDate startDate) {
         this.decay = decay;
         this.value = value;
         this.modifier = modifier;
@@ -44,7 +44,7 @@ public class RelationModifier {
         return modifier;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 }

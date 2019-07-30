@@ -6,14 +6,14 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.impl.factory.Lists;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Message {
 
     private final boolean gameText;
     private final int receiver, notification;
     private final String type, localization, technology, messageType;
-    private final Date end, date;
+    private final LocalDate end, date;
     private final ImmutableList<VariablePair> variables;
     private final Coordinate coordinate;
     private final DiplomaticResponse diplomaticAction3rdParty, diplomaticResponse;
@@ -43,7 +43,7 @@ public class Message {
         this.messageType = o.getString("message_type");
     }
 
-    public Message(boolean gameText, int receiver, int notification, String type, String localization, String technology, String messageType, Date end, Date date, ImmutableList<VariablePair> variables, Coordinate coordinate, DiplomaticResponse diplomaticAction3rdParty, DiplomaticResponse diplomaticResponse) {
+    public Message(boolean gameText, int receiver, int notification, String type, String localization, String technology, String messageType, LocalDate end, LocalDate date, ImmutableList<VariablePair> variables, Coordinate coordinate, DiplomaticResponse diplomaticAction3rdParty, DiplomaticResponse diplomaticResponse) {
         this.gameText = gameText;
         this.receiver = receiver;
         this.notification = notification;
@@ -87,11 +87,11 @@ public class Message {
         return messageType;
     }
 
-    public Date getEnd() {
+    public LocalDate getEnd() {
         return end;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

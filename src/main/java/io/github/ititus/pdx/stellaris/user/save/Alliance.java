@@ -6,13 +6,13 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Alliance {
 
     private final int leader;
     private final String name;
-    private final Date startDate;
+    private final LocalDate startDate;
     private final ImmutableIntList members, associates, shipDesigns;
 
     public Alliance(IPdxScript s) {
@@ -30,7 +30,7 @@ public class Alliance {
         this.leader = o.getInt("leader");
     }
 
-    public Alliance(int leader, String name, Date startDate, ImmutableIntList members, ImmutableIntList associates, ImmutableIntList shipDesigns) {
+    public Alliance(int leader, String name, LocalDate startDate, ImmutableIntList members, ImmutableIntList associates, ImmutableIntList shipDesigns) {
         this.leader = leader;
         this.name = name;
         this.startDate = startDate;
@@ -47,7 +47,7 @@ public class Alliance {
         return name;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 

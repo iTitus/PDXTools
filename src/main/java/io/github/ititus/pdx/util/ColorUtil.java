@@ -93,18 +93,27 @@ public class ColorUtil implements PdxConstants {
     }
 
     public static Color fromRGBHex(String hex) {
-        if (hex != null && hex.length() >= "#FFFFFF".length() && hex.length() <= "0xFFFFFFFF".length()) {
-            Matcher m = HEX_RGB_PATTERN.matcher(hex);
-            if (m.matches()) {
-                String components = m.group(2);
-                String alpha = m.group(3);
-                Color c;
-                if (alpha != null && !alpha.isEmpty()) {
-                    c = new Color(Integer.parseUnsignedInt(components, 16), true);
-                } else {
-                    c = new Color(Integer.parseInt(components, 16));
+        if (hex != null && (hex.startsWith("#") || hex.startsWith("0x"))) {
+            int l = hex.length();
+            if (l >= 7 && l <= 10) {
+                if (hex.startsWith("#")) {
+
+                } else if (hex.startsWith("0x")) {
+
                 }
-                return c;
+
+                Matcher m = HEX_RGB_PATTERN.matcher(hex);
+                if (m.matches()) {
+                    String components = m.group(2);
+                    String alpha = m.group(3);
+                    Color c;
+                    if (alpha != null && !alpha.isEmpty()) {
+                        c = new Color(Integer.parseUnsignedInt(components, 16), true);
+                    } else {
+                        c = new Color(Integer.parseInt(components, 16));
+                    }
+                    return c;
+                }
             }
         }
         throw new IllegalArgumentException();

@@ -2,7 +2,9 @@ package io.github.ititus.pdx.pdxscript;
 
 import org.eclipse.collections.api.block.function.Function;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
@@ -22,7 +24,6 @@ public interface PdxConstants {
     char DOT_CHAR = '.';
     String EMPTY = "";
     String INDENT = "    ";
-    String SDF_PATTERN = "yyyy.MM.dd";
     long UNSIGNED_INT_MAX_LONG = 0xFFFFFFFFL;
 
     char LIST_OBJECT_OPEN_CHAR = '{';
@@ -38,6 +39,7 @@ public interface PdxConstants {
     String VARIABLE_PREFIX = "@";
     String QUOTE = String.valueOf(QUOTE_CHAR);
     String ESCAPE = String.valueOf(ESCAPE_CHAR);
+    String PERCENT = "%";
 
     char EQUALS_CHAR = '=';
     char LESS_THAN_CHAR = '<';
@@ -92,13 +94,11 @@ public interface PdxConstants {
     String KEY_KEY = "key";
     String KEY_VALUE = "value";
 
-    Date NULL_DATE = new Date(-62135773200000L);
+    LocalDate NULL_DATE = LocalDate.of(1, 1, 1);
+    DateTimeFormatter DTF = DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.ROOT);
 
     Pattern EMPTY_PATTERN = Pattern.compile(EMPTY);
     Pattern DIGITS_PATTERN = Pattern.compile("\\d+");
-    Pattern STRING_NEEDS_QUOTE_PATTERN = Pattern.compile("\\s|[=<>#{},"/*+"+-*"*/ + "/\"]");
-    Pattern DATE_PATTERN = Pattern.compile("(1|\\d{4})\\.((0[1-9])|(1[012]))\\.((0[1-9])|([12]\\d)|(3[01]))");
-    Pattern PERCENT = Pattern.compile("(\\S+)\\s*%");
     Pattern HEX_RGB_PATTERN = Pattern.compile("(0x|#)((([0-9A-Fa-f]{2})?)[0-9A-Fa-f]{6})");
     Pattern LANGUAGE_PATTERN = Pattern.compile("^(?<" + KEY_LANGUAGE + ">l_(\\w+)):$");
     Pattern TRANSLATION_PATTERN = Pattern.compile("^(?<" + KEY_INDENT + "> )(?<" + KEY_KEY + ">[\\w.]+):0 \"(?<" + KEY_VALUE + ">.*)\"$");
@@ -185,7 +185,7 @@ public interface PdxConstants {
         }
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
-            if (v instanceof Date) {
+            if (v instanceof LocalDate) {
                 return DATE;
             } else if (v instanceof Double) {
                 return DOUBLE;

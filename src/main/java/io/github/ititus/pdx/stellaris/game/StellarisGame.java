@@ -56,16 +56,16 @@ public class StellarisGame {
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading common");
         this.common = new Common(installDir, installDir.resolve("common"), index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading DLCs");
+        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading DLCs");
         this.dlcs = new StellarisDLCs(installDir, installDir.resolve("dlc"), index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Localisation");
+        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading Localisation");
         this.localisation = PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading Game Data");
+        progressMessageUpdater.updateProgressMessage(index, true, 3, steps, "Loading Raw Game Data");
         this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, false, 3, steps, "Done");
+        progressMessageUpdater.updateProgressMessage(index, false, 4, steps, "Done");
     }
 
     public Path getInstallDir() {

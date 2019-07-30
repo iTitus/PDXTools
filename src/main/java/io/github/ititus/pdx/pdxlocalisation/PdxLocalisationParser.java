@@ -36,7 +36,12 @@ public final class PdxLocalisationParser implements PdxConstants {
     public static PDXLocalisation parse(Path installDir, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         Path[] validFiles;
         try (Stream<Path> stream = Files.walk(installDir)) {
-            validFiles = stream.filter(Objects::nonNull).filter(Predicate.not(Files::isDirectory)).filter(p -> (filter == null || filter.test(p))).sorted(IOUtil.asciibetical(installDir)).toArray(Path[]::new);
+            validFiles = stream
+                    .filter(Objects::nonNull)
+                    .filter(Predicate.not(Files::isDirectory))
+                    .filter(p -> (filter == null || filter.test(p)))
+                    .sorted(IOUtil.asciibetical(installDir))
+                    .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -405,7 +405,12 @@ public final class GalaxyView extends BorderPane {
                             Bypass bypass = bypasses.get(bypassId);
                             int linkedTo = bypass.getLinkedTo();
 
-                            int to = wormholes.stream().filter(w -> w.getBypass() == linkedTo).findAny().get().getCoordinate().getOrigin();
+                            int to = wormholes.stream()
+                                    .filter(w -> w.getBypass() == linkedTo)
+                                    .findAny()
+                                    .get()
+                                    .getCoordinate()
+                                    .getOrigin();
                             GalacticObject system = systems.get(to);
 
                             StringBuilder b = new StringBuilder(" - ").append(system.getName()).append(" (#").append(to).append(")");
@@ -446,7 +451,12 @@ public final class GalaxyView extends BorderPane {
                             if (to != -1) {
                                 Bypass bypass = bypasses.get(to);
                                 properties.add("linked_to=" + bypass.getType() + " (#" + to + ")");
-                                int target = wormholes.stream().filter(wormhole -> wormhole.getBypass() == to).findAny().get().getCoordinate().getOrigin();
+                                int target = wormholes.stream()
+                                        .filter(wormhole -> wormhole.getBypass() == to)
+                                        .findAny()
+                                        .get()
+                                        .getCoordinate()
+                                        .getOrigin();
                                 GalacticObject system = systems.get(target);
                                 properties.add("target_system=" + system.getName() + " (#" + target + ")");
                             }

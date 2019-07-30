@@ -36,7 +36,9 @@ public class StellarisSaves {
         MutableMap<String, ImmutableMap<String, StellarisSave>> saves = Maps.mutable.empty();
         Path[] saveFolders;
         try (Stream<Path> stream = Files.list(saveGameFolder)) {
-            saveFolders = stream.filter(Files::isDirectory).toArray(Path[]::new);
+            saveFolders = stream
+                    .filter(Files::isDirectory)
+                    .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -49,8 +51,10 @@ public class StellarisSaves {
 
             MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
             Path[] saveGames;
-            try (Stream<Path> stream = Files.list(saveGameFolder)) {
-                saveGames = stream.filter(StellarisSave::isValidSaveFile).toArray(Path[]::new);
+            try (Stream<Path> stream = Files.list(saveFolder)) {
+                saveGames = stream
+                        .filter(StellarisSave::isValidSaveFile)
+                        .toArray(Path[]::new);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
@@ -95,7 +99,14 @@ public class StellarisSaves {
     }
 
     public ImmutableList<Pair<String, Throwable>> getErrors() {
-        return errors != null ? errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList()) : Lists.immutable.empty();
+        return errors != null ?
+                errors.stream()
+                        .sorted(
+                                Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString())
+                                        .thenComparing(Pair::getOne)
+                        )
+                        .collect(Collectors2.toImmutableList())
+                : Lists.immutable.empty();
     }
 
     public StellarisSave getSave(String saveFolder, String saveGame) {

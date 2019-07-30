@@ -6,7 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class GameState {
 
@@ -14,7 +14,7 @@ public class GameState {
     private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop, lastCreatedCountry, lastRefugeeCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip, lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction, lastNotificationId, lastEventId, lastCreatedPopFaction, randomCount, randomSeed;
     private final double galaxyRadius;
     private final String version, name, lastKilledCountryName;
-    private final Date date;
+    private final LocalDate date;
     private final ImmutableIntList firedEvents, rimGalacticObjects;
     private final ImmutableLongList usedSymbols;
     private final ImmutableList<String> requiredDLCs, usedColors;
@@ -144,7 +144,7 @@ public class GameState {
         // TODO: market, trade_routes_manager, slave_market_manager
     }
 
-    public GameState(boolean endGameCrisis, int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount, int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName, Date date, ImmutableIntList firedEvents, ImmutableIntList rimGalacticObjects, ImmutableLongList usedSymbols, ImmutableList<String> requiredDLCs, ImmutableList<String> usedColors, ImmutableList<Player> players, ImmutableList<Species> species, ImmutableList<Nebula> nebulas, ImmutableList<Message> messages, ImmutableList<SavedEventTarget> savedEventTargets, ImmutableList<GlobalShipDesign> globalShipDesigns, ImmutableList<Cluster> clusters, ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, Deposits deposits, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes, TradeRoutes tradeRoutes, Sectors sectors, Buildings buildings, ArchaeologicalSites archaeologicalSites) {
+    public GameState(boolean endGameCrisis, int versionControlRevision, int tick, int randomLogDay, int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry, int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader, int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction, int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount, int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName, LocalDate date, ImmutableIntList firedEvents, ImmutableIntList rimGalacticObjects, ImmutableLongList usedSymbols, ImmutableList<String> requiredDLCs, ImmutableList<String> usedColors, ImmutableList<Player> players, ImmutableList<Species> species, ImmutableList<Nebula> nebulas, ImmutableList<Message> messages, ImmutableList<SavedEventTarget> savedEventTargets, ImmutableList<GlobalShipDesign> globalShipDesigns, ImmutableList<Cluster> clusters, ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops, GalacticObjects galacticObjects, Starbases starbases, Planets planets, Countries countries, Alliances alliances, Truces truces, TradeDeals tradeDeals, Leaders leaders, Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, Deposits deposits, GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles, StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase, Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions, MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes, TradeRoutes tradeRoutes, Sectors sectors, Buildings buildings, ArchaeologicalSites archaeologicalSites) {
         this.endGameCrisis = endGameCrisis;
         this.versionControlRevision = versionControlRevision;
         this.tick = tick;
@@ -319,7 +319,7 @@ public class GameState {
         return lastKilledCountryName;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

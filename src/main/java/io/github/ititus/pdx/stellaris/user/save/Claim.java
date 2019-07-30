@@ -3,12 +3,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Claim {
 
     private final int owner, claims;
-    private final Date date;
+    private final LocalDate date;
 
     public Claim(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -20,10 +20,10 @@ public class Claim {
         this.claims = o.getInt("claims");
     }
 
-    public Claim(int owner, int claims, Date date) {
+    public Claim(int owner, int claims, LocalDate date) {
         this.owner = owner;
         this.claims = claims;
-        this.date = new Date(date.getTime());
+        this.date = date;
     }
 
     public int getOwner() {
@@ -34,7 +34,7 @@ public class Claim {
         return claims;
     }
 
-    public Date getDate() {
-        return new Date(date.getTime());
+    public LocalDate getDate() {
+        return date;
     }
 }

@@ -3,14 +3,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AIAttitude {
 
     private final int country, priority;
     private final double weight;
     private final String attitude;
-    private final Date date;
+    private final LocalDate date;
 
     public AIAttitude(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -25,7 +25,7 @@ public class AIAttitude {
         this.date = o.getDate("date");
     }
 
-    public AIAttitude(int country, int priority, double weight, String attitude, Date date) {
+    public AIAttitude(int country, int priority, double weight, String attitude, LocalDate date) {
         this.country = country;
         this.priority = priority;
         this.weight = weight;
@@ -49,7 +49,7 @@ public class AIAttitude {
         return attitude;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 }

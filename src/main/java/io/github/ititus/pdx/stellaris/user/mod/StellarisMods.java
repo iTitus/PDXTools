@@ -34,7 +34,9 @@ public class StellarisMods {
 
         Path[] paths;
         try (Stream<Path> stream = Files.list(modsFolder)) {
-            paths = stream.filter(MOD).toArray(Path[]::new);
+            paths = stream
+                    .filter(MOD)
+                    .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

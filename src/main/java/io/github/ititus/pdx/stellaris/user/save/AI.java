@@ -6,14 +6,14 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.impl.factory.Lists;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AI {
 
     private final boolean initialized, colonize;
     private final int randomSeed, randomCount, syncedRandomSeed, syncedRandomCount;
     private final double robotColonies, robotColoniesWithFreeBuildings;
-    private final Date prepareWarDate;
+    private final LocalDate prepareWarDate;
     private final ImmutableDoubleList budget;
     private final ImmutableList<AIStrategy> strategies;
     private final ImmutableList<AIAttitude> attitudes;
@@ -34,7 +34,7 @@ public class AI {
         this.syncedRandomCount = o.getUnsignedInt("synced_random_count");
     }
 
-    public AI(boolean initialized, boolean colonize, int randomSeed, int randomCount, int syncedRandomSeed, int syncedRandomCount, double robotColonies, double robotColoniesWithFreeBuildings, Date prepareWarDate, ImmutableDoubleList budget, ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
+    public AI(boolean initialized, boolean colonize, int randomSeed, int randomCount, int syncedRandomSeed, int syncedRandomCount, double robotColonies, double robotColoniesWithFreeBuildings, LocalDate prepareWarDate, ImmutableDoubleList budget, ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
         this.initialized = initialized;
         this.colonize = colonize;
         this.randomSeed = randomSeed;
@@ -81,7 +81,7 @@ public class AI {
         return robotColoniesWithFreeBuildings;
     }
 
-    public Date getPrepareWarDate() {
+    public LocalDate getPrepareWarDate() {
         return prepareWarDate;
     }
 

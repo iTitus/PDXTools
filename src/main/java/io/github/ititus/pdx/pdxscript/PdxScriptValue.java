@@ -2,28 +2,26 @@ package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.Deduplicator;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public final class PdxScriptValue implements IPdxScript {
 
-    private static final Deduplicator<Date> DATE_DEDUPLICATOR = new Deduplicator<>();
+    private static final Deduplicator<LocalDate> DATE_DEDUPLICATOR = new Deduplicator<>();
     private static final Deduplicator<PdxScriptValue> DEDUPLICATOR = new Deduplicator<>();
 
     private final PdxRelation relation;
     private final Object value;
 
     private PdxScriptValue(PdxRelation relation, Object value) {
-        if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof Date) && !(value instanceof PdxColorWrapper) && !(value instanceof String))) {
+        if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof LocalDate) && !(value instanceof PdxColorWrapper) && !(value instanceof String))) {
             throw new IllegalArgumentException(String.valueOf(value));
         }
         this.relation = relation;
         if (value instanceof String) {
             this.value = ((String) value).intern();
-        } else if (value instanceof Date) {
-            this.value = DATE_DEDUPLICATOR.deduplicate((Date) value);
+        } else if (value instanceof LocalDate) {
+            this.value = DATE_DEDUPLICATOR.deduplicate((LocalDate) value);
         } else {
             this.value = value;
         }
@@ -59,9 +57,8 @@ public final class PdxScriptValue implements IPdxScript {
             b.append(NONE);
         } else if (value instanceof Boolean) {
             b.append((boolean) value ? YES : NO);
-        } else if (value instanceof Date) {
-            SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH);
-            b.append(PdxScriptParser.quote(sdf.format(value)));
+        } else if (value instanceof LocalDate) {
+            b.append(PdxScriptParser.quote(((LocalDate) value).format(DTF)));
         } else if (value instanceof String) {
             b.append(PdxScriptParser.quote((String) value));
         } else if (value instanceof PdxColorWrapper) {
@@ -94,9 +91,6 @@ public final class PdxScriptValue implements IPdxScript {
 
     @Override
     public String toString() {
-        return "PdxScriptValue{" +
-                "relation=" + relation +
-                ", value=" + value +
-                '}';
+        return "PdxScriptValue{relation=" + relation + ", value=" + value + '}';
     }
 }

@@ -66,7 +66,7 @@ public class Test extends Application {
 
         System.out.println("Total Loading Time: " + DurationFormatter.formatSeconds(s.stop()));
 
-        if (false && save != null) {
+        if (save != null) {
             GalaxyView galaxyView = new GalaxyView(game, save);
 
             Scene scene = new Scene(galaxyView);

@@ -7,7 +7,7 @@ import io.github.ititus.pdx.util.Deduplicator;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.impl.factory.Lists;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class FleetCombatStats {
@@ -24,7 +24,7 @@ public class FleetCombatStats {
             // TODO: there are some additional fields here (eg. ship_size_count_lost)
             // throw new RuntimeException("Unexpected fleet: " + o1);
         }
-        Date date = o.getDate("date");
+        LocalDate date = o.getDate("date");
         if (!PdxConstants.NULL_DATE.equals(date)) {
             // TODO: not always null date
             // throw new RuntimeException("Unexpected date: " + date);

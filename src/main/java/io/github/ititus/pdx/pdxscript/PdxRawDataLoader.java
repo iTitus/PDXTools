@@ -52,7 +52,14 @@ public class PdxRawDataLoader implements PdxConstants {
     }
 
     public ImmutableList<Pair<String, Throwable>> getErrors() {
-        return errors != null ? errors.stream().sorted(Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString()).thenComparing(Pair::getOne)).collect(Collectors2.toImmutableList()) : Lists.immutable.empty();
+        return errors != null ?
+                errors.stream()
+                        .sorted(
+                                Comparator.comparing((Pair<String, Throwable> p) -> p.getTwo().toString())
+                                        .thenComparing(Pair::getOne)
+                        )
+                        .collect(Collectors2.toImmutableList())
+                : Lists.immutable.empty();
     }
 
     private PdxScriptObject load(Path path, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {

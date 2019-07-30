@@ -14,6 +14,7 @@ import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -158,12 +159,12 @@ public final class PdxScriptList implements IPdxScript {
         return def;
     }
 
-    public Date getDate(int i) {
+    public LocalDate getDate(int i) {
         IPdxScript o = get(i);
         if (o instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) o).getValue();
             if (v instanceof Date) {
-                return (Date) v;
+                return (LocalDate) v;
             }
         }
         return null;

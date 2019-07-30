@@ -3,12 +3,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Truce {
 
     private final String name, truceType;
-    private final Date startDate;
+    private final LocalDate startDate;
 
     public Truce(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -21,7 +21,7 @@ public class Truce {
         this.truceType = o.getString("truce_type");
     }
 
-    public Truce(String name, String truceType, Date startDate) {
+    public Truce(String name, String truceType, LocalDate startDate) {
         this.name = name;
         this.truceType = truceType;
         this.startDate = startDate;
@@ -35,7 +35,7 @@ public class Truce {
         return truceType;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 }

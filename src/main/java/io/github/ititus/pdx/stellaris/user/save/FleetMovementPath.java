@@ -3,11 +3,11 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class FleetMovementPath {
 
-    private final Date date;
+    private final LocalDate date;
     private final ImmutableList<FleetMovementPathNode> nodes;
 
     public FleetMovementPath(PdxScriptObject o) {
@@ -15,12 +15,12 @@ public class FleetMovementPath {
         this.date = o.getDate("date");
     }
 
-    public FleetMovementPath(Date date, ImmutableList<FleetMovementPathNode> nodes) {
+    public FleetMovementPath(LocalDate date, ImmutableList<FleetMovementPathNode> nodes) {
         this.date = date;
         this.nodes = nodes;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

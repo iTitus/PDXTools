@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.ColorUtil;
 import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
@@ -14,10 +13,12 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.regex.Matcher;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -117,19 +118,14 @@ public final class PdxScriptParser implements PdxConstants {
             }
 
             Object value;
-            SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN, Locale.ENGLISH);
 
             if (token.charAt(0) == QUOTE_CHAR || token.charAt(l - 1) == QUOTE_CHAR) {
                 if (l >= 2 && token.charAt(0) == QUOTE_CHAR && token.charAt(l - 1) == QUOTE_CHAR) {
-                    token = token.substring(1, token.length() - 1);
-                    if (DATE_PATTERN.matcher(token).matches()) {
-                        try {
-                            value = sdf.parse(token);
-                        } catch (ParseException e) {
-                            value = token; // fallback to string
-                        }
-                    } else {
-                        value = token;
+                    token = stripQuotes(token);
+                    try {
+                        value = LocalDate.parse(token, DTF);
+                    } catch (DateTimeParseException ignored) {
+                        value = token; // fallback to string
                     }
                 } else {
                     throw new RuntimeException("Quote not closed at token " + token);
@@ -152,91 +148,92 @@ public final class PdxScriptParser implements PdxConstants {
                 ObjectIntPair<IPdxScript> colorPair = parse(tokens, ++i);
                 value = PdxColorWrapper.fromRGB(((PdxScriptList) colorPair.getOne()).getAsNumberArray());
                 i = colorPair.getTwo();
-            } else if (ColorUtil.HEX_RGB_PATTERN.matcher(token).matches()) {
-                value = PdxColorWrapper.fromRGBHex(token);
-                i++;
             } else {
-                String oldToken = token;
-                boolean percent = false;
-                Matcher m = PERCENT.matcher(token);
-                if (m.matches()) {
-                    percent = true;
-                    token = m.group(1);
-                }
                 try {
-                    value = Integer.valueOf(token);
-                } catch (NumberFormatException e1) {
+                    value = PdxColorWrapper.fromRGBHex(token);
+                    i++;
+                } catch (IllegalArgumentException ignored1) {
+                    String oldToken = token;
+                    boolean percent = false;
+                    if (token.endsWith(PERCENT)) {
+                        percent = true;
+                        token = token.substring(0, l - 1);
+                    }
                     try {
-                        value = Long.valueOf(token);
-                    } catch (NumberFormatException e2) {
+                        value = Integer.valueOf(token);
+                    } catch (NumberFormatException ignored2) {
                         try {
-                            value = Double.valueOf(token);
-                        } catch (NumberFormatException e3) {
-                            token = oldToken;
-                            if (token.startsWith(VARIABLE_PREFIX)) {
-                                // TODO: Parse @ variables
-                            } else {
-                                unknownLiterals.add(token.toLowerCase(Locale.ENGLISH).intern());
-                            }
-                            String tokenString = token;
-                            // TODO: Fix tokenizer splitting raw tokens with math symbols in it
+                            value = Long.valueOf(token);
+                        } catch (NumberFormatException ignored3) {
+                            try {
+                                value = Double.valueOf(token);
+                            } catch (NumberFormatException ignored4) {
+                                token = oldToken;
+                                if (token.startsWith(VARIABLE_PREFIX)) {
+                                    // TODO: Parse @ variables
+                                } else {
+                                    unknownLiterals.add(token.toLowerCase(Locale.ROOT).intern());
+                                }
+                                String tokenString = token;
+                                // TODO: Fix tokenizer splitting raw tokens with math symbols in it
                             /*String operator = tokens.get(i + 1);
                             PdxMathOperation operation = PdxMathOperation.get(operator);
                             if (operation != null) {
                                 tokenString += operator;
                             }*/
-                            value = tokenString; // fallback to string
+                                value = tokenString; // fallback to string
+                            }
                         }
                     }
-                }
-                i++;
+                    i++;
 
-                if (percent && !token.equals(oldToken)) {
-                    if (value instanceof Double) {
-                        double d = (Double) value / 100D;
-                        if ((int) d == d) {
-                            value = (int) d;
-                        } else if ((long) d == d) {
-                            value = (long) d;
+                    if (percent && !token.equals(oldToken)) {
+                        if (value instanceof Double) {
+                            double d = (Double) value / 100D;
+                            if ((int) d == d) {
+                                value = (int) d;
+                            } else if ((long) d == d) {
+                                value = (long) d;
+                            } else {
+                                value = d;
+                            }
+                        } else if (value instanceof Integer) {
+                            double d = (Integer) value / 100D;
+                            if ((int) d == d) {
+                                value = (int) d;
+                            } else {
+                                value = d;
+                            }
+                        } else if (value instanceof Long) {
+                            double d = (Long) value / 100D;
+                            if ((long) d == d) {
+                                value = (long) d;
+                            } else {
+                                value = d;
+                            }
                         } else {
-                            value = d;
+                            throw new RuntimeException("Something went wrong while parsing a percent number");
                         }
-                    } else if (value instanceof Integer) {
-                        double d = (Integer) value / 100D;
-                        if ((int) d == d) {
-                            value = (int) d;
-                        } else {
-                            value = d;
-                        }
-                    } else if (value instanceof Long) {
-                        double d = (Long) value / 100D;
-                        if ((long) d == d) {
-                            value = (long) d;
-                        } else {
-                            value = d;
-                        }
-                    } else {
-                        throw new RuntimeException("Something went wrong while parsing a percent number");
                     }
-                }
 
-                // TODO: Fix this (currently evaluated from right to left and ignores brackets)
-                if (value instanceof Number) {
-                    String operator = tokens.get(i);
-                    PdxMathOperation operation = PdxMathOperation.get(operator);
-                    if (operation != null) {
-                        i++;
-                        ObjectIntPair<IPdxScript> pair = parse(tokens, i);
-                        if (!(pair.getOne() instanceof PdxScriptValue)) {
-                            throw new RuntimeException("Expected PdxScriptValue but got " + (pair.getOne() != null ? pair.getOne().getClass().getTypeName() : NULL));
+                    // TODO: Fix this (currently evaluated from right to left and ignores brackets)
+                    if (value instanceof Number) {
+                        String operator = tokens.get(i);
+                        PdxMathOperation operation = PdxMathOperation.get(operator);
+                        if (operation != null) {
+                            i++;
+                            ObjectIntPair<IPdxScript> pair = parse(tokens, i);
+                            if (!(pair.getOne() instanceof PdxScriptValue)) {
+                                throw new RuntimeException("Expected PdxScriptValue but got " + (pair.getOne() != null ? pair.getOne().getClass().getTypeName() : NULL));
+                            }
+                            PdxScriptValue v = (PdxScriptValue) pair.getOne();
+                            Object o = v.getValue();
+                            if (!(o instanceof Number)) {
+                                throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
+                            }
+                            value = operation.apply((Number) value, (Number) o);
+                            i = pair.getTwo();
                         }
-                        PdxScriptValue v = (PdxScriptValue) pair.getOne();
-                        Object o = v.getValue();
-                        if (!(o instanceof Number)) {
-                            throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
-                        }
-                        value = operation.apply((Number) value, (Number) o);
-                        i = pair.getTwo();
                     }
                 }
             }
@@ -265,69 +262,92 @@ public final class PdxScriptParser implements PdxConstants {
         return s.substring(beginIndex, endIndex).replace(ESCAPE + QUOTE, QUOTE);
     }
 
-    private static ImmutableList<String> tokenize(IntStream src) {
-        MutableList<String> tokens = Lists.mutable.of(LIST_OBJECT_OPEN);
-        StringBuilder b = new StringBuilder();
-        MutableBoolean openQuotes = new MutableBoolean(false), token = new MutableBoolean(false), comment = new MutableBoolean(false), separator = new MutableBoolean(false), relation = new MutableBoolean(false), mathOperator = new MutableBoolean(false);
-        src.forEachOrdered(i -> {
-                    char c = (char) i;
+    private static Iterator<String> tokenizeIterator(PrimitiveIterator.OfInt src) {
+        return new Iterator<>() {
+
+            StringBuilder b = new StringBuilder();
+            Character last = null;
+            MutableBoolean first = new MutableBoolean(true), openQuotes = new MutableBoolean(false), token = new MutableBoolean(false), comment = new MutableBoolean(false), separator = new MutableBoolean(false), relation = new MutableBoolean(false), mathOperator = new MutableBoolean(false), done = new MutableBoolean(true);
+
+            String next = null;
+            boolean hasNextCalled = false;
+
+            private void findNextToken() {
+                if (first.get()) {
+                    first.set(false);
+                    next = LIST_OBJECT_OPEN;
+                    return;
+                }
+
+                while (last != null || src.hasNext()) {
+                    char c = last != null ? last : (char) src.nextInt();
+                    last = null;
 
                     if (c == UTF_8_BOM) {
-                        return;
+                        continue;
                     }
 
                     if (comment.get()) {
                         if (isNewLine(c)) {
                             comment.set(false);
                         }
-                        return;
+                        continue;
                     }
 
                     if (openQuotes.get()) {
                         b.append(c);
                         if (c == QUOTE_CHAR && b.charAt(b.length() - 2) != ESCAPE_CHAR) {
                             openQuotes.set(false);
-                            tokens.add(b.toString());
+                            next = b.toString();
                             b.setLength(0);
+                            return;
                         }
 
-                        return;
+                        continue;
                     }
 
                     if (token.get()) {
                         if (c == COMMENT_CHAR || c == QUOTE_CHAR || isSeparator(c) || isRelation(c) || isMathOperator(c) || Character.isWhitespace(c)) {
                             token.set(false);
-                            tokens.add(b.toString());
+                            next = b.toString();
                             b.setLength(0);
+                            last = c;
+                            return;
                         } else {
                             b.append(c);
-                            return;
+                            continue;
                         }
                     }
 
                     if (separator.get()) {
                         // Separators (curly brackets) can only be one char long
                         separator.set(false);
-                        tokens.add(b.toString());
+                        next = b.toString();
                         b.setLength(0);
+                        last = c;
+                        return;
                     }
 
                     if (relation.get()) {
                         if (!isRelation(c)) {
                             relation.set(false);
-                            tokens.add(b.toString());
+                            next = b.toString();
                             b.setLength(0);
+                            last = c;
+                            return;
                         } else {
                             b.append(c);
-                            return;
+                            continue;
                         }
                     }
 
                     if (mathOperator.get()) {
                         if (!isMathOperator(c)) {
                             mathOperator.set(false);
-                            tokens.add(b.toString());
+                            next = b.toString();
                             b.setLength(0);
+                            last = c;
+                            return;
                         } else {
                             throw new RuntimeException("Math operators can only be one char long");
                         }
@@ -356,16 +376,50 @@ public final class PdxScriptParser implements PdxConstants {
                         b.append(c);
                     }
                 }
-        );
-        if (openQuotes.get()) {
-            throw new RuntimeException("Quotes not closed at EOF");
-        }
-        if (token.get() || separator.get() || relation.get() || mathOperator.get()) {
-            tokens.add(b.toString());
-            b.setLength(0);
-        }
-        tokens.add(LIST_OBJECT_CLOSE);
-        return tokens.toImmutable();
+
+                if (openQuotes.get()) {
+                    throw new RuntimeException("Quotes not closed at EOF");
+                }
+
+                if (token.get() || separator.get() || relation.get() || mathOperator.get()) {
+                    token.set(false);
+                    separator.set(false);
+                    relation.set(false);
+                    mathOperator.set(false);
+                    next = b.toString();
+                    b.setLength(0);
+                    return;
+                }
+
+                if (done.get()) {
+                    done.set(false);
+                    next = LIST_OBJECT_CLOSE;
+                    return;
+                }
+
+                next = null;
+            }
+
+            @Override
+            public String next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                String n = next;
+                hasNextCalled = false;
+                next = null;
+                return n;
+            }
+
+            @Override
+            public boolean hasNext() {
+                if (!hasNextCalled) {
+                    findNextToken();
+                    hasNextCalled = true;
+                }
+                return next != null;
+            }
+        };
     }
 
     private static boolean isNewLine(char c) {
@@ -384,15 +438,22 @@ public final class PdxScriptParser implements PdxConstants {
         return /*c == ADD_CHAR || c == SUBTRACT_CHAR || c == MULTIPLY_CHAR ||*/ c == DIVIDE_CHAR;
     }
 
+    public static boolean isQuoteNecessary(String s) {
+        for (char c : s.toCharArray()) {
+            if (Character.isWhitespace(c) || c == '=' || c == '<' || c == '>' || c == '#' || c == '{' || c == '}' || c == ',' || c == '/' || c == '"') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static String quote(String s) {
         return (QUOTE_CHAR + s.replace(QUOTE, ESCAPE + QUOTE) + QUOTE_CHAR).intern();
     }
 
     public static String quoteIfNecessary(String s) {
-        if (STRING_NEEDS_QUOTE_PATTERN.matcher(s).find()) {
-            return quote(s);
-        }
-        return s;
+        return isQuoteNecessary(s) ? quote(s) : s;
     }
 
     public static String indent(int indent) {
@@ -412,14 +473,22 @@ public final class PdxScriptParser implements PdxConstants {
         }
 
         try (Reader r = new BufferedReader(new InputStreamReader(Files.newInputStream(scriptFile), StandardCharsets.UTF_8))) {
-            return parse(IOUtil.getCharacterStream(r));
+            return parse(IOUtil.getCharacterIterator(r));
         } catch (IOException e) {
             throw new UncheckedIOException("Error while reading file: " + scriptFile, e);
         }
     }
 
-    private static IPdxScript parse(IntStream stream) {
-        ImmutableList<String> tokens = tokenize(stream);
+    private static IPdxScript parse(PrimitiveIterator.OfInt iterator) {
+        Iterator<String> tokenIterator = tokenizeIterator(iterator);
+
+        // TODO: Implement some kind of ring buffer here
+        MutableList<String> l = Lists.mutable.empty();
+        while (tokenIterator.hasNext()) {
+            l.add(tokenIterator.next());
+        }
+        ImmutableList<String> tokens = l.toImmutable();
+
         ObjectIntPair<IPdxScript> pair = parse(tokens, 0);
         if ((!(pair.getOne() instanceof PdxScriptObject) && !(pair.getOne() instanceof PdxScriptList)) || pair.getTwo() != tokens.size()) {
             throw new RuntimeException("Unexpected return value from parsing: " + (pair.getOne() != null ? pair.getOne().getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + pair.getTwo() + SLASH_CHAR + tokens.size());

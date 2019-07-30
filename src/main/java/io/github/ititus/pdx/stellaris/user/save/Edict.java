@@ -3,12 +3,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Edict {
 
     private final String edict;
-    private final Date date;
+    private final LocalDate date;
 
     public Edict(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -19,7 +19,7 @@ public class Edict {
         this.date = o.getDate("date");
     }
 
-    public Edict(String edict, Date date) {
+    public Edict(String edict, LocalDate date) {
         this.edict = edict;
         this.date = date;
     }
@@ -28,7 +28,7 @@ public class Edict {
         return edict;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 }

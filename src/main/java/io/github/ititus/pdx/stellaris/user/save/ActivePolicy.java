@@ -3,12 +3,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ActivePolicy {
 
     private final String policy, selected;
-    private final Date date;
+    private final LocalDate date;
 
     public ActivePolicy(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -21,7 +21,7 @@ public class ActivePolicy {
         this.date = o.getDate("date");
     }
 
-    public ActivePolicy(String policy, String selected, Date date) {
+    public ActivePolicy(String policy, String selected, LocalDate date) {
         this.policy = policy;
         this.selected = selected;
         this.date = date;
@@ -35,7 +35,7 @@ public class ActivePolicy {
         return selected;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 }

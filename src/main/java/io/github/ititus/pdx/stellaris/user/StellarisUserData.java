@@ -45,7 +45,7 @@ public class StellarisUserData {
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Saves");
         this.saves = new StellarisSaves(userDataDir.resolve("save games"), index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading User Data");
+        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading Raw User Data");
         this.rawDataLoader = new PdxRawDataLoader(userDataDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, 3, steps, "Done");

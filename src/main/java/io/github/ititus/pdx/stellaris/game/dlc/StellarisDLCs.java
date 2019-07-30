@@ -29,7 +29,9 @@ public class StellarisDLCs {
 
         Path[] paths;
         try (Stream<Path> stream = Files.list(dlcDir)) {
-            paths = stream.filter(Files::isDirectory).toArray(Path[]::new);
+            paths = stream
+                    .filter(Files::isDirectory)
+                    .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

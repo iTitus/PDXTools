@@ -4,7 +4,7 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Relation {
 
@@ -12,7 +12,7 @@ public class Relation {
     private final int killedShips, owner, country, truce, borderRange;
     private final double trust;
     private final String preCommunicationsName;
-    private final Date rivalDate, forcedOpenBorders;
+    private final LocalDate rivalDate, forcedOpenBorders;
     private final ImmutableList<RelationModifier> modifiers;
     private final Flags flags;
 
@@ -47,7 +47,7 @@ public class Relation {
         this.closedBorders = o.getBoolean("closed_borders");
     }
 
-    public Relation(boolean contact, boolean alliance, boolean defensivePact, boolean friendly, boolean hostile, boolean migrationAccess, boolean neutral, boolean borders, boolean isRival, boolean communications, boolean closedBorders, int killedShips, int owner, int country, int truce, int borderRange, double trust, String preCommunicationsName, Date rivalDate, Date forcedOpenBorders, ImmutableList<RelationModifier> modifiers, Flags flags) {
+    public Relation(boolean contact, boolean alliance, boolean defensivePact, boolean friendly, boolean hostile, boolean migrationAccess, boolean neutral, boolean borders, boolean isRival, boolean communications, boolean closedBorders, int killedShips, int owner, int country, int truce, int borderRange, double trust, String preCommunicationsName, LocalDate rivalDate, LocalDate forcedOpenBorders, ImmutableList<RelationModifier> modifiers, Flags flags) {
         this.contact = contact;
         this.alliance = alliance;
         this.defensivePact = defensivePact;
@@ -144,11 +144,11 @@ public class Relation {
         return preCommunicationsName;
     }
 
-    public Date getRivalDate() {
+    public LocalDate getRivalDate() {
         return rivalDate;
     }
 
-    public Date getForcedOpenBorders() {
+    public LocalDate getForcedOpenBorders() {
         return forcedOpenBorders;
     }
 

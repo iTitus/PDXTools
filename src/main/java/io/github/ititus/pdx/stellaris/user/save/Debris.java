@@ -4,12 +4,12 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Debris {
 
     private final int country;
-    private final Date date;
+    private final LocalDate date;
     private final ImmutableList<String> components;
     private final Coordinate coordinate;
 
@@ -25,7 +25,7 @@ public class Debris {
         this.date = o.getDate("date");
     }
 
-    public Debris(int country, Date date, ImmutableList<String> components, Coordinate coordinate) {
+    public Debris(int country, LocalDate date, ImmutableList<String> components, Coordinate coordinate) {
         this.country = country;
         this.date = date;
         this.components = components;
@@ -36,7 +36,7 @@ public class Debris {
         return country;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

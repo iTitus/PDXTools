@@ -9,7 +9,7 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.factory.primitive.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -270,14 +270,14 @@ public final class PdxScriptObject implements IPdxScript {
         return def;
     }
 
-    public Date getDate(String key) {
+    public LocalDate getDate(String key) {
         IPdxScript s = get(key);
         usageStatistic.use(key, DATE, s);
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
-            if (v instanceof Date) {
+            if (v instanceof LocalDate) {
                 use(key, DATE);
-                return (Date) v;
+                return (LocalDate) v;
             }
         }
         if (s == null) {

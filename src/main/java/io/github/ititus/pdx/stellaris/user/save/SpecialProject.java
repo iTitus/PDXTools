@@ -3,13 +3,13 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class SpecialProject {
 
     private final int id, daysLeft, debris, planet;
     private final String specialProject;
-    private final Date aiResearchDate;
+    private final LocalDate aiResearchDate;
     private final Scope scope;
     private final Property coordinate;
 
@@ -30,7 +30,7 @@ public class SpecialProject {
         this.aiResearchDate = o.getDate("ai_research_date");
     }
 
-    public SpecialProject(int id, int daysLeft, int debris, int planet, String specialProject, Date aiResearchDate, Scope scope, Property coordinate) {
+    public SpecialProject(int id, int daysLeft, int debris, int planet, String specialProject, LocalDate aiResearchDate, Scope scope, Property coordinate) {
         this.id = id;
         this.daysLeft = daysLeft;
         this.debris = debris;
@@ -61,7 +61,7 @@ public class SpecialProject {
         return specialProject;
     }
 
-    public Date getAiResearchDate() {
+    public LocalDate getAiResearchDate() {
         return aiResearchDate;
     }
 

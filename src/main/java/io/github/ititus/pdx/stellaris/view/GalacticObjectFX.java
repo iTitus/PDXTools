@@ -52,7 +52,12 @@ public class GalacticObjectFX extends Group {
                         .mapToInt(Bypass::getLinkedTo)
                         .mapToObj(bypassId -> {
                             Bypass bypassFrom = bypasses.get(bypassId);
-                            int to = wormholes.stream().filter(wormhole -> wormhole.getBypass() == bypassId).findAny().get().getCoordinate().getOrigin();
+                            int to = wormholes.stream()
+                                    .filter(wormhole -> wormhole.getBypass() == bypassId)
+                                    .findAny()
+                                    .get()
+                                    .getCoordinate()
+                                    .getOrigin();
                             return new VisualHyperlane(systemPair.getOne(), to, bypassFrom.isActive() ? VisualHyperlane.Type.WORMHOLE_ACTIVE : VisualHyperlane.Type.WORMHOLE_INACTIVE);
                         })
         ).collect(Collectors2.toImmutableList());

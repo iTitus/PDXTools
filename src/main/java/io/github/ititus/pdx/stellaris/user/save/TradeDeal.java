@@ -3,12 +3,12 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class TradeDeal {
 
     private final int length;
-    private final Date date;
+    private final LocalDate date;
     private final TradeAgreement first, second;
 
     public TradeDeal(IPdxScript s) {
@@ -23,7 +23,7 @@ public class TradeDeal {
         this.date = o.getDate("date");
     }
 
-    public TradeDeal(int length, Date date, TradeAgreement first, TradeAgreement second) {
+    public TradeDeal(int length, LocalDate date, TradeAgreement first, TradeAgreement second) {
         this.length = length;
         this.date = date;
         this.first = first;
@@ -34,7 +34,7 @@ public class TradeDeal {
         return length;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

@@ -48,8 +48,8 @@ public class IOUtil {
         return fileName;
     }
 
-    public static IntStream getCharacterStream(Reader r) {
-        return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(new PrimitiveIterator.OfInt() {
+    public static PrimitiveIterator.OfInt getCharacterIterator(Reader r) {
+        return new PrimitiveIterator.OfInt() {
 
             int next = -1;
             boolean hasNextCalled = false;
@@ -59,8 +59,10 @@ public class IOUtil {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
+                int n = next;
                 hasNextCalled = false;
-                return next;
+                next = -1;
+                return n;
             }
 
             @Override
@@ -75,7 +77,11 @@ public class IOUtil {
                 }
                 return next != -1;
             }
-        }, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
+        };
+    }
+
+    public static IntStream getCharacterStream(Reader r) {
+        return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(getCharacterIterator(r), Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
     }
 
     public static FileSystem openZip(Path zip) throws IOException {

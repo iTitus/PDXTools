@@ -4,14 +4,14 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Meta {
 
     private final int versionControlRevision, planets;
     private final double fleets;
     private final String version, name, playerPortrait;
-    private final Date date;
+    private final LocalDate date;
     private final ImmutableList<String> requiredDLCs;
     private final Flag flag;
 
@@ -32,7 +32,7 @@ public class Meta {
         this.planets = o.getInt("meta_planets");
     }
 
-    public Meta(int versionControlRevision, int planets, double fleets, String version, String name, String playerPortrait, Date date, ImmutableList<String> requiredDLCs, Flag flag) {
+    public Meta(int versionControlRevision, int planets, double fleets, String version, String name, String playerPortrait, LocalDate date, ImmutableList<String> requiredDLCs, Flag flag) {
         this.versionControlRevision = versionControlRevision;
         this.planets = planets;
         this.fleets = fleets;
@@ -68,7 +68,7 @@ public class Meta {
         return playerPortrait;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

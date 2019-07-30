@@ -3,14 +3,14 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.util.Deduplicator;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class FleetCombat {
 
     private static final Deduplicator<FleetCombat> DEDUPLICATOR = new Deduplicator<>(c -> c.getFormation().getRoot() == -1);
 
-    private final Date startDate;
+    private final LocalDate startDate;
     private final Coordinate coordinate, startCoordinate;
     private final FormationPos formationPos;
     private final Formation formation;
@@ -23,7 +23,7 @@ public class FleetCombat {
         this.startDate = o.getDate("start_date");
     }
 
-    private FleetCombat(Date startDate, Coordinate coordinate, Coordinate startCoordinate, FormationPos formationPos, Formation formation) {
+    private FleetCombat(LocalDate startDate, Coordinate coordinate, Coordinate startCoordinate, FormationPos formationPos, Formation formation) {
         this.startDate = startDate;
         this.coordinate = coordinate;
         this.startCoordinate = startCoordinate;
@@ -35,11 +35,11 @@ public class FleetCombat {
         return DEDUPLICATOR.deduplicate(new FleetCombat(o));
     }
 
-    public static FleetCombat of(Date startDate, Coordinate coordinate, Coordinate startCoordinate, FormationPos formationPos, Formation formation) {
+    public static FleetCombat of(LocalDate startDate, Coordinate coordinate, Coordinate startCoordinate, FormationPos formationPos, Formation formation) {
         return DEDUPLICATOR.deduplicate(new FleetCombat(startDate, coordinate, startCoordinate, formationPos, formation));
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
