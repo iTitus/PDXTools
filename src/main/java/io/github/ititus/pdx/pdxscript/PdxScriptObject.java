@@ -488,7 +488,7 @@ public final class PdxScriptObject implements IPdxScript {
         usageStatistic.getUsages().forEachKeyValue((key, usage) -> usages.merge(key, usage, PdxUsage::merge));
         map.forEachKeyValue((key, s) -> {
             if (s instanceof PdxScriptObject) {
-                String prefix = DIGITS_PATTERN.matcher(key).matches() ? EMPTY : key + DOT_CHAR;
+                String prefix = key.chars().allMatch(Character::isDigit) ? EMPTY : key + DOT_CHAR;
                 ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
             } else if (s instanceof PdxScriptList) {
                 String prefix = key + DOT_CHAR;

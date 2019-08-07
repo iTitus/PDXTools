@@ -4,6 +4,7 @@ import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import io.github.ititus.pdx.stellaris.view.GalaxyView;
 import javafx.application.Application;
@@ -17,11 +18,16 @@ import org.eclipse.collections.api.tuple.Pair;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 public class Test extends Application {
 
-    private static final String USER_HOME = System.getProperty("user.home");
-    private static final String INSTALL_DIR = "C:/Program Files (x86)/Steam/steamapps/common/Stellaris";
+    private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
+    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/nico_2.3.3");
+    private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
+    private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
+    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
+
 
     public static void main(String[] args) {
         launch(args);
@@ -36,9 +42,18 @@ public class Test extends Application {
         return game;
     }
 
+    private static StellarisUserData getStellarisUserData() {
+        StopWatch s = StopWatch.createRunning();
+        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
+            // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
+        });
+        System.out.println("User Data Load Time: " + DurationFormatter.formatSeconds(s.stop()));
+        return userData;
+    }
+
     private static StellarisSave getStellarisSave() {
         StopWatch s = StopWatch.createRunning();
-        StellarisSave save = new StellarisSave(Path.of(USER_HOME, "Desktop", "pdx", "nico_2.3.3"));
+        StellarisSave save = new StellarisSave(SAVE);
         System.out.println("Test Save Load Time: " + DurationFormatter.formatSeconds(s.stop()));
         return save;
     }
@@ -48,20 +63,24 @@ public class Test extends Application {
         StopWatch s = StopWatch.createRunning();
 
         StellarisGame game = getStellarisGame();
+        StellarisUserData userData = null; // getStellarisUserData();
         StellarisSave save = getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
         ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
         ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
         ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
-        if (saveParseErrors != null) {
-            try {
-                Files.write(Path.of(USER_HOME, "Desktop", "pdx", "out.txt"), saveParseErrors);
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        try {
+            Files.write(DEBUG_OUT, new byte[0]);
+            if (saveParseErrors != null) {
+                Files.write(DEBUG_OUT, saveParseErrors, StandardOpenOption.APPEND);
+                saveParseErrors.forEach(System.out::println);
             }
-            saveParseErrors.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         System.out.println("Total Loading Time: " + DurationFormatter.formatSeconds(s.stop()));

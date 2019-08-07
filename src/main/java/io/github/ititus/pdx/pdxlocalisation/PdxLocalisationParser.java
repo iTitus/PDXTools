@@ -14,13 +14,11 @@ import org.eclipse.collections.impl.factory.Maps;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -52,9 +50,11 @@ public final class PdxLocalisationParser implements PdxConstants {
                 Arrays.stream(validFiles)
                         .filter(Objects::nonNull)
                         .filter(Files::isRegularFile)
-                        .map(f -> {
-                            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading Localisation File " + installDir.relativize(f));
-                            return parseInternal(f);
+                        .map(p -> {
+                            if (progressMessageUpdater != null) {
+                                progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading Localisation File " + installDir.relativize(p));
+                            }
+                            return parseInternal(installDir, p);
                         })
                         .collect(Collector.of(
                                 Maps.mutable::<String, MutableMap<String, String>>of,
@@ -75,13 +75,12 @@ public final class PdxLocalisationParser implements PdxConstants {
         return localisation;
     }
 
-    private static MutableMap<String, MutableMap<String, String>> parseInternal(Path localisationFile) {
+    private static MutableMap<String, MutableMap<String, String>> parseInternal(Path installDir, Path localisationFile) {
         if (localisationFile != null) {
             MutableBoolean first = new MutableBoolean(true);
             MutableString language = new MutableString();
-            Matcher m = EMPTY_PATTERN.matcher(EMPTY);
             MutableMap<String, MutableMap<String, String>> localisation = Maps.mutable.empty();
-            try (Stream<String> stream = Files.lines(localisationFile, StandardCharsets.UTF_8)) {
+            try (Stream<String> stream = Files.lines(localisationFile)) {
                 stream
                         .filter(Objects::nonNull)
                         .filter(s -> !s.isEmpty())
@@ -90,21 +89,21 @@ public final class PdxLocalisationParser implements PdxConstants {
                                 if (line.charAt(0) == UTF_8_BOM) {
                                     line = line.substring(1);
                                 } else {
-                                    throw new RuntimeException("Localisation file (" + localisationFile + ") has no BOM");
+                                    throw new RuntimeException("Localisation file (" + installDir.relativize(localisationFile) + ") has no BOM");
                                 }
                                 first.set(false);
                             }
 
-                            m.usePattern(LANGUAGE_PATTERN).reset(line);
-                            if (m.matches()) {
-                                language.set(m.group(KEY_LANGUAGE).intern());
-                            } else if (language.isNotNull()) {
-                                m.usePattern(TRANSLATION_PATTERN);
-                                if (m.matches()) {
-                                    String indent = m.group(KEY_INDENT);
-                                    if (indent != null && indent.length() == 1) {
-                                        String key = m.group(KEY_KEY).intern();
-                                        String value = m.group(KEY_VALUE).intern();
+                            if (line.startsWith("l_") && line.charAt(line.length() - 1) == ':') {
+                                String langName = line.substring(0, line.length() - 1).intern();
+                                language.set(langName);
+                            } else if (language.isNotNull() && line.length() > 1 && line.charAt(0) == ' ' && !Character.isWhitespace(line.charAt(1)) && line.charAt(line.length() - 1) == '"') {
+                                int separator = line.indexOf(':');
+                                if (separator != -1) {
+                                    String key = line.substring(1, separator);
+                                    int valueStart = line.indexOf('"', separator);
+                                    if (valueStart != -1) {
+                                        String value = line.substring(valueStart + 1, line.length() - 1);
                                         localisation.computeIfAbsent(language.get(), k -> Maps.mutable.empty()).put(key, value);
                                     }
                                 }

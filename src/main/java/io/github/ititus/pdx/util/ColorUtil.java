@@ -3,7 +3,6 @@ package io.github.ititus.pdx.util;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 
 import java.awt.*;
-import java.util.regex.Matcher;
 
 public class ColorUtil implements PdxConstants {
 
@@ -97,22 +96,15 @@ public class ColorUtil implements PdxConstants {
             int l = hex.length();
             if (l >= 7 && l <= 10) {
                 if (hex.startsWith("#")) {
-
+                    hex = hex.substring(1);
+                    l--;
                 } else if (hex.startsWith("0x")) {
-
+                    hex = hex.substring(2);
+                    l -= 2;
                 }
 
-                Matcher m = HEX_RGB_PATTERN.matcher(hex);
-                if (m.matches()) {
-                    String components = m.group(2);
-                    String alpha = m.group(3);
-                    Color c;
-                    if (alpha != null && !alpha.isEmpty()) {
-                        c = new Color(Integer.parseUnsignedInt(components, 16), true);
-                    } else {
-                        c = new Color(Integer.parseInt(components, 16));
-                    }
-                    return c;
+                if (l == 6 || l == 8) {
+                    return new Color(Integer.parseUnsignedInt(hex, 16), l == 8);
                 }
             }
         }

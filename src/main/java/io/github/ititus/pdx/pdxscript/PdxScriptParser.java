@@ -145,9 +145,9 @@ public final class PdxScriptParser implements PdxConstants {
                 } catch (IllegalArgumentException ignored1) {
                     String oldToken = token;
                     boolean percent = false;
-                    if (token.endsWith(PERCENT)) {
+                    if (token.charAt(l - 1) == PERCENT) {
                         percent = true;
-                        token = token.substring(0, l - 1);
+                        token = token.substring(0, --l);
                     }
                     try {
                         value = Integer.valueOf(token);
@@ -159,7 +159,7 @@ public final class PdxScriptParser implements PdxConstants {
                                 value = Double.valueOf(token);
                             } catch (NumberFormatException ignored4) {
                                 token = oldToken;
-                                if (token.startsWith(VARIABLE_PREFIX)) {
+                                if (token.charAt(0) == VARIABLE_PREFIX) {
                                     // TODO: Parse @ variables
                                 } else {
                                     unknownLiterals.add(token.toLowerCase(Locale.ROOT).intern());
@@ -470,8 +470,8 @@ public final class PdxScriptParser implements PdxConstants {
         }
     }
 
-    private static IPdxScript parse(PrimitiveIterator.OfInt iterator) {
-        Iterator<String> tokenIterator = tokenize(iterator);
+    private static IPdxScript parse(PrimitiveIterator.OfInt charIterator) {
+        Iterator<String> tokenIterator = tokenize(charIterator);
 
         IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenIterator, 2, 0);
         IPdxScript s = parse(tokens);

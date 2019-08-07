@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.regex.Pattern;
 
 public interface PdxConstants {
 
@@ -36,10 +35,10 @@ public interface PdxConstants {
     char COMMENT_CHAR = '#';
     char QUOTE_CHAR = '"';
     char ESCAPE_CHAR = '\\';
-    String VARIABLE_PREFIX = "@";
+    char VARIABLE_PREFIX = '@';
     String QUOTE = String.valueOf(QUOTE_CHAR);
     String ESCAPE = String.valueOf(ESCAPE_CHAR);
-    String PERCENT = "%";
+    char PERCENT = '%';
 
     char EQUALS_CHAR = '=';
     char LESS_THAN_CHAR = '<';
@@ -80,6 +79,7 @@ public interface PdxConstants {
     String COLOR = "value:color";
     String NULL = "null";
 
+    String DEFAULT = "l_default";
     String ENGLISH = "l_english";
     String BRAZ_POR = "l_braz_por";
     String GERMAN = "l_german";
@@ -96,12 +96,6 @@ public interface PdxConstants {
 
     LocalDate NULL_DATE = LocalDate.of(1, 1, 1);
     DateTimeFormatter DTF = DateTimeFormatter.ofPattern("uuuu.MM.dd", Locale.ROOT);
-
-    Pattern EMPTY_PATTERN = Pattern.compile(EMPTY);
-    Pattern DIGITS_PATTERN = Pattern.compile("\\d+");
-    Pattern HEX_RGB_PATTERN = Pattern.compile("(0x|#)((([0-9A-Fa-f]{2})?)[0-9A-Fa-f]{6})");
-    Pattern LANGUAGE_PATTERN = Pattern.compile("^(?<" + KEY_LANGUAGE + ">l_(\\w+)):$");
-    Pattern TRANSLATION_PATTERN = Pattern.compile("^(?<" + KEY_INDENT + "> )(?<" + KEY_KEY + ">[\\w.]+):0 \"(?<" + KEY_VALUE + ">.*)\"$");
 
     Predicate<IPdxScript> TO_BOOLEAN = s -> {
         if (s instanceof PdxScriptValue) {

@@ -41,10 +41,6 @@ public class StellarisGame {
 
     private final PdxRawDataLoader rawDataLoader;
 
-    public StellarisGame(String installDirPath, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        this(Path.of(installDirPath), index, progressMessageUpdater);
-    }
-
     public StellarisGame(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir)) {
             throw new IllegalArgumentException();

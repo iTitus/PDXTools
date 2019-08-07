@@ -8,9 +8,9 @@ import java.util.Objects;
 public class VisualHyperlane {
 
     private static final PhongMaterial MATERIAL_NORMAL = new PhongMaterial(Color.LIGHTBLUE);
-    private static final PhongMaterial MATERIAL_BRIDGE = new PhongMaterial(Color.LIGHTCORAL);
-    private static final PhongMaterial MATERIAL_WORMHOLE_ACTIVE = new PhongMaterial(Color.LIGHTGREEN);
-    private static final PhongMaterial MATERIAL_WORMHOLE_INACTIVE = new PhongMaterial(Color.LIGHTGREEN.brighter().brighter());
+    private static final PhongMaterial MATERIAL_BRIDGE = new PhongMaterial(Color.YELLOW);
+    private static final PhongMaterial MATERIAL_BYPASS_ACTIVE = new PhongMaterial(Color.LIGHTGREEN);
+    private static final PhongMaterial MATERIAL_BYPASS_INACTIVE = new PhongMaterial(Color.INDIANRED);
 
     private final int from, to;
     private final Type type;
@@ -59,9 +59,9 @@ public class VisualHyperlane {
         return Objects.hash(from, to, type);
     }
 
-    enum Type {
+    public enum Type {
 
-        NORMAL(MATERIAL_NORMAL), BRIDGE(MATERIAL_BRIDGE), WORMHOLE_ACTIVE(MATERIAL_WORMHOLE_ACTIVE), WORMHOLE_INACTIVE(MATERIAL_WORMHOLE_INACTIVE);
+        NORMAL(MATERIAL_NORMAL), BRIDGE(MATERIAL_BRIDGE), BYPASS_ACTIVE(MATERIAL_BYPASS_ACTIVE), BYPASS_INACTIVE(MATERIAL_BYPASS_INACTIVE);
 
         private final PhongMaterial material;
 

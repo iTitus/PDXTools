@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.view;
 
 import io.github.ititus.pdx.stellaris.user.save.Bypass;
 import io.github.ititus.pdx.stellaris.user.save.GalacticObject;
+import io.github.ititus.pdx.stellaris.user.save.MegaStructure;
 import io.github.ititus.pdx.stellaris.user.save.NaturalWormhole;
 import io.github.ititus.pdx.util.collection.CollectionUtil;
 import javafx.application.Platform;
@@ -14,6 +15,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.util.stream.Stream;
 
@@ -42,23 +44,35 @@ public class GalacticObjectFX extends Group {
 
         ImmutableIntObjectMap<NaturalWormhole> wormholes = galaxyView.getSave().getGameState().getNaturalWormholes().getNaturalWormholes();
         ImmutableIntObjectMap<Bypass> bypasses = galaxyView.getSave().getGameState().getBypasses().getBypasses();
+        ImmutableIntObjectMap<MegaStructure> megaStructures = galaxyView.getSave().getGameState().getMegaStructures().getMegaStructures();
+
         ImmutableList<VisualHyperlane> visualHyperlanes = Stream.concat(
                 systemPair.getTwo().getHyperlanes().stream()
                         .map(hyperlane -> new VisualHyperlane(systemPair.getOne(), hyperlane.getTo(), hyperlane.isBridge() ? VisualHyperlane.Type.BRIDGE : VisualHyperlane.Type.NORMAL)),
-                CollectionUtil.stream(systemPair.getTwo().getNaturalWormholes())
-                        .mapToObj(wormholes::get)
-                        .mapToInt(NaturalWormhole::getBypass)
+                CollectionUtil.stream(systemPair.getTwo().getBypasses())
                         .mapToObj(bypasses::get)
-                        .mapToInt(Bypass::getLinkedTo)
-                        .mapToObj(bypassId -> {
-                            Bypass bypassFrom = bypasses.get(bypassId);
-                            int to = wormholes.stream()
-                                    .filter(wormhole -> wormhole.getBypass() == bypassId)
-                                    .findAny()
-                                    .get()
-                                    .getCoordinate()
-                                    .getOrigin();
-                            return new VisualHyperlane(systemPair.getOne(), to, bypassFrom.isActive() ? VisualHyperlane.Type.WORMHOLE_ACTIVE : VisualHyperlane.Type.WORMHOLE_INACTIVE);
+                        .flatMap(b -> CollectionUtil.stream(b.getConnections()).mapToObj(id -> PrimitiveTuples.pair(b, id)))
+                        .map(p -> {
+                            Bypass bypassFrom = p.getOne();
+                            int targetId = p.getTwo();
+                            Bypass targetBypass = bypasses.get(targetId);
+                            int targetSystemId;
+                            if (bypassFrom.getType().equals("wormhole")) {
+                                targetSystemId = wormholes.stream()
+                                        .filter(wormhole -> wormhole.getBypass() == targetId)
+                                        .findAny()
+                                        .get()
+                                        .getCoordinate()
+                                        .getOrigin();
+                            } else {
+                                targetSystemId = megaStructures.stream()
+                                        .filter(megaStructure -> megaStructure.getBypass() == targetId)
+                                        .findAny()
+                                        .get()
+                                        .getCoordinate()
+                                        .getOrigin();
+                            }
+                            return new VisualHyperlane(systemPair.getOne(), targetSystemId, bypassFrom.isActive() && targetBypass.isActive() ? VisualHyperlane.Type.BYPASS_ACTIVE : VisualHyperlane.Type.BYPASS_INACTIVE);
                         })
         ).collect(Collectors2.toImmutableList());
 

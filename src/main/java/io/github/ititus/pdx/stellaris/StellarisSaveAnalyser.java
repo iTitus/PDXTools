@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 
 public class StellarisSaveAnalyser implements Runnable {
 
-    private static final String USER_HOME = System.getProperty("user.home");
-    private static final String[] TEST_FILES = { USER_HOME + "/Desktop/pdx/test.txt" };
-    private static final String INSTALL_DIR = "C:/Program Files (x86)/Steam/steamapps/common/Stellaris";
-    private static final String USER_DATA_DIR = USER_HOME + "/Documents/Paradox Interactive/Stellaris";
+    private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
+    private static final Path[] TEST_FILES = { USER_HOME.resolve("Desktop/pdx/test.txt") };
+    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
+    private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
 
     private static final String SAVE_FOLDER = "nico_2.3.3";
     private static final String SAVE_GAME = "nico_2.3.3";
@@ -123,7 +123,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
         updateProgressMessage(0, true, 0, steps, "Running Tests");
 
-        List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(Path::of).map(PdxScriptParser::parse).collect(Collectors.toList());
+        List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
         testOutput.forEach(System.out::println);
         updateProgressMessage(0, true, 1, steps, "Loading Game Data");

@@ -405,15 +405,15 @@ public final class GalaxyView extends BorderPane {
                             Bypass bypass = bypasses.get(bypassId);
                             int linkedTo = bypass.getLinkedTo();
 
-                            int to = wormholes.stream()
+                            int target = wormholes.stream()
                                     .filter(w -> w.getBypass() == linkedTo)
                                     .findAny()
                                     .get()
                                     .getCoordinate()
                                     .getOrigin();
-                            GalacticObject system = systems.get(to);
+                            GalacticObject targetSystem = systems.get(target);
 
-                            StringBuilder b = new StringBuilder(" - ").append(system.getName()).append(" (#").append(to).append(")");
+                            StringBuilder b = new StringBuilder(" - ").append(targetSystem.getName()).append(" (#").append(target).append(")");
 
                             properties.add("bypass=" + bypass.getType() + " (#" + bypassId + ")");
 
@@ -442,23 +442,39 @@ public final class GalaxyView extends BorderPane {
                             String type = bypassPair.getTwo().getType();
                             int id = bypassPair.getOne();
                             boolean active = bypassPair.getTwo().isActive();
-                            int to = bypassPair.getTwo().getLinkedTo();
+                            int linkedTo = bypassPair.getTwo().getLinkedTo();
 
                             StringBuilder b = new StringBuilder(" - ").append(type).append(" (#").append(id).append(")");
 
                             properties.add("active=" + active);
 
-                            if (to != -1) {
-                                Bypass bypass = bypasses.get(to);
-                                properties.add("linked_to=" + bypass.getType() + " (#" + to + ")");
-                                int target = wormholes.stream()
-                                        .filter(wormhole -> wormhole.getBypass() == to)
+                            if (linkedTo != -1) {
+                                Bypass target = bypasses.get(linkedTo);
+                                properties.add("linked_to=" + target.getType() + " (#" + linkedTo + ")");
+                                int targetSystemId = wormholes.stream()
+                                        .filter(wormhole -> wormhole.getBypass() == linkedTo)
                                         .findAny()
                                         .get()
                                         .getCoordinate()
                                         .getOrigin();
-                                GalacticObject system = systems.get(target);
-                                properties.add("target_system=" + system.getName() + " (#" + target + ")");
+                                GalacticObject targetSystem = systems.get(targetSystemId);
+                                properties.add("target_system=" + targetSystem.getName() + " (#" + targetSystemId + ")");
+                            } else {
+                                CollectionUtil.stream(bypassPair.getTwo().getConnections())
+                                        .sorted()
+                                        .mapToObj(tId -> new Object() {
+                                            int targetId = tId;
+                                            Bypass target = bypasses.get(targetId);
+                                            int targetSystemId = megaStructures.stream()
+                                                    .filter(megaStructure -> megaStructure.getBypass() == targetId)
+                                                    .findAny()
+                                                    .get()
+                                                    .getCoordinate()
+                                                    .getOrigin();
+                                            GalacticObject targetSystem = systems.get(targetSystemId);
+                                        })
+                                        .map(o -> "linked_to=" + o.target.getType() + " (#" + o.targetId + ") " + "target_system=" + o.targetSystem.getName() + " (#" + o.targetSystemId + ")")
+                                        .forEachOrdered(properties::add);
                             }
 
                             if (!properties.isEmpty()) {
