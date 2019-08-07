@@ -21,9 +21,6 @@ public final class PdxScriptObject implements IPdxScript {
     private final PdxRelation relation;
     private final ImmutableMap<String, IPdxScript> map;
     private final PdxUsageStatistic usageStatistic;
-    private MutableMultimap<String, String> used;
-    private MutableMultimap<String, String> wronglyUsed;
-    private MutableMultimap<String, String> nullUsed;
 
     private PdxScriptObject(PdxRelation relation, ImmutableMap<String, IPdxScript> map) {
         this.relation = relation;
@@ -52,30 +49,6 @@ public final class PdxScriptObject implements IPdxScript {
         return relation;
     }
 
-    private void use(String key, String usage) {
-        if (used == null) {
-            used = Multimaps.mutable.set.with(key, usage);
-        } else {
-            used.put(key, usage);
-        }
-    }
-
-    private void useWrongly(String key, String usage) {
-        if (wronglyUsed == null) {
-            wronglyUsed = Multimaps.mutable.set.with(key, usage);
-        } else {
-            wronglyUsed.put(key, usage);
-        }
-    }
-
-    private void useNull(String key, String usage) {
-        if (nullUsed == null) {
-            nullUsed = Multimaps.mutable.set.with(key, usage);
-        } else {
-            nullUsed.put(key, usage);
-        }
-    }
-
     public boolean hasKey(String key) {
         return map.containsKey(key);
     }
@@ -96,13 +69,7 @@ public final class PdxScriptObject implements IPdxScript {
         IPdxScript s = get(key);
         usageStatistic.use(key, OBJECT, s);
         if (s instanceof PdxScriptObject) {
-            use(key, OBJECT);
             return (PdxScriptObject) s;
-        }
-        if (s == null) {
-            useNull(key, OBJECT);
-        } else {
-            useWrongly(key, OBJECT);
         }
         return null;
     }
@@ -111,13 +78,10 @@ public final class PdxScriptObject implements IPdxScript {
         IPdxScript s = get(key);
         usageStatistic.use(key, IMPLICIT_LIST, s);
         if (s instanceof PdxScriptList && ((PdxScriptList) s).getMode() == PdxScriptList.Mode.IMPLICIT) {
-            use(key, IMPLICIT_LIST);
             return (PdxScriptList) s;
         } else if (s != null) {
-            use(key, PdxConstants.getTypeString(s));
             return PdxScriptList.builder().add(s).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
         }
-        useNull(key, IMPLICIT_LIST);
         return PdxScriptList.builder().buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
@@ -125,13 +89,7 @@ public final class PdxScriptObject implements IPdxScript {
         IPdxScript s = get(key);
         usageStatistic.use(key, LIST, s);
         if (s instanceof PdxScriptList) {
-            use(key, LIST);
             return (PdxScriptList) s;
-        }
-        if (s == null) {
-            useNull(key, LIST);
-        } else {
-            useWrongly(key, LIST);
         }
         return null;
     }
@@ -142,14 +100,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof String) {
-                use(key, STRING);
                 return (String) v;
             }
-        }
-        if (s == null) {
-            useNull(key, STRING);
-        } else {
-            useWrongly(key, STRING);
         }
         return null;
     }
@@ -164,14 +116,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof Boolean) {
-                use(key, BOOLEAN);
                 return (boolean) v;
             }
-        }
-        if (s == null) {
-            useNull(key, BOOLEAN);
-        } else {
-            useWrongly(key, BOOLEAN);
         }
         return def;
     }
@@ -186,20 +132,13 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof Integer) {
-                use(key, U_INT);
                 return (int) v;
             } else if (v instanceof Long) {
                 long l = (long) v;
                 if (l >= 0 && l <= UNSIGNED_INT_MAX_LONG) {
-                    use(key, U_INT);
                     return (int) l;
                 }
             }
-        }
-        if (s == null) {
-            useNull(key, U_INT);
-        } else {
-            useWrongly(key, U_INT);
         }
         return def;
     }
@@ -214,14 +153,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof Integer) {
-                use(key, INT);
                 return (int) v;
             }
-        }
-        if (s == null) {
-            useNull(key, INT);
-        } else {
-            useWrongly(key, INT);
         }
         return def;
     }
@@ -236,14 +169,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof Long || v instanceof Integer) {
-                use(key, LONG);
                 return ((Number) v).longValue();
             }
-        }
-        if (s == null) {
-            useNull(key, LONG);
-        } else {
-            useWrongly(key, LONG);
         }
         return def;
     }
@@ -258,14 +185,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof Double) {
-                use(key, DOUBLE);
                 return (double) v;
             }
-        }
-        if (s == null) {
-            useNull(key, DOUBLE);
-        } else {
-            useWrongly(key, DOUBLE);
         }
         return def;
     }
@@ -276,14 +197,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof LocalDate) {
-                use(key, DATE);
                 return (LocalDate) v;
             }
-        }
-        if (s == null) {
-            useNull(key, DATE);
-        } else {
-            useWrongly(key, DATE);
         }
         return null;
     }
@@ -294,14 +209,8 @@ public final class PdxScriptObject implements IPdxScript {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof PdxColorWrapper) {
-                use(key, COLOR);
                 return (PdxColorWrapper) v;
             }
-        }
-        if (s == null) {
-            useNull(key, COLOR);
-        } else {
-            useWrongly(key, COLOR);
         }
         return null;
     }
@@ -318,7 +227,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected object, but got " + oldV);
                 }
                 map.put(Integer.parseInt(oldK), valueFct.apply((PdxScriptObject) oldV));
-                use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
             } else {
                 usageStatistic.use(oldK, NULL, oldV);
@@ -339,7 +247,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected string in value, but got " + v);
                 }
                 map.put(Integer.parseInt(oldK), (String) v);
-                use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
             } else {
                 usageStatistic.use(oldK, NULL, oldV);
@@ -356,7 +263,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected object, but got " + oldV);
                 }
                 map.put(Long.parseLong(oldK), valueFct.apply((PdxScriptObject) oldV));
-                use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
             } else {
                 usageStatistic.use(oldK, NULL, oldV);
@@ -378,7 +284,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected boolean in value, but got " + v);
                 }
                 map.put(k, (boolean) v);
-                use(oldK, BOOLEAN);
                 usageStatistic.use(oldK, BOOLEAN, oldV);
             }
         });
@@ -398,7 +303,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected int in value, but got " + v);
                 }
                 map.put(k, (int) v);
-                use(oldK, INT);
                 usageStatistic.use(oldK, INT, oldV);
             }
         });
@@ -418,7 +322,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected long in value, but got " + v);
                 }
                 map.put(k, (long) v);
-                use(oldK, OBJECT);
                 usageStatistic.use(oldK, OBJECT, oldV);
             }
         });
@@ -438,7 +341,6 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected double in value, but got " + v);
                 }
                 map.put(k, (double) v);
-                use(oldK, DOUBLE);
                 usageStatistic.use(oldK, DOUBLE, oldV);
             }
         });
@@ -455,7 +357,6 @@ public final class PdxScriptObject implements IPdxScript {
                         throw new RuntimeException("expected object, but got " + oldV);
                     }
                     map.put(k, valueFct.apply((PdxScriptObject) oldV));
-                    use(oldK, OBJECT);
                     usageStatistic.use(oldK, OBJECT, oldV);
                 } else {
                     usageStatistic.use(oldK, NULL, oldV);
