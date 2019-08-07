@@ -10,8 +10,8 @@ import java.time.LocalDate;
 
 public class AI {
 
-    private final boolean initialized, colonize;
-    private final int randomSeed, randomCount, syncedRandomSeed, syncedRandomCount;
+    private final boolean initialized, colonize, station;
+    private final int target, randomSeed, randomCount, syncedRandomSeed, syncedRandomCount;
     private final double robotColonies, robotColoniesWithFreeBuildings;
     private final LocalDate prepareWarDate;
     private final ImmutableDoubleList budget;
@@ -24,8 +24,10 @@ public class AI {
         this.budget = o.getList("budget").getAsDoubleList();
         this.strategies = o.getImplicitList("strategy").getAsList(AIStrategy::new);
         this.prepareWarDate = o.getDate("prepare_war_date");
+        this.station = o.getBoolean("station", true);
         this.robotColonies = o.getDouble("robot_colonies");
         this.robotColoniesWithFreeBuildings = o.getDouble("robot_colonies_with_free_buildings");
+        this.target = o.getInt("target", -1);
         PdxScriptList l = o.getList("attitude");
         this.attitudes = l != null ? l.getAsList(AIAttitude::new) : Lists.immutable.empty();
         this.randomSeed = o.getUnsignedInt("random_seed");
@@ -34,9 +36,11 @@ public class AI {
         this.syncedRandomCount = o.getUnsignedInt("synced_random_count");
     }
 
-    public AI(boolean initialized, boolean colonize, int randomSeed, int randomCount, int syncedRandomSeed, int syncedRandomCount, double robotColonies, double robotColoniesWithFreeBuildings, LocalDate prepareWarDate, ImmutableDoubleList budget, ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
+    public AI(boolean initialized, boolean colonize, boolean station, int target, int randomSeed, int randomCount, int syncedRandomSeed, int syncedRandomCount, double robotColonies, double robotColoniesWithFreeBuildings, LocalDate prepareWarDate, ImmutableDoubleList budget, ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
         this.initialized = initialized;
         this.colonize = colonize;
+        this.station = station;
+        this.target = target;
         this.randomSeed = randomSeed;
         this.randomCount = randomCount;
         this.syncedRandomSeed = syncedRandomSeed;
@@ -55,6 +59,14 @@ public class AI {
 
     public boolean isColonize() {
         return colonize;
+    }
+
+    public boolean isStation() {
+        return station;
+    }
+
+    public int getTarget() {
+        return target;
     }
 
     public int getRandomSeed() {

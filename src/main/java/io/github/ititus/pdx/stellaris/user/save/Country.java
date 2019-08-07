@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Country {
 
     private final boolean customName, autoShipDesigns, hasAdvisor, initialized;
-    private final int colorIndex, capital, speciesIndex, nextTransportFleetNumber, ruler, alliance, startingSystem;
+    private final int colorIndex, capital, speciesIndex, builtSpecies, nextTransportFleetNumber, ruler, alliance, associatedAlliance, startingSystem;
     private final double militaryPower, fleetSize;
     private final String name, adjective, graphicalCulture, cityGraphicalCulture, room, lastAllianceName, personality, rulerTitle, nameList, shipPrefix, type, customization;
     private final LocalDate lastDateWasHuman, lastDateWarLost, lastDateAtWar, nextElection, governmentDate;
@@ -73,7 +73,7 @@ public class Country {
         this.ai = o.getObject("ai").getAs(AI::new);
         this.capital = o.getInt("capital", -1);
         this.speciesIndex = o.getInt("species_index");
-        // TODO: built_species
+        this.builtSpecies = o.getInt("built_species", -1);
         PdxScriptObject o1 = o.getObject("ethos");
         this.ethos = o1 != null ? o1.getAs(Ethos::of) : null;
         this.lastAllianceName = o.getString("last_alliance_name");
@@ -111,6 +111,7 @@ public class Country {
         this.activePolicies = o.getList("active_policies").getAsList(ActivePolicy::new);
         this.policyFlags = o.getList("policy_flags").getAsStringList();
         this.alliance = o.getInt("alliance", -1);
+        this.associatedAlliance = o.getInt("associated_alliance", -1);
         // TODO: subjects
         this.startingSystem = o.getInt("starting_system", -1);
         this.hasAdvisor = o.getBoolean("has_advisor", true);
@@ -163,7 +164,7 @@ public class Country {
         // TODO: owned_sectors, given_value
     }
 
-    public Country(boolean customName, boolean autoShipDesigns, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int nextTransportFleetNumber, int ruler, int alliance, int startingSystem, double militaryPower, double fleetSize, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, LocalDate lastDateWasHuman, LocalDate lastDateWarLost, LocalDate lastDateAtWar, LocalDate nextElection, LocalDate governmentDate, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, FleetTemplateManager fleetTemplateManager, Government government, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
+    public Country(boolean customName, boolean autoShipDesigns, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int builtSpecies, int nextTransportFleetNumber, int ruler, int alliance, int associatedAlliance, int startingSystem, double militaryPower, double fleetSize, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, LocalDate lastDateWasHuman, LocalDate lastDateWarLost, LocalDate lastDateAtWar, LocalDate nextElection, LocalDate governmentDate, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, FleetTemplateManager fleetTemplateManager, Government government, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
         this.customName = customName;
         this.autoShipDesigns = autoShipDesigns;
         this.hasAdvisor = hasAdvisor;
@@ -171,9 +172,11 @@ public class Country {
         this.colorIndex = colorIndex;
         this.capital = capital;
         this.speciesIndex = speciesIndex;
+        this.builtSpecies = builtSpecies;
         this.nextTransportFleetNumber = nextTransportFleetNumber;
         this.ruler = ruler;
         this.alliance = alliance;
+        this.associatedAlliance = associatedAlliance;
         this.startingSystem = startingSystem;
         this.militaryPower = militaryPower;
         this.fleetSize = fleetSize;
@@ -268,6 +271,10 @@ public class Country {
         return speciesIndex;
     }
 
+    public int getBuiltSpecies() {
+        return builtSpecies;
+    }
+
     public int getNextTransportFleetNumber() {
         return nextTransportFleetNumber;
     }
@@ -278,6 +285,10 @@ public class Country {
 
     public int getAlliance() {
         return alliance;
+    }
+
+    public int getAssociatedAlliance() {
+        return associatedAlliance;
     }
 
     public int getStartingSystem() {
