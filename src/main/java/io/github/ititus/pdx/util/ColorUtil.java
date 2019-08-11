@@ -108,6 +108,7 @@ public class ColorUtil implements PdxConstants {
                 }
             }
         }
+
         throw new IllegalArgumentException();
     }
 
@@ -124,9 +125,9 @@ public class ColorUtil implements PdxConstants {
                 throw new IllegalArgumentException();
             }
             return f;
-        } else {
-            throw new IllegalArgumentException();
         }
+
+        throw new IllegalArgumentException();
     }
 
     private static float getAlpha(Number aN, float def, int lowerIntBound, int upperIntBound, float divider, float lowerFloatBound, float upperFloatBound) {
@@ -145,6 +146,7 @@ public class ColorUtil implements PdxConstants {
         } else if (aN != null) {
             throw new IllegalArgumentException();
         }
+
         return def;
     }
 }

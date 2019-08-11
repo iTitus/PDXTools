@@ -1,20 +1,32 @@
 package io.github.ititus.pdx.util;
 
+import io.github.ititus.pdx.pdxscript.PdxConstants;
+
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Util {
 
-    @SuppressWarnings("unchecked")
-    public static <I, R> Function<I, R> castingIdentity() {
-        return i -> (R) i;
+    private static final String[] INDENTS;
+
+    static {
+        INDENTS = new String[16];
+        INDENTS[0] = PdxConstants.EMPTY;
+        StringBuilder last = new StringBuilder((INDENTS.length - 1) * PdxConstants.INDENT.length());
+        for (int i = 1; i < INDENTS.length; i++) {
+            INDENTS[i] = last.append(PdxConstants.INDENT).toString();
+        }
     }
 
-    public static double[] addArrays(double[] array1, double[] array2) {
-        for (int i = 0; i < array1.length; i++) {
-            array1[i] += array2[i];
+    public static String indent(int indent) {
+        if (indent < 0) {
+            throw new IllegalArgumentException();
+        } else if (indent < INDENTS.length) {
+            return INDENTS[indent];
         }
-        return array1;
+
+        return IntStream.range(0, indent).mapToObj(i -> PdxConstants.INDENT).collect(Collectors.joining());
     }
 
     public static int hash(boolean... array) {

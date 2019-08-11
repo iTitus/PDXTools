@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.Deduplicator;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
+import io.github.ititus.pdx.util.Util;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -13,6 +13,9 @@ import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.primitive.DoubleLists;
+import org.eclipse.collections.impl.factory.primitive.IntLists;
+import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -207,7 +210,7 @@ public final class PdxScriptList implements IPdxScript {
     }
 
     public ImmutableIntList getAsIntList() {
-        return CollectionUtil.toImmutableList(getAsIntStream());
+        return IntLists.immutable.with(getAsIntArray());
     }
 
     public LongStream getAsLongStream() {
@@ -219,7 +222,7 @@ public final class PdxScriptList implements IPdxScript {
     }
 
     public ImmutableLongList getAsLongList() {
-        return CollectionUtil.toImmutableList(getAsLongStream());
+        return LongLists.immutable.with(getAsLongArray());
     }
 
     public DoubleStream getAsDoubleStream() {
@@ -231,7 +234,7 @@ public final class PdxScriptList implements IPdxScript {
     }
 
     public ImmutableDoubleList getAsDoubleList() {
-        return CollectionUtil.toImmutableList(getAsDoubleStream());
+        return DoubleLists.immutable.with(getAsDoubleArray());
     }
 
     public <T> ImmutableList<T> getAsList(Function<IPdxScript, T> fct) {
@@ -255,7 +258,7 @@ public final class PdxScriptList implements IPdxScript {
 
         // TODO: Add support for printing lists in comma mode
         if (mode == Mode.COMMA) {
-            b.append(PdxScriptParser.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
+            b.append(Util.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
         }
 
         list.forEach(script -> {

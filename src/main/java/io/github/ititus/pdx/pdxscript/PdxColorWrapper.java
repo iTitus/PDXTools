@@ -16,7 +16,7 @@ public final class PdxColorWrapper implements PdxConstants {
 
     private PdxColorWrapper(Color color, String representation) {
         this.color = color;
-        this.representation = representation.intern();
+        this.representation = representation/*.intern()*/;
     }
 
     public static PdxColorWrapper fromRGBHex(String hex) {

@@ -2,7 +2,6 @@ package io.github.ititus.pdx.stellaris.view;
 
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.*;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import io.github.ititus.pdx.util.mutable.MutableInt;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -389,7 +388,7 @@ public final class GalaxyView extends BorderPane {
                         .forEachOrdered(text::append);
             }
 
-            ImmutableList<IntObjectPair<NaturalWormhole>> naturalWormholes = CollectionUtil.stream(systemPair.getTwo().getNaturalWormholes())
+            ImmutableList<IntObjectPair<NaturalWormhole>> naturalWormholes = systemPair.getTwo().getNaturalWormholes().primitiveStream()
                     .sorted()
                     .mapToObj(wormholeId -> PrimitiveTuples.pair(wormholeId, wormholes.get(wormholeId)))
                     .collect(Collectors2.toImmutableList());
@@ -427,7 +426,7 @@ public final class GalaxyView extends BorderPane {
                         .forEachOrdered(text::append);
             }
 
-            ImmutableList<IntObjectPair<Bypass>> systemBypasses = CollectionUtil.stream(systemPair.getTwo().getBypasses())
+            ImmutableList<IntObjectPair<Bypass>> systemBypasses = systemPair.getTwo().getBypasses().primitiveStream()
                     .sorted()
                     .mapToObj(bypassId -> PrimitiveTuples.pair(bypassId, bypasses.get(bypassId)))
                     .collect(Collectors2.toImmutableList());
@@ -460,7 +459,7 @@ public final class GalaxyView extends BorderPane {
                                 GalacticObject targetSystem = systems.get(targetSystemId);
                                 properties.add("target_system=" + targetSystem.getName() + " (#" + targetSystemId + ")");
                             } else {
-                                CollectionUtil.stream(bypassPair.getTwo().getConnections())
+                                bypassPair.getTwo().getConnections().primitiveStream()
                                         .sorted()
                                         .mapToObj(tId -> new Object() {
                                             int targetId = tId;
@@ -488,7 +487,7 @@ public final class GalaxyView extends BorderPane {
             }
 
             // TODO: sort by type (stars, planets)
-            ImmutableList<IntObjectPair<Planet>> systemPlanets = CollectionUtil.stream(systemPair.getTwo().getPlanets())
+            ImmutableList<IntObjectPair<Planet>> systemPlanets = systemPair.getTwo().getPlanets().primitiveStream()
                     .sorted()
                     .mapToObj(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)))
                     /*.flatMap(planetPair -> Stream.concat(
@@ -523,7 +522,7 @@ public final class GalaxyView extends BorderPane {
                         .forEachOrdered(text::append);
             }
 
-            ImmutableList<IntObjectPair<MegaStructure>> systemMegaStructures = CollectionUtil.stream(systemPair.getTwo().getMegaStructures())
+            ImmutableList<IntObjectPair<MegaStructure>> systemMegaStructures = systemPair.getTwo().getMegaStructures().primitiveStream()
                     .sorted()
                     .mapToObj(megaStructureId -> PrimitiveTuples.pair(megaStructureId, megaStructures.get(megaStructureId)))
                     .collect(Collectors2.toImmutableList());

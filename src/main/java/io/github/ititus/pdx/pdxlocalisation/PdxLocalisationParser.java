@@ -95,7 +95,7 @@ public final class PdxLocalisationParser implements PdxConstants {
                             }
 
                             if (line.startsWith("l_") && line.charAt(line.length() - 1) == ':') {
-                                String langName = line.substring(0, line.length() - 1).intern();
+                                String langName = line.substring(0, line.length() - 1)/*.intern()*/;
                                 language.set(langName);
                             } else if (language.isNotNull() && line.length() > 1 && line.charAt(0) == ' ' && !Character.isWhitespace(line.charAt(1)) && line.charAt(line.length() - 1) == '"') {
                                 int separator = line.indexOf(':');

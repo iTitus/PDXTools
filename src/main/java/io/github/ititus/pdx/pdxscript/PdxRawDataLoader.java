@@ -34,11 +34,12 @@ public class PdxRawDataLoader implements PdxConstants {
     private MutableSet<Pair<String, Throwable>> errors;
 
     public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        if (path == null || !Files.exists(path)) {
+        if (path == null || !Files.exists(path) || blacklist == null) {
             throw new IllegalArgumentException();
         }
+
         this.path = path;
-        this.blacklist = Sets.immutable.ofAll(blacklist);
+        this.blacklist = blacklist;
         this.filter = filter;
         this.rawData = load(path, index, progressMessageUpdater);
     }

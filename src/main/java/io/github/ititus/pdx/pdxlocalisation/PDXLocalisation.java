@@ -35,26 +35,26 @@ public final class PDXLocalisation implements PdxConstants {
     }
 
     public String get(String language, String key, String fallbackLanguage, String fallbackKey, String fallback) {
-        String internedLanguage = language != null ? language.intern() : null;
+        String internedLanguage = language; // language != null ? language.intern() : null;
         ImmutableMap<String, String> languageMap = null;
         if (internedLanguage != null) {
             languageMap = localisation.get(internedLanguage);
         }
-        String internedFallbackLanguage = fallbackLanguage != null ? fallbackLanguage.intern() : null;
+        String internedFallbackLanguage = fallbackLanguage; // fallbackLanguage != null ? fallbackLanguage.intern() : null;
         if (languageMap == null && internedFallbackLanguage != null && !internedFallbackLanguage.equals(internedLanguage)) {
             languageMap = localisation.get(internedFallbackLanguage);
         }
         if (languageMap != null) {
-            String internedKey = key != null ? key.intern() : null;
+            String internedKey = key; // key != null ? key.intern() : null;
             if (internedKey != null && languageMap.containsKey(internedKey)) {
                 return languageMap.get(internedKey);
             }
-            String internedFallbackKey = fallbackKey != null ? fallbackKey.intern() : null;
+            String internedFallbackKey = fallbackKey; // fallbackKey != null ? fallbackKey.intern() : null;
             if (internedFallbackKey != null && !internedFallbackKey.equals(internedKey) && languageMap.containsKey(internedFallbackKey)) {
                 return languageMap.get(internedFallbackKey);
             }
         }
-        return fallback != null ? fallback.intern() : null;
+        return fallback; // fallback != null ? fallback.intern() : null;
     }
 
     public ImmutableMap<String, ImmutableMap<String, String>> getExtraLocalisation() {

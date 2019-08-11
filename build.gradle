@@ -14,10 +14,11 @@ repositories {
 
 dependencies {
     compile 'io.github.ititus:math:1.0.0+'
-    compile 'org.eclipse.collections:eclipse-collections-api:9.2.0'
-    compile 'org.eclipse.collections:eclipse-collections:9.2.0'
-    compile 'org.eclipse.collections:eclipse-collections-forkjoin:9.2.0'
-    testCompile 'org.eclipse.collections:eclipse-collections-testutils:9.2.0'
+    compile 'org.eclipse.collections:eclipse-collections-api:10.0.0'
+    compile 'org.eclipse.collections:eclipse-collections:10.0.0'
+    compile 'org.eclipse.collections:eclipse-collections-forkjoin:10.0.0'
+
+    testCompile 'org.eclipse.collections:eclipse-collections-testutils:10.0.0'
 }
 
 javafx {

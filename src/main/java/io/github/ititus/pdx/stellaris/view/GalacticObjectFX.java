@@ -49,9 +49,9 @@ public class GalacticObjectFX extends Group {
         ImmutableList<VisualHyperlane> visualHyperlanes = Stream.concat(
                 systemPair.getTwo().getHyperlanes().stream()
                         .map(hyperlane -> new VisualHyperlane(systemPair.getOne(), hyperlane.getTo(), hyperlane.isBridge() ? VisualHyperlane.Type.BRIDGE : VisualHyperlane.Type.NORMAL)),
-                CollectionUtil.stream(systemPair.getTwo().getBypasses())
+                systemPair.getTwo().getBypasses().primitiveStream()
                         .mapToObj(bypasses::get)
-                        .flatMap(b -> CollectionUtil.stream(b.getConnections()).mapToObj(id -> PrimitiveTuples.pair(b, id)))
+                        .flatMap(b -> b.getConnections().primitiveStream().mapToObj(id -> PrimitiveTuples.pair(b, id)))
                         .map(p -> {
                             Bypass bypassFrom = p.getOne();
                             int targetId = p.getTwo();

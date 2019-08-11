@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.util.Deduplicator;
+import io.github.ititus.pdx.util.Util;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -19,7 +20,7 @@ public final class PdxScriptValue implements IPdxScript {
         }
         this.relation = relation;
         if (value instanceof String) {
-            this.value = ((String) value).intern();
+            this.value = value; // ((String) value).intern();
         } else if (value instanceof LocalDate) {
             this.value = DATE_DEDUPLICATOR.deduplicate((LocalDate) value);
         } else {
@@ -46,7 +47,7 @@ public final class PdxScriptValue implements IPdxScript {
             throw new IllegalArgumentException();
         }
 
-        StringBuilder b = new StringBuilder(PdxScriptParser.indent(indent));
+        StringBuilder b = new StringBuilder(Util.indent(indent));
 
         if (key != null) {
             b.append(PdxScriptParser.quoteIfNecessary(key));

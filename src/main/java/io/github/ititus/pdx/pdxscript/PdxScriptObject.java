@@ -28,7 +28,7 @@ public final class PdxScriptObject implements IPdxScript {
         this.usageStatistic = new PdxUsageStatistic(map);
     }
 
-    public static <S extends IPdxScript, T> Function<S, T> nullOr(Function<S, T> fct) {
+    /*public static <S extends IPdxScript, T> Function<S, T> nullOr(Function<S, T> fct) {
         return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.apply(s) : null;
     }
 
@@ -38,7 +38,7 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static <S extends IPdxScript, T> Function<S, T> objectOrNull(Function<S, T> fct) {
         return s -> s instanceof PdxScriptObject ? fct.apply(s) : null;
-    }
+    }*/
 
     public static Builder builder() {
         return new Builder();
@@ -49,11 +49,11 @@ public final class PdxScriptObject implements IPdxScript {
         return relation;
     }
 
-    public boolean hasKey(String key) {
+    /*public boolean hasKey(String key) {
         return map.containsKey(key);
     }
 
-    /*public boolean hasKey(String key, String type) {
+    public boolean hasKey(String key, String type) {
         return map.containsKey(key) && PdxConstants.getTypeString(get(key)).equals(type);
     }*/
 
@@ -467,7 +467,7 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public Builder add(String key, IPdxScript value) {
-            String interned = key.intern();
+            String interned = key; // key.intern();
             IPdxScript object = map.get(interned);
             if (object == null) {
                 map.put(interned, value);

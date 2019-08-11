@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.math.time.DurationFormatter;
+import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.util.io.FileNameFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
@@ -36,9 +38,16 @@ public class StellarisSave {
         }
 
         this.save = saveFile;
+        System.out.println("Loading Save " + saveFile);
+        StopWatch s = StopWatch.createRunning();
         this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, -1, null);
+        System.out.println("Parsing: " + DurationFormatter.formatSeconds(s.stop()));
+        s.start();
         this.meta = this.saveDataLoader.getRawData().getObject(META).getAs(Meta::new);
+        System.out.println("Meta: " + DurationFormatter.formatSeconds(s.stop()));
+        s.start();
         this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
+        System.out.println("Gamestate: " + DurationFormatter.formatSeconds(s.stop()));
     }
 
     public static StellarisSave loadLastModified(Path saveDir) {

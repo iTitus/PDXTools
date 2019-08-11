@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public final class PdxScriptParser implements PdxConstants {
 
@@ -114,6 +112,9 @@ public final class PdxScriptParser implements PdxConstants {
                     token = stripQuotes(token);
                     try {
                         value = LocalDate.parse(token, DTF);
+                        if (value.equals(NULL_DATE)) {
+                            value = NULL_DATE;
+                        }
                     } catch (DateTimeParseException ignored) {
                         value = token; // fallback to string
                     }
@@ -162,7 +163,7 @@ public final class PdxScriptParser implements PdxConstants {
                                 if (token.charAt(0) == VARIABLE_PREFIX) {
                                     // TODO: Parse @ variables
                                 } else {
-                                    unknownLiterals.add(token.toLowerCase(Locale.ROOT).intern());
+                                    unknownLiterals.add(token.toLowerCase(Locale.ROOT)/*.intern()*/);
                                 }
                                 String tokenString = token;
                                 // TODO: Fix tokenizer splitting raw tokens with math symbols in it
@@ -440,22 +441,11 @@ public final class PdxScriptParser implements PdxConstants {
     }
 
     public static String quote(String s) {
-        return (QUOTE_CHAR + s.replace(QUOTE, ESCAPE + QUOTE) + QUOTE_CHAR).intern();
+        return (QUOTE_CHAR + s.replace(QUOTE, ESCAPE + QUOTE) + QUOTE_CHAR)/*.intern()*/;
     }
 
     public static String quoteIfNecessary(String s) {
         return isQuoteNecessary(s) ? quote(s) : s;
-    }
-
-    public static String indent(int indent) {
-        if (indent < 0) {
-            throw new IllegalArgumentException();
-        } else if (indent > 1) {
-            return IntStream.range(0, indent).mapToObj(i -> INDENT).collect(Collectors.joining()).intern();
-        } else if (indent == 1) {
-            return INDENT;
-        }
-        return EMPTY;
     }
 
     public static IPdxScript parse(Path scriptFile) {

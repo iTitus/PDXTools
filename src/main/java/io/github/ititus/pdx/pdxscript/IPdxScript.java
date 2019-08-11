@@ -1,10 +1,12 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.pdx.util.Util;
+
 public interface IPdxScript extends PdxConstants {
 
     static void listObjectOpen(int indent, boolean root, String key, StringBuilder b, PdxRelation relation, boolean empty) {
         if (!root) {
-            b.append(PdxScriptParser.indent(indent));
+            b.append(Util.indent(indent));
             if (key != null) {
                 b.append(PdxScriptParser.quoteIfNecessary(key));
                 b.append(relation.getSign());
@@ -19,7 +21,7 @@ public interface IPdxScript extends PdxConstants {
     static void listObjectClose(int indent, boolean root, StringBuilder b, boolean empty) {
         if (!root) {
             if (!empty) {
-                b.append(PdxScriptParser.indent(indent));
+                b.append(Util.indent(indent));
             }
             b.append(LIST_OBJECT_CLOSE);
         } else if (!empty && b.charAt(b.length() - 1) == LINE_FEED) {
