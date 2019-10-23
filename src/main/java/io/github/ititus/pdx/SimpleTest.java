@@ -26,9 +26,9 @@ public class SimpleTest {
 
     private static StellarisGame getStellarisGame() {
         StopWatch s = StopWatch.createRunning();
-
         MutableString lastMessage = new MutableString();
         StopWatch stepWatch = StopWatch.create();
+
         StellarisGame game = new StellarisGame(INSTALL_DIR, 0, (index, visible, workDone, totalWork, msg) -> {
             if (index == 0) {
                 if (stepWatch.isRunning()) {
@@ -50,7 +50,22 @@ public class SimpleTest {
 
     private static StellarisUserData getStellarisUserData() {
         StopWatch s = StopWatch.createRunning();
+        MutableString lastMessage = new MutableString();
+        StopWatch stepWatch = StopWatch.create();
+
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
+            if (index == 0) {
+                if (stepWatch.isRunning()) {
+                    System.out.println(lastMessage.get() + ": " + DurationFormatter.formatSeconds(stepWatch.stop()));
+                } else {
+                    System.out.println("Loading User Data");
+                }
+
+                if (!msg.equals("Done")) {
+                    lastMessage.set(msg);
+                    stepWatch.start();
+                }
+            }
             // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
         });
         System.out.println("User Data Load Time: " + DurationFormatter.formatSeconds(s.stop()));
@@ -68,7 +83,7 @@ public class SimpleTest {
         StopWatch s = StopWatch.createRunning();
 
         StellarisGame game = getStellarisGame();
-        StellarisUserData userData = null; // getStellarisUserData();
+        StellarisUserData userData = getStellarisUserData();
         StellarisSave save = getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
