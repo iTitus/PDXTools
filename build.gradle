@@ -1,11 +1,11 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 group = 'io.github.ititus.pdx'
 version = '1.0.0-SNAPSHOT'
-sourceCompatibility = JavaVersion.VERSION_12
+sourceCompatibility = JavaVersion.VERSION_13
 
 repositories {
     mavenLocal()
@@ -24,7 +24,7 @@ dependencies {
 }
 
 javafx {
-    version = '12.0.1'
+    version = '13.0.1'
     modules = ['javafx.controls']
 }
 
