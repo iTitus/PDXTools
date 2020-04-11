@@ -17,7 +17,8 @@ public class FleetAutoMovement {
         this.hasArrived = o.getBoolean("has_arrived");
     }
 
-    public FleetAutoMovement(boolean clearOnNewOrders, boolean clearAutoMoveOnArrival, boolean destroyOnArrival, boolean hasArrived, int autoMoveTarget, String type) {
+    public FleetAutoMovement(boolean clearOnNewOrders, boolean clearAutoMoveOnArrival, boolean destroyOnArrival,
+                             boolean hasArrived, int autoMoveTarget, String type) {
         this.clearOnNewOrders = clearOnNewOrders;
         this.clearAutoMoveOnArrival = clearAutoMoveOnArrival;
         this.destroyOnArrival = destroyOnArrival;

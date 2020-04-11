@@ -7,7 +7,8 @@ import java.util.Objects;
 
 public class FleetStats {
 
-    private static final Deduplicator<FleetStats> DEDUPLICATOR = new Deduplicator<>(s -> s.getCombatStats().getEnemy().isEmpty() && s.getCombatStats().getDamageIncoming().isEmpty() && s.getCombatStats().getDamageOutgoing().isEmpty() && s.getCombatStats().getHitRatioIncoming().isEmpty() && s.getCombatStats().getHitRatioOutgoing().isEmpty());
+    private static final Deduplicator<FleetStats> DEDUPLICATOR =
+            new Deduplicator<>(s -> s.getCombatStats().getEnemy().isEmpty() && s.getCombatStats().getDamageIncoming().isEmpty() && s.getCombatStats().getDamageOutgoing().isEmpty() && s.getCombatStats().getHitRatioIncoming().isEmpty() && s.getCombatStats().getHitRatioOutgoing().isEmpty());
 
     private final FleetCombatStats combatStats;
 

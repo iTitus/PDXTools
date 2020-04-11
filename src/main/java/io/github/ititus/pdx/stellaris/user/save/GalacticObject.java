@@ -13,7 +13,8 @@ public class GalacticObject {
     private final int arm, initParent, starbase;
     private final double innerRadius, outerRadius;
     private final String type, name, starClass, initializer;
-    private final ImmutableIntList planets, ambientObjects, megaStructures, naturalWormholes, bypasses, discoveries, fleetPresence, auraPresence, ftlInhibitorPresence;
+    private final ImmutableIntList planets, ambientObjects, megaStructures, naturalWormholes, bypasses, discoveries,
+            fleetPresence, auraPresence, ftlInhibitorPresence;
     private final ImmutableList<Claim> claims;
     private final ImmutableList<Hyperlane> hyperlanes;
     private final ImmutableList<AsteroidBelt> asteroidBelts;
@@ -64,7 +65,13 @@ public class GalacticObject {
         // TODO: trade_hub, trade_collection, trade_piracy, sector
     }
 
-    public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer, ImmutableIntList planets, ImmutableIntList ambientObjects, ImmutableIntList megaStructures, ImmutableIntList naturalWormholes, ImmutableIntList bypasses, ImmutableIntList discoveries, ImmutableIntList fleetPresence, ImmutableIntList auraPresence, ImmutableIntList ftlInhibitorPresence, ImmutableList<Claim> claims, ImmutableList<Hyperlane> hyperlanes, ImmutableList<AsteroidBelt> asteroidBelts, int arm, int initParent, int starbase, double innerRadius, double outerRadius, Flags flags) {
+    public GalacticObject(Coordinate coordinate, String type, String name, String starClass, String initializer,
+                          ImmutableIntList planets, ImmutableIntList ambientObjects, ImmutableIntList megaStructures,
+                          ImmutableIntList naturalWormholes, ImmutableIntList bypasses, ImmutableIntList discoveries,
+                          ImmutableIntList fleetPresence, ImmutableIntList auraPresence,
+                          ImmutableIntList ftlInhibitorPresence, ImmutableList<Claim> claims,
+                          ImmutableList<Hyperlane> hyperlanes, ImmutableList<AsteroidBelt> asteroidBelts, int arm,
+                          int initParent, int starbase, double innerRadius, double outerRadius, Flags flags) {
         this.coordinate = coordinate;
         this.type = type;
         this.name = name;

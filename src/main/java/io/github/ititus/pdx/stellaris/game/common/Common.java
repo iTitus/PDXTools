@@ -18,7 +18,8 @@ public class Common {
             // V value of HSV color is between 1.0 and 2.0
             "planet_classes/00_planet_classes.txt",
             // Missing relation sign in object
-            "random_names/00_empire_names.txt", "random_names/00_war_names.txt", "scripted_effects/archaeology_event_effects.txt",
+            "random_names/00_empire_names.txt", "random_names/00_war_names.txt", "scripted_effects" +
+                    "/archaeology_event_effects.txt",
             // No relation sign in list allowed
             "name_lists/HUMAN1_SC.txt"
     );
@@ -29,7 +30,8 @@ public class Common {
 
     private final PlanetClasses planetClasses;
 
-    public Common(Path installDir, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public Common(Path installDir, Path commonDir, int index,
+                  StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir) || commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }

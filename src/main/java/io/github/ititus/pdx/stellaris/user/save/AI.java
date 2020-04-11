@@ -36,7 +36,10 @@ public class AI {
         this.syncedRandomCount = o.getUnsignedInt("synced_random_count");
     }
 
-    public AI(boolean initialized, boolean colonize, boolean station, int target, int randomSeed, int randomCount, int syncedRandomSeed, int syncedRandomCount, double robotColonies, double robotColoniesWithFreeBuildings, LocalDate prepareWarDate, ImmutableDoubleList budget, ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
+    public AI(boolean initialized, boolean colonize, boolean station, int target, int randomSeed, int randomCount,
+              int syncedRandomSeed, int syncedRandomCount, double robotColonies,
+              double robotColoniesWithFreeBuildings, LocalDate prepareWarDate, ImmutableDoubleList budget,
+              ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
         this.initialized = initialized;
         this.colonize = colonize;
         this.station = station;

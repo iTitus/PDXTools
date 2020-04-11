@@ -40,7 +40,8 @@ public final class PDXLocalisation implements PdxConstants {
         if (internedLanguage != null) {
             languageMap = localisation.get(internedLanguage);
         }
-        String internedFallbackLanguage = fallbackLanguage; // fallbackLanguage != null ? fallbackLanguage.intern() : null;
+        String internedFallbackLanguage = fallbackLanguage; // fallbackLanguage != null ? fallbackLanguage.intern() :
+        // null;
         if (languageMap == null && internedFallbackLanguage != null && !internedFallbackLanguage.equals(internedLanguage)) {
             languageMap = localisation.get(internedFallbackLanguage);
         }

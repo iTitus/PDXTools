@@ -6,7 +6,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class RandomNameDatabase {
 
-    private final ImmutableList<String> speciesModificationPrefix, speciesModificationPostfix, starNames, blackHoleNames, nebulaNames, asteroidPrefix;
+    private final ImmutableList<String> speciesModificationPrefix, speciesModificationPostfix, starNames,
+            blackHoleNames, nebulaNames, asteroidPrefix;
     private final ImmutableList<ImmutableList<String>> asteroidPostfix;
 
     public RandomNameDatabase(PdxScriptObject o) {
@@ -24,7 +25,11 @@ public class RandomNameDatabase {
         });
     }
 
-    public RandomNameDatabase(ImmutableList<String> speciesModificationPrefix, ImmutableList<String> speciesModificationPostfix, ImmutableList<String> starNames, ImmutableList<String> blackHoleNames, ImmutableList<String> nebulaNames, ImmutableList<String> asteroidPrefix, ImmutableList<ImmutableList<String>> asteroidPostfix) {
+    public RandomNameDatabase(ImmutableList<String> speciesModificationPrefix,
+                              ImmutableList<String> speciesModificationPostfix, ImmutableList<String> starNames,
+                              ImmutableList<String> blackHoleNames, ImmutableList<String> nebulaNames,
+                              ImmutableList<String> asteroidPrefix,
+                              ImmutableList<ImmutableList<String>> asteroidPostfix) {
         this.speciesModificationPrefix = speciesModificationPrefix;
         this.speciesModificationPostfix = speciesModificationPostfix;
         this.starNames = starNames;

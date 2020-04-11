@@ -37,7 +37,10 @@ public class FleetCombatEnemy {
         this.leader = o1 != null ? o1.getAs(FleetCombatEnemyLeader::new) : null;
     }
 
-    public FleetCombatEnemy(int fleet, int country, String shipClass, String countryName, String fleetName, ImmutableIntList shipSizeCount, ImmutableIntList shipSizeCountLost, ImmutableList<String> shipSizeKey, ImmutableList<String> shipSizeName, Flag empireFlag, FleetCombatEnemyLeader leader) {
+    public FleetCombatEnemy(int fleet, int country, String shipClass, String countryName, String fleetName,
+                            ImmutableIntList shipSizeCount, ImmutableIntList shipSizeCountLost,
+                            ImmutableList<String> shipSizeKey, ImmutableList<String> shipSizeName, Flag empireFlag,
+                            FleetCombatEnemyLeader leader) {
         this.fleet = fleet;
         this.country = country;
         this.shipClass = shipClass;
@@ -109,6 +112,7 @@ public class FleetCombatEnemy {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fleet, country, shipClass, countryName, fleetName, shipSizeCount, shipSizeCountLost, shipSizeKey, shipSizeName, empireFlag, leader);
+        return Objects.hash(fleet, country, shipClass, countryName, fleetName, shipSizeCount, shipSizeCountLost,
+                shipSizeKey, shipSizeName, empireFlag, leader);
     }
 }

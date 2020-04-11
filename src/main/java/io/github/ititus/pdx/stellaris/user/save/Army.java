@@ -30,7 +30,8 @@ public class Army {
         this.pop = o.getInt("pop");
     }
 
-    public Army(int homePlanet, int owner, int speciesIndex, int ship, int leader, int planet, int pop, double health, double maxHealth, double experience, double morale, String name, String type) {
+    public Army(int homePlanet, int owner, int speciesIndex, int ship, int leader, int planet, int pop, double health
+            , double maxHealth, double experience, double morale, String name, String type) {
         this.homePlanet = homePlanet;
         this.owner = owner;
         this.speciesIndex = speciesIndex;

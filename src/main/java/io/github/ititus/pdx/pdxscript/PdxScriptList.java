@@ -243,7 +243,8 @@ public final class PdxScriptList implements IPdxScript {
 
     @Override
     public PdxScriptList append(IPdxScript script) {
-        return mode == Mode.IMPLICIT ? builder().addAllIterable(list).add(script).build(Mode.IMPLICIT, PdxRelation.EQUALS) : IPdxScript.super.append(script);
+        return mode == Mode.IMPLICIT ? builder().addAllIterable(list).add(script).build(Mode.IMPLICIT,
+                PdxRelation.EQUALS) : IPdxScript.super.append(script);
     }
 
     @Override
@@ -262,7 +263,8 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         list.forEach(script -> {
-            b.append(script.toPdxScript(root || mode == Mode.IMPLICIT ? indent : indent + 1, false, mode == Mode.IMPLICIT ? key : null));
+            b.append(script.toPdxScript(root || mode == Mode.IMPLICIT ? indent : indent + 1, false,
+                    mode == Mode.IMPLICIT ? key : null));
             b.append(LINE_FEED);
         });
 
@@ -275,9 +277,11 @@ public final class PdxScriptList implements IPdxScript {
         MutableMap<String, PdxUsage> usages = Maps.mutable.empty();
         list.forEach(s -> {
             if (s instanceof PdxScriptObject) {
-                ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k, usage, PdxUsage::merge));
+                ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k,
+                        usage, PdxUsage::merge));
             } else if (s instanceof PdxScriptList) {
-                ((PdxScriptList) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k, usage, PdxUsage::merge));
+                ((PdxScriptList) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k,
+                        usage, PdxUsage::merge));
             }
         });
         return new PdxUsageStatistic(usages);
@@ -321,7 +325,8 @@ public final class PdxScriptList implements IPdxScript {
             Map<Mode, ImmutableMap<PdxRelation, PdxScriptList>> map = new EnumMap<>(Mode.class);
             Arrays.stream(Mode.values()).forEach(mode -> {
                 Map<PdxRelation, PdxScriptList> map1 = new EnumMap<>(PdxRelation.class);
-                Arrays.stream(PdxRelation.values()).forEach(relation -> map1.put(relation, new PdxScriptList(mode, relation, Lists.immutable.empty())));
+                Arrays.stream(PdxRelation.values()).forEach(relation -> map1.put(relation, new PdxScriptList(mode,
+                        relation, Lists.immutable.empty())));
                 map.put(mode, Maps.immutable.withAll(map1));
             });
             EMPTY_CACHE = Maps.immutable.withAll(map);

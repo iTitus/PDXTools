@@ -8,7 +8,8 @@ import java.util.Objects;
 
 public class ShipWeapon {
 
-    private static final Deduplicator<ShipWeapon> DEDUPLICATOR = new Deduplicator<>(w -> w.getTarget() == null && w.getCooldown() == 0 && w.getShotsFired() == 0);
+    private static final Deduplicator<ShipWeapon> DEDUPLICATOR =
+            new Deduplicator<>(w -> w.getTarget() == null && w.getCooldown() == 0 && w.getShotsFired() == 0);
 
     private final int index, shotsFired;
     private final double cooldown;
@@ -30,7 +31,8 @@ public class ShipWeapon {
         this.shotsFired = o.getInt("shots_fired");
     }
 
-    private ShipWeapon(int index, int shotsFired, double cooldown, String template, String componentSlot, Property target) {
+    private ShipWeapon(int index, int shotsFired, double cooldown, String template, String componentSlot,
+                       Property target) {
         this.index = index;
         this.shotsFired = shotsFired;
         this.cooldown = cooldown;
@@ -43,7 +45,8 @@ public class ShipWeapon {
         return DEDUPLICATOR.deduplicate(new ShipWeapon(s));
     }
 
-    public static ShipWeapon of(int index, int shotsFired, double cooldown, String template, String componentSlot, Property target) {
+    public static ShipWeapon of(int index, int shotsFired, double cooldown, String template, String componentSlot,
+                                Property target) {
         return DEDUPLICATOR.deduplicate(new ShipWeapon(index, shotsFired, cooldown, template, componentSlot, target));
     }
 

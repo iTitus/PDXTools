@@ -37,7 +37,8 @@ public class Pop {
         // TODO: can_migrate, amenities_usage, housing_usage
     }
 
-    public Pop(int speciesIndex, int popFaction, int planet, double crime, double power, double happiness, String job, String category, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags) {
+    public Pop(int speciesIndex, int popFaction, int planet, double crime, double power, double happiness, String job
+            , String category, ImmutableList<TimedModifier> timedModifiers, Ethos ethos, Flags flags) {
         this.speciesIndex = speciesIndex;
         this.popFaction = popFaction;
         this.planet = planet;

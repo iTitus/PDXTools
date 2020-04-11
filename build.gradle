@@ -5,7 +5,7 @@ plugins {
 
 group = 'io.github.ititus.pdx'
 version = '1.0.0-SNAPSHOT'
-sourceCompatibility = JavaVersion.VERSION_13
+sourceCompatibility = JavaVersion.VERSION_14
 
 repositories {
     mavenLocal()
@@ -14,18 +14,18 @@ repositories {
 
 dependencies {
     implementation group: 'io.github.ititus', name: 'ititus-commons', version: '1.0.0+'
-    implementation group: 'org.eclipse.collections', name: 'eclipse-collections-api', version: '10.0.0'
-    implementation group: 'org.eclipse.collections', name: 'eclipse-collections', version: '10.0.0'
-    implementation group: 'org.eclipse.collections', name: 'eclipse-collections-forkjoin', version: '10.0.0'
+    implementation group: 'org.eclipse.collections', name: 'eclipse-collections-api', version: '10.2.0'
+    implementation group: 'org.eclipse.collections', name: 'eclipse-collections', version: '10.2.0'
+    implementation group: 'org.eclipse.collections', name: 'eclipse-collections-forkjoin', version: '10.2.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
-    testImplementation group: 'org.eclipse.collections', name: 'eclipse-collections-testutils', version: '10.0.0'
+    testImplementation group: 'org.eclipse.collections', name: 'eclipse-collections-testutils', version: '10.2.0'
 }
 
 javafx {
-    version = '13.0.1'
-    modules = ['javafx.controls']
+    version = '14'
+    modules = ['javafx.controls', 'javafx.base', 'javafx.fxml', 'javafx.graphics']
 }
 
 mainClassName = 'io.github.ititus.pdx.Main'

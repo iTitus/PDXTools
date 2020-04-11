@@ -27,7 +27,8 @@ public class StellarisSaves {
 
     private MutableList<Pair<String, Throwable>> errors;
 
-    public StellarisSaves(Path saveGameFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisSaves(Path saveGameFolder, int index,
+                          StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (saveGameFolder == null || !Files.isDirectory(saveGameFolder)) {
             throw new IllegalArgumentException();
         }
@@ -47,7 +48,8 @@ public class StellarisSaves {
         int progress0 = 0;
 
         for (Path saveFolder : saveFolders) {
-            progressMessageUpdater.updateProgressMessage(index, true, progress0++, saveFolderCount, "Loading Save Game Folder " + saveFolder.getFileName());
+            progressMessageUpdater.updateProgressMessage(index, true, progress0++, saveFolderCount, "Loading Save " +
+                    "Game Folder " + saveFolder.getFileName());
 
             MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
             Path[] saveGames;
@@ -63,7 +65,8 @@ public class StellarisSaves {
             int progress1 = 0;
 
             for (Path saveFile : saveGames) {
-                progressMessageUpdater.updateProgressMessage(index + 1, true, progress1++, saveGameCount, "Loading Save Game " + saveFile.getFileName());
+                progressMessageUpdater.updateProgressMessage(index + 1, true, progress1++, saveGameCount, "Loading " +
+                        "Save Game " + saveFile.getFileName());
 
                 try {
                     saveMap.put(IOUtil.getNameWithoutExtension(saveFile), new StellarisSave(saveFile));

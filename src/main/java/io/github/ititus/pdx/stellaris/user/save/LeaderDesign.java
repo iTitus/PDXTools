@@ -21,7 +21,8 @@ public class LeaderDesign {
         this.leaderClass = o.getString("leader_class");
     }
 
-    public LeaderDesign(int texture, int hair, int clothes, String gender, String name, String portrait, String rulerTitle, String rulerTitleFemale, String leaderClass) {
+    public LeaderDesign(int texture, int hair, int clothes, String gender, String name, String portrait,
+                        String rulerTitle, String rulerTitleFemale, String leaderClass) {
         this.texture = texture;
         this.hair = hair;
         this.clothes = clothes;
@@ -78,7 +79,8 @@ public class LeaderDesign {
             return false;
         }
         LeaderDesign that = (LeaderDesign) o;
-        return texture == that.texture && hair == that.hair && clothes == that.clothes && Objects.equals(gender, that.gender) && Objects.equals(name, that.name) && Objects.equals(portrait, that.portrait) && Objects.equals(rulerTitle, that.rulerTitle) && Objects.equals(rulerTitleFemale, that.rulerTitleFemale) && Objects.equals(leaderClass, that.leaderClass);
+        return texture == that.texture && hair == that.hair && clothes == that.clothes && Objects.equals(gender,
+                that.gender) && Objects.equals(name, that.name) && Objects.equals(portrait, that.portrait) && Objects.equals(rulerTitle, that.rulerTitle) && Objects.equals(rulerTitleFemale, that.rulerTitleFemale) && Objects.equals(leaderClass, that.leaderClass);
     }
 
     @Override

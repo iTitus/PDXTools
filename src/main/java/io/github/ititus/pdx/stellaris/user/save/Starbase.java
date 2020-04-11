@@ -33,7 +33,10 @@ public class Starbase {
         this.owner = o.getInt("owner");
     }
 
-    public Starbase(int updateFlag, int nextBuildItemId, int nextShipyardBuildItemId, int shipDesign, int station, int system, int owner, String level, ImmutableList<BuildQueueItem> buildQueue, ImmutableList<BuildQueueItem> shipyardBuildQueue, StarbaseBuildings modules, StarbaseBuildings buildings) {
+    public Starbase(int updateFlag, int nextBuildItemId, int nextShipyardBuildItemId, int shipDesign, int station,
+                    int system, int owner, String level, ImmutableList<BuildQueueItem> buildQueue,
+                    ImmutableList<BuildQueueItem> shipyardBuildQueue, StarbaseBuildings modules,
+                    StarbaseBuildings buildings) {
         this.updateFlag = updateFlag;
         this.nextBuildItemId = nextBuildItemId;
         this.nextShipyardBuildItemId = nextShipyardBuildItemId;

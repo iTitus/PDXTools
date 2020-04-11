@@ -27,11 +27,13 @@ public final class PdxLocalisationParser implements PdxConstants {
     private PdxLocalisationParser() {
     }
 
-    public static PDXLocalisation parse(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public static PDXLocalisation parse(Path installDir, int index,
+                                        StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         return parse(installDir, new FileExtensionFilter("yml"), index, progressMessageUpdater);
     }
 
-    public static PDXLocalisation parse(Path installDir, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public static PDXLocalisation parse(Path installDir, IPathFilter filter, int index,
+                                        StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         Path[] validFiles;
         try (Stream<Path> stream = Files.walk(installDir)) {
             validFiles = stream
@@ -52,7 +54,8 @@ public final class PdxLocalisationParser implements PdxConstants {
                         .filter(Files::isRegularFile)
                         .map(p -> {
                             if (progressMessageUpdater != null) {
-                                progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading Localisation File " + installDir.relativize(p));
+                                progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(),
+                                        fileCount, "Loading Localisation File " + installDir.relativize(p));
                             }
                             return parseInternal(installDir, p);
                         })
@@ -60,7 +63,8 @@ public final class PdxLocalisationParser implements PdxConstants {
                                 Maps.mutable::<String, MutableMap<String, String>>of,
                                 (mutableMap, map) -> map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap)),
                                 (mutableMap, map) -> {
-                                    map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap));
+                                    map.forEachKeyValue((lang, langMap) -> mutableMap.computeIfAbsent(lang,
+                                            k -> Maps.mutable.empty()).putAll(langMap));
                                     return mutableMap;
                                 },
                                 mutableMap -> {
@@ -75,7 +79,8 @@ public final class PdxLocalisationParser implements PdxConstants {
         return localisation;
     }
 
-    private static MutableMap<String, MutableMap<String, String>> parseInternal(Path installDir, Path localisationFile) {
+    private static MutableMap<String, MutableMap<String, String>> parseInternal(Path installDir,
+                                                                                Path localisationFile) {
         if (localisationFile != null) {
             MutableBoolean first = new MutableBoolean(true);
             MutableString language = new MutableString();

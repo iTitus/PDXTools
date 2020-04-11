@@ -29,11 +29,14 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     /*public static <S extends IPdxScript, T> Function<S, T> nullOr(Function<S, T> fct) {
-        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.apply(s) : null;
+        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct
+        .apply(s) : null;
     }
 
-    public static <S extends IPdxScript, T> org.eclipse.collections.api.block.function.Function<S, T> nullOr(org.eclipse.collections.api.block.function.Function<S, T> fct) {
-        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct.valueOf(s) : null;
+    public static <S extends IPdxScript, T> org.eclipse.collections.api.block.function.Function<S, T> nullOr(org
+    .eclipse.collections.api.block.function.Function<S, T> fct) {
+        return s -> s != null && (!(s instanceof PdxScriptValue) || ((PdxScriptValue) s).getValue() != null) ? fct
+        .valueOf(s) : null;
     }
 
     public static <S extends IPdxScript, T> Function<S, T> objectOrNull(Function<S, T> fct) {
@@ -337,10 +340,10 @@ public final class PdxScriptObject implements IPdxScript {
                     throw new RuntimeException("expected value, but got " + oldV);
                 }
                 Object v = ((PdxScriptValue) oldV).getValue();
-                if (!(v instanceof Double)) {
+                if (!(v instanceof Number)) {
                     throw new RuntimeException("expected double in value, but got " + v);
                 }
-                map.put(k, (double) v);
+                map.put(k, ((Number) v).doubleValue());
                 usageStatistic.use(oldK, DOUBLE, oldV);
             }
         });
@@ -366,7 +369,8 @@ public final class PdxScriptObject implements IPdxScript {
         return map.toImmutable();
     }
 
-    public <K, V> ImmutableMultimap<K, V> getAsMultimap(Function<String, K> keyFct, org.eclipse.collections.api.block.function.Function<IPdxScript, V> valueFct) {
+    public <K, V> ImmutableMultimap<K, V> getAsMultimap(Function<String, K> keyFct,
+                                                        org.eclipse.collections.api.block.function.Function<IPdxScript, V> valueFct) {
         MutableMultimap<K, V> map = Multimaps.mutable.list.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
             K k = keyFct.apply(oldK);
@@ -376,7 +380,8 @@ public final class PdxScriptObject implements IPdxScript {
                     map.putAll(k, l.getAsList(valueFct));
                     usageStatistic.use(oldK, l.getMode() == PdxScriptList.Mode.IMPLICIT ? IMPLICIT_LIST : LIST, oldV);
                 } else {
-                    map.putAll(k, PdxScriptList.builder().add(oldV).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS).getAsList(valueFct));
+                    map.putAll(k, PdxScriptList.builder().add(oldV).buildRaw(PdxScriptList.Mode.IMPLICIT,
+                            PdxRelation.EQUALS).getAsList(valueFct));
                     usageStatistic.use(oldK, IMPLICIT_LIST, oldV);
                 }
             }
@@ -412,7 +417,6 @@ public final class PdxScriptObject implements IPdxScript {
         StringBuilder b = new StringBuilder();
 
         IPdxScript.listObjectOpen(indent, root, key, b, relation, map.isEmpty());
-
 
         // TODO: Print alphabetically sorted by k
         map.forEachKeyValue((k, v) -> {
@@ -456,7 +460,8 @@ public final class PdxScriptObject implements IPdxScript {
 
         static {
             Map<PdxRelation, PdxScriptObject> map = new EnumMap<>(PdxRelation.class);
-            Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation, Maps.immutable.empty())));
+            Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation,
+            Maps.immutable.empty())));
             EMPTY_CACHE = Maps.immutable.withAll(map);
         }*/
 

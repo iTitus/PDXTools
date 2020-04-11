@@ -27,7 +27,8 @@ public class BuildItem {
         // TODO: district
     }
 
-    public BuildItem(int shipDesign, int pop, int speciesIndex, String type, String army, String starbaseBuilding, String starbaseLevel, String starbaseModule, ImmutableIntList ships) {
+    public BuildItem(int shipDesign, int pop, int speciesIndex, String type, String army, String starbaseBuilding,
+                     String starbaseLevel, String starbaseModule, ImmutableIntList ships) {
         this.shipDesign = shipDesign;
         this.pop = pop;
         this.speciesIndex = speciesIndex;
@@ -89,6 +90,7 @@ public class BuildItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(shipDesign, pop, speciesIndex, type, army, starbaseBuilding, starbaseLevel, starbaseModule, ships);
+        return Objects.hash(shipDesign, pop, speciesIndex, type, army, starbaseBuilding, starbaseLevel,
+                starbaseModule, ships);
     }
 }

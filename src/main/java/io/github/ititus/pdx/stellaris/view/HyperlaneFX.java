@@ -19,7 +19,8 @@ public class HyperlaneFX extends Group {
         this.galaxyView = galaxyView;
         this.hyperlane = hyperlane;
 
-        ImmutableIntObjectMap<GalacticObject> galacticObjects = galaxyView.getSave().getGameState().getGalacticObjects().getGalacticObjects();
+        ImmutableIntObjectMap<GalacticObject> galacticObjects =
+                galaxyView.getSave().getGameState().getGalacticObjects().getGalacticObjects();
         GalacticObject fromGO = galacticObjects.get(hyperlane.getFrom());
         GalacticObject toGO = galacticObjects.get(hyperlane.getTo());
 

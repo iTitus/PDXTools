@@ -28,7 +28,8 @@ public class Scope {
         this.variables = o1 != null ? o1.getAs(Variables::new) : null;
     }
 
-    public Scope(int id, String type, ImmutableIntList random, ImmutableList<SavedEventTarget> savedEventTarget, Scope root, Scope from, Scope prev, Variables variables) {
+    public Scope(int id, String type, ImmutableIntList random, ImmutableList<SavedEventTarget> savedEventTarget,
+                 Scope root, Scope from, Scope prev, Variables variables) {
         this.id = id;
         this.type = type;
         this.random = random;

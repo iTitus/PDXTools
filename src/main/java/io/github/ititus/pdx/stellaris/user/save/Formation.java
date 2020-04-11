@@ -10,7 +10,8 @@ import java.util.Objects;
 
 public class Formation {
 
-    private static final Deduplicator<Formation> DEDUPLICATOR = new Deduplicator<>(f -> f.getShips().isEmpty() && f.getParents().isEmpty());
+    private static final Deduplicator<Formation> DEDUPLICATOR =
+            new Deduplicator<>(f -> f.getShips().isEmpty() && f.getParents().isEmpty());
 
     private final int root;
     private final ImmutableIntList ships, parents;
@@ -58,7 +59,8 @@ public class Formation {
             return false;
         }
         Formation formation = (Formation) o;
-        return root == formation.root && Objects.equals(ships, formation.ships) && Objects.equals(parents, formation.parents);
+        return root == formation.root && Objects.equals(ships, formation.ships) && Objects.equals(parents,
+                formation.parents);
     }
 
     @Override

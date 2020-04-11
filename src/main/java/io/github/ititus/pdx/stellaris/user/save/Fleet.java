@@ -73,7 +73,13 @@ public class Fleet {
         this.hitPoints = o.getDouble("hit_points");
     }
 
-    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, int aggroRangeMeasureFrom, int fleetTemplate, int owner, int previousOwner, int orderId, double aggroRange, double hitPoints, String name, String groundSupportStance, String fleetStance, String miaType, LocalDate returnDate, ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat, FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders, Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission, FleetSettings settings) {
+    public Fleet(boolean actionInitialized, boolean civilian, boolean station, boolean mia, int aggroRangeMeasureFrom
+            , int fleetTemplate, int owner, int previousOwner, int orderId, double aggroRange, double hitPoints,
+                 String name, String groundSupportStance, String fleetStance, String miaType, LocalDate returnDate,
+                 ImmutableIntList ships, ImmutableIntList incomingMerges, FleetActions actions, FleetCombat combat,
+                 FleetAutoMovement autoMovement, FleetStats fleetStats, FleetOrders currentOrder, FleetOrders orders,
+                 Coordinate miaFrom, Flags flags, FleetMovementManager movementManager, FleetMission mission,
+                 FleetSettings settings) {
         this.actionInitialized = actionInitialized;
         this.civilian = civilian;
         this.station = station;

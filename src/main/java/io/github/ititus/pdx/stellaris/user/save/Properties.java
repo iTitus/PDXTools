@@ -18,7 +18,8 @@ public class Properties {
         this.entityFaceObject = o.getObject("entity_face_object").getAs(Property::new);
     }
 
-    public Properties(double scale, ImmutableDoubleList offset, Coordinate coordinate, Property attach, Property entityFaceObject) {
+    public Properties(double scale, ImmutableDoubleList offset, Coordinate coordinate, Property attach,
+                      Property entityFaceObject) {
         this.scale = scale;
         this.offset = offset;
         this.coordinate = coordinate;

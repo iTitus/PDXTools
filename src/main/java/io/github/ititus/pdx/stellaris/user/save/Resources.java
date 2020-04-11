@@ -8,7 +8,9 @@ public class Resources {
 
     private static final Deduplicator<Resources> DEDUPLICATOR = new Deduplicator<>();
 
-    private final double energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
+    private final double energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence,
+            unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar
+            , terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian;
 
     private Resources(PdxScriptObject o) {
         this.energy = o.getDouble("energy");
@@ -37,7 +39,11 @@ public class Resources {
         this.betharian = o.getDouble("sr_betharian");
     }
 
-    private Resources(double energy, double minerals, double food, double physicsResearch, double societyResearch, double engineeringResearch, double influence, double unity, double aldar, double darkMatter, double engos, double garanthium, double livingMetal, double lythuric, double orillium, double pitharan, double satramene, double teldar, double terraformGases, double terraformLiquids, double yurantic, double zro, double alienPets, double betharian) {
+    private Resources(double energy, double minerals, double food, double physicsResearch, double societyResearch,
+                      double engineeringResearch, double influence, double unity, double aldar, double darkMatter,
+                      double engos, double garanthium, double livingMetal, double lythuric, double orillium,
+                      double pitharan, double satramene, double teldar, double terraformGases,
+                      double terraformLiquids, double yurantic, double zro, double alienPets, double betharian) {
         this.energy = energy;
         this.minerals = minerals;
         this.food = food;
@@ -68,8 +74,16 @@ public class Resources {
         return DEDUPLICATOR.deduplicate(new Resources(o));
     }
 
-    public static Resources of(double energy, double minerals, double food, double physicsResearch, double societyResearch, double engineeringResearch, double influence, double unity, double aldar, double darkMatter, double engos, double garanthium, double livingMetal, double lythuric, double orillium, double pitharan, double satramene, double teldar, double terraformGases, double terraformLiquids, double yurantic, double zro, double alienPets, double betharian) {
-        return DEDUPLICATOR.deduplicate(new Resources(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian));
+    public static Resources of(double energy, double minerals, double food, double physicsResearch,
+                               double societyResearch, double engineeringResearch, double influence, double unity,
+                               double aldar, double darkMatter, double engos, double garanthium, double livingMetal,
+                               double lythuric, double orillium, double pitharan, double satramene, double teldar,
+                               double terraformGases, double terraformLiquids, double yurantic, double zro,
+                               double alienPets, double betharian) {
+        return DEDUPLICATOR.deduplicate(new Resources(energy, minerals, food, physicsResearch, societyResearch,
+                engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric,
+                orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets,
+                betharian));
     }
 
     public double getEnergy() {
@@ -205,6 +219,8 @@ public class Resources {
 
     @Override
     public int hashCode() {
-        return Util.hash(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence, unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene, teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian);
+        return Util.hash(energy, minerals, food, physicsResearch, societyResearch, engineeringResearch, influence,
+                unity, aldar, darkMatter, engos, garanthium, livingMetal, lythuric, orillium, pitharan, satramene,
+                teldar, terraformGases, terraformLiquids, yurantic, zro, alienPets, betharian);
     }
 }

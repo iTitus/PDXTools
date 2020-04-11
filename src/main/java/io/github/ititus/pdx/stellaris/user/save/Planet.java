@@ -33,7 +33,8 @@ public class Planet {
     );
 
     private final boolean customName, planetClassChanged, isMoon, hasRing, explicitEntity, surveyed, preventAnomaly;
-    private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, shipClassOrbitalStation, entity, surveyedBy, nextBuildItemId;
+    private final int planetSize, owner, originalOwner, controller, moonOf, builtArmies, shipClassOrbitalStation,
+            entity, surveyedBy, nextBuildItemId;
     private final double orbit, bombardmentDamage;
     private final String name, planetClass, anomaly, entityName;
     private final LocalDate lastBombardment, colonizeDate, killPop;
@@ -94,10 +95,19 @@ public class Planet {
         this.surveyed = o.getBoolean("surveyed");
         this.preventAnomaly = o.getBoolean("prevent_anomaly");
         this.nextBuildItemId = o.getInt("next_build_item_id");
-        // TODO: deposits, growth, growth_species, job_priority, stability, migration, crime, amenities, amenities_usage, free_amenities, free_housing
+        // TODO: deposits, growth, growth_species, job_priority, stability, migration, crime, amenities,
+        //  amenities_usage, free_amenities, free_housing
     }
 
-    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing, boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner, int originalOwner, int controller, int moonOf, int builtArmies, int shipClassOrbitalStation, int entity, int surveyedBy, int nextBuildItemId, double orbit, double bombardmentDamage, String name, String planetClass, String anomaly, String entityName, LocalDate lastBombardment, LocalDate colonizeDate, LocalDate killPop, ImmutableIntList moons, ImmutableIntList pops, ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers, ImmutableList<BuildQueueItem> buildQueue, ImmutableList<TimedModifier> timedModifiers, Coordinate coordinate, Flags flags, Variables variables) {
+    public Planet(boolean customName, boolean planetClassChanged, boolean isMoon, boolean hasRing,
+                  boolean explicitEntity, boolean surveyed, boolean preventAnomaly, int planetSize, int owner,
+                  int originalOwner, int controller, int moonOf, int builtArmies, int shipClassOrbitalStation,
+                  int entity, int surveyedBy, int nextBuildItemId, double orbit, double bombardmentDamage,
+                  String name, String planetClass, String anomaly, String entityName, LocalDate lastBombardment,
+                  LocalDate colonizeDate, LocalDate killPop, ImmutableIntList moons, ImmutableIntList pops,
+                  ImmutableIntList orbitals, ImmutableIntList armies, ImmutableList<String> planetModifiers,
+                  ImmutableList<BuildQueueItem> buildQueue, ImmutableList<TimedModifier> timedModifiers,
+                  Coordinate coordinate, Flags flags, Variables variables) {
         this.customName = customName;
         this.planetClassChanged = planetClassChanged;
         this.isMoon = isMoon;

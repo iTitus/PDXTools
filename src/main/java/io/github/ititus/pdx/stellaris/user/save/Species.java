@@ -34,7 +34,9 @@ public class Species {
         this.flags = o1 != null ? o1.getAs(Flags::of) : null;
     }
 
-    public Species(boolean sapient, int base, int homePlanet, int uplifter, String nameList, String name, String plural, String adjective, String speciesBio, String speciesClass, String portrait, String nameData, Traits traits, Flags flags) {
+    public Species(boolean sapient, int base, int homePlanet, int uplifter, String nameList, String name,
+                   String plural, String adjective, String speciesBio, String speciesClass, String portrait,
+                   String nameData, Traits traits, Flags flags) {
         this.sapient = sapient;
         this.base = base;
         this.homePlanet = homePlanet;

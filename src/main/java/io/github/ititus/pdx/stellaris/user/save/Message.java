@@ -43,7 +43,10 @@ public class Message {
         this.messageType = o.getString("message_type");
     }
 
-    public Message(boolean gameText, int receiver, int notification, String type, String localization, String technology, String messageType, LocalDate end, LocalDate date, ImmutableList<VariablePair> variables, Coordinate coordinate, DiplomaticResponse diplomaticAction3rdParty, DiplomaticResponse diplomaticResponse) {
+    public Message(boolean gameText, int receiver, int notification, String type, String localization,
+                   String technology, String messageType, LocalDate end, LocalDate date,
+                   ImmutableList<VariablePair> variables, Coordinate coordinate,
+                   DiplomaticResponse diplomaticAction3rdParty, DiplomaticResponse diplomaticResponse) {
         this.gameText = gameText;
         this.receiver = receiver;
         this.notification = notification;

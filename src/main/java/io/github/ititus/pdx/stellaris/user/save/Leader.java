@@ -58,7 +58,11 @@ public class Leader {
         this.roles = o.getObject("roles").getAs(LeaderRoles::new);
     }
 
-    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction, double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass, String agenda, LocalDate start, LocalDate end, LocalDate dateAdded, LocalDate date, LeaderName name, Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, Type mandate, LeaderDesign design, LeaderRoles roles) {
+    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction,
+                  double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass,
+                  String agenda, LocalDate start, LocalDate end, LocalDate dateAdded, LocalDate date, LeaderName name
+            , Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, Type mandate,
+                  LeaderDesign design, LeaderRoles roles) {
         this.speciesIndex = speciesIndex;
         this.country = country;
         this.creator = creator;

@@ -26,7 +26,8 @@ public class FleetTemplate {
         this.fleetSize = o.getDouble("fleet_size");
     }
 
-    public FleetTemplate(int fleet, int queued, int count, double fleetSize, ImmutableList<FleetTemplateDesign> fleetTemplateDesigns, HomeBase homeBase) {
+    public FleetTemplate(int fleet, int queued, int count, double fleetSize,
+                         ImmutableList<FleetTemplateDesign> fleetTemplateDesigns, HomeBase homeBase) {
         this.fleet = fleet;
         this.queued = queued;
         this.count = count;

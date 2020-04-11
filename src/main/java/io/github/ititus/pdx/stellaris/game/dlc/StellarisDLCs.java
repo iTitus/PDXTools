@@ -18,7 +18,8 @@ public class StellarisDLCs {
     private final Path installDir, dlcDir;
     private final ImmutableMap<String, StellarisDLC> dlcs;
 
-    public StellarisDLCs(Path installDir, Path dlcDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisDLCs(Path installDir, Path dlcDir, int index,
+                         StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir) || dlcDir == null || !Files.isDirectory(dlcDir)) {
             throw new IllegalArgumentException();
         }
@@ -40,7 +41,8 @@ public class StellarisDLCs {
         MutableInt progress = new MutableInt();
 
         Arrays.stream(paths).forEach(p -> {
-            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), dirCount, "Loading DLC " + p.getFileName());
+            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), dirCount, "Loading " +
+                    "DLC " + p.getFileName());
             map.put(p.getFileName().toString(), new StellarisDLC(installDir, p));
         });
         progressMessageUpdater.updateProgressMessage(index, false, dirCount, dirCount, "Done");

@@ -30,7 +30,8 @@ public class HostileIntel {
         this.size = l != null ? l.getAsStringList() : Lists.immutable.empty();
     }
 
-    public HostileIntel(boolean hasBoss, int owner, double militaryPower, String name, ImmutableList<String> size, Coordinate coordinate) {
+    public HostileIntel(boolean hasBoss, int owner, double militaryPower, String name, ImmutableList<String> size,
+                        Coordinate coordinate) {
         this.hasBoss = hasBoss;
         this.owner = owner;
         this.militaryPower = militaryPower;

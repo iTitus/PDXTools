@@ -23,7 +23,8 @@ public class FleetCombatEnemyLeader {
         this.traits = o.getImplicitList("trait").getAsStringList();
     }
 
-    public FleetCombatEnemyLeader(int skill, int skillCap, double experience, String name, String leaderClass, ImmutableList<String> traits, LeaderDesign design) {
+    public FleetCombatEnemyLeader(int skill, int skillCap, double experience, String name, String leaderClass,
+                                  ImmutableList<String> traits, LeaderDesign design) {
         this.skill = skill;
         this.skillCap = skillCap;
         this.experience = experience;

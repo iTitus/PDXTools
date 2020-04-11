@@ -8,14 +8,14 @@ import org.eclipse.collections.impl.factory.primitive.IntLists;
 
 import java.time.LocalDate;
 
-public class Alliance {
+public class Federation {
 
     private final int leader;
     private final String name;
     private final LocalDate startDate;
     private final ImmutableIntList members, associates, shipDesigns;
 
-    public Alliance(IPdxScript s) {
+    public Federation(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
             throw new IllegalArgumentException(String.valueOf(s));
         }
@@ -30,7 +30,8 @@ public class Alliance {
         this.leader = o.getInt("leader");
     }
 
-    public Alliance(int leader, String name, LocalDate startDate, ImmutableIntList members, ImmutableIntList associates, ImmutableIntList shipDesigns) {
+    public Federation(int leader, String name, LocalDate startDate, ImmutableIntList members,
+                      ImmutableIntList associates, ImmutableIntList shipDesigns) {
         this.leader = leader;
         this.name = name;
         this.startDate = startDate;

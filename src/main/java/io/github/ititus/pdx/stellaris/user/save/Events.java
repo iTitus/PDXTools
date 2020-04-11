@@ -25,7 +25,8 @@ public class Events {
         this.anomalies = l != null ? l.getAsIntList() : IntLists.immutable.empty();
     }
 
-    public Events(int nextSpecialProjectId, ImmutableIntList anomalies, ImmutableList<PoI> pois, ImmutableList<SpecialProject> specialProjects, ImmutableList<EventChain> eventChains) {
+    public Events(int nextSpecialProjectId, ImmutableIntList anomalies, ImmutableList<PoI> pois,
+                  ImmutableList<SpecialProject> specialProjects, ImmutableList<EventChain> eventChains) {
         this.nextSpecialProjectId = nextSpecialProjectId;
         this.anomalies = anomalies;
         this.pois = pois;

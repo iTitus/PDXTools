@@ -42,8 +42,10 @@ public class PdxUsageStatistic implements PdxConstants {
                 .sorted(
                         Comparator.comparingInt((Map.Entry<String, PdxUsage> e) -> e.getValue().getExpectedTypes().size())
                                 .thenComparing((Map.Entry<String, PdxUsage> e) -> e.getValue().getExpectedTypes().toString())
-                                // .thenComparingInt((Map.Entry<String, PdxUsage> e) -> e.getValue().getActualTypes().size())
-                                // .thenComparing((Map.Entry<String, PdxUsage> e) -> e.getValue().getActualTypes().toString())
+                                // .thenComparingInt((Map.Entry<String, PdxUsage> e) -> e.getValue().getActualTypes()
+                                // .size())
+                                // .thenComparing((Map.Entry<String, PdxUsage> e) -> e.getValue().getActualTypes()
+                                // .toString())
                                 .thenComparing(Map.Entry::getKey)
                 )
                 .map(p -> p.getKey() + " = " + p.getValue())

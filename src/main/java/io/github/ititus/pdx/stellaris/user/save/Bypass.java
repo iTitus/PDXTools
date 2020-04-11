@@ -26,7 +26,8 @@ public class Bypass {
         this.owner = o.getObject("owner").getAs(Property::new);
     }
 
-    public Bypass(boolean active, int linkedTo, String type, ImmutableIntList connections, ImmutableIntList activeConnections, Property owner) {
+    public Bypass(boolean active, int linkedTo, String type, ImmutableIntList connections,
+                  ImmutableIntList activeConnections, Property owner) {
         this.active = active;
         this.linkedTo = linkedTo;
         this.type = type;

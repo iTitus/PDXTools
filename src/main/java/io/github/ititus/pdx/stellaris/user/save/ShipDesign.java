@@ -27,7 +27,9 @@ public class ShipDesign {
         this.allowBuildableTrigger = o.getString("allow_buildable_trigger");
     }
 
-    public ShipDesign(boolean allianceShipDesign, boolean autoGenDesign, boolean isSpecialBuildable, String name, String shipSize, String allowBuildableTrigger, ImmutableList<String> requiredComponents, ImmutableList<ShipDesignSection> sections) {
+    public ShipDesign(boolean allianceShipDesign, boolean autoGenDesign, boolean isSpecialBuildable, String name,
+                      String shipSize, String allowBuildableTrigger, ImmutableList<String> requiredComponents,
+                      ImmutableList<ShipDesignSection> sections) {
         this.allianceShipDesign = allianceShipDesign;
         this.autoGenDesign = autoGenDesign;
         this.isSpecialBuildable = isSpecialBuildable;

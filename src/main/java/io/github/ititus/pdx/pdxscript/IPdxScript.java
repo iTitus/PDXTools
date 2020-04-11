@@ -4,7 +4,8 @@ import io.github.ititus.pdx.util.Util;
 
 public interface IPdxScript extends PdxConstants {
 
-    static void listObjectOpen(int indent, boolean root, String key, StringBuilder b, PdxRelation relation, boolean empty) {
+    static void listObjectOpen(int indent, boolean root, String key, StringBuilder b, PdxRelation relation,
+                               boolean empty) {
         if (!root) {
             b.append(Util.indent(indent));
             if (key != null) {

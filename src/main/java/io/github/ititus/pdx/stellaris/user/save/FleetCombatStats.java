@@ -12,7 +12,8 @@ import java.util.Objects;
 
 public class FleetCombatStats {
 
-    private static final Deduplicator<FleetCombatStats> DEDUPLICATOR = new Deduplicator<>(s -> s.getEnemy().isEmpty() && s.getDamageIncoming().isEmpty() && s.getDamageOutgoing().isEmpty() && s.getHitRatioIncoming().isEmpty() && s.getHitRatioOutgoing().isEmpty());
+    private static final Deduplicator<FleetCombatStats> DEDUPLICATOR =
+            new Deduplicator<>(s -> s.getEnemy().isEmpty() && s.getDamageIncoming().isEmpty() && s.getDamageOutgoing().isEmpty() && s.getHitRatioIncoming().isEmpty() && s.getHitRatioOutgoing().isEmpty());
 
     private final ImmutableList<FleetCombatEnemy> enemy;
     private final ImmutableList<FleetCombatDamage> damageIncoming, damageOutgoing;
@@ -41,7 +42,10 @@ public class FleetCombatStats {
         this.hitRatioOutgoing = l != null ? l.getAsList(FleetCombatHitRatio::new) : Lists.immutable.empty();
     }
 
-    private FleetCombatStats(ImmutableList<FleetCombatEnemy> enemy, ImmutableList<FleetCombatDamage> damageIncoming, ImmutableList<FleetCombatDamage> damageOutgoing, ImmutableList<FleetCombatHitRatio> hitRatioIncoming, ImmutableList<FleetCombatHitRatio> hitRatioOutgoing) {
+    private FleetCombatStats(ImmutableList<FleetCombatEnemy> enemy, ImmutableList<FleetCombatDamage> damageIncoming,
+                             ImmutableList<FleetCombatDamage> damageOutgoing,
+                             ImmutableList<FleetCombatHitRatio> hitRatioIncoming,
+                             ImmutableList<FleetCombatHitRatio> hitRatioOutgoing) {
         this.enemy = enemy;
         this.damageIncoming = damageIncoming;
         this.damageOutgoing = damageOutgoing;
@@ -53,8 +57,13 @@ public class FleetCombatStats {
         return DEDUPLICATOR.deduplicate(new FleetCombatStats(o));
     }
 
-    public static FleetCombatStats of(ImmutableList<FleetCombatEnemy> enemy, ImmutableList<FleetCombatDamage> damageIncoming, ImmutableList<FleetCombatDamage> damageOutgoing, ImmutableList<FleetCombatHitRatio> hitRatioIncoming, ImmutableList<FleetCombatHitRatio> hitRatioOutgoing) {
-        return DEDUPLICATOR.deduplicate(new FleetCombatStats(enemy, damageIncoming, damageOutgoing, hitRatioIncoming, hitRatioOutgoing));
+    public static FleetCombatStats of(ImmutableList<FleetCombatEnemy> enemy,
+                                      ImmutableList<FleetCombatDamage> damageIncoming,
+                                      ImmutableList<FleetCombatDamage> damageOutgoing,
+                                      ImmutableList<FleetCombatHitRatio> hitRatioIncoming,
+                                      ImmutableList<FleetCombatHitRatio> hitRatioOutgoing) {
+        return DEDUPLICATOR.deduplicate(new FleetCombatStats(enemy, damageIncoming, damageOutgoing, hitRatioIncoming,
+                hitRatioOutgoing));
     }
 
     public ImmutableList<FleetCombatEnemy> getEnemy() {

@@ -26,7 +26,8 @@ public class MegaStructure {
         this.bypass = o.getInt("bypass", -1);
     }
 
-    public MegaStructure(int owner, int planet, int bypass, String type, String graphicalCulture, Coordinate coordinate, Flags flags) {
+    public MegaStructure(int owner, int planet, int bypass, String type, String graphicalCulture,
+                         Coordinate coordinate, Flags flags) {
         this.owner = owner;
         this.planet = planet;
         this.bypass = bypass;

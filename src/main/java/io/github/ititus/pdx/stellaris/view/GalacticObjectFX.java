@@ -4,7 +4,6 @@ import io.github.ititus.pdx.stellaris.user.save.Bypass;
 import io.github.ititus.pdx.stellaris.user.save.GalacticObject;
 import io.github.ititus.pdx.stellaris.user.save.MegaStructure;
 import io.github.ititus.pdx.stellaris.user.save.NaturalWormhole;
-import io.github.ititus.pdx.util.collection.CollectionUtil;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.Tooltip;
@@ -32,7 +31,8 @@ public class GalacticObjectFX extends Group {
         this.systemPair = systemPair;
 
         this.systemSphere = new Sphere(2);
-        this.systemSphere.getTransforms().add(new Translate(systemPair.getTwo().getCoordinate().getX(), systemPair.getTwo().getCoordinate().getY(), 0));
+        this.systemSphere.getTransforms().add(new Translate(systemPair.getTwo().getCoordinate().getX(),
+                systemPair.getTwo().getCoordinate().getY(), 0));
         this.systemSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             galaxyView.onClickInGalaxyView(systemPair);
             event.consume();
@@ -42,13 +42,16 @@ public class GalacticObjectFX extends Group {
 
         this.hyperlaneGroup = new Group();
 
-        ImmutableIntObjectMap<NaturalWormhole> wormholes = galaxyView.getSave().getGameState().getNaturalWormholes().getNaturalWormholes();
+        ImmutableIntObjectMap<NaturalWormhole> wormholes =
+                galaxyView.getSave().getGameState().getNaturalWormholes().getNaturalWormholes();
         ImmutableIntObjectMap<Bypass> bypasses = galaxyView.getSave().getGameState().getBypasses().getBypasses();
-        ImmutableIntObjectMap<MegaStructure> megaStructures = galaxyView.getSave().getGameState().getMegaStructures().getMegaStructures();
+        ImmutableIntObjectMap<MegaStructure> megaStructures =
+                galaxyView.getSave().getGameState().getMegaStructures().getMegaStructures();
 
         ImmutableList<VisualHyperlane> visualHyperlanes = Stream.concat(
                 systemPair.getTwo().getHyperlanes().stream()
-                        .map(hyperlane -> new VisualHyperlane(systemPair.getOne(), hyperlane.getTo(), hyperlane.isBridge() ? VisualHyperlane.Type.BRIDGE : VisualHyperlane.Type.NORMAL)),
+                        .map(hyperlane -> new VisualHyperlane(systemPair.getOne(), hyperlane.getTo(),
+                                hyperlane.isBridge() ? VisualHyperlane.Type.BRIDGE : VisualHyperlane.Type.NORMAL)),
                 systemPair.getTwo().getBypasses().primitiveStream()
                         .mapToObj(bypasses::get)
                         .flatMap(b -> b.getConnections().primitiveStream().mapToObj(id -> PrimitiveTuples.pair(b, id)))
@@ -72,7 +75,9 @@ public class GalacticObjectFX extends Group {
                                         .getCoordinate()
                                         .getOrigin();
                             }
-                            return new VisualHyperlane(systemPair.getOne(), targetSystemId, bypassFrom.isActive() && targetBypass.isActive() ? VisualHyperlane.Type.BYPASS_ACTIVE : VisualHyperlane.Type.BYPASS_INACTIVE);
+                            return new VisualHyperlane(systemPair.getOne(), targetSystemId,
+                                    bypassFrom.isActive() && targetBypass.isActive() ?
+                                            VisualHyperlane.Type.BYPASS_ACTIVE : VisualHyperlane.Type.BYPASS_INACTIVE);
                         })
         ).collect(Collectors2.toImmutableList());
 

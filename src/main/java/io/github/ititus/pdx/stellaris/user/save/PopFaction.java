@@ -29,7 +29,8 @@ public class PopFaction {
         this.members = o.getList("members").getAsIntList();
     }
 
-    public PopFaction(int country, int leader, double support, double factionApproval, String type, String name, ImmutableIntList members, ImmutableList<Parameter> parameters) {
+    public PopFaction(int country, int leader, double support, double factionApproval, String type, String name,
+                      ImmutableIntList members, ImmutableList<Parameter> parameters) {
         this.country = country;
         this.leader = leader;
         this.support = support;

@@ -27,7 +27,8 @@ public class ShipSection {
         this.strikeCrafts = o.getImplicitList("strike_craft").getAsList(ShipStrikeCraft::new);
     }
 
-    private ShipSection(String design, String slot, ImmutableList<ShipWeapon> weapons, ImmutableList<ShipStrikeCraft> strikeCrafts) {
+    private ShipSection(String design, String slot, ImmutableList<ShipWeapon> weapons,
+                        ImmutableList<ShipStrikeCraft> strikeCrafts) {
         this.design = design;
         this.slot = slot;
         this.weapons = weapons;
@@ -38,7 +39,8 @@ public class ShipSection {
         return DEDUPLICATOR.deduplicate(new ShipSection(s));
     }
 
-    public static ShipSection of(String design, String slot, ImmutableList<ShipWeapon> weapons, ImmutableList<ShipStrikeCraft> strikeCrafts) {
+    public static ShipSection of(String design, String slot, ImmutableList<ShipWeapon> weapons,
+                                 ImmutableList<ShipStrikeCraft> strikeCrafts) {
         return DEDUPLICATOR.deduplicate(new ShipSection(design, slot, weapons, strikeCrafts));
     }
 
@@ -67,7 +69,8 @@ public class ShipSection {
             return false;
         }
         ShipSection that = (ShipSection) o;
-        return Objects.equals(design, that.design) && Objects.equals(slot, that.slot) && Objects.equals(weapons, that.weapons) && Objects.equals(strikeCrafts, that.strikeCrafts);
+        return Objects.equals(design, that.design) && Objects.equals(slot, that.slot) && Objects.equals(weapons,
+                that.weapons) && Objects.equals(strikeCrafts, that.strikeCrafts);
     }
 
     @Override

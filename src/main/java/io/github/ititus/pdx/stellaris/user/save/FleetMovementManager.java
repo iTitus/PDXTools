@@ -33,7 +33,10 @@ public class FleetMovementManager {
         this.customFormation = l != null ? l.getAsDoubleList() : DoubleLists.immutable.empty();
     }
 
-    public FleetMovementManager(int timeSinceLastPathUpdate, int ftlWindup, int ftlTotalWindup, String state, ImmutableDoubleList customFormation, FormationType formation, Coordinate coordinate, Coordinate targetCoordinate, FleetMovementTarget target, FleetMovementPath path, FleetMovementOrbit orbit, FTLJump lastFTLJump) {
+    public FleetMovementManager(int timeSinceLastPathUpdate, int ftlWindup, int ftlTotalWindup, String state,
+                                ImmutableDoubleList customFormation, FormationType formation, Coordinate coordinate,
+                                Coordinate targetCoordinate, FleetMovementTarget target, FleetMovementPath path,
+                                FleetMovementOrbit orbit, FTLJump lastFTLJump) {
         this.timeSinceLastPathUpdate = timeSinceLastPathUpdate;
         this.ftlWindup = ftlWindup;
         this.ftlTotalWindup = ftlTotalWindup;

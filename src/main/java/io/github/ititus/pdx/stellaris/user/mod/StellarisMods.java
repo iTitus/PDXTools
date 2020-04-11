@@ -23,7 +23,8 @@ public class StellarisMods {
     private final Path userDataDir, modsFolder;
     private final ImmutableMap<String, StellarisMod> mods;
 
-    public StellarisMods(Path userDataDir, Path modsFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisMods(Path userDataDir, Path modsFolder, int index,
+                         StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (userDataDir == null || !Files.isDirectory(userDataDir) || modsFolder == null || !Files.isDirectory(modsFolder)) {
             throw new IllegalArgumentException();
         }
@@ -45,7 +46,8 @@ public class StellarisMods {
         MutableInt progress = new MutableInt();
 
         Arrays.stream(paths).forEach(f -> {
-            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading Mod " + IOUtil.getNameWithoutExtension(f));
+            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading" +
+                    " Mod " + IOUtil.getNameWithoutExtension(f));
             map.put(IOUtil.getNameWithoutExtension(f), new StellarisMod(userDataDir, f));
         });
         progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");

@@ -20,8 +20,10 @@ public class CountryFX extends Group {
         this.galaxyView = galaxyView;
         this.countryPair = countryPair;
 
-        ImmutableIntObjectMap<GalacticObject> systems = galaxyView.getSave().getGameState().getGalacticObjects().getGalacticObjects();
-        ImmutableIntObjectMap<GalacticObject> countrySystems = systems.select((systemId, system) -> galaxyView.getOwnerId(systemId, system) == countryPair.getOne());
+        ImmutableIntObjectMap<GalacticObject> systems =
+                galaxyView.getSave().getGameState().getGalacticObjects().getGalacticObjects();
+        ImmutableIntObjectMap<GalacticObject> countrySystems =
+                systems.select((systemId, system) -> galaxyView.getOwnerId(systemId, system) == countryPair.getOne());
 
         // TODO: proper graphics with proper colors
         int hash = countryPair.getTwo().getFlag().hashCode();

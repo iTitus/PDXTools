@@ -49,7 +49,8 @@ public class Flag {
             return false;
         }
         Flag flag = (Flag) o;
-        return Objects.equals(colors, flag.colors) && Objects.equals(icon, flag.icon) && Objects.equals(background, flag.background);
+        return Objects.equals(colors, flag.colors) && Objects.equals(icon, flag.icon) && Objects.equals(background,
+                flag.background);
     }
 
     @Override

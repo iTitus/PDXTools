@@ -30,7 +30,8 @@ public class StellarisSaveAnalyser implements Runnable {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
     private static final Path[] TEST_FILES = { USER_HOME.resolve("Desktop/pdx/test.txt") };
-    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
+    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common",
+            "Stellaris");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
 
     private static final String SAVE_FOLDER = "nico_2.3.3";
@@ -55,8 +56,10 @@ public class StellarisSaveAnalyser implements Runnable {
         Planets planets = gameState.getPlanets();
         return CollectionUtil.stream(system.getPlanets())
                 .mapToObj(planets.getPlanets()::get)
-                // .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()::get).stream()))
-                .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet.getTiles().getTiles().values().stream())
+                // .flatMap(planet -> Stream.concat(Stream.of(planet), planet.getMoons().collect(planets.getPlanets()
+                ::get).stream()))
+                .flatMap(planet -> Planet.habitablePlanetClasses.contains(planet.getPlanetClass()) ? null : planet
+                .getTiles().getTiles().values().stream())
                 .map(Tile::getResources)
                 .filter(Objects::nonNull)
                 .collect(Collector.of(
@@ -123,21 +126,26 @@ public class StellarisSaveAnalyser implements Runnable {
 
         updateProgressMessage(0, true, 0, steps, "Running Tests");
 
-        List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(PdxScriptParser::parse).collect(Collectors.toList());
+        List<IPdxScript> testScripts =
+                Arrays.stream(TEST_FILES).map(PdxScriptParser::parse).collect(Collectors.toList());
         List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
         testOutput.forEach(System.out::println);
         updateProgressMessage(0, true, 1, steps, "Loading Game Data");
 
         game = new StellarisGame(INSTALL_DIR, 1, this::updateProgressMessage);
-        String gameLocalisationString = game != null && game.getLocalisation() != null ? game.getLocalisation().toYML() : null;
-        String gameString = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().toPdxScript() : null;
+        String gameLocalisationString = game != null && game.getLocalisation() != null ?
+                game.getLocalisation().toYML() : null;
+        String gameString = game != null && game.getRawDataLoader() != null ?
+                game.getRawDataLoader().getRawData().toPdxScript() : null;
         updateProgressMessage(0, true, 2, steps, "Loading User Data");
 
         userData = new StellarisUserData(USER_DATA_DIR, 1, this::updateProgressMessage);
-        String userDataString = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().toPdxScript() : null;
+        String userDataString = userData != null && userData.getRawDataLoader() != null ?
+                userData.getRawDataLoader().getRawData().toPdxScript() : null;
         updateProgressMessage(0, true, 3, steps, "Analysing Save Game");
 
-        stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
+        stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER,
+                SAVE_GAME) : null;
         /*if (stellarisSave != null) {
             GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
 
@@ -155,10 +163,12 @@ public class StellarisSaveAnalyser implements Runnable {
                     Tuples.pair(Resources::getPhysicsResearch, "physics"),
                     Tuples.pair(Resources::getSocietyResearch, "society"),
                     Tuples.pair(Resources::getEngineeringResearch, "engineering"),
-                    Tuples.pair(r -> combineResource(r.getPhysicsResearch(), combineResource(r.getSocietyResearch(), r.getEngineeringResearch())), "research")
+                    Tuples.pair(r -> combineResource(r.getPhysicsResearch(), combineResource(r.getSocietyResearch(),
+                    r.getEngineeringResearch())), "research")
             );
             list.forEach(p -> {
-                Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject, Resources> resourcesInSystem) -> p.getOne().apply(resourcesInSystem.getTwo()).getD1()).reversed();
+                Comparator<Pair<GalacticObject, Resources>> sorter = Comparator.comparingDouble((Pair<GalacticObject,
+                 Resources> resourcesInSystem) -> p.getOne().apply(resourcesInSystem.getTwo()).getD1()).reversed();
                 List<Pair<GalacticObject, Resources>> resourceRichSystems =
                         resourcesInSystems
                                 .stream()
@@ -166,7 +176,8 @@ public class StellarisSaveAnalyser implements Runnable {
                                 .limit(10)
                                 .collect(Collectors.toList());
 
-                resourceRichSystems.stream().map(pair -> pair.getOne().getName() + ": " + p.getOne().apply(pair.getTwo()).getD1() + " " + p.getTwo()).forEachOrdered(System.out::println);
+                resourceRichSystems.stream().map(pair -> pair.getOne().getName() + ": " + p.getOne().apply(pair
+                .getTwo()).getD1() + " " + p.getTwo()).forEachOrdered(System.out::println);
                 System.out.println("-------------------------");
             });
         }*/
@@ -182,17 +193,20 @@ public class StellarisSaveAnalyser implements Runnable {
         int gameErrorSteps = 2;
 
         updateProgressMessage(2, true, 0, gameErrorSteps, "Gathering Game Errors");
-        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
+        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ?
+                game.getRawDataLoader().getErrors() : null;
 
         updateProgressMessage(2, true, 1, gameErrorSteps, "Gathering Localisation Errors");
 
         int localisationErrorSteps = 2;
 
         updateProgressMessage(3, true, 0, localisationErrorSteps, "Gathering Missing Localisations");
-        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation =
+                game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
 
         updateProgressMessage(3, true, 1, localisationErrorSteps, "Gathering Extra Localisations");
-        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation =
+                game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
 
         updateProgressMessage(3, false, 3, localisationErrorSteps, "Done");
 
@@ -203,14 +217,16 @@ public class StellarisSaveAnalyser implements Runnable {
         int userErrorSteps = 2;
 
         updateProgressMessage(2, true, 0, userErrorSteps, "Gathering User Errors");
-        ImmutableList<Pair<String, Throwable>> userErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
+        ImmutableList<Pair<String, Throwable>> userErrors = userData != null && userData.getRawDataLoader() != null ?
+                userData.getRawDataLoader().getErrors() : null;
 
         updateProgressMessage(2, true, 1, userErrorSteps, "Gathering Save Errors");
 
         int saveErrorSteps = 2;
 
         updateProgressMessage(3, true, 0, saveErrorSteps, "Gathering Save Errors");
-        ImmutableList<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ? userData.getSaves().getErrors() : null;
+        ImmutableList<Pair<String, Throwable>> saveErrors = userData != null && userData.getSaves() != null ?
+                userData.getSaves().getErrors() : null;
 
         updateProgressMessage(3, true, 1, saveErrorSteps, "Gathering Save Parsing Errors");
         ImmutableList<String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrors() : null;

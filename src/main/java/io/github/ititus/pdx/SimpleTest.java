@@ -19,10 +19,12 @@ import java.nio.file.StandardOpenOption;
 public class SimpleTest {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
-    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/nico_2.3.3");
     private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
-    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
+    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common",
+            "Stellaris");
+
+    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/2.6.3");
 
     private static StellarisGame getStellarisGame() {
         StopWatch s = StopWatch.createRunning();
@@ -53,7 +55,8 @@ public class SimpleTest {
         MutableString lastMessage = new MutableString();
         StopWatch stepWatch = StopWatch.create();
 
-        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
+        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork,
+                                                                              msg) -> {
             if (index == 0) {
                 if (stepWatch.isRunning()) {
                     System.out.println(lastMessage.get() + ": " + DurationFormatter.formatSeconds(stepWatch.stop()));
@@ -82,15 +85,20 @@ public class SimpleTest {
     public static void main(String[] args) {
         StopWatch s = StopWatch.createRunning();
 
-        StellarisGame game = getStellarisGame();
-        StellarisUserData userData = getStellarisUserData();
+        StellarisGame game = null; // getStellarisGame();
+        StellarisUserData userData = null; // getStellarisUserData();
         StellarisSave save = getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
-        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
-        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
-        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
-        ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
+        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ?
+                game.getRawDataLoader().getErrors() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation =
+                game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation =
+                game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ImmutableList<Pair<String, Throwable>> userDataErrors =
+                userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() :
+                        null;
         ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
 
         try {

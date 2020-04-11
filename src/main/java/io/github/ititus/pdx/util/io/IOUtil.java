@@ -81,7 +81,8 @@ public class IOUtil {
     }
 
     public static IntStream getCharacterStream(Reader r) {
-        return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(getCharacterIterator(r), Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
+        return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(getCharacterIterator(r),
+                Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.IMMUTABLE), false);
     }
 
     public static FileSystem openZip(Path zip) throws IOException {

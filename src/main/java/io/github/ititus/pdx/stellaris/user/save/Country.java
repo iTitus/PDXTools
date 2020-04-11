@@ -13,11 +13,15 @@ import java.time.LocalDate;
 public class Country {
 
     private final boolean customName, autoShipDesigns, hasAdvisor, initialized;
-    private final int colorIndex, capital, speciesIndex, builtSpecies, nextTransportFleetNumber, ruler, alliance, associatedAlliance, startingSystem;
+    private final int colorIndex, capital, speciesIndex, builtSpecies, nextTransportFleetNumber, ruler, alliance,
+            associatedAlliance, startingSystem;
     private final double militaryPower, fleetSize;
-    private final String name, adjective, graphicalCulture, cityGraphicalCulture, room, lastAllianceName, personality, rulerTitle, nameList, shipPrefix, type, customization;
+    private final String name, adjective, graphicalCulture, cityGraphicalCulture, room, lastAllianceName, personality
+            , rulerTitle, nameList, shipPrefix, type, customization;
     private final LocalDate lastDateWasHuman, lastDateWarLost, lastDateAtWar, nextElection, governmentDate;
-    private final ImmutableIntList surveyed, visitedObjects, intelLevels, highestIntelLevels, sensorRangeFleets, ownedLeaders, ownedFleets, ownedMegastructures, ownedArmies, ownedPlanets, restrictedSystems, controlledPlanets, shipDesigns, usableBypasses, hyperlaneSystems;
+    private final ImmutableIntList surveyed, visitedObjects, intelLevels, highestIntelLevels, sensorRangeFleets,
+            ownedLeaders, ownedFleets, ownedMegastructures, ownedArmies, ownedPlanets, restrictedSystems,
+            controlledPlanets, shipDesigns, usableBypasses, hyperlaneSystems;
     private final ImmutableList<String> policyFlags, shownMessageTypes, traditions, ascensionPerks, seenBypassTypes;
     private final ImmutableList<Intel> intel;
     private final ImmutableList<TimedModifier> timedModifiers;
@@ -164,7 +168,29 @@ public class Country {
         // TODO: owned_sectors, given_value
     }
 
-    public Country(boolean customName, boolean autoShipDesigns, boolean hasAdvisor, boolean initialized, int colorIndex, int capital, int speciesIndex, int builtSpecies, int nextTransportFleetNumber, int ruler, int alliance, int associatedAlliance, int startingSystem, double militaryPower, double fleetSize, String name, String adjective, String graphicalCulture, String cityGraphicalCulture, String room, String lastAllianceName, String personality, String rulerTitle, String nameList, String shipPrefix, String type, String customization, LocalDate lastDateWasHuman, LocalDate lastDateWarLost, LocalDate lastDateAtWar, LocalDate nextElection, LocalDate governmentDate, ImmutableIntList surveyed, ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels, ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets, ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets, ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets, ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems, ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes, ImmutableList<String> traditions, ImmutableList<String> ascensionPerks, ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel, ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies, ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers, ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget, Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos, FleetTemplateManager fleetTemplateManager, Government government, Flags flags, Variables variables, Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules, RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
+    public Country(boolean customName, boolean autoShipDesigns, boolean hasAdvisor, boolean initialized,
+                   int colorIndex, int capital, int speciesIndex, int builtSpecies, int nextTransportFleetNumber,
+                   int ruler, int alliance, int associatedAlliance, int startingSystem, double militaryPower,
+                   double fleetSize, String name, String adjective, String graphicalCulture,
+                   String cityGraphicalCulture, String room, String lastAllianceName, String personality,
+                   String rulerTitle, String nameList, String shipPrefix, String type, String customization,
+                   LocalDate lastDateWasHuman, LocalDate lastDateWarLost, LocalDate lastDateAtWar,
+                   LocalDate nextElection, LocalDate governmentDate, ImmutableIntList surveyed,
+                   ImmutableIntList visitedObjects, ImmutableIntList intelLevels, ImmutableIntList highestIntelLevels
+            , ImmutableIntList sensorRangeFleets, ImmutableIntList ownedLeaders, ImmutableIntList ownedFleets,
+                   ImmutableIntList ownedMegastructures, ImmutableIntList ownedArmies, ImmutableIntList ownedPlanets,
+                   ImmutableIntList restrictedSystems, ImmutableIntList controlledPlanets,
+                   ImmutableIntList shipDesigns, ImmutableIntList usableBypasses, ImmutableIntList hyperlaneSystems,
+                   ImmutableList<String> policyFlags, ImmutableList<String> shownMessageTypes,
+                   ImmutableList<String> traditions, ImmutableList<String> ascensionPerks,
+                   ImmutableList<String> seenBypassTypes, ImmutableList<Intel> intel,
+                   ImmutableList<TimedModifier> timedModifiers, ImmutableList<ActivePolicy> activePolicies,
+                   ImmutableList<Edict> edicts, ImmutableList<RegnalNumber> regnalNumbers,
+                   ImmutableList<Species> speciesModTemplates, Flag flag, TechStatus techStatus, CountryBudget budget
+            , Events events, TerraIncognita terraIncognita, AI ai, Ethos ethos,
+                   FleetTemplateManager fleetTemplateManager, Government government, Flags flags, Variables variables
+            , Faction faction, CountingList shipNames, ControlGroups controlGroups, Modules modules,
+                   RandomNameVariables randomNameVariables, RelationsManager relationsManager, Property location) {
         this.customName = customName;
         this.autoShipDesigns = autoShipDesigns;
         this.hasAdvisor = hasAdvisor;

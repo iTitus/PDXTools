@@ -216,12 +216,14 @@ public final class PdxScriptParser implements PdxConstants {
                             tokens.next();
                             IPdxScript s = parse(tokens);
                             if (!(s instanceof PdxScriptValue)) {
-                                throw new RuntimeException("Expected PdxScriptValue but got " + (s != null ? s.getClass().getTypeName() : NULL));
+                                throw new RuntimeException("Expected PdxScriptValue but got " + (s != null ?
+                                        s.getClass().getTypeName() : NULL));
                             }
                             PdxScriptValue v = (PdxScriptValue) s;
                             Object o = v.getValue();
                             if (!(o instanceof Number)) {
-                                throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
+                                throw new RuntimeException("Can only do math with numbers but got " + (o != null ?
+                                        o.getClass().getTypeName() : NULL));
                             }
                             value = operation.apply((Number) value, (Number) o);
                             tokens.next();
@@ -257,9 +259,19 @@ public final class PdxScriptParser implements PdxConstants {
     private static Iterator<String> tokenize(PrimitiveIterator.OfInt src) {
         return new Iterator<>() {
 
-            StringBuilder b = new StringBuilder();
+            final StringBuilder b = new StringBuilder();
             Character last = null;
-            MutableBoolean first = new MutableBoolean(true), openQuotes = new MutableBoolean(false), token = new MutableBoolean(false), comment = new MutableBoolean(false), separator = new MutableBoolean(false), relation = new MutableBoolean(false), mathOperator = new MutableBoolean(false), done = new MutableBoolean(true);
+            final MutableBoolean first = new MutableBoolean(true);
+            final MutableBoolean openQuotes = new MutableBoolean(false);
+            final MutableBoolean token =
+                    new MutableBoolean(false);
+            final MutableBoolean comment = new MutableBoolean(false);
+            final MutableBoolean separator =
+                    new MutableBoolean(false);
+            final MutableBoolean relation = new MutableBoolean(false);
+            final MutableBoolean mathOperator =
+                    new MutableBoolean(false);
+            final MutableBoolean done = new MutableBoolean(true);
 
             String next = null;
             boolean hasNextCalled = false;
@@ -453,7 +465,8 @@ public final class PdxScriptParser implements PdxConstants {
             throw new IllegalArgumentException();
         }
 
-        try (Reader r = new BufferedReader(new InputStreamReader(Files.newInputStream(scriptFile), StandardCharsets.UTF_8))) {
+        try (Reader r = new BufferedReader(new InputStreamReader(Files.newInputStream(scriptFile),
+                StandardCharsets.UTF_8))) {
             return parse(IOUtil.getCharacterIterator(r));
         } catch (IOException e) {
             throw new UncheckedIOException("Error while reading file: " + scriptFile, e);
@@ -469,7 +482,8 @@ public final class PdxScriptParser implements PdxConstants {
         if (tokens.hasNext()) {
             throw new RuntimeException("Unconsumed tokens left at pos " + tokens.getPos());
         } else if ((!(s instanceof PdxScriptObject) && !(s instanceof PdxScriptList))) {
-            throw new RuntimeException("Unexpected return value from parsing: " + (s != null ? s.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + tokens.getPos());
+            throw new RuntimeException("Unexpected return value from parsing: " + (s != null ?
+                    s.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + tokens.getPos());
         }
 
         return s;

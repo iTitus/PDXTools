@@ -27,7 +27,8 @@ public class StellarisUserData {
     private final StellarisSaves saves;
     private final PdxRawDataLoader rawDataLoader;
 
-    public StellarisUserData(Path userDataDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisUserData(Path userDataDir, int index,
+                             StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (userDataDir == null || !Files.isDirectory(userDataDir)) {
             throw new IllegalArgumentException();
         }

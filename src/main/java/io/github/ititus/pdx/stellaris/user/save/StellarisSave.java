@@ -29,8 +29,8 @@ public class StellarisSave {
     private final Path save;
     private final PdxRawDataLoader saveDataLoader;
 
-    private Meta meta;
-    private GameState gameState;
+    private final Meta meta;
+    private final GameState gameState;
 
     public StellarisSave(Path saveFile) {
         if (!isValidSaveFile(saveFile)) {

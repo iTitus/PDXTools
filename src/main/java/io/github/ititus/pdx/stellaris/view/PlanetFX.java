@@ -34,7 +34,8 @@ public class PlanetFX extends Group {
         // this.color = Color.rgb((hash >>> 16) & 0xFF, (hash >>> 8) & 0xFF, hash & 0xFF);
 
         this.planetSphere = new Sphere(getPlanetVisualSize(planetPair));
-        this.planetSphere.getTransforms().add(new Translate(planetPair.getTwo().getCoordinate().getX(), planetPair.getTwo().getCoordinate().getY(), 0));
+        this.planetSphere.getTransforms().add(new Translate(planetPair.getTwo().getCoordinate().getX(),
+                planetPair.getTwo().getCoordinate().getY(), 0));
         // this.planetSphere.setMaterial(new PhongMaterial(this.color));
         this.planetSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             galaxyView.onClickInSystemView(planetPair);
@@ -58,7 +59,8 @@ public class PlanetFX extends Group {
         int centerId = planetPair.getTwo().isMoon() ? planetPair.getTwo().getMoonOf() : -1;
         Point3D center;
         if (centerId != -1) {
-            Coordinate centerC = galaxyView.getSave().getGameState().getPlanets().getPlanets().get(centerId).getCoordinate();
+            Coordinate centerC =
+                    galaxyView.getSave().getGameState().getPlanets().getPlanets().get(centerId).getCoordinate();
             center = new Point3D(centerC.getX(), centerC.getY(), 0);
         } else {
             center = Point3D.ZERO;

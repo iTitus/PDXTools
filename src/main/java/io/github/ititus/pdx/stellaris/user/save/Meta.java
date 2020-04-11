@@ -32,7 +32,8 @@ public class Meta {
         this.planets = o.getInt("meta_planets");
     }
 
-    public Meta(int versionControlRevision, int planets, double fleets, String version, String name, String playerPortrait, LocalDate date, ImmutableList<String> requiredDLCs, Flag flag) {
+    public Meta(int versionControlRevision, int planets, double fleets, String version, String name,
+                String playerPortrait, LocalDate date, ImmutableList<String> requiredDLCs, Flag flag) {
         this.versionControlRevision = versionControlRevision;
         this.planets = planets;
         this.fleets = fleets;

@@ -5,9 +5,12 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Galaxy {
 
-    private final boolean advancedStartsNearPlayer, scaling, clustered, randomEmpires, randomFallenEmpires, randomMarauderEmpires, randomAdvancedEmpires, ironman;
-    private final int numEmpires, numAdvancedEmpires, numFallenEmpires, numMarauderEmpires, midGameStart, endGameStart, victoryYear, numGuaranteedColonies;
-    private final double habitability, primitive, crises, technology, coreRadius, numGateways, numWormholePairs, numHyperlanes;
+    private final boolean advancedStartsNearPlayer, scaling, clustered, randomEmpires, randomFallenEmpires,
+            randomMarauderEmpires, randomAdvancedEmpires, ironman;
+    private final int numEmpires, numAdvancedEmpires, numFallenEmpires, numMarauderEmpires, midGameStart,
+            endGameStart, victoryYear, numGuaranteedColonies;
+    private final double habitability, primitive, crises, technology, coreRadius, numGateways, numWormholePairs,
+            numHyperlanes;
     private final String template, shape, playerLocations, difficulty, aggressiveness, name;
     private final ImmutableList<EmpireDesign> designs;
 
@@ -45,7 +48,14 @@ public class Galaxy {
         this.designs = o.getImplicitList("design").getAsList(EmpireDesign::new);
     }
 
-    public Galaxy(boolean advancedStartsNearPlayer, boolean scaling, boolean clustered, boolean randomEmpires, boolean randomFallenEmpires, boolean randomMarauderEmpires, boolean randomAdvancedEmpires, boolean ironman, int numEmpires, int numAdvancedEmpires, int numFallenEmpires, int numMarauderEmpires, int midGameStart, int endGameStart, int victoryYear, int numGuaranteedColonies, double habitability, double primitive, double crises, double technology, double coreRadius, double numGateways, double numWormholePairs, double numHyperlanes, String template, String shape, String playerLocations, String difficulty, String aggressiveness, String name, ImmutableList<EmpireDesign> designs) {
+    public Galaxy(boolean advancedStartsNearPlayer, boolean scaling, boolean clustered, boolean randomEmpires,
+                  boolean randomFallenEmpires, boolean randomMarauderEmpires, boolean randomAdvancedEmpires,
+                  boolean ironman, int numEmpires, int numAdvancedEmpires, int numFallenEmpires,
+                  int numMarauderEmpires, int midGameStart, int endGameStart, int victoryYear,
+                  int numGuaranteedColonies, double habitability, double primitive, double crises, double technology,
+                  double coreRadius, double numGateways, double numWormholePairs, double numHyperlanes,
+                  String template, String shape, String playerLocations, String difficulty, String aggressiveness,
+                  String name, ImmutableList<EmpireDesign> designs) {
         this.advancedStartsNearPlayer = advancedStartsNearPlayer;
         this.scaling = scaling;
         this.clustered = clustered;

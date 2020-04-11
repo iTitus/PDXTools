@@ -86,7 +86,8 @@ public class ColorUtil implements PdxConstants {
             }
         }
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
-            throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
+            throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", "
+                    + saturation + ", " + value + ", " + alpha);
         }
         return new Color(r & 0xFF, g & 0xFF, b & 0xFF, a & 0xFF);
     }
@@ -112,7 +113,8 @@ public class ColorUtil implements PdxConstants {
         throw new IllegalArgumentException();
     }
 
-    private static float get(Number n, int lowerIntBound, int upperIntBound, float divider, float lowerFloatBound, float upperFloatBound) {
+    private static float get(Number n, int lowerIntBound, int upperIntBound, float divider, float lowerFloatBound,
+                             float upperFloatBound) {
         if (n instanceof Integer) {
             int i = n.intValue();
             if (i < lowerIntBound || i > upperIntBound) {
@@ -130,7 +132,8 @@ public class ColorUtil implements PdxConstants {
         throw new IllegalArgumentException();
     }
 
-    private static float getAlpha(Number aN, float def, int lowerIntBound, int upperIntBound, float divider, float lowerFloatBound, float upperFloatBound) {
+    private static float getAlpha(Number aN, float def, int lowerIntBound, int upperIntBound, float divider,
+                                  float lowerFloatBound, float upperFloatBound) {
         if (aN instanceof Integer) {
             int i = aN.intValue();
             if (i < lowerIntBound || i > upperIntBound) {

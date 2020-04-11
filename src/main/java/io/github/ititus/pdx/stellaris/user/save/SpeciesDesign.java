@@ -18,7 +18,8 @@ public class SpeciesDesign {
         this.traits = o.getImplicitList("trait").getAsStringList();
     }
 
-    public SpeciesDesign(String speciesClass, String portrait, String name, String plural, String adjective, String nameList, ImmutableList<String> traits) {
+    public SpeciesDesign(String speciesClass, String portrait, String name, String plural, String adjective,
+                         String nameList, ImmutableList<String> traits) {
         this.speciesClass = speciesClass;
         this.portrait = portrait;
         this.name = name;

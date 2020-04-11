@@ -17,7 +17,8 @@ public class FleetActionRepeat {
         this.current = o.getObject("current").getAs(FleetActionRepeatCurrent::new);
     }
 
-    public FleetActionRepeat(int index, int iterations, FleetActionRepeatData data, Scope scope, FleetActionRepeatCurrent current) {
+    public FleetActionRepeat(int index, int iterations, FleetActionRepeatData data, Scope scope,
+                             FleetActionRepeatCurrent current) {
         this.index = index;
         this.iterations = iterations;
         this.data = data;

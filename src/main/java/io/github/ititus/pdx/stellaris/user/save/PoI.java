@@ -24,7 +24,8 @@ public class PoI {
         this.hasLocation = o.getBoolean("has_location");
     }
 
-    public PoI(boolean hasLocation, String id, String name, String desc, String eventChain, String location, Scope scope) {
+    public PoI(boolean hasLocation, String id, String name, String desc, String eventChain, String location,
+               Scope scope) {
         this.hasLocation = hasLocation;
         this.id = id;
         this.name = name;

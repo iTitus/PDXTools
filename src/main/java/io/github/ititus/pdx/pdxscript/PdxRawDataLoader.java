@@ -33,7 +33,8 @@ public class PdxRawDataLoader implements PdxConstants {
 
     private MutableSet<Pair<String, Throwable>> errors;
 
-    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index,
+                            StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (path == null || !Files.exists(path) || blacklist == null) {
             throw new IllegalArgumentException();
         }
@@ -63,7 +64,8 @@ public class PdxRawDataLoader implements PdxConstants {
                 : Lists.immutable.empty();
     }
 
-    private PdxScriptObject load(Path path, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    private PdxScriptObject load(Path path, int index,
+                                 StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (Files.isDirectory(path)) {
             int fileCount = progressMessageUpdater != null ? countFiles(path) : 0;
             PdxScriptObject o = parseFolder(path, path, index, new MutableInt(), fileCount, progressMessageUpdater);
@@ -101,7 +103,8 @@ public class PdxRawDataLoader implements PdxConstants {
         }
     }
 
-    private PdxScriptObject parseFolder(Path root, Path dir, int index, MutableInt progress, int fileCount, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    private PdxScriptObject parseFolder(Path root, Path dir, int index, MutableInt progress, int fileCount,
+                                        StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         PdxScriptObject.Builder b = PdxScriptObject.builder();
 
         try (Stream<Path> stream = Files.list(dir)) {
@@ -109,7 +112,9 @@ public class PdxRawDataLoader implements PdxConstants {
                     .filter(p -> isAllowed(root, p))
                     .sorted(IOUtil.asciibetical(root))
                     .forEachOrdered(p -> {
-                        IPdxScript s = Files.isDirectory(p) ? parseFolder(root, p, index, progress, fileCount, progressMessageUpdater) : parseFile(root, p, index, progress, fileCount, progressMessageUpdater);
+                        IPdxScript s = Files.isDirectory(p) ? parseFolder(root, p, index, progress, fileCount,
+                                progressMessageUpdater) : parseFile(root, p, index, progress, fileCount,
+                                progressMessageUpdater);
                         if (s != null) {
                             b.add(p.getFileName().toString(), s);
                         }
@@ -122,10 +127,12 @@ public class PdxRawDataLoader implements PdxConstants {
         return o.size() > 0 ? o : null;
     }
 
-    private IPdxScript parseFile(Path root, Path file, int index, MutableInt progress, int fileCount, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    private IPdxScript parseFile(Path root, Path file, int index, MutableInt progress, int fileCount,
+                                 StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         Path path = root.relativize(file);
         if (progressMessageUpdater != null) {
-            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading File " + path);
+            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading" +
+                    " File " + path);
         }
         IPdxScript s;
         try {

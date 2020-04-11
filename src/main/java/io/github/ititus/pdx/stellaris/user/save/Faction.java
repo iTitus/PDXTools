@@ -4,7 +4,8 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Faction {
 
-    private final boolean autoDelete, hostile, needsBorderAccess, generateBorders, needsColony, primitive, spaceCreatures;
+    private final boolean autoDelete, hostile, needsBorderAccess, generateBorders, needsColony, primitive,
+            spaceCreatures;
     private final double aggroRange;
     private final String aggroRangeMeasureFrom, primitiveAge;
 
@@ -21,7 +22,9 @@ public class Faction {
         this.spaceCreatures = o.getBoolean("space_creatures");
     }
 
-    public Faction(boolean autoDelete, boolean hostile, boolean needsBorderAccess, boolean generateBorders, boolean needsColony, boolean primitive, boolean spaceCreatures, double aggroRange, String aggroRangeMeasureFrom, String primitiveAge) {
+    public Faction(boolean autoDelete, boolean hostile, boolean needsBorderAccess, boolean generateBorders,
+                   boolean needsColony, boolean primitive, boolean spaceCreatures, double aggroRange,
+                   String aggroRangeMeasureFrom, String primitiveAge) {
         this.autoDelete = autoDelete;
         this.hostile = hostile;
         this.needsBorderAccess = needsBorderAccess;

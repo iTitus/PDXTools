@@ -26,7 +26,8 @@ public class FleetCombatDamage {
         this.baseDamageHitpoints = o.getDouble("base_damage_hitpoints");
     }
 
-    public FleetCombatDamage(int fleetIndex, double damageArmor, double baseDamageArmor, double damageHitpoints, double baseDamageHitpoints, String template) {
+    public FleetCombatDamage(int fleetIndex, double damageArmor, double baseDamageArmor, double damageHitpoints,
+                             double baseDamageHitpoints, String template) {
         this.fleetIndex = fleetIndex;
         this.damageArmor = damageArmor;
         this.baseDamageArmor = baseDamageArmor;

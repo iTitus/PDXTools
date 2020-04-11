@@ -30,7 +30,8 @@ public class SpecialProject {
         this.aiResearchDate = o.getDate("ai_research_date");
     }
 
-    public SpecialProject(int id, int daysLeft, int debris, int planet, String specialProject, LocalDate aiResearchDate, Scope scope, Property coordinate) {
+    public SpecialProject(int id, int daysLeft, int debris, int planet, String specialProject,
+                          LocalDate aiResearchDate, Scope scope, Property coordinate) {
         this.id = id;
         this.daysLeft = daysLeft;
         this.debris = debris;
