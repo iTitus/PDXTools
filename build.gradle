@@ -29,16 +29,16 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'io.github.ititus', name: 'ititus-commons', version: '1.0.0'
-    implementation group: 'org.eclipse.collections', name: 'eclipse-collections-api', version: '10.4.0'
-    implementation group: 'org.eclipse.collections', name: 'eclipse-collections', version: '10.4.0'
-    implementation group: 'org.eclipse.collections', name: 'eclipse-collections-forkjoin', version: '10.4.0'
+    implementation 'io.github.ititus:ititus-commons:1.0.0'
+    implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'
 
     testImplementation platform('org.junit:junit-bom:5.7.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core:3.18.0'
     testImplementation 'org.mockito:mockito-core:3.6.0'
-    testImplementation group: 'org.eclipse.collections', name: 'eclipse-collections-testutils', version: '10.4.0'
+    testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
 }
 
 test {
