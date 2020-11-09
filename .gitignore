@@ -38,3 +38,6 @@ hs_err_pid*
 
 # heap dumps
 heapdump-*
+
+# Gradle Wrapper
+!gradle/wrapper/gradle-wrapper.jar

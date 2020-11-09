@@ -1,33 +1,43 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 group = 'io.github.ititus.pdx'
-version = '1.0.0-SNAPSHOT'
-sourceCompatibility = JavaVersion.VERSION_11
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(15)
+    }
+
+    withSourcesJar()
+    withJavadocJar()
+}
 
 application {
     mainClassName = 'io.github.ititus.pdx.Main'
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    // jcenter()
+    maven {
+        url 'https://dl.bintray.com/ititus/ititus-commons'
+    }
 }
 
 dependencies {
-    implementation group: 'io.github.ititus', name: 'ititus-commons', version: '1.0.0+'
+    implementation group: 'io.github.ititus', name: 'ititus-commons', version: '1.0.0'
     implementation group: 'org.eclipse.collections', name: 'eclipse-collections-api', version: '10.4.0'
     implementation group: 'org.eclipse.collections', name: 'eclipse-collections', version: '10.4.0'
     implementation group: 'org.eclipse.collections', name: 'eclipse-collections-forkjoin', version: '10.4.0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
-    testImplementation 'org.assertj:assertj-core:3.17.2'
-    testImplementation 'org.mockito:mockito-core:3.5.10'
+    testImplementation platform('org.junit:junit-bom:5.7.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.18.0'
+    testImplementation 'org.mockito:mockito-core:3.6.0'
     testImplementation group: 'org.eclipse.collections', name: 'eclipse-collections-testutils', version: '10.4.0'
 }
 
@@ -36,6 +46,6 @@ test {
 }
 
 javafx {
-    version = '14'
+    version = '15'
     modules = ['javafx.controls', 'javafx.base', 'javafx.fxml', 'javafx.graphics']
 }
