@@ -7,17 +7,19 @@ plugins {
 group = 'io.github.ititus.pdx'
 version = '1.0.0'
 
+wrapper {
+    gradleVersion '6.7.1'
+}
+
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(15)
-    }
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_11
 
     withSourcesJar()
     withJavadocJar()
 }
 
 application {
-    mainClassName = 'io.github.ititus.pdx.Main'
+    mainClass = 'io.github.ititus.pdx.Main'
 }
 
 repositories {
@@ -26,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.ititus:ititus-commons:1.2.5'
+    implementation 'io.github.ititus:ititus-commons:1.2.7'
     implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'
@@ -43,6 +45,6 @@ test {
 }
 
 javafx {
-    version = '15'
+    version = '15.0.1'
     modules = ['javafx.controls', 'javafx.base', 'javafx.fxml', 'javafx.graphics']
 }
