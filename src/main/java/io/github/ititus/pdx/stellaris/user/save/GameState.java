@@ -10,57 +10,57 @@ import java.time.LocalDate;
 
 public class GameState {
 
-    private final boolean endGameCrisis;
-    private final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop,
+    public final boolean endGameCrisis;
+    public final int versionControlRevision, tick, randomLogDay, lastCreatedSpecies, lastCreatedPop,
             lastCreatedCountry, lastRefugeeCountry, lastCreatedSystem, lastCreatedFleet, lastCreatedShip,
             lastCreatedLeader, lastCreatedArmy, lastCreatedDesign, lastCreatedAmbientObject, lastDiploAction,
             lastNotificationId, lastEventId, lastCreatedPopFaction, randomCount, randomSeed;
-    private final double galaxyRadius;
-    private final String version, name, lastKilledCountryName;
-    private final LocalDate date;
-    private final ImmutableIntList firedEvents, rimGalacticObjects;
-    private final ImmutableLongList usedSymbols;
-    private final ImmutableList<String> requiredDLCs, usedColors;
-    private final ImmutableList<Player> players;
-    private final ImmutableList<Species> species;
-    private final ImmutableList<Nebula> nebulas;
-    private final ImmutableList<Message> messages;
-    private final ImmutableList<SavedEventTarget> savedEventTargets;
-    private final ImmutableList<GlobalShipDesign> globalShipDesigns;
-    private final ImmutableList<Cluster> clusters;
-    private final ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, usedSpeciesPortraits;
-    private final Pops pops;
-    private final GalacticObjects galacticObjects;
-    private final StarbaseManager starbaseManager;
-    private final Planets planets;
-    private final Countries countries;
-    private final Federations federations;
-    private final Truces truces;
-    private final TradeDeals tradeDeals;
-    private final Leaders leaders;
-    private final Ships ships;
-    private final Fleets fleets;
-    private final FleetTemplates fleetTemplates;
-    private final Armies armies;
-    private final Deposits deposits;
-    private final GroundCombats groundCombats;
-    private final Wars wars;
-    private final DebrisMap debrisMap;
-    private final Missiles missiles;
-    private final StrikeCrafts strikeCrafts;
-    private final AmbientObjects ambientObjects;
-    private final RandomNameDatabase randomNameDatabase;
-    private final Galaxy galaxy;
-    private final Flags flags;
-    private final ShipDesigns shipDesigns;
-    private final PopFactions popFactions;
-    private final MegaStructures megaStructures;
-    private final Bypasses bypasses;
-    private final NaturalWormholes naturalWormholes;
-    private final TradeRoutes tradeRoutes;
-    private final Sectors sectors;
-    private final Buildings buildings;
-    private final ArchaeologicalSites archaeologicalSites;
+    public final double galaxyRadius;
+    public final String version, name, lastKilledCountryName;
+    public final LocalDate date;
+    public final ImmutableIntList rimGalacticObjects;
+    public final ImmutableLongList usedSymbols;
+    public final ImmutableList<String> requiredDLCs, firedEventIds, usedColors;
+    public final ImmutableList<Player> players;
+    public final ImmutableList<Species> species;
+    public final ImmutableList<Nebula> nebulas;
+    public final ImmutableList<Message> messages;
+    public final ImmutableList<SavedEventTarget> savedEventTargets;
+    public final ImmutableList<GlobalShipDesign> globalShipDesigns;
+    public final ImmutableList<Cluster> clusters;
+    public final ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames, usedSpeciesPortraits;
+    public final Pops pops;
+    public final GalacticObjects galacticObjects;
+    public final StarbaseManager starbaseManager;
+    public final Planets planets;
+    public final Countries countries;
+    public final Federations federations;
+    public final Truces truces;
+    public final TradeDeals tradeDeals;
+    public final Leaders leaders;
+    public final Ships ships;
+    public final Fleets fleets;
+    public final FleetTemplates fleetTemplates;
+    public final Armies armies;
+    public final Deposits deposits;
+    public final GroundCombats groundCombats;
+    public final Wars wars;
+    public final DebrisMap debrisMap;
+    public final Missiles missiles;
+    public final StrikeCrafts strikeCrafts;
+    public final AmbientObjects ambientObjects;
+    public final RandomNameDatabase randomNameDatabase;
+    public final Galaxy galaxy;
+    public final Flags flags;
+    public final ShipDesigns shipDesigns;
+    public final PopFactions popFactions;
+    public final MegaStructures megaStructures;
+    public final Bypasses bypasses;
+    public final NaturalWormholes naturalWormholes;
+    public final TradeRoutes tradeRoutes;
+    public final Sectors sectors;
+    public final Buildings buildings;
+    public final ArchaeologicalSites archaeologicalSites;
 
     public GameState(IPdxScript s) {
         if (!(s instanceof PdxScriptObject)) {
@@ -85,6 +85,7 @@ public class GameState {
         this.starbaseManager = o.getObject("starbase_mgr").getAs(StarbaseManager::new);
         this.planets = o.getObject("planets").getAs(Planets::new);
         this.countries = o.getObject("country").getAs(Countries::new);
+        // TODO: construction
         this.federations = o.getObject("federation").getAs(Federations::new);
         this.truces = o.getObject("truce").getAs(Truces::new);
         this.tradeDeals = o.getObject("trade_deal").getAs(TradeDeals::new);
@@ -92,6 +93,7 @@ public class GameState {
         this.lastRefugeeCountry = o.getUnsignedInt("last_refugee_country");
         this.lastCreatedSystem = o.getInt("last_created_system", -1);
         this.leaders = o.getObject("leaders").getAs(Leaders::new);
+        // TODO: saved_leaders
         this.ships = o.getObject("ships").getAs(Ships::new);
         this.fleets = o.getObject("fleet").getAs(Fleets::new);
         this.fleetTemplates = o.getObject("fleet_template").getAs(FleetTemplates::new);
@@ -103,7 +105,7 @@ public class GameState {
         this.armies = o.getObject("army").getAs(Armies::new);
         this.deposits = o.getObject("deposit").getAs(Deposits::new);
         this.groundCombats = o.getObject("ground_combat").getAs(GroundCombats::new);
-        this.firedEvents = o.getList("fired_events").getAsIntList();
+        this.firedEventIds = o.getList("fired_event_ids").getAsStringList();
         this.wars = o.getObject("war").getAs(Wars::new);
         this.debrisMap = o.getObject("debris").getAs(DebrisMap::new);
         this.missiles = o.getObject("missile").getAs(Missiles::new);
@@ -133,6 +135,7 @@ public class GameState {
         this.tradeRoutes = o.getObject("trade_routes").getAs(TradeRoutes::new);
         this.sectors = o.getObject("sectors").getAs(Sectors::new);
         this.buildings = o.getObject("buildings").getAs(Buildings::new);
+        // TODO: resolution
         this.archaeologicalSites = o.getObject("archaeological_sites").getAs(ArchaeologicalSites::new);
         this.globalShipDesigns = o.getList("global_ship_design").getAsList(GlobalShipDesign::new);
         this.clusters = o.getList("clusters").getAsList(Cluster::new);
@@ -144,391 +147,9 @@ public class GameState {
         this.usedSpeciesPortraits = o.getImplicitList("used_species_portrait").getAsList(UsedSpeciesClassAssets::new);
         this.randomSeed = o.getUnsignedInt("random_seed");
         this.randomCount = o.getInt("random_count");
-        // TODO: market, trade_routes_manager, slave_market_manager
-    }
-
-    public GameState(boolean endGameCrisis, int versionControlRevision, int tick, int randomLogDay,
-                     int lastCreatedSpecies, int lastCreatedPop, int lastCreatedCountry, int lastRefugeeCountry,
-                     int lastCreatedSystem, int lastCreatedFleet, int lastCreatedShip, int lastCreatedLeader,
-                     int lastCreatedArmy, int lastCreatedDesign, int lastCreatedAmbientObject, int lastDiploAction,
-                     int lastNotificationId, int lastEventId, int lastCreatedPopFaction, int randomCount,
-                     int randomSeed, double galaxyRadius, String version, String name, String lastKilledCountryName,
-                     LocalDate date, ImmutableIntList firedEvents, ImmutableIntList rimGalacticObjects,
-                     ImmutableLongList usedSymbols, ImmutableList<String> requiredDLCs,
-                     ImmutableList<String> usedColors, ImmutableList<Player> players, ImmutableList<Species> species,
-                     ImmutableList<Nebula> nebulas, ImmutableList<Message> messages,
-                     ImmutableList<SavedEventTarget> savedEventTargets,
-                     ImmutableList<GlobalShipDesign> globalShipDesigns, ImmutableList<Cluster> clusters,
-                     ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames,
-                     ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits, Pops pops,
-                     GalacticObjects galacticObjects, StarbaseManager starbaseManager, Planets planets,
-                     Countries countries, Federations federations, Truces truces, TradeDeals tradeDeals, Leaders leaders,
-                     Ships ships, Fleets fleets, FleetTemplates fleetTemplates, Armies armies, Deposits deposits,
-                     GroundCombats groundCombats, Wars wars, DebrisMap debrisMap, Missiles missiles,
-                     StrikeCrafts strikeCrafts, AmbientObjects ambientObjects, RandomNameDatabase randomNameDatabase,
-                     Galaxy galaxy, Flags flags, ShipDesigns shipDesigns, PopFactions popFactions,
-                     MegaStructures megaStructures, Bypasses bypasses, NaturalWormholes naturalWormholes,
-                     TradeRoutes tradeRoutes, Sectors sectors, Buildings buildings,
-                     ArchaeologicalSites archaeologicalSites) {
-        this.endGameCrisis = endGameCrisis;
-        this.versionControlRevision = versionControlRevision;
-        this.tick = tick;
-        this.randomLogDay = randomLogDay;
-        this.lastCreatedSpecies = lastCreatedSpecies;
-        this.lastCreatedPop = lastCreatedPop;
-        this.lastCreatedCountry = lastCreatedCountry;
-        this.lastRefugeeCountry = lastRefugeeCountry;
-        this.lastCreatedSystem = lastCreatedSystem;
-        this.lastCreatedFleet = lastCreatedFleet;
-        this.lastCreatedShip = lastCreatedShip;
-        this.lastCreatedLeader = lastCreatedLeader;
-        this.lastCreatedArmy = lastCreatedArmy;
-        this.lastCreatedDesign = lastCreatedDesign;
-        this.lastCreatedAmbientObject = lastCreatedAmbientObject;
-        this.lastDiploAction = lastDiploAction;
-        this.lastNotificationId = lastNotificationId;
-        this.lastEventId = lastEventId;
-        this.lastCreatedPopFaction = lastCreatedPopFaction;
-        this.randomCount = randomCount;
-        this.randomSeed = randomSeed;
-        this.galaxyRadius = galaxyRadius;
-        this.version = version;
-        this.name = name;
-        this.lastKilledCountryName = lastKilledCountryName;
-        this.date = date;
-        this.firedEvents = firedEvents;
-        this.rimGalacticObjects = rimGalacticObjects;
-        this.usedSymbols = usedSymbols;
-        this.requiredDLCs = requiredDLCs;
-        this.usedColors = usedColors;
-        this.players = players;
-        this.species = species;
-        this.nebulas = nebulas;
-        this.messages = messages;
-        this.savedEventTargets = savedEventTargets;
-        this.globalShipDesigns = globalShipDesigns;
-        this.clusters = clusters;
-        this.usedSpeciesNames = usedSpeciesNames;
-        this.usedSpeciesPortraits = usedSpeciesPortraits;
-        this.pops = pops;
-        this.galacticObjects = galacticObjects;
-        this.starbaseManager = starbaseManager;
-        this.planets = planets;
-        this.countries = countries;
-        this.federations = federations;
-        this.truces = truces;
-        this.tradeDeals = tradeDeals;
-        this.leaders = leaders;
-        this.ships = ships;
-        this.fleets = fleets;
-        this.fleetTemplates = fleetTemplates;
-        this.armies = armies;
-        this.deposits = deposits;
-        this.groundCombats = groundCombats;
-        this.wars = wars;
-        this.debrisMap = debrisMap;
-        this.missiles = missiles;
-        this.strikeCrafts = strikeCrafts;
-        this.ambientObjects = ambientObjects;
-        this.randomNameDatabase = randomNameDatabase;
-        this.galaxy = galaxy;
-        this.flags = flags;
-        this.shipDesigns = shipDesigns;
-        this.popFactions = popFactions;
-        this.megaStructures = megaStructures;
-        this.bypasses = bypasses;
-        this.naturalWormholes = naturalWormholes;
-        this.tradeRoutes = tradeRoutes;
-        this.sectors = sectors;
-        this.buildings = buildings;
-        this.archaeologicalSites = archaeologicalSites;
-    }
-
-    public boolean isEndGameCrisis() {
-        return endGameCrisis;
-    }
-
-    public int getVersionControlRevision() {
-        return versionControlRevision;
-    }
-
-    public int getTick() {
-        return tick;
-    }
-
-    public int getRandomLogDay() {
-        return randomLogDay;
-    }
-
-    public int getLastCreatedSpecies() {
-        return lastCreatedSpecies;
-    }
-
-    public int getLastCreatedPop() {
-        return lastCreatedPop;
-    }
-
-    public int getLastCreatedCountry() {
-        return lastCreatedCountry;
-    }
-
-    public int getLastRefugeeCountry() {
-        return lastRefugeeCountry;
-    }
-
-    public int getLastCreatedSystem() {
-        return lastCreatedSystem;
-    }
-
-    public int getLastCreatedFleet() {
-        return lastCreatedFleet;
-    }
-
-    public int getLastCreatedShip() {
-        return lastCreatedShip;
-    }
-
-    public int getLastCreatedLeader() {
-        return lastCreatedLeader;
-    }
-
-    public int getLastCreatedArmy() {
-        return lastCreatedArmy;
-    }
-
-    public int getLastCreatedDesign() {
-        return lastCreatedDesign;
-    }
-
-    public int getLastCreatedAmbientObject() {
-        return lastCreatedAmbientObject;
-    }
-
-    public int getLastDiploAction() {
-        return lastDiploAction;
-    }
-
-    public int getLastNotificationId() {
-        return lastNotificationId;
-    }
-
-    public int getLastEventId() {
-        return lastEventId;
-    }
-
-    public int getLastCreatedPopFaction() {
-        return lastCreatedPopFaction;
-    }
-
-    public int getRandomCount() {
-        return randomCount;
-    }
-
-    public int getRandomSeed() {
-        return randomSeed;
-    }
-
-    public double getGalaxyRadius() {
-        return galaxyRadius;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLastKilledCountryName() {
-        return lastKilledCountryName;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public ImmutableIntList getFiredEvents() {
-        return firedEvents;
-    }
-
-    public ImmutableIntList getRimGalacticObjects() {
-        return rimGalacticObjects;
-    }
-
-    public ImmutableLongList getUsedSymbols() {
-        return usedSymbols;
-    }
-
-    public ImmutableList<String> getRequiredDLCs() {
-        return requiredDLCs;
-    }
-
-    public ImmutableList<String> getUsedColors() {
-        return usedColors;
-    }
-
-    public ImmutableList<Player> getPlayers() {
-        return players;
-    }
-
-    public ImmutableList<Species> getSpecies() {
-        return species;
-    }
-
-    public ImmutableList<Nebula> getNebulas() {
-        return nebulas;
-    }
-
-    public ImmutableList<Message> getMessages() {
-        return messages;
-    }
-
-    public ImmutableList<SavedEventTarget> getSavedEventTargets() {
-        return savedEventTargets;
-    }
-
-    public ImmutableList<GlobalShipDesign> getGlobalShipDesigns() {
-        return globalShipDesigns;
-    }
-
-    public ImmutableList<Cluster> getClusters() {
-        return clusters;
-    }
-
-    public ImmutableList<UsedSpeciesClassAssets> getUsedSpeciesNames() {
-        return usedSpeciesNames;
-    }
-
-    public ImmutableList<UsedSpeciesClassAssets> getUsedSpeciesPortraits() {
-        return usedSpeciesPortraits;
-    }
-
-    public Pops getPops() {
-        return pops;
-    }
-
-    public GalacticObjects getGalacticObjects() {
-        return galacticObjects;
-    }
-
-    public StarbaseManager getStarbaseManager() {
-        return starbaseManager;
-    }
-
-    public Planets getPlanets() {
-        return planets;
-    }
-
-    public Countries getCountries() {
-        return countries;
-    }
-
-    public Federations getFederations() {
-        return federations;
-    }
-
-    public Truces getTruces() {
-        return truces;
-    }
-
-    public TradeDeals getTradeDeals() {
-        return tradeDeals;
-    }
-
-    public Leaders getLeaders() {
-        return leaders;
-    }
-
-    public Ships getShips() {
-        return ships;
-    }
-
-    public Fleets getFleets() {
-        return fleets;
-    }
-
-    public FleetTemplates getFleetTemplates() {
-        return fleetTemplates;
-    }
-
-    public Armies getArmies() {
-        return armies;
-    }
-
-    public Deposits getDeposits() {
-        return deposits;
-    }
-
-    public GroundCombats getGroundCombats() {
-        return groundCombats;
-    }
-
-    public Wars getWars() {
-        return wars;
-    }
-
-    public DebrisMap getDebrisMap() {
-        return debrisMap;
-    }
-
-    public Missiles getMissiles() {
-        return missiles;
-    }
-
-    public StrikeCrafts getStrikeCrafts() {
-        return strikeCrafts;
-    }
-
-    public AmbientObjects getAmbientObjects() {
-        return ambientObjects;
-    }
-
-    public RandomNameDatabase getRandomNameDatabase() {
-        return randomNameDatabase;
-    }
-
-    public Galaxy getGalaxy() {
-        return galaxy;
-    }
-
-    public Flags getFlags() {
-        return flags;
-    }
-
-    public ShipDesigns getShipDesigns() {
-        return shipDesigns;
-    }
-
-    public PopFactions getPopFactions() {
-        return popFactions;
-    }
-
-    public MegaStructures getMegaStructures() {
-        return megaStructures;
-    }
-
-    public Bypasses getBypasses() {
-        return bypasses;
-    }
-
-    public NaturalWormholes getNaturalWormholes() {
-        return naturalWormholes;
-    }
-
-    public TradeRoutes getTradeRoutes() {
-        return tradeRoutes;
-    }
-
-    public Sectors getSectors() {
-        return sectors;
-    }
-
-    public Buildings getBuildings() {
-        return buildings;
-    }
-
-    public ArchaeologicalSites getArchaeologicalSites() {
-        return archaeologicalSites;
+        // TODO: market
+        // TODO: trade_routes_manager
+        // TODO: slave_market_manager
+        // TODO: galactic_community
     }
 }

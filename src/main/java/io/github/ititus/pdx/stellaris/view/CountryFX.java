@@ -21,7 +21,7 @@ public class CountryFX extends Group {
         this.countryPair = countryPair;
 
         ImmutableIntObjectMap<GalacticObject> systems =
-                galaxyView.getSave().getGameState().getGalacticObjects().getGalacticObjects();
+                galaxyView.getSave().getGameState().galacticObjects.getGalacticObjects();
         ImmutableIntObjectMap<GalacticObject> countrySystems =
                 systems.select((systemId, system) -> galaxyView.getOwnerId(systemId, system) == countryPair.getOne());
 

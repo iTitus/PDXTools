@@ -21,27 +21,26 @@ public class SimpleTest {
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
     private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
-    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common",
-            "Stellaris");
+    private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
 
-    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/2.6.3");
+    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/2248.02.26_extracted_2.8.1");
 
     private static StellarisGame getStellarisGame() {
         StopWatch s = StopWatch.createRunning();
         MutableString lastMessage = new MutableString();
-        StopWatch stepWatch = StopWatch.create();
+        StopWatch stopWatch = StopWatch.create();
 
         StellarisGame game = new StellarisGame(INSTALL_DIR, 0, (index, visible, workDone, totalWork, msg) -> {
             if (index == 0) {
-                if (stepWatch.isRunning()) {
-                    System.out.println(lastMessage.get() + ": " + DurationFormatter.formatSeconds(stepWatch.stop()));
+                if (stopWatch.isRunning()) {
+                    System.out.println(lastMessage.get() + ": " + DurationFormatter.formatSeconds(stopWatch.stop()));
                 } else {
                     System.out.println("Loading Game Data");
                 }
 
                 if (!msg.equals("Done")) {
                     lastMessage.set(msg);
-                    stepWatch.start();
+                    stopWatch.start();
                 }
             }
             // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
@@ -87,7 +86,7 @@ public class SimpleTest {
 
         StellarisGame game = null; // getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
-        StellarisSave save = getStellarisSave();
+        StellarisSave save = /*null; //*/ getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ?
@@ -102,10 +101,11 @@ public class SimpleTest {
         ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
 
         try {
+            Files.createDirectories(DEBUG_OUT.getParent());
             Files.write(DEBUG_OUT, new byte[0]);
             if (saveParseErrors != null) {
                 Files.write(DEBUG_OUT, saveParseErrors, StandardOpenOption.APPEND);
-                saveParseErrors.forEach(System.out::println);
+                // saveParseErrors.forEach(System.out::println);
             }
         } catch (IOException e) {
             e.printStackTrace();

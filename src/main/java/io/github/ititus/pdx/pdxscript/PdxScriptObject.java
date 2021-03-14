@@ -392,13 +392,14 @@ public final class PdxScriptObject implements IPdxScript {
     public PdxUsageStatistic getUsageStatistic() {
         MutableMap<String, PdxUsage> usages = Maps.mutable.empty();
         usageStatistic.getUsages().forEachKeyValue((key, usage) -> usages.merge(key, usage, PdxUsage::merge));
-        map.forEachKeyValue((key, s) -> {
-            if (s instanceof PdxScriptObject) {
-                String prefix = key.chars().allMatch(Character::isDigit) ? EMPTY : key + DOT_CHAR;
-                ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
-            } else if (s instanceof PdxScriptList) {
-                String prefix = key + DOT_CHAR;
-                ((PdxScriptList) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
+        map.forEachKeyValue((key, value) -> {
+            String prefix = (key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key) + DOT_CHAR;
+            if (value instanceof PdxScriptObject) {
+                ((PdxScriptObject) value).getUsageStatistic().getUsages()
+                        .forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
+            } else if (value instanceof PdxScriptList) {
+                ((PdxScriptList) value).getUsageStatistic().getUsages()
+                        .forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
             }
         });
         return new PdxUsageStatistic(usages);

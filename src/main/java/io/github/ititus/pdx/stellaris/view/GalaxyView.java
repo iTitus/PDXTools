@@ -60,7 +60,7 @@ public final class GalaxyView extends BorderPane {
             return -1;
         }
         Starbase starbase =
-                GalaxyView.this.getSave().getGameState().getStarbaseManager().getStarbases().getStarbases().get(starbaseId);
+                GalaxyView.this.getSave().getGameState().starbaseManager.getStarbases().getStarbases().get(starbaseId);
         if (starbase == null) {
             return -1;
         }
@@ -165,8 +165,8 @@ public final class GalaxyView extends BorderPane {
             @Override
             protected Void call() {
                 ImmutableIntObjectMap<GalacticObject> systems =
-                        save.getGameState().getGalacticObjects().getGalacticObjects();
-                ImmutableIntObjectMap<Country> countries = save.getGameState().getCountries().getCountries();
+                        save.getGameState().galacticObjects.getGalacticObjects();
+                ImmutableIntObjectMap<Country> countries = save.getGameState().countries.getCountries();
 
                 int maxProgress = systems.size() + countries.size();
                 MutableInt progress = new MutableInt();
@@ -250,7 +250,7 @@ public final class GalaxyView extends BorderPane {
 
                 @Override
                 protected Void call() {
-                    ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+                    ImmutableIntObjectMap<Planet> planets = save.getGameState().planets.getPlanets();
                     ImmutableList<IntObjectPair<Planet>> systemPlanets =
                             systemPair.getTwo().getPlanets().collect(planetId -> PrimitiveTuples.pair(planetId,
                                     planets.get(planetId)));
@@ -335,16 +335,16 @@ public final class GalaxyView extends BorderPane {
         StringBuilder text = new StringBuilder();
         if (systemPair != null) {
             ImmutableIntObjectMap<Starbase> starbases =
-                    save.getGameState().getStarbaseManager().getStarbases().getStarbases();
-            ImmutableIntObjectMap<Country> countries = save.getGameState().getCountries().getCountries();
+                    save.getGameState().starbaseManager.getStarbases().getStarbases();
+            ImmutableIntObjectMap<Country> countries = save.getGameState().countries.getCountries();
             ImmutableIntObjectMap<GalacticObject> systems =
-                    save.getGameState().getGalacticObjects().getGalacticObjects();
+                    save.getGameState().galacticObjects.getGalacticObjects();
             ImmutableIntObjectMap<NaturalWormhole> wormholes =
-                    save.getGameState().getNaturalWormholes().getNaturalWormholes();
-            ImmutableIntObjectMap<Bypass> bypasses = save.getGameState().getBypasses().getBypasses();
+                    save.getGameState().naturalWormholes.getNaturalWormholes();
+            ImmutableIntObjectMap<Bypass> bypasses = save.getGameState().bypasses.getBypasses();
             ImmutableIntObjectMap<MegaStructure> megaStructures =
-                    save.getGameState().getMegaStructures().getMegaStructures();
-            ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+                    save.getGameState().megaStructures.getMegaStructures();
+            ImmutableIntObjectMap<Planet> planets = save.getGameState().planets.getPlanets();
 
             MutableList<String> properties = Lists.mutable.empty();
             text.append(systemPair.getTwo().getName()).append(" (#").append(systemPair.getOne()).append(")\n");
@@ -580,7 +580,7 @@ public final class GalaxyView extends BorderPane {
         if (planetPair != null) {
             text.append(planetPair.getTwo().getName()).append(" (#").append(planetPair.getOne()).append(")\n\n");
 
-            ImmutableIntObjectMap<Planet> planets = save.getGameState().getPlanets().getPlanets();
+            ImmutableIntObjectMap<Planet> planets = save.getGameState().planets.getPlanets();
 
             text.append("class=").append(planetPair.getTwo().getPlanetClass()).append("\n");
             text.append("size=").append(planetPair.getTwo().getPlanetSize()).append("\n");

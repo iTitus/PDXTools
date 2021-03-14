@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class StellarisDLC {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
-            // Missing relation sign in object
+            // Error in script parsing
             "sound/megacorp_vo.asset"
     );
     private static final IPathFilter DLC = new FileExtensionFilter("dlc");
@@ -64,7 +64,7 @@ public class StellarisDLC {
         this.archivePath = o.getString("archive");
         this.steamId = o.getInt("steam_id");
         this.railId = o.getInt("rail_id");
-        this.popsId = o.getString("steam_id");
+        this.popsId = o.getString("pops_id");
         this.affectsChecksum = o.getBoolean("affects_checksum");
         this.affectsCompatibility = o.getBoolean("affects_compatability"); // spelling intentional
         this.checksum = o.getString("checksum");

@@ -23,6 +23,7 @@ public interface PdxConstants {
     char DOT_CHAR = '.';
     String EMPTY = "";
     String INDENT = "    ";
+    String NUMBER_MARKER = "<num>";
     long UNSIGNED_INT_MAX_LONG = 0xFFFFFFFFL;
 
     char LIST_OBJECT_OPEN_CHAR = '{';
@@ -173,11 +174,9 @@ public interface PdxConstants {
     static String getTypeString(IPdxScript s) {
         if (s instanceof PdxScriptObject) {
             return OBJECT;
-        }
-        if (s instanceof PdxScriptList) {
+        } else if (s instanceof PdxScriptList) {
             return ((PdxScriptList) s).getMode() == PdxScriptList.Mode.IMPLICIT ? IMPLICIT_LIST : LIST;
-        }
-        if (s instanceof PdxScriptValue) {
+        } else if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
             if (v instanceof LocalDate) {
                 return DATE;
@@ -207,6 +206,7 @@ public interface PdxConstants {
                 return STRING;
             }
         }
+
         return NULL;
     }
 }

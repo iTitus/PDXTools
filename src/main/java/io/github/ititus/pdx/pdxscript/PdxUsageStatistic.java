@@ -24,11 +24,13 @@ public class PdxUsageStatistic implements PdxConstants {
     }
 
     private void use(String key, IPdxScript actual) {
-        usages.computeIfAbsent(key, k -> new PdxUsage()).actual(PdxConstants.getTypeString(actual));
+        String fKey = key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key;
+        usages.computeIfAbsent(fKey, k -> new PdxUsage()).actual(PdxConstants.getTypeString(actual));
     }
 
     public void use(String key, String expectedType, IPdxScript actual) {
-        usages.computeIfAbsent(key, k -> new PdxUsage()).expected(expectedType).actual(PdxConstants.getTypeString(actual));
+        String fKey = key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key;
+        usages.computeIfAbsent(fKey, k -> new PdxUsage()).expected(expectedType).actual(PdxConstants.getTypeString(actual));
     }
 
     public ImmutableMap<String, PdxUsage> getUsages() {
@@ -48,7 +50,7 @@ public class PdxUsageStatistic implements PdxConstants {
                                 // .toString())
                                 .thenComparing(Map.Entry::getKey)
                 )
-                .map(p -> p.getKey() + " = " + p.getValue())
+                .map(e -> e.getKey() + " = " + e.getValue())
                 .forEachOrdered(strings::add);
         return strings.toImmutable();
     }

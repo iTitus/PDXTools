@@ -16,9 +16,10 @@ public class StellarisUserData {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "cache", "dumps", "pops_filestorage", "screenshots", "shadercache",
+            ".launcher-cache", "cache", "crashes", "dumps", "exceptions", "logs", "pops_filestorage", "screenshots",
+            "shadercache",
             // Handled separately
-            "save games", "oos", "mod"
+            "save games", "mod"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt", "mod");
 

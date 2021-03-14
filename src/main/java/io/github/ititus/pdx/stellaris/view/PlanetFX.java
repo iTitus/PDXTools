@@ -60,7 +60,7 @@ public class PlanetFX extends Group {
         Point3D center;
         if (centerId != -1) {
             Coordinate centerC =
-                    galaxyView.getSave().getGameState().getPlanets().getPlanets().get(centerId).getCoordinate();
+                    galaxyView.getSave().getGameState().planets.getPlanets().get(centerId).getCoordinate();
             center = new Point3D(centerC.getX(), centerC.getY(), 0);
         } else {
             center = Point3D.ZERO;

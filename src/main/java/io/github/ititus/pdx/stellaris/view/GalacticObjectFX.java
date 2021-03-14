@@ -43,10 +43,10 @@ public class GalacticObjectFX extends Group {
         this.hyperlaneGroup = new Group();
 
         ImmutableIntObjectMap<NaturalWormhole> wormholes =
-                galaxyView.getSave().getGameState().getNaturalWormholes().getNaturalWormholes();
-        ImmutableIntObjectMap<Bypass> bypasses = galaxyView.getSave().getGameState().getBypasses().getBypasses();
+                galaxyView.getSave().getGameState().naturalWormholes.getNaturalWormholes();
+        ImmutableIntObjectMap<Bypass> bypasses = galaxyView.getSave().getGameState().bypasses.getBypasses();
         ImmutableIntObjectMap<MegaStructure> megaStructures =
-                galaxyView.getSave().getGameState().getMegaStructures().getMegaStructures();
+                galaxyView.getSave().getGameState().megaStructures.getMegaStructures();
 
         ImmutableList<VisualHyperlane> visualHyperlanes = Stream.concat(
                 systemPair.getTwo().getHyperlanes().stream()
