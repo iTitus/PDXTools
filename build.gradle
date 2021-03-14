@@ -1,50 +1,75 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.javamodularity.moduleplugin' version '1.7.0'
     id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.jlink' version '2.23.3'
 }
 
 group = 'io.github.ititus.pdx'
 version = '1.0.0'
 
 wrapper {
-    gradleVersion '6.7.1'
+    gradleVersion '6.8.3'
 }
 
 java {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_15
+}
 
-    withSourcesJar()
-    withJavadocJar()
+modularity {
+    disableEffectiveArgumentsAdjustment()
 }
 
 application {
+    mainModule = 'io.github.ititus.pdx'
     mainClass = 'io.github.ititus.pdx.Main'
 }
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
-    implementation 'io.github.ititus:ititus-commons:1.2.7'
+    implementation 'io.github.ititus:ititus-commons:1.4.4'
     implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'
 
-    testImplementation platform('org.junit:junit-bom:5.7.0')
+    testImplementation platform('org.junit:junit-bom:5.7.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.18.1'
-    testImplementation 'org.mockito:mockito-core:3.6.28'
-    testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'org.mockito:mockito-core:3.8.0'
+    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = ['org.junit.jupiter.params']
+        addReads = ['io.github.ititus.pdx': 'org.junit.jupiter.params']
+    }
 }
 
 test {
     useJUnitPlatform()
+
+    moduleOptions {
+        addReads = ['io.github.ititus.pdx': 'org.junit.jupiter.params']
+        addExports = [
+                'org.junit.platform.commons/org.junit.platform.commons.util'   : 'ALL-UNNAMED',
+                'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
+        ]
+    }
 }
 
 javafx {
     version = '15.0.1'
     modules = ['javafx.controls', 'javafx.base', 'javafx.fxml', 'javafx.graphics']
+}
+
+jlink {
+    options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--compress', '2']
+    launcher {
+        name = 'pdxtools'
+    }
 }

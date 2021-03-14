@@ -12,6 +12,7 @@ public class CountingSet<E> extends AbstractSet<E> {
 
     private static final Comparator<Object> HASH_COMP = Comparator.comparingInt(Object::hashCode);
 
+    @SuppressWarnings("unchecked")
     private final Comparator<E> COMP = (o1, o2) -> {
         if (o1 == o2) {
             return 0;
