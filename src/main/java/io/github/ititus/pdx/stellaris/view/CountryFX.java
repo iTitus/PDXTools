@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.view;
 
-import io.github.ititus.pdx.stellaris.user.save.Coordinate;
 import io.github.ititus.pdx.stellaris.user.save.Country;
 import io.github.ititus.pdx.stellaris.user.save.GalacticObject;
 import javafx.application.Platform;
@@ -20,22 +19,19 @@ public class CountryFX extends Group {
         this.galaxyView = galaxyView;
         this.countryPair = countryPair;
 
-        ImmutableIntObjectMap<GalacticObject> systems =
-                galaxyView.getSave().getGameState().galacticObjects.getGalacticObjects();
-        ImmutableIntObjectMap<GalacticObject> countrySystems =
-                systems.select((systemId, system) -> galaxyView.getOwnerId(systemId, system) == countryPair.getOne());
+        ImmutableIntObjectMap<GalacticObject> systems = galaxyView.getSave().gameState.galacticObjects;
+        ImmutableIntObjectMap<GalacticObject> countrySystems = systems
+                .select((systemId, system) -> galaxyView.getOwnerId(systemId, system) == countryPair.getOne());
 
         // TODO: proper graphics with proper colors
-        int hash = countryPair.getTwo().getFlag().hashCode();
+        int hash = countryPair.getTwo().flag.hashCode();
         hash = (hash ^ (hash >>> 8)) & 0xFFFFFF;
 
         Color fillColor = Color.rgb((hash >>> 16) & 0xFF, (hash >>> 8) & 0xFF, hash & 0xFF, 0.25);
         ImmutableBag<Circle> circles = countrySystems.collect(system -> {
-            Coordinate coord = system.getCoordinate();
-
             Circle c = new Circle();
-            c.setCenterX(coord.getX());
-            c.setCenterY(coord.getY());
+            c.setCenterX(system.coordinate.x);
+            c.setCenterY(system.coordinate.y);
             c.setRadius(10);
             c.setStroke(null);
             c.setFill(fillColor);

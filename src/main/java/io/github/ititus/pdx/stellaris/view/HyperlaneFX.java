@@ -19,16 +19,15 @@ public class HyperlaneFX extends Group {
         this.galaxyView = galaxyView;
         this.hyperlane = hyperlane;
 
-        ImmutableIntObjectMap<GalacticObject> galacticObjects =
-                galaxyView.getSave().getGameState().galacticObjects.getGalacticObjects();
+        ImmutableIntObjectMap<GalacticObject> galacticObjects = galaxyView.getSave().gameState.galacticObjects;
         GalacticObject fromGO = galacticObjects.get(hyperlane.getFrom());
         GalacticObject toGO = galacticObjects.get(hyperlane.getTo());
 
-        Coordinate fromC = fromGO.getCoordinate();
-        Coordinate toC = toGO.getCoordinate();
+        Coordinate fromC = fromGO.coordinate;
+        Coordinate toC = toGO.coordinate;
 
-        Point3D from = new Point3D(fromC.getX(), fromC.getY(), 0);
-        Point3D to = new Point3D(toC.getX(), toC.getY(), 0);
+        Point3D from = new Point3D(fromC.x, fromC.y, 0);
+        Point3D to = new Point3D(toC.x, toC.y, 0);
         Point3D length = to.subtract(from);
         Point3D middle = from.add(length.multiply(0.5));
 
@@ -42,6 +41,8 @@ public class HyperlaneFX extends Group {
         }
         Rotate rZ = new Rotate(angle, Rotate.Z_AXIS);
         this.hyperlaneCylinder.getTransforms().addAll(translate, rZ);
+
+        this.hyperlaneCylinder.setVisible(hyperlane.isVisible());
 
         this.getChildren().add(this.hyperlaneCylinder);
     }

@@ -6,29 +6,12 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Intel {
 
-    private final int object;
-    private final ImmutableList<HostileIntel> hostile;
+    public final int object;
+    public final ImmutableList<HostileIntel> hostile;
 
     public Intel(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.object = o.getInt("object");
-        this.hostile = o.getList("hostile").getAsList(HostileIntel::new);
-    }
-
-    public Intel(int object, ImmutableList<HostileIntel> hostile) {
-        this.object = object;
-        this.hostile = hostile;
-    }
-
-    public int getObject() {
-        return object;
-    }
-
-    public ImmutableList<HostileIntel> getHostile() {
-        return hostile;
+        this.hostile = o.getListAsList("hostile", HostileIntel::new);
     }
 }

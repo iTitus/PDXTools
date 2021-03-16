@@ -42,6 +42,10 @@ public class VisualHyperlane {
         return from == endpoint || to == endpoint;
     }
 
+    public boolean isVisible() {
+        return type != Type.BYPASS_INACTIVE;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -61,7 +65,9 @@ public class VisualHyperlane {
 
     public enum Type {
 
-        NORMAL(MATERIAL_NORMAL), BRIDGE(MATERIAL_BRIDGE), BYPASS_ACTIVE(MATERIAL_BYPASS_ACTIVE),
+        NORMAL(MATERIAL_NORMAL),
+        BRIDGE(MATERIAL_BRIDGE),
+        BYPASS_ACTIVE(MATERIAL_BYPASS_ACTIVE),
         BYPASS_INACTIVE(MATERIAL_BYPASS_INACTIVE);
 
         private final PhongMaterial material;

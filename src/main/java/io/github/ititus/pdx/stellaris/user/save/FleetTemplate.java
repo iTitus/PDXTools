@@ -6,57 +6,20 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class FleetTemplate {
 
-    private final int fleet, queued, count;
-    private final double fleetSize;
-    private final ImmutableList<FleetTemplateDesign> fleetTemplateDesigns;
-    private final HomeBase homeBase;
+    public final int fleet;
+    public final HomeBase homeBase;
+    public final ImmutableList<FleetTemplateDesign> fleetTemplateDesigns;
+    public final int queued;
+    public final int count;
+    public final double fleetSize;
 
     public FleetTemplate(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.fleet = o.getInt("fleet");
-        PdxScriptObject o1 = o.getObject("home_base");
-        this.homeBase = o1 != null ? o1.getAs(HomeBase::of) : null;
-        this.fleetTemplateDesigns = o.getList("fleet_template_design").getAsList(FleetTemplateDesign::new);
-        this.queued = o.getInt("queued");
+        this.homeBase = o.getObjectAsNullOr("home_base", HomeBase::new);
+        this.fleetTemplateDesigns = o.getListAsList("fleet_template_design", FleetTemplateDesign::new);
+        this.queued = o.getInt("queued", 0);
         this.count = o.getInt("count");
         this.fleetSize = o.getDouble("fleet_size");
-    }
-
-    public FleetTemplate(int fleet, int queued, int count, double fleetSize,
-                         ImmutableList<FleetTemplateDesign> fleetTemplateDesigns, HomeBase homeBase) {
-        this.fleet = fleet;
-        this.queued = queued;
-        this.count = count;
-        this.fleetSize = fleetSize;
-        this.fleetTemplateDesigns = fleetTemplateDesigns;
-        this.homeBase = homeBase;
-    }
-
-    public int getFleet() {
-        return fleet;
-    }
-
-    public int getQueued() {
-        return queued;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public double getFleetSize() {
-        return fleetSize;
-    }
-
-    public ImmutableList<FleetTemplateDesign> getFleetTemplateDesigns() {
-        return fleetTemplateDesigns;
-    }
-
-    public HomeBase getHomeBase() {
-        return homeBase;
     }
 }

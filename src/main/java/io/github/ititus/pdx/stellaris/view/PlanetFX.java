@@ -34,15 +34,14 @@ public class PlanetFX extends Group {
         // this.color = Color.rgb((hash >>> 16) & 0xFF, (hash >>> 8) & 0xFF, hash & 0xFF);
 
         this.planetSphere = new Sphere(getPlanetVisualSize(planetPair));
-        this.planetSphere.getTransforms().add(new Translate(planetPair.getTwo().getCoordinate().getX(),
-                planetPair.getTwo().getCoordinate().getY(), 0));
+        this.planetSphere.getTransforms().add(new Translate(planetPair.getTwo().coordinate.x, planetPair.getTwo().coordinate.y, 0));
         // this.planetSphere.setMaterial(new PhongMaterial(this.color));
         this.planetSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             galaxyView.onClickInSystemView(planetPair);
             event.consume();
         });
 
-        this.planetTooltip = new Tooltip(planetPair.getTwo().getName() + " (#" + planetPair.getOne() + ")");
+        this.planetTooltip = new Tooltip(planetPair.getTwo().name + " (#" + planetPair.getOne() + ")");
 
         Circle orbit = createOrbit(Color.LIGHTGRAY);
 
@@ -53,15 +52,14 @@ public class PlanetFX extends Group {
     }
 
     private Circle createOrbit(Color color) {
-        Coordinate c = planetPair.getTwo().getCoordinate();
-        Point3D p = new Point3D(c.getX(), c.getY(), 0);
+        Coordinate c = planetPair.getTwo().coordinate;
+        Point3D p = new Point3D(c.x, c.y, 0);
 
-        int centerId = planetPair.getTwo().isMoon() ? planetPair.getTwo().getMoonOf() : -1;
+        int centerId = planetPair.getTwo().isMoon ? planetPair.getTwo().moonOf : -1;
         Point3D center;
         if (centerId != -1) {
-            Coordinate centerC =
-                    galaxyView.getSave().getGameState().planets.getPlanets().get(centerId).getCoordinate();
-            center = new Point3D(centerC.getX(), centerC.getY(), 0);
+            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(centerId).coordinate;
+            center = new Point3D(centerC.x, centerC.y, 0);
         } else {
             center = Point3D.ZERO;
         }
@@ -80,8 +78,8 @@ public class PlanetFX extends Group {
     private double getPlanetVisualSize(IntObjectPair<Planet> planetPair) {
         double scale = 1D / 30;
 
-        String pC = planetPair.getTwo().getPlanetClass();
-        String pE = planetPair.getTwo().getEntityName();
+        String pC = planetPair.getTwo().planetClass;
+        String pE = planetPair.getTwo().entityName;
         if (pE == null) {
             pE = "";
         }
@@ -126,7 +124,7 @@ public class PlanetFX extends Group {
             assetScale = 1;
         }
 
-        double size = planetPair.getTwo().getPlanetSize();
+        double size = planetPair.getTwo().planetSize;
 
         return entityScale * assetScale * size * scale / 2D;
     }

@@ -7,35 +7,14 @@ import java.time.LocalDate;
 
 public class ActivePolicy {
 
-    private final String policy, selected;
-    private final LocalDate date;
+    public final String policy;
+    public final String selected;
+    public final LocalDate date;
 
     public ActivePolicy(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.policy = o.getString("policy");
         this.selected = o.getString("selected");
-        this.date = o.getDate("date");
-    }
-
-    public ActivePolicy(String policy, String selected, LocalDate date) {
-        this.policy = policy;
-        this.selected = selected;
-        this.date = date;
-    }
-
-    public String getPolicy() {
-        return policy;
-    }
-
-    public String getSelected() {
-        return selected;
-    }
-
-    public LocalDate getDate() {
-        return date;
+        this.date = o.getDate("date", null);
     }
 }

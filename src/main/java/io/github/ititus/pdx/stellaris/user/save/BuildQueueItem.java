@@ -3,77 +3,23 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
-import java.util.Objects;
-
 public class BuildQueueItem {
 
-    private final int planet, slot, id;
-    private final double progress;
-    private final BuildItem item;
-    private final Resources cost;
+    public final int planet;
+    public final int slot;
+    public final int id;
+    public final double progress;
+    public final BuildItem item;
+    public final Resources cost;
 
     public BuildQueueItem(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
-        this.item = o.getObject("item").getAs(BuildItem::new);
+        PdxScriptObject o = s.expectObject();
+        this.item = o.getObjectAs("item", BuildItem::new);
         this.progress = o.getDouble("progress");
         this.planet = o.getInt("planet");
         // TODO: paying_country, sector_build
         this.slot = o.getInt("slot", -1);
-        this.cost = o.getObject("cost").getAs(Resources::of);
+        this.cost = o.getObjectAs("cost", Resources::new);
         this.id = o.getInt("id");
-    }
-
-    public BuildQueueItem(int planet, int slot, int id, double progress, BuildItem item, Resources cost) {
-        this.planet = planet;
-        this.slot = slot;
-        this.id = id;
-        this.progress = progress;
-        this.item = item;
-        this.cost = cost;
-    }
-
-    public int getPlanet() {
-        return planet;
-    }
-
-    public int getSlot() {
-        return slot;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public double getProgress() {
-        return progress;
-    }
-
-    public BuildItem getItem() {
-        return item;
-    }
-
-    public Resources getCost() {
-        return cost;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BuildQueueItem)) {
-            return false;
-        }
-        BuildQueueItem that = (BuildQueueItem) o;
-        return planet == that.planet && slot == that.slot && id == that.id && Double.compare(that.progress, progress) == 0 && Objects.equals(item, that.item) && Objects.equals(cost, that.cost);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(planet, slot, id, progress, item, cost);
     }
 }

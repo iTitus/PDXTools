@@ -12,7 +12,10 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
-public class IOUtil {
+public final class IOUtil {
+
+    private IOUtil() {
+    }
 
     public static Comparator<Path> asciibetical(Path root) {
         return Comparator.comparing(p -> (Files.isDirectory(p) ? (char) 1 : (char) 0) + root.relativize(p).toString());

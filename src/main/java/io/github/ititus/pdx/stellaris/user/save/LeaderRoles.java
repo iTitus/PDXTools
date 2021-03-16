@@ -4,46 +4,17 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class LeaderRoles {
 
-    private final Traits admiral, general, scientist, governor, ruler;
+    public final Traits admiral;
+    public final Traits general;
+    public final Traits scientist;
+    public final Traits governor;
+    public final Traits ruler;
 
     public LeaderRoles(PdxScriptObject o) {
-        this.admiral = get(o, "admiral");
-        this.general = get(o, "general");
-        this.scientist = get(o, "scientist");
-        this.governor = get(o, "governor");
-        this.ruler = get(o, "ruler");
-    }
-
-    public LeaderRoles(Traits admiral, Traits general, Traits scientist, Traits governor, Traits ruler) {
-        this.admiral = admiral;
-        this.general = general;
-        this.scientist = scientist;
-        this.governor = governor;
-        this.ruler = ruler;
-    }
-
-    private static Traits get(PdxScriptObject o, String key) {
-        PdxScriptObject o1 = o.getObject(key);
-        return o1 != null ? o1.getAs(Traits::of) : null;
-    }
-
-    public Traits getAdmiral() {
-        return admiral;
-    }
-
-    public Traits getGeneral() {
-        return general;
-    }
-
-    public Traits getScientist() {
-        return scientist;
-    }
-
-    public Traits getGovernor() {
-        return governor;
-    }
-
-    public Traits getRuler() {
-        return ruler;
+        this.admiral = o.getObjectAsNullOr("admiral", Traits::new);
+        this.general = o.getObjectAsNullOr("general", Traits::new);
+        this.scientist = o.getObjectAsNullOr("scientist", Traits::new);
+        this.governor = o.getObjectAsNullOr("governor", Traits::new);
+        this.ruler = o.getObjectAsNullOr("ruler", Traits::new);
     }
 }

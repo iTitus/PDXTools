@@ -43,10 +43,10 @@ public final class MutableInt {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof MutableInt)) {
+        } else if (!(o instanceof MutableInt)) {
             return false;
         }
+
         MutableInt that = (MutableInt) o;
         return i == that.i;
     }

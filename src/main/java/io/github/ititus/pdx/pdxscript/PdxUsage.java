@@ -8,11 +8,14 @@ import org.eclipse.collections.impl.factory.Sets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PdxUsage implements PdxConstants {
+import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
+
+public class PdxUsage {
 
     private static final SetIterable<String> EXPECTED_INT = Sets.immutable.of(INT, NEG_INT);
     private static final SetIterable<String> EXPECTED_U_INT = Sets.immutable.of(U_INT, INT);
     private static final SetIterable<String> EXPECTED_LONG = Sets.immutable.of(LONG, INT, NEG_INT, U_INT);
+    private static final SetIterable<String> EXPECTED_DOUBLE = Sets.immutable.of(INT, NEG_INT, U_INT, LONG, DOUBLE);
 
     private final MutableSet<String> expectedTypes;
     private final MutableSet<String> actualTypes;
@@ -42,7 +45,7 @@ public class PdxUsage implements PdxConstants {
     }
 
     public boolean isError() {
-        if (expectedTypes.size() == 1 && actualTypes.size() == 1 && expectedTypes.getOnly().equalsIgnoreCase(actualTypes.getOnly())) {
+        if (expectedTypes.equals(actualTypes)) {
             return false;
         } else if (expectedTypes.size() == 1) {
             String expected = expectedTypes.getOnly();
@@ -53,6 +56,8 @@ public class PdxUsage implements PdxConstants {
             } else if (U_INT.equals(expected) && actualTypes.difference(EXPECTED_U_INT).isEmpty()) {
                 return false;
             } else if (LONG.equals(expected) && actualTypes.difference(EXPECTED_LONG).isEmpty()) {
+                return false;
+            } else if (DOUBLE.equals(expected) && actualTypes.contains(DOUBLE) && actualTypes.difference(EXPECTED_DOUBLE).isEmpty()) {
                 return false;
             } else if (IMPLICIT_LIST.equals(expected) && !actualNonNull.isEmpty()) {
                 return false;

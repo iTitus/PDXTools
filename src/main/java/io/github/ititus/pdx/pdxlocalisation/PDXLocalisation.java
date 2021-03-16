@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
-import io.github.ititus.pdx.pdxscript.PdxConstants;
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -10,7 +9,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public final class PDXLocalisation implements PdxConstants {
+import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
+
+public final class PDXLocalisation {
 
     private final ImmutableMap<String, ImmutableMap<String, String>> localisation;
 

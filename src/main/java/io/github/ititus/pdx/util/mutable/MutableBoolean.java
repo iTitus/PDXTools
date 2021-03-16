@@ -62,10 +62,10 @@ public final class MutableBoolean {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof MutableBoolean)) {
+        } else if (!(o instanceof MutableBoolean)) {
             return false;
         }
+
         MutableBoolean that = (MutableBoolean) o;
         return b == that.b;
     }

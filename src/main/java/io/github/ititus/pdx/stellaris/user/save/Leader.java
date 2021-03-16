@@ -2,191 +2,64 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 import java.time.LocalDate;
 
 public class Leader {
 
-    private final int speciesIndex, country, creator, level, leaderTerms, age, popFaction;
-    private final double experience;
-    private final String portrait, gender, leaderClass, preRulerLeaderClass, agenda;
-    private final LocalDate start, end, dateAdded, date;
-    private final LeaderName name;
-    private final Location location, preRulerLocation, targetCoordinate;
-    private final Flags flags;
-    private final Type mandate;
-    private final LeaderDesign design;
-    private final LeaderRoles roles;
+    public final int speciesIndex;
+    public final int country;
+    public final int creator;
+    public final int level;
+    public final int leaderTerms;
+    public final int age;
+    public final int popFaction;
+    public final double experience;
+    public final String portrait;
+    public final String gender;
+    public final String leaderClass;
+    public final String preRulerLeaderClass;
+    public final String agenda;
+    public final LocalDate dateAdded;
+    public final LocalDate date;
+    public final LeaderName name;
+    public final Location location;
+    public final Location preRulerLocation;
+    public final Location targetCoordinate;
+    public final ImmutableMap<String, FlagData> flags;
+    public final Type mandate;
+    public final LeaderDesign design;
+    public final boolean immortal;
+    public final int cooldown;
+    public final LeaderRoles roles;
 
     public Leader(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
-        PdxScriptObject o1 = o.getObject("name");
-        this.name = o1 != null ? o1.getAs(LeaderName::new) : null;
+        PdxScriptObject o = s.expectObject();
+        this.name = o.getObjectAsNullOr("name", LeaderName::new);
         this.speciesIndex = o.getInt("species_index");
         this.portrait = o.getString("portrait");
-        this.gender = o.getString("gender");
-        this.country = o.getInt("country");
+        this.gender = o.getString("gender", null);
+        this.country = o.getInt("country", -1);
         this.creator = o.getInt("creator");
         this.leaderClass = o.getString("class");
-        this.preRulerLeaderClass = o.getString("pre_ruler_class");
-        this.experience = o.getDouble("experience");
+        this.preRulerLeaderClass = o.getString("pre_ruler_class", null);
+        this.experience = o.getDouble("experience", 0);
         this.level = o.getInt("level");
-        o1 = o.getObject("location");
-        this.location = o1 != null ? o1.getAs(Location::of) : null;
-        o1 = o.getObject("pre_ruler_location");
-        this.preRulerLocation = o1 != null ? o1.getAs(Location::of) : null;
-        o1 = o.getObject("target_coordinate");
-        this.targetCoordinate = o1 != null ? o1.getAs(Location::of) : null;
-        this.start = o.getDate("start");
-        this.end = o.getDate("end");
+        this.location = o.getObjectAsNullOr("location", Location::new);
+        this.preRulerLocation = o.getObjectAsNullOr("pre_ruler_location", Location::new);
+        this.targetCoordinate = o.getObjectAsNullOr("target_coordinate", Location::new);
         this.leaderTerms = o.getInt("leader_terms", 1);
-        this.dateAdded = o.getDate("date_added");
+        this.dateAdded = o.getDate("date_added", null);
         this.date = o.getDate("date");
         this.age = o.getInt("age");
         this.popFaction = o.getInt("pop_faction", -1);
-        o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
+        this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
         this.agenda = o.getString("agenda");
-        o1 = o.getObject("mandate");
-        this.mandate = o1 != null ? o1.getAs(Type::new) : null;
-        o1 = o.getObject("design");
-        this.design = o1 != null ? o1.getAs(LeaderDesign::new) : null;
-        this.roles = o.getObject("roles").getAs(LeaderRoles::new);
-    }
-
-    public Leader(int speciesIndex, int country, int creator, int level, int leaderTerms, int age, int popFaction,
-                  double experience, String portrait, String gender, String leaderClass, String preRulerLeaderClass,
-                  String agenda, LocalDate start, LocalDate end, LocalDate dateAdded, LocalDate date, LeaderName name
-            , Location location, Location preRulerLocation, Location targetCoordinate, Flags flags, Type mandate,
-                  LeaderDesign design, LeaderRoles roles) {
-        this.speciesIndex = speciesIndex;
-        this.country = country;
-        this.creator = creator;
-        this.level = level;
-        this.leaderTerms = leaderTerms;
-        this.age = age;
-        this.popFaction = popFaction;
-        this.experience = experience;
-        this.portrait = portrait;
-        this.gender = gender;
-        this.leaderClass = leaderClass;
-        this.preRulerLeaderClass = preRulerLeaderClass;
-        this.agenda = agenda;
-        this.start = start;
-        this.end = end;
-        this.dateAdded = dateAdded;
-        this.date = date;
-        this.name = name;
-        this.location = location;
-        this.preRulerLocation = preRulerLocation;
-        this.targetCoordinate = targetCoordinate;
-        this.flags = flags;
-        this.mandate = mandate;
-        this.design = design;
-        this.roles = roles;
-    }
-
-    public int getSpeciesIndex() {
-        return speciesIndex;
-    }
-
-    public int getCountry() {
-        return country;
-    }
-
-    public int getCreator() {
-        return creator;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public int getLeaderTerms() {
-        return leaderTerms;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public int getPopFaction() {
-        return popFaction;
-    }
-
-    public double getExperience() {
-        return experience;
-    }
-
-    public String getPortrait() {
-        return portrait;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public String getLeaderClass() {
-        return leaderClass;
-    }
-
-    public String getPreRulerLeaderClass() {
-        return preRulerLeaderClass;
-    }
-
-    public String getAgenda() {
-        return agenda;
-    }
-
-    public LocalDate getStart() {
-        return start;
-    }
-
-    public LocalDate getEnd() {
-        return end;
-    }
-
-    public LocalDate getDateAdded() {
-        return dateAdded;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LeaderName getName() {
-        return name;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public Location getPreRulerLocation() {
-        return preRulerLocation;
-    }
-
-    public Location getTargetCoordinate() {
-        return targetCoordinate;
-    }
-
-    public Flags getFlags() {
-        return flags;
-    }
-
-    public Type getMandate() {
-        return mandate;
-    }
-
-    public LeaderDesign getDesign() {
-        return design;
-    }
-
-    public LeaderRoles getRoles() {
-        return roles;
+        this.mandate = o.getObjectAsNullOr("mandate", Type::new);
+        this.design = o.getObjectAsNullOr("design", LeaderDesign::new);
+        this.immortal = o.getBoolean("immortal", false);
+        this.cooldown = o.getInt("cooldown", 0);
+        this.roles = o.getObjectAs("roles", LeaderRoles::new);
     }
 }

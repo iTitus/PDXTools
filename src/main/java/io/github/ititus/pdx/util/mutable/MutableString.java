@@ -2,7 +2,7 @@ package io.github.ititus.pdx.util.mutable;
 
 import java.util.Objects;
 
-public class MutableString {
+public final class MutableString {
 
     private String s;
 
@@ -43,10 +43,10 @@ public class MutableString {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof MutableString)) {
+        } else if (!(o instanceof MutableString)) {
             return false;
         }
+
         MutableString that = (MutableString) o;
         return Objects.equals(s, that.s);
     }

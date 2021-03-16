@@ -37,7 +37,7 @@ public class Common {
         this.commonDir = commonDir;
 
         this.commonDataLoader = new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index, progressMessageUpdater);
-        this.planetClasses = this.commonDataLoader.getRawData().getObject("planet_classes").getAs(PlanetClasses::new);
+        this.planetClasses = this.commonDataLoader.getRawData().getObjectAs("planet_classes", PlanetClasses::new);
     }
 
     public Path getInstallDir() {

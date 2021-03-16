@@ -5,17 +5,9 @@ import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class ArchaeologicalSites {
 
-    private final ImmutableIntObjectMap<ArchaeologicalSite> archaeologicalSites;
+    public final ImmutableIntObjectMap<ArchaeologicalSite> archaeologicalSites;
 
     public ArchaeologicalSites(PdxScriptObject o) {
-        this.archaeologicalSites = o.getObject("sites").getAsIntObjectMap(ArchaeologicalSite::new);
-    }
-
-    public ArchaeologicalSites(ImmutableIntObjectMap<ArchaeologicalSite> archaeologicalSites) {
-        this.archaeologicalSites = archaeologicalSites;
-    }
-
-    public ImmutableIntObjectMap<ArchaeologicalSite> getArchaeologicalSites() {
-        return archaeologicalSites;
+        this.archaeologicalSites = o.getObjectAsIntObjectMap("sites", ArchaeologicalSite::new);
     }
 }

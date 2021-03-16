@@ -1,114 +1,46 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
-import org.eclipse.collections.impl.factory.Lists;
 
 import java.time.LocalDate;
 
 public class AI {
 
-    private final boolean initialized, colonize, station;
-    private final int target, randomSeed, randomCount, syncedRandomSeed, syncedRandomCount;
-    private final double robotColonies, robotColoniesWithFreeBuildings;
-    private final LocalDate prepareWarDate;
-    private final ImmutableDoubleList budget;
-    private final ImmutableList<AIStrategy> strategies;
-    private final ImmutableList<AIAttitude> attitudes;
+    public final boolean initialized;
+    public final boolean colonize;
+    public final ImmutableDoubleList budget;
+    public final ImmutableList<AIStrategy> strategies;
+    public final LocalDate prepareWarDate;
+    public final boolean war;
+    public final boolean station;
+    public final int robotColonies;
+    public final int robotColoniesWithFreeBuildings;
+    public final int target;
+    public final ImmutableList<AIAttitude> attitudes;
+    public final int randomSeed;
+    public final int randomCount;
+    public final int syncedRandomSeed;
+    public final int syncedRandomCount;
+    public final ImmutableList<DiploAction> lastDiploActions;
 
     public AI(PdxScriptObject o) {
         this.initialized = o.getBoolean("initialized");
-        this.colonize = o.getBoolean("colonize");
-        this.budget = o.getList("budget").getAsDoubleList();
-        this.strategies = o.getImplicitList("strategy").getAsList(AIStrategy::new);
+        this.colonize = o.getBoolean("colonize", false);
+        this.budget = o.getListAsDoubleList("budget");
+        this.strategies = o.getImplicitListAsList("strategy", AIStrategy::new);
         this.prepareWarDate = o.getDate("prepare_war_date");
+        this.war = o.getBoolean("war", false);
         this.station = o.getBoolean("station", true);
-        this.robotColonies = o.getDouble("robot_colonies");
-        this.robotColoniesWithFreeBuildings = o.getDouble("robot_colonies_with_free_buildings");
+        this.robotColonies = o.getInt("robot_colonies");
+        this.robotColoniesWithFreeBuildings = o.getInt("robot_colonies_with_free_buildings");
         this.target = o.getInt("target", -1);
-        PdxScriptList l = o.getList("attitude");
-        this.attitudes = l != null ? l.getAsList(AIAttitude::new) : Lists.immutable.empty();
+        this.attitudes = o.getListAsEmptyOrList("attitude", AIAttitude::new);
         this.randomSeed = o.getUnsignedInt("random_seed");
         this.randomCount = o.getInt("random_count");
         this.syncedRandomSeed = o.getUnsignedInt("synced_random_seed");
         this.syncedRandomCount = o.getUnsignedInt("synced_random_count");
-    }
-
-    public AI(boolean initialized, boolean colonize, boolean station, int target, int randomSeed, int randomCount,
-              int syncedRandomSeed, int syncedRandomCount, double robotColonies,
-              double robotColoniesWithFreeBuildings, LocalDate prepareWarDate, ImmutableDoubleList budget,
-              ImmutableList<AIStrategy> strategies, ImmutableList<AIAttitude> attitudes) {
-        this.initialized = initialized;
-        this.colonize = colonize;
-        this.station = station;
-        this.target = target;
-        this.randomSeed = randomSeed;
-        this.randomCount = randomCount;
-        this.syncedRandomSeed = syncedRandomSeed;
-        this.syncedRandomCount = syncedRandomCount;
-        this.robotColonies = robotColonies;
-        this.robotColoniesWithFreeBuildings = robotColoniesWithFreeBuildings;
-        this.prepareWarDate = prepareWarDate;
-        this.budget = budget;
-        this.strategies = strategies;
-        this.attitudes = attitudes;
-    }
-
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    public boolean isColonize() {
-        return colonize;
-    }
-
-    public boolean isStation() {
-        return station;
-    }
-
-    public int getTarget() {
-        return target;
-    }
-
-    public int getRandomSeed() {
-        return randomSeed;
-    }
-
-    public int getRandomCount() {
-        return randomCount;
-    }
-
-    public int getSyncedRandomSeed() {
-        return syncedRandomSeed;
-    }
-
-    public int getSyncedRandomCount() {
-        return syncedRandomCount;
-    }
-
-    public double getRobotColonies() {
-        return robotColonies;
-    }
-
-    public double getRobotColoniesWithFreeBuildings() {
-        return robotColoniesWithFreeBuildings;
-    }
-
-    public LocalDate getPrepareWarDate() {
-        return prepareWarDate;
-    }
-
-    public ImmutableDoubleList getBudget() {
-        return budget;
-    }
-
-    public ImmutableList<AIStrategy> getStrategies() {
-        return strategies;
-    }
-
-    public ImmutableList<AIAttitude> getAttitudes() {
-        return attitudes;
+        this.lastDiploActions = o.getListAsEmptyOrList("last_diplo_actions", DiploAction::new);
     }
 }

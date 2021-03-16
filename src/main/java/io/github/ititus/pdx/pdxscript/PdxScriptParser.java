@@ -17,7 +17,9 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 
-public final class PdxScriptParser implements PdxConstants {
+import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
+
+public final class PdxScriptParser {
 
     private static final CountingSet<String> unknownLiterals = new CountingSet<>();
 
@@ -134,14 +136,14 @@ public final class PdxScriptParser implements PdxConstants {
             } else if (HSV.equals(token)) {
                 tokens.next();
                 IPdxScript s = parse(tokens);
-                value = PdxColorWrapper.fromHSV(((PdxScriptList) s).getAsNumberArray());
+                value = PdxColor.fromHSV(((PdxScriptList) s).getAsNumberArray());
             } else if (RGB.equals(token)) {
                 tokens.next();
                 IPdxScript s = parse(tokens);
-                value = PdxColorWrapper.fromRGB(((PdxScriptList) s).getAsNumberArray());
+                value = PdxColor.fromRGB(((PdxScriptList) s).getAsNumberArray());
             } else {
                 try {
-                    value = PdxColorWrapper.fromRGBHex(token);
+                    value = PdxColor.fromRGBHex(token);
                     tokens.next();
                 } catch (IllegalArgumentException ignored1) {
                     String oldToken = token;
@@ -222,8 +224,7 @@ public final class PdxScriptParser implements PdxConstants {
                             PdxScriptValue v = (PdxScriptValue) s;
                             Object o = v.getValue();
                             if (!(o instanceof Number)) {
-                                throw new RuntimeException("Can only do math with numbers but got " + (o != null ?
-                                        o.getClass().getTypeName() : NULL));
+                                throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
                             }
                             value = operation.apply((Number) value, (Number) o);
                             tokens.next();
@@ -260,7 +261,6 @@ public final class PdxScriptParser implements PdxConstants {
         return new Iterator<>() {
 
             final StringBuilder b = new StringBuilder();
-            Character last = null;
             final MutableBoolean first = new MutableBoolean(true);
             final MutableBoolean openQuotes = new MutableBoolean(false);
             final MutableBoolean token =
@@ -272,7 +272,7 @@ public final class PdxScriptParser implements PdxConstants {
             final MutableBoolean mathOperator =
                     new MutableBoolean(false);
             final MutableBoolean done = new MutableBoolean(true);
-
+            Character last = null;
             String next = null;
             boolean hasNextCalled = false;
 

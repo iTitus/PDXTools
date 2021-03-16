@@ -6,11 +6,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 public class ArchaeologicalSite {
 
     public ArchaeologicalSite(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         // TODO: this
     }
 }

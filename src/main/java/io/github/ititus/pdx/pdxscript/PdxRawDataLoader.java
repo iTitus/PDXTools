@@ -23,7 +23,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-public class PdxRawDataLoader implements PdxConstants {
+import static io.github.ititus.pdx.pdxscript.PdxConstants.EMPTY;
+
+public class PdxRawDataLoader {
 
     private final Path path;
     private final ImmutableSet<String> blacklist;

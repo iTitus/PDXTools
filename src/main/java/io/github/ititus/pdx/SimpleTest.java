@@ -12,6 +12,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -89,26 +90,25 @@ public class SimpleTest {
         StellarisSave save = /*null; //*/ getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
-        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ?
-                game.getRawDataLoader().getErrors() : null;
-        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation =
-                game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
-        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation =
-                game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
-        ImmutableList<Pair<String, Throwable>> userDataErrors =
-                userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() :
-                        null;
+        ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
+        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
         ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
 
         try {
             Files.createDirectories(DEBUG_OUT.getParent());
             Files.write(DEBUG_OUT, new byte[0]);
+            if (unknownLiterals != null) {
+                Files.write(DEBUG_OUT, unknownLiterals, StandardOpenOption.APPEND);
+                // unknownLiterals.forEach(System.out::println);
+            }
             if (saveParseErrors != null) {
                 Files.write(DEBUG_OUT, saveParseErrors, StandardOpenOption.APPEND);
                 // saveParseErrors.forEach(System.out::println);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new UncheckedIOException(e);
         }
 
         System.out.println("Total Loading Time: " + DurationFormatter.formatSeconds(s.stop()));

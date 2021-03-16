@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
-public enum PdxRelation implements PdxConstants {
+public enum PdxRelation {
 
     EQUALS(PdxConstants.EQUALS),
     LESS_THAN(PdxConstants.LESS_THAN),

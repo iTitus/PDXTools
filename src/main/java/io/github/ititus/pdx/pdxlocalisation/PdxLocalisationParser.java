@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
-import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
@@ -22,7 +21,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public final class PdxLocalisationParser implements PdxConstants {
+import static io.github.ititus.pdx.pdxscript.PdxConstants.UTF_8_BOM;
+
+public final class PdxLocalisationParser {
 
     private PdxLocalisationParser() {
     }

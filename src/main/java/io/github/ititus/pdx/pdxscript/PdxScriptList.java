@@ -1,16 +1,10 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.Deduplicator;
-import io.github.ititus.pdx.util.Util;
-import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
-import org.eclipse.collections.api.list.primitive.ImmutableIntList;
-import org.eclipse.collections.api.list.primitive.ImmutableLongList;
+import org.eclipse.collections.api.list.primitive.*;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
@@ -19,14 +13,20 @@ import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
+import static org.eclipse.collections.impl.collector.Collectors2.toImmutableList;
+
 public final class PdxScriptList implements IPdxScript {
 
-    private static final Deduplicator<PdxScriptList> DEDUPLICATOR = new Deduplicator<>(l -> !l.list.isEmpty());
+    public static final PdxScriptList EMPTY_NORMAL = builder().buildRaw(Mode.NORMAL, PdxRelation.EQUALS);
+    public static final PdxScriptList EMPTY_COMMA = builder().buildRaw(Mode.COMMA, PdxRelation.EQUALS);
+    public static final PdxScriptList EMPTY_IMPLICIT = builder().buildRaw(Mode.IMPLICIT, PdxRelation.EQUALS);
 
     private final Mode mode;
     private final PdxRelation relation;
@@ -55,196 +55,183 @@ public final class PdxScriptList implements IPdxScript {
         return list.size();
     }
 
-    private IPdxScript getRaw(int i) {
+    public IPdxScript getRaw(int i) {
         return i >= 0 && i < size() ? list.get(i) : null;
     }
 
     public IPdxScript get(int i) {
-        return getRaw(i);
-    }
-
-    public Object getValue(int i) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            return ((PdxScriptValue) o).getValue();
+        IPdxScript raw = getRaw(i);
+        if (raw == null) {
+            throw new NoSuchElementException("given index " + i + " contains no value");
         }
-        return null;
+
+        return raw;
     }
 
-    public String getString(int i) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof String) {
-                return (String) v;
-            }
-        }
-        return null;
+    public IPdxScript get(int i, IPdxScript def) {
+        IPdxScript raw = getRaw(i);
+        return raw != null ? raw : def;
     }
 
-    public boolean getBoolean(int i) {
-        return getBoolean(i, false);
+    public Stream<IPdxScript> stream() {
+        return list.stream();
     }
 
-    public boolean getBoolean(int i, boolean def) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Boolean) {
-                return (boolean) v;
-            }
-        }
-        return def;
+    public Stream<PdxScriptValue> valueStream() {
+        return list.stream()
+                .map(IPdxScript::expectValue);
     }
 
-    public int getUnsignedInt(int i) {
-        return getUnsignedInt(i, 0);
+    public Stream<PdxScriptList> listStream() {
+        return list.stream()
+                .map(IPdxScript::expectList);
     }
 
-    public int getUnsignedInt(int i, int def) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Integer) {
-                return (int) v;
-            } else if (v instanceof Long) {
-                long l = (long) v;
-                if (l >= 0 && l <= UNSIGNED_INT_MAX_LONG) {
-                    return (int) l;
-                }
-            }
-        }
-        return def;
+    public Stream<PdxScriptObject> objectStream() {
+        return list.stream()
+                .map(IPdxScript::expectObject);
     }
 
-    public int getInt(int i) {
-        return getInt(i, 0);
-    }
-
-    public int getInt(int i, int def) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Integer) {
-                return (int) v;
-            }
-        }
-        return def;
-    }
-
-    public long getLong(int i) {
-        return getLong(i, 0);
-    }
-
-    public long getLong(int i, long def) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Long || v instanceof Integer) {
-                return ((Number) v).longValue();
-            }
-        }
-        return def;
-    }
-
-    public double getDouble(int i) {
-        return getDouble(i, 0);
-    }
-
-    public double getDouble(int i, double def) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Double) {
-                return (double) v;
-            }
-        }
-        return def;
-    }
-
-    public LocalDate getDate(int i) {
-        IPdxScript o = get(i);
-        if (o instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) o).getValue();
-            if (v instanceof Date) {
-                return (LocalDate) v;
-            }
-        }
-        return null;
-    }
-
-    public Stream<PdxScriptValue> getAsValueStream() {
-        return list.stream().filter(s -> s instanceof PdxScriptValue).map(s -> (PdxScriptValue) s);
-    }
-
-    public Stream<String> getAsStringStream() {
-        return getAsValueStream().filter(v -> v.getValue() instanceof String).map(v -> (String) v.getValue());
-    }
-
-    public String[] getAsStringArray() {
-        return getAsStringStream().toArray(String[]::new);
-    }
-
-    public ImmutableList<String> getAsStringList() {
-        return getAsStringStream().collect(Collectors2.toImmutableList());
-    }
-
-    public Stream<Number> getAsNumberStream() {
-        return getAsValueStream().filter(v -> v.getValue() instanceof Number).map(v -> (Number) v.getValue());
-    }
-
-    public Number[] getAsNumberArray() {
-        return getAsNumberStream().toArray(Number[]::new);
-    }
-
-    public ImmutableList<Number> getAsNumberList() {
-        return getAsNumberStream().collect(Collectors2.toImmutableList());
-    }
-
-    public IntStream getAsIntStream() {
-        return getAsNumberStream().mapToInt(Number::intValue);
+    public IntStream intStream() {
+        return valueStream()
+                .mapToInt(PdxScriptValue::expectInt);
     }
 
     public int[] getAsIntArray() {
-        return getAsIntStream().toArray();
+        return intStream()
+                .toArray();
     }
 
     public ImmutableIntList getAsIntList() {
-        return IntLists.immutable.with(getAsIntArray());
+        return intStream()
+                .collect(IntLists.mutable::empty, MutableIntList::add, MutableIntList::addAll)
+                .toImmutable();
     }
 
-    public LongStream getAsLongStream() {
-        return getAsNumberStream().mapToLong(Number::longValue);
+    public IntStream unsignedIntStream() {
+        return valueStream()
+                .mapToInt(PdxScriptValue::expectUnsignedInt);
+    }
+
+    public int[] getAsUnsignedIntArray() {
+        return intStream()
+                .toArray();
+    }
+
+    public ImmutableIntList getAsUnsignedIntList() {
+        return intStream()
+                .collect(IntLists.mutable::empty, MutableIntList::add, MutableIntList::addAll)
+                .toImmutable();
+    }
+
+    public LongStream longStream() {
+        return valueStream()
+                .mapToLong(PdxScriptValue::expectLong);
     }
 
     public long[] getAsLongArray() {
-        return getAsLongStream().toArray();
+        return longStream()
+                .toArray();
     }
 
     public ImmutableLongList getAsLongList() {
-        return LongLists.immutable.with(getAsLongArray());
+        return longStream()
+                .collect(LongLists.mutable::empty, MutableLongList::add, MutableLongList::addAll)
+                .toImmutable();
     }
 
-    public DoubleStream getAsDoubleStream() {
-        return getAsNumberStream().mapToDouble(Number::doubleValue);
+    public DoubleStream doubleStream() {
+        return valueStream()
+                .mapToDouble(PdxScriptValue::expectDouble);
     }
 
     public double[] getAsDoubleArray() {
-        return getAsDoubleStream().toArray();
+        return doubleStream()
+                .toArray();
     }
 
     public ImmutableDoubleList getAsDoubleList() {
-        return DoubleLists.immutable.with(getAsDoubleArray());
+        return doubleStream()
+                .collect(DoubleLists.mutable::empty, MutableDoubleList::add, MutableDoubleList::addAll)
+                .toImmutable();
     }
 
-    public <T> ImmutableList<T> getAsList(Function<IPdxScript, T> fct) {
-        return list.collect(fct);
+    public Stream<Number> numberStream() {
+        return valueStream()
+                .map(PdxScriptValue::expectNumber);
+    }
+
+    public Number[] getAsNumberArray() {
+        return numberStream()
+                .toArray(Number[]::new);
+    }
+
+    public ImmutableList<Number> getAsNumberList() {
+        return numberStream()
+                .collect(toImmutableList());
+    }
+
+    public Stream<String> stringStream() {
+        return valueStream()
+                .map(PdxScriptValue::expectString);
+    }
+
+    public String[] getAsStringArray() {
+        return stringStream()
+                .toArray(String[]::new);
+    }
+
+    public ImmutableList<String> getAsStringList() {
+        return stringStream()
+                .collect(toImmutableList());
+    }
+
+    public Stream<LocalDate> dateStream() {
+        return valueStream()
+                .map(PdxScriptValue::expectDate);
+    }
+
+    public LocalDate[] getAsDateArray() {
+        return dateStream()
+                .toArray(LocalDate[]::new);
+    }
+
+    public ImmutableList<LocalDate> getAsDateList() {
+        return dateStream()
+                .collect(toImmutableList());
+    }
+
+    public Stream<PdxColor> colorStream() {
+        return valueStream()
+                .map(PdxScriptValue::expectColor);
+    }
+
+    public PdxColor[] getAsColorArray() {
+        return colorStream()
+                .toArray(PdxColor[]::new);
+    }
+
+    public ImmutableList<PdxColor> getAsColorList() {
+        return colorStream()
+                .collect(toImmutableList());
+    }
+
+    public <T> ImmutableList<T> getAsList(Function<? super IPdxScript, ? extends T> fct) {
+        return stream()
+                .map(fct)
+                .collect(toImmutableList());
     }
 
     @Override
     public PdxScriptList append(IPdxScript script) {
-        return mode == Mode.IMPLICIT ? builder().addAllIterable(list).add(script).build(Mode.IMPLICIT,
-                PdxRelation.EQUALS) : IPdxScript.super.append(script);
+        if (mode == Mode.IMPLICIT) {
+            return builder()
+                    .addAllIterable(list)
+                    .add(script)
+                    .build(mode, relation);
+        }
+
+        return IPdxScript.super.append(script);
     }
 
     @Override
@@ -255,11 +242,11 @@ public final class PdxScriptList implements IPdxScript {
 
         StringBuilder b = new StringBuilder();
 
-        IPdxScript.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
+        PdxHelper.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
 
         // TODO: Add support for printing lists in comma mode
         if (mode == Mode.COMMA) {
-            b.append(Util.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
+            b.append(PdxHelper.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
         }
 
         list.forEach(script -> {
@@ -268,7 +255,7 @@ public final class PdxScriptList implements IPdxScript {
             b.append(LINE_FEED);
         });
 
-        IPdxScript.listObjectClose(indent, root || mode == Mode.IMPLICIT, b, list.isEmpty());
+        PdxHelper.listObjectClose(indent, root || mode == Mode.IMPLICIT, b, list.isEmpty());
 
         return b.toString();
     }
@@ -360,7 +347,7 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         public PdxScriptList build(Mode mode, PdxRelation relation) {
-            return DEDUPLICATOR.deduplicate(buildRaw(mode, relation));
+            return buildRaw(mode, relation);
         }
 
         public PdxScriptList buildRaw(Mode mode, PdxRelation relation) {

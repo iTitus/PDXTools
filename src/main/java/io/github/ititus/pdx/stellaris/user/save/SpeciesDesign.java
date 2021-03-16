@@ -5,8 +5,13 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class SpeciesDesign {
 
-    private final String speciesClass, portrait, name, plural, adjective, nameList;
-    private final ImmutableList<String> traits;
+    public final String speciesClass;
+    public final String portrait;
+    public final String name;
+    public final String plural;
+    public final String adjective;
+    public final String nameList;
+    public final ImmutableList<String> traits;
 
     public SpeciesDesign(PdxScriptObject o) {
         this.speciesClass = o.getString("class");
@@ -15,45 +20,6 @@ public class SpeciesDesign {
         this.plural = o.getString("plural");
         this.adjective = o.getString("adjective");
         this.nameList = o.getString("name_list");
-        this.traits = o.getImplicitList("trait").getAsStringList();
-    }
-
-    public SpeciesDesign(String speciesClass, String portrait, String name, String plural, String adjective,
-                         String nameList, ImmutableList<String> traits) {
-        this.speciesClass = speciesClass;
-        this.portrait = portrait;
-        this.name = name;
-        this.plural = plural;
-        this.adjective = adjective;
-        this.nameList = nameList;
-        this.traits = traits;
-    }
-
-    public String getSpeciesClass() {
-        return speciesClass;
-    }
-
-    public String getPortrait() {
-        return portrait;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPlural() {
-        return plural;
-    }
-
-    public String getAdjective() {
-        return adjective;
-    }
-
-    public String getNameList() {
-        return nameList;
-    }
-
-    public ImmutableList<String> getTraits() {
-        return traits;
+        this.traits = o.getImplicitListAsStringList("trait");
     }
 }

@@ -5,35 +5,14 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Hyperlane {
 
-    private final boolean bridge;
-    private final int to;
-    private final double length;
+    public final int to;
+    public final double length;
+    public final boolean bridge;
 
     public Hyperlane(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
+        PdxScriptObject o = s.expectObject();
         this.to = o.getInt("to");
         this.length = o.getDouble("length");
-        this.bridge = o.getBoolean("bridge");
-    }
-
-    public Hyperlane(boolean bridge, int to, double length) {
-        this.bridge = bridge;
-        this.to = to;
-        this.length = length;
-    }
-
-    public boolean isBridge() {
-        return bridge;
-    }
-
-    public int getTo() {
-        return to;
-    }
-
-    public double getLength() {
-        return length;
+        this.bridge = o.getBoolean("bridge", false);
     }
 }

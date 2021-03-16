@@ -2,73 +2,28 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.api.list.primitive.ImmutableLongList;
+import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 
 public class Scope {
 
-    private final int id;
-    private final String type;
-    private final ImmutableIntList random;
-    private final ImmutableList<SavedEventTarget> savedEventTarget;
-    private final Scope root, from, prev;
-    private final Variables variables;
+    public final int id;
+    public final String type;
+    public final ImmutableLongList random;
+    public final ImmutableList<SavedEventTarget> savedEventTarget;
+    public final Scope root;
+    public final Scope from;
+    public final Scope prev;
+    public final ImmutableObjectDoubleMap<String> variables;
 
     public Scope(PdxScriptObject o) {
         this.type = o.getString("type");
         this.id = o.getUnsignedInt("id");
-        this.random = o.getList("random").getAsIntList();
-        PdxScriptObject o1 = o.getObject("root");
-        this.root = o1 != null ? o1.getAs(Scope::new) : null;
-        o1 = o.getObject("from");
-        this.from = o1 != null ? o1.getAs(Scope::new) : null;
-        o1 = o.getObject("prev");
-        this.prev = o1 != null ? o1.getAs(Scope::new) : null;
-        this.savedEventTarget = o.getImplicitList("saved_event_target").getAsList(SavedEventTarget::new);
-        o1 = o.getObject("variables");
-        this.variables = o1 != null ? o1.getAs(Variables::new) : null;
-    }
-
-    public Scope(int id, String type, ImmutableIntList random, ImmutableList<SavedEventTarget> savedEventTarget,
-                 Scope root, Scope from, Scope prev, Variables variables) {
-        this.id = id;
-        this.type = type;
-        this.random = random;
-        this.savedEventTarget = savedEventTarget;
-        this.root = root;
-        this.from = from;
-        this.prev = prev;
-        this.variables = variables;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public ImmutableIntList getRandom() {
-        return random;
-    }
-
-    public ImmutableList<SavedEventTarget> getSavedEventTarget() {
-        return savedEventTarget;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Scope getRoot() {
-        return root;
-    }
-
-    public Scope getFrom() {
-        return from;
-    }
-
-    public Scope getPrev() {
-        return prev;
-    }
-
-    public Variables getVariables() {
-        return variables;
+        this.random = o.getListAsLongList("random");
+        this.root = o.getObjectAsNullOr("root", Scope::new);
+        this.from = o.getObjectAsNullOr("from", Scope::new);
+        this.prev = o.getObjectAsNullOr("prev", Scope::new);
+        this.savedEventTarget = o.getImplicitListAsList("saved_event_target", SavedEventTarget::new);
+        this.variables = o.getObjectAsEmptyOrStringDoubleMap("variables");
     }
 }

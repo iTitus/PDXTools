@@ -5,14 +5,37 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Galaxy {
 
-    private final boolean advancedStartsNearPlayer, scaling, clustered, randomEmpires, randomFallenEmpires,
-            randomMarauderEmpires, randomAdvancedEmpires, ironman;
-    private final int numEmpires, numAdvancedEmpires, numFallenEmpires, numMarauderEmpires, midGameStart,
-            endGameStart, victoryYear, numGuaranteedColonies;
-    private final double habitability, primitive, crises, technology, coreRadius, numGateways, numWormholePairs,
-            numHyperlanes;
-    private final String template, shape, playerLocations, difficulty, aggressiveness, name;
-    private final ImmutableList<EmpireDesign> designs;
+    public final boolean advancedStartsNearPlayer;
+    public final boolean scaling;
+    public final boolean clustered;
+    public final boolean randomEmpires;
+    public final boolean randomFallenEmpires;
+    public final boolean randomMarauderEmpires;
+    public final boolean randomAdvancedEmpires;
+    public final boolean ironman;
+    public final int numEmpires;
+    public final int numAdvancedEmpires;
+    public final int numFallenEmpires;
+    public final int numMarauderEmpires;
+    public final int midGameStart;
+    public final int endGameStart;
+    public final int victoryYear;
+    public final int numGuaranteedColonies;
+    public final double habitability;
+    public final double primitive;
+    public final double crises;
+    public final double technology;
+    public final double coreRadius;
+    public final double numGateways;
+    public final double numWormholePairs;
+    public final double numHyperlanes;
+    public final String template;
+    public final String shape;
+    public final String playerLocations;
+    public final String difficulty;
+    public final String aggressiveness;
+    public final String name;
+    public final ImmutableList<EmpireDesign> designs;
 
     public Galaxy(PdxScriptObject o) {
         this.template = o.getString("template");
@@ -45,171 +68,6 @@ public class Galaxy {
         this.endGameStart = o.getInt("end_game_start");
         this.victoryYear = o.getInt("victory_year");
         this.numGuaranteedColonies = o.getInt("num_guaranteed_colonies");
-        this.designs = o.getImplicitList("design").getAsList(EmpireDesign::new);
-    }
-
-    public Galaxy(boolean advancedStartsNearPlayer, boolean scaling, boolean clustered, boolean randomEmpires,
-                  boolean randomFallenEmpires, boolean randomMarauderEmpires, boolean randomAdvancedEmpires,
-                  boolean ironman, int numEmpires, int numAdvancedEmpires, int numFallenEmpires,
-                  int numMarauderEmpires, int midGameStart, int endGameStart, int victoryYear,
-                  int numGuaranteedColonies, double habitability, double primitive, double crises, double technology,
-                  double coreRadius, double numGateways, double numWormholePairs, double numHyperlanes,
-                  String template, String shape, String playerLocations, String difficulty, String aggressiveness,
-                  String name, ImmutableList<EmpireDesign> designs) {
-        this.advancedStartsNearPlayer = advancedStartsNearPlayer;
-        this.scaling = scaling;
-        this.clustered = clustered;
-        this.randomEmpires = randomEmpires;
-        this.randomFallenEmpires = randomFallenEmpires;
-        this.randomMarauderEmpires = randomMarauderEmpires;
-        this.randomAdvancedEmpires = randomAdvancedEmpires;
-        this.ironman = ironman;
-        this.numEmpires = numEmpires;
-        this.numAdvancedEmpires = numAdvancedEmpires;
-        this.numFallenEmpires = numFallenEmpires;
-        this.numMarauderEmpires = numMarauderEmpires;
-        this.midGameStart = midGameStart;
-        this.endGameStart = endGameStart;
-        this.victoryYear = victoryYear;
-        this.numGuaranteedColonies = numGuaranteedColonies;
-        this.habitability = habitability;
-        this.primitive = primitive;
-        this.crises = crises;
-        this.technology = technology;
-        this.coreRadius = coreRadius;
-        this.numGateways = numGateways;
-        this.numWormholePairs = numWormholePairs;
-        this.numHyperlanes = numHyperlanes;
-        this.template = template;
-        this.shape = shape;
-        this.playerLocations = playerLocations;
-        this.difficulty = difficulty;
-        this.aggressiveness = aggressiveness;
-        this.name = name;
-        this.designs = designs;
-    }
-
-    public boolean isAdvancedStartsNearPlayer() {
-        return advancedStartsNearPlayer;
-    }
-
-    public boolean isScaling() {
-        return scaling;
-    }
-
-    public boolean isClustered() {
-        return clustered;
-    }
-
-    public boolean isRandomEmpires() {
-        return randomEmpires;
-    }
-
-    public boolean isRandomFallenEmpires() {
-        return randomFallenEmpires;
-    }
-
-    public boolean isRandomMarauderEmpires() {
-        return randomMarauderEmpires;
-    }
-
-    public boolean isRandomAdvancedEmpires() {
-        return randomAdvancedEmpires;
-    }
-
-    public boolean isIronman() {
-        return ironman;
-    }
-
-    public int getNumEmpires() {
-        return numEmpires;
-    }
-
-    public int getNumAdvancedEmpires() {
-        return numAdvancedEmpires;
-    }
-
-    public int getNumFallenEmpires() {
-        return numFallenEmpires;
-    }
-
-    public int getNumMarauderEmpires() {
-        return numMarauderEmpires;
-    }
-
-    public int getMidGameStart() {
-        return midGameStart;
-    }
-
-    public int getEndGameStart() {
-        return endGameStart;
-    }
-
-    public int getVictoryYear() {
-        return victoryYear;
-    }
-
-    public int getNumGuaranteedColonies() {
-        return numGuaranteedColonies;
-    }
-
-    public double getHabitability() {
-        return habitability;
-    }
-
-    public double getPrimitive() {
-        return primitive;
-    }
-
-    public double getCrises() {
-        return crises;
-    }
-
-    public double getTechnology() {
-        return technology;
-    }
-
-    public double getCoreRadius() {
-        return coreRadius;
-    }
-
-    public double getNumGateways() {
-        return numGateways;
-    }
-
-    public double getNumWormholePairs() {
-        return numWormholePairs;
-    }
-
-    public double getNumHyperlanes() {
-        return numHyperlanes;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public String getShape() {
-        return shape;
-    }
-
-    public String getPlayerLocations() {
-        return playerLocations;
-    }
-
-    public String getDifficulty() {
-        return difficulty;
-    }
-
-    public String getAggressiveness() {
-        return aggressiveness;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ImmutableList<EmpireDesign> getDesigns() {
-        return designs;
+        this.designs = o.getImplicitListAsList("design", EmpireDesign::new);
     }
 }

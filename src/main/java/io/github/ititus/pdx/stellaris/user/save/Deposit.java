@@ -5,12 +5,14 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Deposit {
 
-    public Deposit(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
+    public final String type;
+    public final String swapType;
+    public final int planet;
 
-        // TODO: this
+    public Deposit(IPdxScript s) {
+        PdxScriptObject o = s.expectObject();
+        this.type = o.getString("type", null);
+        this.swapType = o.getString("swap_type", null);
+        this.planet = o.getInt("planet");
     }
 }

@@ -1,10 +1,11 @@
 package io.github.ititus.pdx.util;
 
-import io.github.ititus.pdx.pdxscript.PdxConstants;
-
 import java.awt.*;
 
-public class ColorUtil implements PdxConstants {
+public final class ColorUtil {
+
+    private ColorUtil() {
+    }
 
     public static Color fromRGBArray(Number... colorComponents) {
         if (colorComponents.length != 3 && colorComponents.length != 4) {
@@ -51,43 +52,44 @@ public class ColorUtil implements PdxConstants {
             float q = value * (1.0f - saturation * f);
             float t = value * (1.0f - (saturation * (1.0f - f)));
             switch ((int) h) {
-                case 0:
+                case 0 -> {
                     r = (int) (value * 255.0f + 0.5f);
                     g = (int) (t * 255.0f + 0.5f);
                     b = (int) (p * 255.0f + 0.5f);
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     r = (int) (q * 255.0f + 0.5f);
                     g = (int) (value * 255.0f + 0.5f);
                     b = (int) (p * 255.0f + 0.5f);
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     r = (int) (p * 255.0f + 0.5f);
                     g = (int) (value * 255.0f + 0.5f);
                     b = (int) (t * 255.0f + 0.5f);
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     r = (int) (p * 255.0f + 0.5f);
                     g = (int) (q * 255.0f + 0.5f);
                     b = (int) (value * 255.0f + 0.5f);
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     r = (int) (t * 255.0f + 0.5f);
                     g = (int) (p * 255.0f + 0.5f);
                     b = (int) (value * 255.0f + 0.5f);
-                    break;
-                case 5:
+                }
+                case 5 -> {
                     r = (int) (value * 255.0f + 0.5f);
                     g = (int) (p * 255.0f + 0.5f);
                     b = (int) (q * 255.0f + 0.5f);
-                    break;
-                default:
-                    throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
+                }
+                default -> throw new RuntimeException(
+                        "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
             }
         }
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
-            throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", "
-                    + saturation + ", " + value + ", " + alpha);
+            throw new RuntimeException(
+                    "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + "," +
+                            " " + value + ", " + alpha);
         }
         return new Color(r & 0xFF, g & 0xFF, b & 0xFF, a & 0xFF);
     }

@@ -5,44 +5,19 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.time.LocalDate;
 
+@Deprecated
 public class TradeDeal {
 
-    private final int length;
-    private final LocalDate date;
-    private final TradeAgreement first, second;
+    public final TradeAgreement first;
+    public final TradeAgreement second;
+    public final int length;
+    public final LocalDate date;
 
     public TradeDeal(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
-        this.first = o.getObject("first").getAs(TradeAgreement::new);
-        this.second = o.getObject("second").getAs(TradeAgreement::new);
+        PdxScriptObject o = s.expectObject();
+        this.first = o.getObjectAs("first", TradeAgreement::new);
+        this.second = o.getObjectAs("second", TradeAgreement::new);
         this.length = o.getInt("length");
         this.date = o.getDate("date");
-    }
-
-    public TradeDeal(int length, LocalDate date, TradeAgreement first, TradeAgreement second) {
-        this.length = length;
-        this.date = date;
-        this.first = first;
-        this.second = second;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public TradeAgreement getFirst() {
-        return first;
-    }
-
-    public TradeAgreement getSecond() {
-        return second;
     }
 }

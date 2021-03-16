@@ -5,29 +5,12 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class FleetMovementPathNode {
 
-    private final String ftl;
-    private final Coordinate coordinate;
+    public final String ftl;
+    public final Coordinate coordinate;
 
     public FleetMovementPathNode(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
+        PdxScriptObject o = s.expectObject();
+        this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
         this.ftl = o.getString("ftl");
-    }
-
-    public FleetMovementPathNode(String ftl, Coordinate coordinate) {
-        this.ftl = ftl;
-        this.coordinate = coordinate;
-    }
-
-    public String getFtl() {
-        return ftl;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
     }
 }

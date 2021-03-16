@@ -7,24 +7,11 @@ import java.time.LocalDate;
 
 public class FleetMovementPath {
 
-    private final LocalDate date;
-    private final ImmutableList<FleetMovementPathNode> nodes;
+    public final LocalDate date;
+    public final ImmutableList<FleetMovementPathNode> nodes;
 
     public FleetMovementPath(PdxScriptObject o) {
-        this.nodes = o.getImplicitList("node").getAsList(FleetMovementPathNode::new);
+        this.nodes = o.getImplicitListAsList("node", FleetMovementPathNode::new);
         this.date = o.getDate("date");
-    }
-
-    public FleetMovementPath(LocalDate date, ImmutableList<FleetMovementPathNode> nodes) {
-        this.date = date;
-        this.nodes = nodes;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public ImmutableList<FleetMovementPathNode> getNodes() {
-        return nodes;
     }
 }

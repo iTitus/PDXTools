@@ -1,20 +1,13 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class StarbaseManager {
 
-    private final Starbases starbases;
+    public final ImmutableIntObjectMap<Starbase> starbases;
 
     public StarbaseManager(PdxScriptObject o) {
-        this.starbases = o.getObject("starbases").getAs(Starbases::new);
-    }
-
-    public StarbaseManager(Starbases starbaseBuildings) {
-        this.starbases = starbaseBuildings;
-    }
-
-    public Starbases getStarbases() {
-        return starbases;
+        this.starbases = o.getObjectAsIntObjectMap("starbases", Starbase::new);
     }
 }

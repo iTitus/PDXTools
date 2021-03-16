@@ -6,43 +6,16 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class Cluster {
 
-    private final double radius;
-    private final String id;
-    private final ImmutableIntList objects;
-    private final Coordinate position;
+    public final String id;
+    public final Coordinate position;
+    public final double radius;
+    public final ImmutableIntList objects;
 
     public Cluster(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.id = o.getString("id");
-        this.position = o.getObject("position").getAs(Coordinate::of);
+        this.position = o.getObjectAs("position", Coordinate::new);
         this.radius = o.getDouble("radius");
-        this.objects = o.getList("objects").getAsIntList();
-    }
-
-    public Cluster(double radius, String id, ImmutableIntList objects, Coordinate position) {
-        this.radius = radius;
-        this.id = id;
-        this.objects = objects;
-        this.position = position;
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public ImmutableIntList getObjects() {
-        return objects;
-    }
-
-    public Coordinate getPosition() {
-        return position;
+        this.objects = o.getListAsIntList("objects");
     }
 }

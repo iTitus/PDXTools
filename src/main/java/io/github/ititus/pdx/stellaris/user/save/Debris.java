@@ -8,43 +8,16 @@ import java.time.LocalDate;
 
 public class Debris {
 
-    private final int country;
-    private final LocalDate date;
-    private final ImmutableList<String> components;
-    private final Coordinate coordinate;
+    public final int country;
+    public final LocalDate date;
+    public final ImmutableList<String> components;
+    public final Coordinate coordinate;
 
     public Debris(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.country = o.getInt("country");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
-        this.components = o.getImplicitList("component").getAsStringList();
+        this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
+        this.components = o.getImplicitListAsStringList("component");
         this.date = o.getDate("date");
-    }
-
-    public Debris(int country, LocalDate date, ImmutableList<String> components, Coordinate coordinate) {
-        this.country = country;
-        this.date = date;
-        this.components = components;
-        this.coordinate = coordinate;
-    }
-
-    public int getCountry() {
-        return country;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public ImmutableList<String> getComponents() {
-        return components;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
     }
 }

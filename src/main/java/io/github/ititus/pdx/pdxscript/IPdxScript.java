@@ -1,41 +1,16 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.Util;
-
-public interface IPdxScript extends PdxConstants {
-
-    static void listObjectOpen(int indent, boolean root, String key, StringBuilder b, PdxRelation relation,
-                               boolean empty) {
-        if (!root) {
-            b.append(Util.indent(indent));
-            if (key != null) {
-                b.append(PdxScriptParser.quoteIfNecessary(key));
-                b.append(relation.getSign());
-            }
-            b.append(LIST_OBJECT_OPEN);
-            if (!empty) {
-                b.append(LINE_FEED);
-            }
-        }
-    }
-
-    static void listObjectClose(int indent, boolean root, StringBuilder b, boolean empty) {
-        if (!root) {
-            if (!empty) {
-                b.append(Util.indent(indent));
-            }
-            b.append(LIST_OBJECT_CLOSE);
-        } else if (!empty && b.charAt(b.length() - 1) == LINE_FEED) {
-            b.deleteCharAt(b.length() - 1);
-        }
-    }
+public interface IPdxScript {
 
     default boolean canAppend(IPdxScript script) {
         return true;
     }
 
     default PdxScriptList append(IPdxScript script) {
-        return PdxScriptList.builder().add(this).add(script).build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+        return PdxScriptList.builder()
+                .add(this)
+                .add(script)
+                .build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
     }
 
     default String toPdxScript() {
@@ -45,4 +20,41 @@ public interface IPdxScript extends PdxConstants {
     String toPdxScript(int indent, boolean root, String key);
 
     PdxRelation getRelation();
+
+    default PdxScriptValue expectValue() {
+        if (this instanceof PdxScriptValue) {
+            return (PdxScriptValue) this;
+        }
+
+        throw new IllegalStateException("expected value but got " + this);
+    }
+
+    default PdxScriptList expectList() {
+        if (this instanceof PdxScriptList) {
+            return (PdxScriptList) this;
+        }
+
+        throw new IllegalStateException("expected list but got " + this);
+    }
+
+    default PdxScriptList expectImplicitList() {
+        if (this instanceof PdxScriptList) {
+            PdxScriptList l = (PdxScriptList) this;
+            if (l.getMode() == PdxScriptList.Mode.IMPLICIT) {
+                return l;
+            }
+        }
+
+        //throw new IllegalStateException("expected list but got " + this);
+        // TODO: is this smart? maybe throw instead...
+        return PdxScriptList.builder().add(this).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+    }
+
+    default PdxScriptObject expectObject() {
+        if (this instanceof PdxScriptObject) {
+            return (PdxScriptObject) this;
+        }
+
+        throw new IllegalStateException("expected object but got " + this);
+    }
 }

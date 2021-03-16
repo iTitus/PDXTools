@@ -7,7 +7,4 @@ public class Budget {
     public Budget(PdxScriptObject o) {
         // TODO: income, expenses, balance
     }
-
-    public Budget() {
-    }
 }

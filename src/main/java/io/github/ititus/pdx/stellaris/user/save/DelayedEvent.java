@@ -5,36 +5,14 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class DelayedEvent {
 
-    private final int days;
-    private final String event;
-    private final Scope scope;
+    public final String event;
+    public final int days;
+    public final Scope scope;
 
     public DelayedEvent(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.event = o.getString("event");
         this.days = o.getInt("days");
-        this.scope = o.getObject("scope").getAs(Scope::new);
-    }
-
-    public DelayedEvent(int days, String event, Scope scope) {
-        this.days = days;
-        this.event = event;
-        this.scope = scope;
-    }
-
-    public int getDays() {
-        return days;
-    }
-
-    public String getEvent() {
-        return event;
-    }
-
-    public Scope getScope() {
-        return scope;
+        this.scope = o.getObjectAs("scope", Scope::new);
     }
 }

@@ -24,13 +24,11 @@ public class StellarisSave {
     private static final String GAMESTATE = "gamestate";
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final IPathFilter FILTER = new FileNameFilter(n -> n.equals(META) || n.equals(GAMESTATE));
-
+    private static final IPathFilter FILTER = new FileNameFilter(n -> META.equals(n) || GAMESTATE.equals(n));
+    public final Meta meta;
+    public final GameState gameState;
     private final Path save;
     private final PdxRawDataLoader saveDataLoader;
-
-    private final Meta meta;
-    private final GameState gameState;
 
     public StellarisSave(Path saveFile) {
         if (!isValidSaveFile(saveFile)) {
@@ -43,10 +41,10 @@ public class StellarisSave {
         this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, -1, null);
         System.out.println("Parsing: " + DurationFormatter.formatSeconds(s.stop()));
         s.start();
-        this.meta = this.saveDataLoader.getRawData().getObject(META).getAs(Meta::new);
+        this.meta = this.saveDataLoader.getRawData().getObjectAs(META, Meta::new);
         System.out.println("Meta: " + DurationFormatter.formatSeconds(s.stop()));
         s.start();
-        this.gameState = this.saveDataLoader.getRawData().getObject(GAMESTATE).getAs(GameState::new);
+        this.gameState = this.saveDataLoader.getRawData().getObjectAs(GAMESTATE, GameState::new);
         System.out.println("Gamestate: " + DurationFormatter.formatSeconds(s.stop()));
     }
 
@@ -83,14 +81,6 @@ public class StellarisSave {
 
     public Path getSave() {
         return save;
-    }
-
-    public Meta getMeta() {
-        return meta;
-    }
-
-    public GameState getGameState() {
-        return gameState;
     }
 
     public ImmutableList<String> getErrors() {

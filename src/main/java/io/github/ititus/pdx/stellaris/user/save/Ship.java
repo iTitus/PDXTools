@@ -1,312 +1,98 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
-import io.github.ititus.pdx.pdxscript.PdxScriptList;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 
 import java.time.LocalDate;
 
 public class Ship {
 
-    private final boolean isBeingRepaired, createdThisUpdate, killed, disabled, disabled_by_event, upgradable;
-    private final int fleet, reserve, shipDesign, designUpgrade, army, nextWeaponIndex, leader, combatAction;
-    private final double speed, experience, postMoveAngle, hitpoints, shieldHitpoints, armorHitpoints, maxHitpoints,
-            maxShieldHitpoints, maxArmorHitpoints, rotation, forwardX, forwardY, upgradeProgress, disableAtHealth,
-            enableAtHealth, targeting;
-    private final String name, key, graphicalCulture;
-    private final LocalDate lastDamage;
-    private final ImmutableList<Aura> auras;
-    private final ImmutableList<ShipSection> sections;
-    private final ImmutableList<TimedModifier> timedModifiers;
-    private final Coordinate coordinate, targetCoordinate;
-    private final Flags flags;
-    private final Homepop homepop;
-    private final FormationPos formationPos;
-    private final Variables auraModifier;
+    public final boolean isBeingRepaired;
+    public final boolean createdThisUpdate;
+    public final boolean killed;
+    public final boolean upgradable;
+    public final int fleet;
+    public final int reserve;
+    public final int shipDesign;
+    public final int designUpgrade;
+    public final int army;
+    public final int nextWeaponIndex;
+    public final int leader;
+    public final int combatAction;
+    public final double speed;
+    public final double experience;
+    public final double postMoveAngle;
+    public final double hitpoints;
+    public final double shieldHitpoints;
+    public final double armorHitpoints;
+    public final double maxHitpoints;
+    public final double maxShieldHitpoints;
+    public final double maxArmorHitpoints;
+    public final double rotation;
+    public final double forwardX;
+    public final double forwardY;
+    public final double upgradeProgress;
+    public final double disableAtHealth;
+    public final double enableAtHealth;
+    public final double targeting;
+    public final String name;
+    public final String key;
+    public final String graphicalCulture;
+    public final LocalDate lastDamage;
+    public final ImmutableList<Aura> auras;
+    public final ImmutableList<ShipSection> sections;
+    public final ImmutableList<TimedModifier> timedModifiers;
+    public final Coordinate coordinate, targetCoordinate;
+    public final ImmutableMap<String, FlagData> flags;
+    public final Homepop homepop;
+    public final FormationPos formationPos;
+    public final ImmutableObjectDoubleMap<String> auraModifier;
 
     public Ship(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
-        PdxScriptList l = o.getList("auras");
-        this.auras = l != null ? l.getAsList(Aura::new) : Lists.immutable.empty();
-        this.isBeingRepaired = o.getBoolean("is_being_repaired");
+        PdxScriptObject o = s.expectObject();
+        this.auras = o.getListAsEmptyOrList("auras", Aura::new);
+        this.isBeingRepaired = o.getBoolean("is_being_repaired", false);
         this.fleet = o.getUnsignedInt("fleet");
-        this.name = o.getString("name");
-        this.key = o.getString("key");
+        this.name = o.getString("name", null);
+        this.key = o.getString("key", null);
         this.reserve = o.getInt("reserve", -1);
         this.shipDesign = o.getInt("ship_design");
         this.designUpgrade = o.getInt("design_upgrade", -1);
         this.graphicalCulture = o.getString("graphical_culture");
-        this.sections = o.getImplicitList("section").getAsList(ShipSection::of);
-        this.speed = o.getDouble("speed");
-        this.experience = o.getDouble("experience");
-        this.coordinate = o.getObject("coordinate").getAs(Coordinate::of);
-        this.targetCoordinate = o.getObject("target_coordinate").getAs(Coordinate::of);
+        this.sections = o.getImplicitListAsList("section", ShipSection::new);
+        this.speed = o.getDouble("speed", 0);
+        this.experience = o.getDouble("experience", 0);
+        this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
+        this.targetCoordinate = o.getObjectAs("target_coordinate", Coordinate::new);
         this.postMoveAngle = o.getDouble("post_move_angle");
         this.hitpoints = o.getDouble("hitpoints");
-        this.shieldHitpoints = o.getDouble("shield_hitpoints");
-        this.armorHitpoints = o.getDouble("armor_hitpoints");
+        this.shieldHitpoints = o.getDouble("shield_hitpoints", 0);
+        this.armorHitpoints = o.getDouble("armor_hitpoints", 0);
         this.maxHitpoints = o.getDouble("max_hitpoints");
-        this.maxShieldHitpoints = o.getDouble("max_shield_hitpoints");
-        this.maxArmorHitpoints = o.getDouble("max_armor_hitpoints");
+        this.maxShieldHitpoints = o.getDouble("max_shield_hitpoints", 0);
+        this.maxArmorHitpoints = o.getDouble("max_armor_hitpoints", 0);
         this.rotation = o.getDouble("rotation");
         this.forwardX = o.getDouble("forward_x");
         this.forwardY = o.getDouble("forward_y");
         this.upgradeProgress = o.getDouble("upgrade_progress");
         this.army = o.getInt("army", -1);
-        this.nextWeaponIndex = o.getInt("next_weapon_index");
-        PdxScriptObject o1 = o.getObject("flags");
-        this.flags = o1 != null ? o1.getAs(Flags::of) : null;
-        o1 = o.getObject("homepop");
-        this.homepop = o1 != null ? o1.getAs(Homepop::new) : null;
-        this.createdThisUpdate = o.getBoolean("created_this_update");
-        this.killed = o.getBoolean("killed");
+        this.nextWeaponIndex = o.getInt("next_weapon_index", -1);
+        this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
+        this.homepop = o.getObjectAsNullOr("homepop", Homepop::new);
+        this.createdThisUpdate = o.getBoolean("created_this_update", true);
+        this.killed = o.getBoolean("killed", false);
         this.leader = o.getInt("leader", -1);
-        this.lastDamage = o.getDate("last_damage");
-        this.timedModifiers = o.getImplicitList("timed_modifier").getAsList(TimedModifier::new);
-        o1 = o.getObject("formation_pos");
-        this.formationPos = o1 != null ? o1.getAs(FormationPos::of) : null;
+        this.lastDamage = o.getDate("last_damage", null);
+        this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
+        this.formationPos = o.getObjectAsNullOr("formation_pos", FormationPos::new);
         this.combatAction = o.getInt("combat_action", -1);
-        this.disabled = o.getBoolean("disabled");
-        this.disabled_by_event = o.getBoolean("disabled_by_event");
         this.disableAtHealth = o.getDouble("disable_at_health", -1);
         this.enableAtHealth = o.getDouble("enable_at_health", -1);
-        // TODO: consider custom object here
-        o1 = o.getObject("aura_modifier");
-        this.auraModifier = o1 != null ? o1.getAs(Variables::new) : null;
-        this.targeting = o.getDouble("targeting");
+        this.auraModifier = o.getObjectAsEmptyOrStringDoubleMap("aura_modifier");
+        this.targeting = o.getDouble("targeting", 0);
         this.upgradable = o.getBoolean("upgradable", true);
-    }
-
-    public Ship(boolean isBeingRepaired, boolean createdThisUpdate, boolean killed, boolean disabled,
-                boolean disabled_by_event, boolean upgradable, int fleet, int reserve, int shipDesign,
-                int designUpgrade, int army, int nextWeaponIndex, int leader, int combatAction, double speed,
-                double experience, double postMoveAngle, double hitpoints, double shieldHitpoints,
-                double armorHitpoints, double maxHitpoints, double maxShieldHitpoints, double maxArmorHitpoints,
-                double rotation, double forwardX, double forwardY, double upgradeProgress, double disableAtHealth,
-                double enableAtHealth, double targeting, String name, String key, String graphicalCulture,
-                LocalDate lastDamage, ImmutableList<Aura> auras, ImmutableList<ShipSection> sections,
-                ImmutableList<TimedModifier> timedModifiers, Coordinate coordinate, Coordinate targetCoordinate,
-                Flags flags, Homepop homepop, FormationPos formationPos, Variables auraModifier) {
-        this.isBeingRepaired = isBeingRepaired;
-        this.createdThisUpdate = createdThisUpdate;
-        this.killed = killed;
-        this.disabled = disabled;
-        this.disabled_by_event = disabled_by_event;
-        this.upgradable = upgradable;
-        this.fleet = fleet;
-        this.reserve = reserve;
-        this.shipDesign = shipDesign;
-        this.designUpgrade = designUpgrade;
-        this.army = army;
-        this.nextWeaponIndex = nextWeaponIndex;
-        this.leader = leader;
-        this.combatAction = combatAction;
-        this.speed = speed;
-        this.experience = experience;
-        this.postMoveAngle = postMoveAngle;
-        this.hitpoints = hitpoints;
-        this.shieldHitpoints = shieldHitpoints;
-        this.armorHitpoints = armorHitpoints;
-        this.maxHitpoints = maxHitpoints;
-        this.maxShieldHitpoints = maxShieldHitpoints;
-        this.maxArmorHitpoints = maxArmorHitpoints;
-        this.rotation = rotation;
-        this.forwardX = forwardX;
-        this.forwardY = forwardY;
-        this.upgradeProgress = upgradeProgress;
-        this.disableAtHealth = disableAtHealth;
-        this.enableAtHealth = enableAtHealth;
-        this.targeting = targeting;
-        this.name = name;
-        this.key = key;
-        this.graphicalCulture = graphicalCulture;
-        this.lastDamage = lastDamage;
-        this.auras = auras;
-        this.sections = sections;
-        this.timedModifiers = timedModifiers;
-        this.coordinate = coordinate;
-        this.targetCoordinate = targetCoordinate;
-        this.flags = flags;
-        this.homepop = homepop;
-        this.formationPos = formationPos;
-        this.auraModifier = auraModifier;
-    }
-
-    public boolean isBeingRepaired() {
-        return isBeingRepaired;
-    }
-
-    public boolean isCreatedThisUpdate() {
-        return createdThisUpdate;
-    }
-
-    public boolean isKilled() {
-        return killed;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public boolean isDisabled_by_event() {
-        return disabled_by_event;
-    }
-
-    public boolean isUpgradable() {
-        return upgradable;
-    }
-
-    public int getFleet() {
-        return fleet;
-    }
-
-    public int getReserve() {
-        return reserve;
-    }
-
-    public int getShipDesign() {
-        return shipDesign;
-    }
-
-    public int getDesignUpgrade() {
-        return designUpgrade;
-    }
-
-    public int getArmy() {
-        return army;
-    }
-
-    public int getNextWeaponIndex() {
-        return nextWeaponIndex;
-    }
-
-    public int getLeader() {
-        return leader;
-    }
-
-    public int getCombatAction() {
-        return combatAction;
-    }
-
-    public double getSpeed() {
-        return speed;
-    }
-
-    public double getExperience() {
-        return experience;
-    }
-
-    public double getPostMoveAngle() {
-        return postMoveAngle;
-    }
-
-    public double getHitpoints() {
-        return hitpoints;
-    }
-
-    public double getShieldHitpoints() {
-        return shieldHitpoints;
-    }
-
-    public double getArmorHitpoints() {
-        return armorHitpoints;
-    }
-
-    public double getMaxHitpoints() {
-        return maxHitpoints;
-    }
-
-    public double getMaxShieldHitpoints() {
-        return maxShieldHitpoints;
-    }
-
-    public double getMaxArmorHitpoints() {
-        return maxArmorHitpoints;
-    }
-
-    public double getRotation() {
-        return rotation;
-    }
-
-    public double getForwardX() {
-        return forwardX;
-    }
-
-    public double getForwardY() {
-        return forwardY;
-    }
-
-    public double getUpgradeProgress() {
-        return upgradeProgress;
-    }
-
-    public double getDisableAtHealth() {
-        return disableAtHealth;
-    }
-
-    public double getEnableAtHealth() {
-        return enableAtHealth;
-    }
-
-    public double getTargeting() {
-        return targeting;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getGraphicalCulture() {
-        return graphicalCulture;
-    }
-
-    public LocalDate getLastDamage() {
-        return lastDamage;
-    }
-
-    public ImmutableList<Aura> getAuras() {
-        return auras;
-    }
-
-    public ImmutableList<ShipSection> getSections() {
-        return sections;
-    }
-
-    public ImmutableList<TimedModifier> getTimedModifiers() {
-        return timedModifiers;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public Coordinate getTargetCoordinate() {
-        return targetCoordinate;
-    }
-
-    public Flags getFlags() {
-        return flags;
-    }
-
-    public Homepop getHomepop() {
-        return homepop;
-    }
-
-    public FormationPos getFormationPos() {
-        return formationPos;
-    }
-
-    public Variables getAuraModifier() {
-        return auraModifier;
     }
 }

@@ -7,69 +7,26 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class PopFaction {
 
-    private final int country, leader;
-    private final double support, factionApproval;
-    private final String type, name;
-    private final ImmutableIntList members;
-    private final ImmutableList<Parameter> parameters;
+    public final int country;
+    public final String type;
+    public final String name;
+    public final int leader;
+    public final ImmutableList<Parameter> parameters;
+    public final double support;
+    public final double factionApproval;
+    public final ImmutableList<TimedModifier> timedModifiers;
+    public final ImmutableIntList members;
 
     public PopFaction(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.country = o.getInt("country");
         this.type = o.getString("type");
         this.name = o.getString("name");
-        this.leader = o.getInt("leader");
-        this.parameters = o.getList("parameters").getAsList(Parameter::new);
+        this.leader = o.getInt("leader", -1);
+        this.parameters = o.getListAsList("parameters", Parameter::new);
         this.support = o.getDouble("support");
-        this.factionApproval = o.getDouble("faction_approval");
-        this.members = o.getList("members").getAsIntList();
-    }
-
-    public PopFaction(int country, int leader, double support, double factionApproval, String type, String name,
-                      ImmutableIntList members, ImmutableList<Parameter> parameters) {
-        this.country = country;
-        this.leader = leader;
-        this.support = support;
-        this.factionApproval = factionApproval;
-        this.type = type;
-        this.name = name;
-        this.members = members;
-        this.parameters = parameters;
-    }
-
-    public int getCountry() {
-        return country;
-    }
-
-    public int getLeader() {
-        return leader;
-    }
-
-    public double getSupport() {
-        return support;
-    }
-
-    public double getFactionApproval() {
-        return factionApproval;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ImmutableIntList getMembers() {
-        return members;
-    }
-
-    public ImmutableList<Parameter> getParameters() {
-        return parameters;
+        this.factionApproval = o.getDouble("faction_approval", 0);
+        this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
+        this.members = o.getListAsIntList("members");
     }
 }

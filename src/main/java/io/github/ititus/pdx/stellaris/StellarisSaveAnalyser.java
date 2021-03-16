@@ -8,7 +8,6 @@ import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
-import io.github.ititus.pdx.util.collection.Tuple3D;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
@@ -30,8 +29,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
     private static final Path[] TEST_FILES = { /* USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
-    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common",
-            "Stellaris");
+    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
 
     private static final String SAVE_FOLDER = "mpempireofthebugs_847499604";
@@ -96,10 +94,6 @@ public class StellarisSaveAnalyser implements Runnable {
                 ));
     }*/
 
-    private static Tuple3D combineResource(Tuple3D t1, Tuple3D t2) {
-        return Tuple3D.of(t1.getD1() + t2.getD1());
-    }
-
     @Override
     public void run() {
         StopWatch s = StopWatch.createRunning();
@@ -147,13 +141,13 @@ public class StellarisSaveAnalyser implements Runnable {
         stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER,
                 SAVE_GAME) : null;
         /*if (stellarisSave != null) {
-            GalacticObjects systems = stellarisSave.getGameState().getGalacticObjects();
+            GalacticObjects systems = stellarisSave.gameState.getGalacticObjects();
 
             ImmutableList<Pair<GalacticObject, Resources>> resourcesInSystems = systems
                     .getGalacticObjects()
                     .values()
                     .stream()
-                    .map(system -> Tuples.pair(system, getResources(stellarisSave.getGameState(), system)))
+                    .map(system -> Tuples.pair(system, getResources(stellarisSave.gameState, system)))
                     .collect(Collectors2.toImmutableList());
 
             ImmutableList<Pair<Function<Resources, Tuple3D>, String>> list = Lists.immutable.with(
@@ -230,9 +224,9 @@ public class StellarisSaveAnalyser implements Runnable {
 
         updateProgressMessage(3, true, 1, saveErrorSteps, "Gathering Save Parsing Errors");
         ImmutableList<String> saveParseErrors = stellarisSave != null ? stellarisSave.getErrors() : null;
-        if (saveParseErrors != null) {
+        /*if (saveParseErrors != null) {
             saveParseErrors.forEach(System.out::println);
-        }
+        }*/
 
         updateProgressMessage(3, false, 2, saveErrorSteps, "Done");
 

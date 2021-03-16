@@ -7,49 +7,17 @@ import java.time.LocalDate;
 
 public class AIAttitude {
 
-    private final int country, priority;
-    private final double weight;
-    private final String attitude;
-    private final LocalDate date;
+    public final int country, priority;
+    public final int weight;
+    public final String attitude;
+    public final LocalDate date;
 
     public AIAttitude(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = s.expectObject();
         this.country = o.getUnsignedInt("country");
         this.attitude = o.getString("attitude");
-        this.weight = o.getDouble("weight");
+        this.weight = o.getInt("weight");
         this.priority = o.getInt("priority");
         this.date = o.getDate("date");
-    }
-
-    public AIAttitude(int country, int priority, double weight, String attitude, LocalDate date) {
-        this.country = country;
-        this.priority = priority;
-        this.weight = weight;
-        this.attitude = attitude;
-        this.date = date;
-    }
-
-    public int getCountry() {
-        return country;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public String getAttitude() {
-        return attitude;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 }

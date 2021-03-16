@@ -2,43 +2,26 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.util.Util;
 
 public class FlagData {
 
-    private final int flagDate, flagDays;
+    public final int flagDate, flagDays;
 
-    public FlagData(IPdxScript s) {
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException(String.valueOf(s));
-        }
-        PdxScriptObject o = (PdxScriptObject) s;
+    private FlagData(PdxScriptObject o) {
         this.flagDate = o.getInt("flag_date");
         this.flagDays = o.getInt("flag_days");
     }
 
-    public int getFlagDate() {
-        return flagDate;
+    private FlagData(int flagDate, int flagDays) {
+        this.flagDate = flagDate;
+        this.flagDays = flagDays;
     }
 
-    public int getFlagDays() {
-        return flagDays;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public static FlagData of(IPdxScript s) {
+        if (s instanceof PdxScriptObject) {
+            return new FlagData(s.expectObject());
         }
-        if (!(o instanceof FlagData)) {
-            return false;
-        }
-        FlagData flagData = (FlagData) o;
-        return flagDate == flagData.flagDate && flagDays == flagData.flagDays;
-    }
 
-    @Override
-    public int hashCode() {
-        return Util.hash(flagDate, flagDays);
+        return new FlagData(s.expectValue().expectInt(), 0);
     }
 }
