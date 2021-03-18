@@ -14,5 +14,4 @@ public interface IPdxAsset {
             default -> throw new IllegalStateException("unexpected file extension: " + extension);
         };
     }
-
 }

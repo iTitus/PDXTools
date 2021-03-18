@@ -12,7 +12,7 @@ import java.util.Arrays;
 public final class PdxRawAsset {
 
     private static final int HEADER_SIZE = 4;
-    private static final byte[] BINARY_HEADER = toAsciiBytes("@@b@");
+    private static final byte[] BINARY_HEADER = toBytes("@@b@");
 
     private final PdxRawAssetObject data;
 
@@ -54,23 +54,23 @@ public final class PdxRawAsset {
             case 'i' -> readIntArray(i);
             case 'f' -> readFloatArray(i);
             case 's' -> readStringArray(i);
-            default -> throw new IllegalArgumentException("invalid value type " + type);
+            default -> throw new IllegalArgumentException("invalid value type " + (char) type);
         };
     }
 
-    private static String toAsciiString(byte[] bytes) {
+    private static String toString(byte[] bytes) {
         return new String(bytes, StandardCharsets.US_ASCII);
     }
 
-    private static String toAsciiString(byte[] bytes, int length) {
+    private static String toString(byte[] bytes, int length) {
         return new String(bytes, 0, length, StandardCharsets.US_ASCII);
     }
 
-    private static String toAsciiString(ByteArrayOutputStream os) {
+    private static String toString(ByteArrayOutputStream os) {
         return os.toString(StandardCharsets.US_ASCII);
     }
 
-    private static byte[] toAsciiBytes(String s) {
+    private static byte[] toBytes(String s) {
         return s.getBytes(StandardCharsets.US_ASCII);
     }
 
@@ -93,7 +93,7 @@ public final class PdxRawAsset {
             length--;
         }
 
-        return toAsciiString(data, length);
+        return toString(data, length);
     }
 
     private static String readNullTerminatedStringWithStart(DataInput i, byte start) throws IOException {
@@ -104,7 +104,7 @@ public final class PdxRawAsset {
         while ((b = i.readByte()) != 0) {
             os.write(b);
         }
-        return toAsciiString(os);
+        return toString(os);
     }
 
     public PdxRawAssetObject getData() {
@@ -123,7 +123,7 @@ public final class PdxRawAsset {
         byte[] headerBytes = new byte[HEADER_SIZE];
         i.readFully(headerBytes);
         if (!Arrays.equals(BINARY_HEADER, headerBytes)) {
-            throw new IllegalArgumentException("invalid header " + toAsciiString(headerBytes));
+            throw new IllegalArgumentException("invalid header " + toString(headerBytes));
         }
 
         MutableStack<PdxRawAssetObject.Builder> objects = Stacks.mutable.of(PdxRawAssetObject.builder());
@@ -164,10 +164,10 @@ public final class PdxRawAsset {
                         objects.peek().add(name, newBuilder);
                         objects.push(newBuilder);
                     } else {
-                        throw new IllegalArgumentException("adding too many new depth levels");
+                        throw new IllegalArgumentException("skipping depth levels not supported");
                     }
                 }
-                default -> throw new IllegalArgumentException("invalid content type " + type);
+                default -> throw new IllegalArgumentException("invalid content type " + (char) type);
             }
         }
 
