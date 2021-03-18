@@ -33,6 +33,7 @@ public class GameState {
     public final StarbaseManager starbaseManager;
     public final Planets planets;
     public final ImmutableIntObjectMap<Country> countries;
+    public final Construction construction;
     public final ImmutableIntObjectMap<Federation> federations;
     public final ImmutableIntObjectMap<Truce> truces;
     public final ImmutableIntObjectMap<TradeDeal> tradeDeals;
@@ -110,7 +111,7 @@ public class GameState {
         this.starbaseManager = o.getObjectAs("starbase_mgr", StarbaseManager::new);
         this.planets = o.getObjectAs("planets", Planets::new);
         this.countries = o.getObjectAsIntObjectMap("country", nullOr(Country::new));
-        // TODO: construction | BuildQueueItem got moved to construction.queue_mgr/item_mgr
+        this.construction = o.getObjectAs("construction", Construction::new);
         this.federations = o.getObjectAsIntObjectMap("federation", Federation::new);
         this.truces = o.getObjectAsIntObjectMap("truce", Truce::new);
         // TODO: trade_deal values might always be none?

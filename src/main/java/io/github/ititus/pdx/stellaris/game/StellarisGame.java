@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.stellaris.game;
 
-import io.github.ititus.pdx.pdxlocalisation.PDXLocalisation;
+import io.github.ititus.pdx.pdxasset.PdxAssets;
+import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
@@ -41,9 +42,11 @@ public class StellarisGame {
 
     private final Common common;
     private final StellarisDLCs dlcs;
-    private final PDXLocalisation localisation;
+    private final PdxLocalisation localisation;
 
     private final PdxRawDataLoader rawDataLoader;
+
+    private final PdxAssets assets;
 
     public StellarisGame(Path installDir, int index,
                          StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
@@ -52,7 +55,7 @@ public class StellarisGame {
         }
         this.installDir = installDir;
 
-        int steps = 4;
+        int steps = 5;
 
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading common");
         this.common = new Common(installDir, installDir.resolve("common"), index + 1, progressMessageUpdater);
@@ -66,7 +69,10 @@ public class StellarisGame {
         progressMessageUpdater.updateProgressMessage(index, true, 3, steps, "Loading Raw Game Data");
         this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, false, 4, steps, "Done");
+        progressMessageUpdater.updateProgressMessage(index, true, 4, steps, "Loading Assets");
+        this.assets = new PdxAssets(installDir, index + 1, progressMessageUpdater);
+
+        progressMessageUpdater.updateProgressMessage(index, false, 5, steps, "Done");
     }
 
     public Path getInstallDir() {
@@ -81,11 +87,15 @@ public class StellarisGame {
         return dlcs;
     }
 
-    public PDXLocalisation getLocalisation() {
+    public PdxLocalisation getLocalisation() {
         return localisation;
     }
 
     public PdxRawDataLoader getRawDataLoader() {
         return rawDataLoader;
+    }
+
+    public PdxAssets getAssets() {
+        return assets;
     }
 }

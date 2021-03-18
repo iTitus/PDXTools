@@ -16,6 +16,7 @@ import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 public class PlanetFX extends Group {
 
     private static final double PLANET_STANDARD_SCALE = 11;
+    private static final Color ORBIT_COLOR = Color.hsb(0.44 * 360, 0.8, 0.6);
 
     // private final Color color;
 
@@ -43,7 +44,7 @@ public class PlanetFX extends Group {
 
         this.planetTooltip = new Tooltip(planetPair.getTwo().name + " (#" + planetPair.getOne() + ")");
 
-        Circle orbit = createOrbit(Color.LIGHTGRAY);
+        Circle orbit = createOrbit();
 
         Platform.runLater(() -> {
             Tooltip.install(this.planetSphere, this.planetTooltip);
@@ -51,14 +52,13 @@ public class PlanetFX extends Group {
         });
     }
 
-    private Circle createOrbit(Color color) {
+    private Circle createOrbit() {
         Coordinate c = planetPair.getTwo().coordinate;
         Point3D p = new Point3D(c.x, c.y, 0);
 
-        int centerId = planetPair.getTwo().isMoon ? planetPair.getTwo().moonOf : -1;
         Point3D center;
-        if (centerId != -1) {
-            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(centerId).coordinate;
+        if (planetPair.getTwo().isMoon) {
+            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planetPair.getTwo().moonOf).coordinate;
             center = new Point3D(centerC.x, centerC.y, 0);
         } else {
             center = Point3D.ZERO;
@@ -69,14 +69,14 @@ public class PlanetFX extends Group {
         orbit.setCenterY(center.getY());
         orbit.setRadius(p.distance(center));
         orbit.setFill(null);
-        orbit.setStroke(color);
-        orbit.setStrokeWidth(0.3);
+        orbit.setStroke(ORBIT_COLOR);
+        orbit.setStrokeWidth(0.2);
 
         return orbit;
     }
 
     private double getPlanetVisualSize(IntObjectPair<Planet> planetPair) {
-        double scale = 1D / 30;
+        double scale = 1D / 60;
 
         String pC = planetPair.getTwo().planetClass;
         String pE = planetPair.getTwo().entityName;
@@ -94,7 +94,7 @@ public class PlanetFX extends Group {
         } else if (pC.equals("pc_asteroid") || pC.equals("pc_ice_asteroid") || pC.equals("pc_crystal_asteroid_2")) {
             entityScale = 1.5;
         } else if (pC.equals("pc_cybrex") || pC.startsWith("pc_ringworld_") || pC.startsWith("pc_habitat")) {
-            entityScale = 1;
+            entityScale = 10;//1;
         } else {
             entityScale = PLANET_STANDARD_SCALE;
         }
@@ -125,7 +125,12 @@ public class PlanetFX extends Group {
         }
 
         double size = planetPair.getTwo().planetSize;
+        double result = entityScale * assetScale * size * scale;
 
-        return entityScale * assetScale * size * scale / 2D;
+        if (planetPair.getTwo().isMoon) {
+            result *= 0.7;
+        }
+
+        return result;
     }
 }

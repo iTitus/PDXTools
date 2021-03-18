@@ -39,6 +39,7 @@ public class Main extends Application {
 
     public void transition() {
         vb = null;
+        System.gc();
 
         GalaxyView galaxyView = new GalaxyView(analyser.getGame(), analyser.getStellarisSave());
 

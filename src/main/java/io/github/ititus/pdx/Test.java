@@ -2,6 +2,7 @@ package io.github.ititus.pdx;
 
 import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
@@ -16,10 +17,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class SimpleTest {
+public class Test {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
+    private static final Path[] TEST_FILES = { /* USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
     private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
@@ -83,6 +88,15 @@ public class SimpleTest {
     }
 
     public static void main(String[] args) {
+        if (TEST_FILES.length > 0) {
+            System.out.println("Running tests:");
+            List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(PdxScriptParser::parse).collect(Collectors.toList());
+            List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
+            testOutput.forEach(System.out::println);
+            System.out.println("done");
+            System.out.println();
+        }
+
         StopWatch s = StopWatch.createRunning();
 
         StellarisGame game = null; // getStellarisGame();

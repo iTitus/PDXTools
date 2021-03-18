@@ -8,10 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.SubScene;
+import javafx.scene.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -38,13 +35,18 @@ import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.factory.primitive.IntIntMaps;
 import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public final class GalaxyView extends BorderPane {
 
     private static final double INFO_PANEL_WIDTH = 200;
     private static final double PADDING = 5;
     private static final double INFO_PANEL_TOTAL_WIDTH = INFO_PANEL_WIDTH + 2 * PADDING;
+    private static final Color SYSTEM_INNER_RADIUS_COLOR = Color.hsb(0.0 * 360, 0.0, 1.0);
+    private static final Color SYSTEM_OUTER_RADIUS_COLOR = Color.hsb(0.1 * 360, 0.8, 0.9);
+    private static final Color ASTEROID_BELT_COLOR = Color.SADDLEBROWN;
 
     private final StellarisGame game;
     private final StellarisSave save;
@@ -106,14 +108,14 @@ public final class GalaxyView extends BorderPane {
         this.heightProperty().addListener(this::onHeightChange);
 
         galaxyCamera.setFieldOfView(35);
-        galaxyCamera.setFarClip(3000);
+        galaxyCamera.setFarClip(12000);
         systemCamera.setFieldOfView(35);
-        systemCamera.setFarClip(3000);
+        systemCamera.setFarClip(12000);
 
-        Translate galaxyCameraTranslate = new Translate(0, 0, -1500);
         Rotate galaxyCameraRotateX = new Rotate(0, Rotate.X_AXIS);
         Rotate galaxyCameraRotateY = new Rotate(180, Rotate.Y_AXIS); // To align to Stellaris' coordinate system
         Rotate galaxyCameraRotateZ = new Rotate(0, Rotate.Z_AXIS);
+        Translate galaxyCameraTranslate = new Translate(0, 0, -1500);
         galaxyCamera.getTransforms().addAll(
                 galaxyCameraRotateX,
                 galaxyCameraRotateY,
@@ -121,10 +123,10 @@ public final class GalaxyView extends BorderPane {
                 galaxyCameraTranslate
         );
 
-        Translate systemCameraTranslate = new Translate(0, 0, -1500);
         Rotate systemCameraRotateX = new Rotate(0, Rotate.X_AXIS);
         Rotate systemCameraRotateY = new Rotate(180, Rotate.Y_AXIS); // To align to Stellaris' coordinate system
         Rotate systemCameraRotateZ = new Rotate(0, Rotate.Z_AXIS);
+        Translate systemCameraTranslate = new Translate(0, 0, -1000);
         systemCamera.getTransforms().addAll(
                 systemCameraRotateX,
                 systemCameraRotateY,
@@ -244,7 +246,7 @@ public final class GalaxyView extends BorderPane {
             systemInScene = systemPair;
             systemGroup.getChildren().clear();
 
-            Task<Void> task = new Task<Void>() {
+            Task<Void> task = new Task<>() {
 
                 @Override
                 protected Void call() {
@@ -272,20 +274,42 @@ public final class GalaxyView extends BorderPane {
                     updateProgress(progress.getAndIncrement(), maxProgress);
                     updateMessage("Adding inner & outer radius [" + progress.get() + "/" + maxProgress + "]");
 
-                    Circle innerRadius = new Circle(systemPair.getTwo().innerRadius);
-                    innerRadius.setFill(null);
-                    innerRadius.setStroke(Color.BLUEVIOLET);
-                    innerRadius.setStrokeWidth(0.2);
-                    // innerRadius.getStrokeDashArray().addAll(10D, 5D);
+                    GalacticObject g = systemPair.getTwo();
 
-                    Circle outerRadius = new Circle(systemPair.getTwo().outerRadius);
+                    List<Node> nodes = new ArrayList<>();
+                    Circle innerRadius = new Circle();
+                    innerRadius.setCenterX(0);
+                    innerRadius.setCenterY(0);
+                    innerRadius.setRadius(g.innerRadius);
+                    innerRadius.setFill(null);
+                    innerRadius.setStroke(SYSTEM_INNER_RADIUS_COLOR);
+                    innerRadius.setStrokeWidth(0.3);
+                    // innerRadius.getStrokeDashArray().addAll(10.0, 8.0);
+                    nodes.add(innerRadius);
+
+                    Circle outerRadius = new Circle();
+                    outerRadius.setCenterX(0);
+                    outerRadius.setCenterY(0);
+                    outerRadius.setRadius(g.outerRadius);
                     outerRadius.setFill(null);
-                    outerRadius.setStroke(Color.BLUEVIOLET);
-                    outerRadius.setStrokeWidth(0.2);
-                    // outerRadius.getStrokeDashArray().addAll(10D, 5D);
+                    outerRadius.setStroke(SYSTEM_OUTER_RADIUS_COLOR);
+                    outerRadius.setStrokeWidth(0.3);
+                    //outerRadius.getStrokeDashArray().addAll(10.0, 8.0);
+                    nodes.add(outerRadius);
+
+                    for (AsteroidBelt b : g.asteroidBelts) {
+                        Circle belt = new Circle();
+                        belt.setCenterX(0);
+                        belt.setCenterY(0);
+                        belt.setRadius(b.innerRadius);
+                        belt.setFill(null);
+                        belt.setStroke(ASTEROID_BELT_COLOR);
+                        belt.setStrokeWidth(2.0);
+                        nodes.add(belt);
+                    }
 
                     Platform.runLater(() -> {
-                        systemGroup.getChildren().addAll(innerRadius, outerRadius);
+                        systemGroup.getChildren().addAll(nodes);
                         updateProgress(maxProgress, maxProgress);
                         updateMessage("Done");
                     });

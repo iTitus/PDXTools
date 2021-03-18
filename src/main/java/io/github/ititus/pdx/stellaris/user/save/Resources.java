@@ -4,7 +4,6 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Resources {
 
-    // FIXME: new resource types
     public final double energy;
     public final double minerals;
     public final double food;
@@ -13,47 +12,35 @@ public class Resources {
     public final double engineeringResearch;
     public final double influence;
     public final double unity;
-    public final double aldar;
-    public final double darkMatter;
-    public final double engos;
-    public final double garanthium;
+    public final double alloys;
+    public final double consumerGoods;
+    public final double volatileMotes;
+    public final double exoticGases;
+    public final double rareCrystals;
     public final double livingMetal;
-    public final double lythuric;
-    public final double orillium;
-    public final double pitharan;
-    public final double satramene;
-    public final double teldar;
-    public final double terraformGases;
-    public final double terraformLiquids;
-    public final double yurantic;
     public final double zro;
-    public final double alienPets;
-    public final double betharian;
+    public final double darkMatter;
+    public final double nanites;
+    public final double minorArtifacts;
 
     public Resources(PdxScriptObject o) {
-        this.energy = o.getDouble("energy");
-        this.minerals = o.getDouble("minerals");
-        this.food = o.getDouble("food");
-        this.physicsResearch = o.getDouble("physics_research");
-        this.societyResearch = o.getDouble("society_research");
-        this.engineeringResearch = o.getDouble("engineering_research");
-        this.influence = o.getDouble("influence");
-        this.unity = o.getDouble("unity");
-        this.aldar = o.getDouble("sr_aldar");
-        this.darkMatter = o.getDouble("sr_dark_matter");
-        this.engos = o.getDouble("sr_engos");
-        this.garanthium = o.getDouble("sr_garanthium");
-        this.livingMetal = o.getDouble("sr_living_metal");
-        this.lythuric = o.getDouble("sr_lythuric");
-        this.orillium = o.getDouble("sr_orillium");
-        this.pitharan = o.getDouble("sr_pitharan");
-        this.satramene = o.getDouble("sr_satramene");
-        this.teldar = o.getDouble("sr_teldar");
-        this.terraformGases = o.getDouble("sr_terraform_gases");
-        this.terraformLiquids = o.getDouble("sr_terraform_liquids");
-        this.yurantic = o.getDouble("sr_yurantic");
-        this.zro = o.getDouble("sr_zro");
-        this.alienPets = o.getDouble("sr_alien_pets");
-        this.betharian = o.getDouble("sr_betharian");
+        this.energy = o.getDouble("energy", 0);
+        this.minerals = o.getDouble("minerals", 0);
+        this.food = o.getDouble("food", 0);
+        this.physicsResearch = o.getDouble("physics_research", 0);
+        this.societyResearch = o.getDouble("society_research", 0);
+        this.engineeringResearch = o.getDouble("engineering_research", 0);
+        this.influence = o.getDouble("influence", 0);
+        this.unity = o.getDouble("unity", 0);
+        this.alloys = o.getDouble("alloys", 0);
+        this.consumerGoods = o.getDouble("consumer_goods", 0);
+        this.volatileMotes = o.getDouble("volatile_motes", 0);
+        this.exoticGases = o.getDouble("exotic_gases", 0);
+        this.rareCrystals = o.getDouble("rare_crystals", 0);
+        this.livingMetal = o.getDouble("sr_living_metal", 0);
+        this.zro = o.getDouble("sr_zro", 0);
+        this.darkMatter = o.getDouble("sr_dark_matter", 0);
+        this.nanites = o.getDouble("nanites", 0);
+        this.minorArtifacts = o.getDouble("minor_artifacts", 0);
     }
 }

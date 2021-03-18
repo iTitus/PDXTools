@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
 
-public final class PDXLocalisation {
+public final class PdxLocalisation {
 
     private final ImmutableMap<String, ImmutableMap<String, String>> localisation;
 
-    public PDXLocalisation(ImmutableMap<String, ImmutableMap<String, String>> localisation) {
+    public PdxLocalisation(ImmutableMap<String, ImmutableMap<String, String>> localisation) {
         this.localisation = localisation;
     }
 
@@ -110,10 +110,10 @@ public final class PDXLocalisation {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PDXLocalisation)) {
+        if (!(o instanceof PdxLocalisation)) {
             return false;
         }
-        PDXLocalisation that = (PDXLocalisation) o;
+        PdxLocalisation that = (PdxLocalisation) o;
         return Objects.equals(localisation, that.localisation);
     }
 

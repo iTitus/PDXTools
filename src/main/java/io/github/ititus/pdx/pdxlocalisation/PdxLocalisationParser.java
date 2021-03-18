@@ -28,12 +28,12 @@ public final class PdxLocalisationParser {
     private PdxLocalisationParser() {
     }
 
-    public static PDXLocalisation parse(Path installDir, int index,
+    public static PdxLocalisation parse(Path installDir, int index,
                                         StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         return parse(installDir, new FileExtensionFilter("yml"), index, progressMessageUpdater);
     }
 
-    public static PDXLocalisation parse(Path installDir, IPathFilter filter, int index,
+    public static PdxLocalisation parse(Path installDir, IPathFilter filter, int index,
                                         StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         Path[] validFiles;
         try (Stream<Path> stream = Files.walk(installDir)) {
@@ -49,7 +49,7 @@ public final class PdxLocalisationParser {
 
         int fileCount = validFiles.length;
         MutableInt progress = new MutableInt();
-        PDXLocalisation localisation = new PDXLocalisation(
+        PdxLocalisation localisation = new PdxLocalisation(
                 Arrays.stream(validFiles)
                         .filter(Objects::nonNull)
                         .filter(Files::isRegularFile)
@@ -76,7 +76,9 @@ public final class PdxLocalisationParser {
                                 )
                         )
         );
-        progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");
+        if (progressMessageUpdater != null) {
+            progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");
+        }
         return localisation;
     }
 
