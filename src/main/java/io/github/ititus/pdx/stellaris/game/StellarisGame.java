@@ -21,8 +21,9 @@ public class StellarisGame {
             // Not PDXScript
             "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt",
             "gfx/fonts/arimo/LICENSE.txt", "interface/credits.txt", "interface/credits_l_simphinese.txt",
-            "interface/reference.txt", "interface/startup_info.txt", "licenses", "pdx_launcher/game/motd.txt",
-            "previewer_assets/previewer_filefilter.txt", "steam_appid.txt", "ThirdPartyLicenses.txt",
+            "interface/reference.txt", "interface/startup_info.txt", "licenses", "locales", "pdx_browser",
+            "pdx_launcher/game/motd.txt", "previewer_assets/previewer_filefilter.txt", "steam_appid.txt",
+            "ThirdPartyLicenses.txt",
             // Handled separately
             "common", "dlc", "localisation", "localisation_synced", "pdx_launcher/common/localisation",
             "pdx_online_assets/localisation",
@@ -36,7 +37,7 @@ public class StellarisGame {
             "gfx/models/ships/titans/molluscoid_01/_molluscoid_titan_meshes.gfx", "gfx/particles/_necroid_portrait.gfx",
             "interface/outliner.gfx", "sound/soundeffects.asset"
     );
-    private static final IPathFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx");
+    private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 
     private final Path installDir;
 

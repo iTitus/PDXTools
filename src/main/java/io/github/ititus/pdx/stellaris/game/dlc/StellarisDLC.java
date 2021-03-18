@@ -22,7 +22,7 @@ public class StellarisDLC {
             "sound/megacorp_vo.asset"
     );
     private static final IPathFilter DLC = new FileExtensionFilter("dlc");
-    private static final IPathFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
+    private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx", "txt");
 
     private final Path installDir, dlcDir;
 

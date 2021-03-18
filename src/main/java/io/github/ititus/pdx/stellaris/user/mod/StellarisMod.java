@@ -17,7 +17,7 @@ import java.nio.file.Path;
 public class StellarisMod {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final IPathFilter FILTER = new FileExtensionFilter("txt", "dlc", "asset", "gui", "gfx", "mod");
+    private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx","txt");
 
     private final Path userDataDir, modDescriptorFile;
 

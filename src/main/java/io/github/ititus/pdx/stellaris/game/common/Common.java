@@ -14,7 +14,7 @@ public class Common {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "HOW_TO_MAKE_NEW_SHIPS.txt", "edicts/README.txt",
+            "component_templates/", "edicts/README.txt", "HOW_TO_MAKE_NEW_SHIPS.txt", "README_weapon_component_stat_docs.txt",
             // V value of HSV color is between 1.0 and 2.0
             "planet_classes/00_planet_classes.txt",
             // Error in script parsing
