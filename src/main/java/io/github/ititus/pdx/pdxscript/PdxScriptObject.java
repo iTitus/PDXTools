@@ -580,8 +580,11 @@ public final class PdxScriptObject implements IPdxScript {
     public <V> ImmutableIntObjectMap<V> getAsIntObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
         MutableIntObjectMap<V> map = IntObjectMaps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
-            usageStatistic.use(oldK, getTypeString(oldV), oldV);
-            map.put(Integer.parseInt(oldK), valueFct.apply(oldV));
+            V v = valueFct.apply(oldV);
+            if (v != null) {
+                usageStatistic.use(oldK, getTypeString(oldV), oldV);
+                map.put(Integer.parseInt(oldK), v);
+            }
         });
         return map.toImmutable();
     }
@@ -634,8 +637,11 @@ public final class PdxScriptObject implements IPdxScript {
     public <V> ImmutableLongObjectMap<V> getAsLongObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
         MutableLongObjectMap<V> map = LongObjectMaps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
-            usageStatistic.use(oldK, getTypeString(oldV), oldV);
-            map.put(Long.parseLong(oldK), valueFct.apply(oldV));
+            V v = valueFct.apply(oldV);
+            if (v != null) {
+                usageStatistic.use(oldK, getTypeString(oldV), oldV);
+                map.put(Long.parseLong(oldK), v);
+            }
         });
         return map.toImmutable();
     }
@@ -688,8 +694,11 @@ public final class PdxScriptObject implements IPdxScript {
     public <V> ImmutableMap<String, V> getAsStringObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
         MutableMap<String, V> map = Maps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
-            usageStatistic.use(oldK, getTypeString(oldV), oldV);
-            map.put(oldK, valueFct.apply(oldV));
+            V v = valueFct.apply(oldV);
+            if (v != null) {
+                usageStatistic.use(oldK, getTypeString(oldV), oldV);
+                map.put(oldK, v);
+            }
         });
         return map.toImmutable();
     }

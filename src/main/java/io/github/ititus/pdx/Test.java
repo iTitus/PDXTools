@@ -14,6 +14,7 @@ import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -24,12 +25,11 @@ import java.util.stream.Collectors;
 public class Test {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
-    private static final Path[] TEST_FILES = { /* USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
     private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
-
     private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/2248.02.26_extracted_2.8.1");
+    private static final Path[] TEST_FILES = { /*USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
 
     private static StellarisGame getStellarisGame() {
         StopWatch s = StopWatch.createRunning();
@@ -39,7 +39,7 @@ public class Test {
         StellarisGame game = new StellarisGame(INSTALL_DIR, 0, (index, visible, workDone, totalWork, msg) -> {
             if (index == 0) {
                 if (stopWatch.isRunning()) {
-                    System.out.println(lastMessage.get() + ": " + DurationFormatter.formatSeconds(stopWatch.stop()));
+                    System.out.println(lastMessage.get() + ": " + DurationFormatter.format(stopWatch.stop()));
                 } else {
                     System.out.println("Loading Game Data");
                 }
@@ -51,7 +51,7 @@ public class Test {
             }
             // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
         });
-        System.out.println("Game Data Load Time: " + DurationFormatter.formatSeconds(s.stop()));
+        System.out.println("Game Data Load Time: " + DurationFormatter.format(s.stop()));
         return game;
     }
 
@@ -64,7 +64,7 @@ public class Test {
                                                                               msg) -> {
             if (index == 0) {
                 if (stepWatch.isRunning()) {
-                    System.out.println(lastMessage.get() + ": " + DurationFormatter.formatSeconds(stepWatch.stop()));
+                    System.out.println(lastMessage.get() + ": " + DurationFormatter.format(stepWatch.stop()));
                 } else {
                     System.out.println("Loading User Data");
                 }
@@ -76,14 +76,14 @@ public class Test {
             }
             // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
         });
-        System.out.println("User Data Load Time: " + DurationFormatter.formatSeconds(s.stop()));
+        System.out.println("User Data Load Time: " + DurationFormatter.format(s.stop()));
         return userData;
     }
 
     private static StellarisSave getStellarisSave() {
         StopWatch s = StopWatch.createRunning();
         StellarisSave save = new StellarisSave(SAVE);
-        System.out.println("Test Save Load Time: " + DurationFormatter.formatSeconds(s.stop()));
+        System.out.println("Test Save Load Time: " + DurationFormatter.format(s.stop()));
         return save;
     }
 
@@ -99,9 +99,9 @@ public class Test {
 
         StopWatch s = StopWatch.createRunning();
 
-        StellarisGame game = null; // getStellarisGame();
+        StellarisGame game = /*null; //*/ getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
-        StellarisSave save = /*null; //*/ getStellarisSave();
+        StellarisSave save = null; // getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
@@ -113,19 +113,41 @@ public class Test {
         try {
             Files.createDirectories(DEBUG_OUT.getParent());
             Files.write(DEBUG_OUT, new byte[0]);
-            if (unknownLiterals != null) {
+            if (unknownLiterals != null && !unknownLiterals.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Unknown Literals:", "#".repeat(80), ""), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, unknownLiterals, StandardOpenOption.APPEND);
-                // unknownLiterals.forEach(System.out::println);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
             }
-            if (saveParseErrors != null) {
+            if (gameErrors != null && !gameErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Game Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, gameErrors.collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of(""), StandardOpenOption.APPEND);
+            }
+            /*if (missingLocalisation != null && !missingLocalisation.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Missing Localisation:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, missingLocalisation.keyValuesView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
+            }
+            if (extraLocalisation != null && !extraLocalisation.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Extra Localisation:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, extraLocalisation.keyValuesView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
+            }*/
+            if (userDataErrors != null && !userDataErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "User Data Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, userDataErrors.collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
+            }
+            if (saveParseErrors != null && !saveParseErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Save Parse Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, saveParseErrors, StandardOpenOption.APPEND);
-                // saveParseErrors.forEach(System.out::println);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 
-        System.out.println("Total Loading Time: " + DurationFormatter.formatSeconds(s.stop()));
+        System.out.println("Total Loading Time: " + DurationFormatter.format(s.stop()));
         System.out.println("done");
     }
 }

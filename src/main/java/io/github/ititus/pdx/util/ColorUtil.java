@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.util;
 
 import java.awt.*;
+import java.util.Objects;
 
 public final class ColorUtil {
 
@@ -9,78 +10,71 @@ public final class ColorUtil {
 
     public static Color fromRGBArray(Number... colorComponents) {
         if (colorComponents.length != 3 && colorComponents.length != 4) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("expected 3 or 4 color components");
         }
-        Number rN = colorComponents[0];
-        Number gN = colorComponents[1];
-        Number bN = colorComponents[2];
-        Number aN = colorComponents.length == 4 ? colorComponents[3] : null;
 
-        float r = get(rN, 0, 255, 255, 0, 1);
-        float g = get(gN, 0, 255, 255, 0, 1);
-        float b = get(bN, 0, 255, 255, 0, 1);
-        float a = getAlpha(aN, 1, 0, 255, 255, 0, 1);
+        float r = get(colorComponents[0], 255);
+        float g = get(colorComponents[1], 255);
+        float b = get(colorComponents[2], 255);
+        float a = getAlpha(colorComponents.length == 4 ? colorComponents[3] : null);
 
         return new Color(r, g, b, a);
     }
 
     public static Color fromHSVArray(Number... colorComponents) {
         if (colorComponents.length != 3 && colorComponents.length != 4) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("expected 3 or 4 color components");
         }
-        Number hN = colorComponents[0];
-        Number sN = colorComponents[1];
-        Number vN = colorComponents[2];
-        Number aN = colorComponents.length == 4 ? colorComponents[3] : null;
 
-        float h = get(hN, 0, 360, 360, 0, 1);
-        float s = get(sN, 0, 100, 100, 0, 1);
-        float v = get(vN, 0, 100, 100, 0, 1);
-        float a = getAlpha(aN, 1, 0, 255, 255, 0, 1);
+        float h = get(colorComponents[0], 360);
+        float s = get(colorComponents[1], 100);
+        float v = get(colorComponents[2], 100);
+        float a = getAlpha(colorComponents.length == 4 ? colorComponents[3] : null);
 
         return fromHSVA(h, s, v, a);
     }
 
     public static Color fromHSVA(float hue, float saturation, float value, float alpha) {
-        int r, g, b, a = (int) (alpha * 255.0f + 0.5f);
+        int r, g, b;
+        int a = rgbInt(alpha);
         if (saturation == 0) {
-            r = g = b = (int) (value * 255.0f + 0.5f);
+            r = g = b = rgbInt(value);
         } else {
-            float h = (hue - (float) Math.floor(hue)) * 6.0f;
-            float f = h - (float) Math.floor(h);
-            float p = value * (1.0f - saturation);
-            float q = value * (1.0f - saturation * f);
-            float t = value * (1.0f - (saturation * (1.0f - f)));
-            switch ((int) h) {
+            int i = (int) Math.floor(hue * 6);
+            float f = hue * 6 - i;
+            float p = value * (1 - saturation);
+            float q = value * (1 - f * saturation);
+            float t = value * (1 - (1 - f) * saturation);
+            switch (i % 6) {
                 case 0 -> {
-                    r = (int) (value * 255.0f + 0.5f);
-                    g = (int) (t * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    r = rgbInt(value);
+                    g = rgbInt(t);
+                    b = rgbInt(p);
                 }
                 case 1 -> {
-                    r = (int) (q * 255.0f + 0.5f);
-                    g = (int) (value * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    r = rgbInt(q);
+                    g = rgbInt(value);
+                    b = rgbInt(p);
                 }
                 case 2 -> {
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (value * 255.0f + 0.5f);
-                    b = (int) (t * 255.0f + 0.5f);
+                    r = rgbInt(p);
+                    g = rgbInt(value);
+                    b = rgbInt(t);
                 }
                 case 3 -> {
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (q * 255.0f + 0.5f);
-                    b = (int) (value * 255.0f + 0.5f);
+                    r = rgbInt(p);
+                    g = rgbInt(q);
+                    b = rgbInt(value);
                 }
                 case 4 -> {
-                    r = (int) (t * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (value * 255.0f + 0.5f);
+                    r = rgbInt(t);
+                    g = rgbInt(p);
+                    b = rgbInt(value);
                 }
                 case 5 -> {
-                    r = (int) (value * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (q * 255.0f + 0.5f);
+                    r = rgbInt(value);
+                    g = rgbInt(p);
+                    b = rgbInt(q);
                 }
                 default -> throw new RuntimeException(
                         "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
@@ -88,45 +82,43 @@ public final class ColorUtil {
         }
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
             throw new RuntimeException(
-                    "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + "," +
-                            " " + value + ", " + alpha);
+                    "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
         }
-        return new Color(r & 0xFF, g & 0xFF, b & 0xFF, a & 0xFF);
+        return new Color(r, g, b, a);
     }
 
     public static Color fromRGBHex(String hex) {
-        if (hex != null && (hex.startsWith("#") || hex.startsWith("0x"))) {
-            int l = hex.length();
-            if (l >= 7 && l <= 10) {
-                if (hex.startsWith("#")) {
-                    hex = hex.substring(1);
-                    l--;
-                } else if (hex.startsWith("0x")) {
-                    hex = hex.substring(2);
-                    l -= 2;
-                }
+        Objects.requireNonNull(hex);
 
-                if (l == 6 || l == 8) {
-                    return new Color(Integer.parseUnsignedInt(hex, 16), l == 8);
-                }
-            }
+        if (hex.startsWith("#")) {
+            hex = hex.substring(1);
+        } else if (hex.startsWith("0x")) {
+            hex = hex.substring(2);
+        } else {
+            throw new IllegalArgumentException("unexpected color string prefix");
         }
 
-        throw new IllegalArgumentException();
+        int l = hex.length();
+        if (l == 6 || l == 8) {
+            return new Color(Integer.parseUnsignedInt(hex, 16), l == 8);
+        }
+
+        throw new IllegalArgumentException("unexpected color string length");
     }
 
-    private static float get(Number n, int lowerIntBound, int upperIntBound, float divider, float lowerFloatBound,
-                             float upperFloatBound) {
+    private static float get(Number n, int upperIntBound) {
         if (n instanceof Integer) {
             int i = n.intValue();
-            if (i < lowerIntBound || i > upperIntBound) {
+            if (i < 0 || i > upperIntBound) {
                 throw new IllegalArgumentException();
             }
-            return i / divider;
+            return i / (float) upperIntBound;
         } else if (n instanceof Double) {
             float f = n.floatValue();
-            if (f < lowerFloatBound || upperFloatBound > 1) {
+            if (f < 0 || f > 2) {
                 throw new IllegalArgumentException();
+            } else if (f > 1) {
+                f = 1; // some hsv colors have a 'value' > 1
             }
             return f;
         }
@@ -134,17 +126,16 @@ public final class ColorUtil {
         throw new IllegalArgumentException();
     }
 
-    private static float getAlpha(Number aN, float def, int lowerIntBound, int upperIntBound, float divider,
-                                  float lowerFloatBound, float upperFloatBound) {
+    private static float getAlpha(Number aN) {
         if (aN instanceof Integer) {
             int i = aN.intValue();
-            if (i < lowerIntBound || i > upperIntBound) {
+            if (i < 0 || i > 255) {
                 throw new IllegalArgumentException();
             }
-            return i / divider;
+            return i / 255f;
         } else if (aN instanceof Double) {
             float a = aN.floatValue();
-            if (a < lowerFloatBound || a > upperFloatBound) {
+            if (a < 0 || a > 1) {
                 throw new IllegalArgumentException();
             }
             return a;
@@ -152,6 +143,10 @@ public final class ColorUtil {
             throw new IllegalArgumentException();
         }
 
-        return def;
+        return 1;
+    }
+
+    private static int rgbInt(float f) {
+        return (int) (f * 255.0f + 0.5f);
     }
 }

@@ -19,7 +19,7 @@ public class StellarisUserData {
             ".launcher-cache", "cache", "crashes", "dumps", "exceptions", "logs", "pops_filestorage", "screenshots",
             "shadercache",
             // Handled separately
-            "save games", "mod"
+            "mod", "save games"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt", "mod");
 

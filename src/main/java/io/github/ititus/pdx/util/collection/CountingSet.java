@@ -14,12 +14,12 @@ public class CountingSet<E> extends AbstractSet<E> {
 
     @SuppressWarnings("unchecked")
     private final Comparator<E> COMP = (o1, o2) -> {
-        if (o1 == o2) {
+        if (Objects.equals(o1, o2)) {
             return 0;
-        }
-        if (o1 instanceof Comparable && o2 != null) {
+        } else if (o1 instanceof Comparable && o2 != null) {
             return ((Comparable<? super E>) o1).compareTo(o2);
         }
+
         return HASH_COMP.compare(o1, o2);
     };
 
@@ -86,6 +86,12 @@ public class CountingSet<E> extends AbstractSet<E> {
     }
 
     public ImmutableList<E> sortedList() {
-        return map.keyValuesView().toSortedList(Comparator.comparingInt(ObjectIntPair<E>::getTwo).reversed().thenComparing(ObjectIntPair::getOne, COMP)).collect(ObjectIntPair::getOne).toImmutable();
+        return map.keyValuesView()
+                .toSortedList(
+                        Comparator.comparingInt(ObjectIntPair<E>::getTwo).reversed()
+                                .thenComparing(ObjectIntPair::getOne, COMP)
+                )
+                .collect(ObjectIntPair::getOne)
+                .toImmutable();
     }
 }

@@ -54,7 +54,7 @@ public class StellarisSaves {
             Path[] saveGames;
             try (Stream<Path> stream = Files.list(saveFolder)) {
                 saveGames = stream
-                        .filter(StellarisSave::isValidSaveFile)
+                        .filter(StellarisSave::isValidSaveFileOrDir)
                         .toArray(Path[]::new);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);

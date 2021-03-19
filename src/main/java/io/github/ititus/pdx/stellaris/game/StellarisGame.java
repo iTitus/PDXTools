@@ -27,10 +27,6 @@ public class StellarisGame {
             // Handled separately
             "common", "dlc", "localisation", "localisation_synced", "pdx_launcher/common/localisation",
             "pdx_online_assets/localisation",
-            // V value of HSV color is between 1.0 and 2.0
-            "flags/colors.txt", "gfx/advisorwindow/advisorwindow_environment.txt",
-            "gfx/worldgfx/customization_view_planet.txt", "gfx/worldgfx/customization_view_ringworld.txt",
-            "gfx/worldgfx/ship_design_icon.txt", "gfx/worldgfx/ship_details_view.txt", "gfx/worldgfx/system_view.txt",
             // Error in script parsing
             "dlc_metadata/dlc_info.txt", "events/fed_vote_events.txt", "gfx/models/planets/_planetary_entities.asset",
             "gfx/models/ships/titans/mammalian_01/_mammalian_01_titan_meshes.gfx",
@@ -46,7 +42,6 @@ public class StellarisGame {
     private final PdxLocalisation localisation;
 
     private final PdxRawDataLoader rawDataLoader;
-
     private final PdxAssets assets;
 
     public StellarisGame(Path installDir, int index,

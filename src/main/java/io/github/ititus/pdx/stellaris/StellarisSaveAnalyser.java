@@ -146,7 +146,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
         updateProgressMessage(0, false, 4, steps, "Done");
 
-        System.out.println("Time: " + DurationFormatter.formatSeconds(s.stop()));
+        System.out.println("Time: " + DurationFormatter.format(s.stop()));
         Platform.runLater(main::transition);
     }
 

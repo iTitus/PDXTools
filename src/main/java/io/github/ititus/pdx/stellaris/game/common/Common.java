@@ -14,32 +14,41 @@ public class Common {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "anomalies/readme.txt", "component_templates/README_weapon_component_stat_docs.txt", "edicts/README.txt",
-            "governments/readme_requirements.txt", "HOW_TO_MAKE_NEW_SHIPS.txt", "megastructures/README.txt",
-            "tradition_categories/README.txt", "traditions/README.txt",
-            // V value of HSV color is between 1.0 and 2.0
-            "planet_classes/00_planet_classes.txt",
+            "anomalies/readme.txt", "anomalies/TODO_commented_out_missing_category.txt",
+            "archaeological_site_types/example.txt", "component_templates/README_weapon_component_stat_docs.txt",
+            "edicts/README.txt", "governments/readme_requirements.txt", "HOW_TO_MAKE_NEW_SHIPS.txt",
+            "megastructures/README.txt", "tradition_categories/README.txt", "traditions/README.txt",
             // Error in script parsing
             "random_names/00_empire_names.txt", "random_names/00_war_names.txt",
-            "scripted_effects/archaeology_event_effects.txt"
+            "scripted_effects/archaeology_event_effects.txt",
+            // Handled separately
+            "planet_classes"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
-    private final Path installDir, commonDir;
-    private final PdxRawDataLoader commonDataLoader;
+    private final Path installDir;
+    private final Path commonDir;
 
     private final PlanetClasses planetClasses;
 
-    public Common(Path installDir, Path commonDir, int index,
-                  StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    private final PdxRawDataLoader commonDataLoader;
+
+    public Common(Path installDir, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir) || commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }
         this.installDir = installDir;
         this.commonDir = commonDir;
 
-        this.commonDataLoader = new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index, progressMessageUpdater);
-        this.planetClasses = this.commonDataLoader.getRawData().getObjectAs("planet_classes", PlanetClasses::new);
+        int steps = 2;
+
+        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading planet_classes");
+        this.planetClasses = new PlanetClasses(commonDir.resolve("planet_classes"));
+
+        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
+        this.commonDataLoader = new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+
+        progressMessageUpdater.updateProgressMessage(index, false, 2, steps, "Done");
     }
 
     public Path getInstallDir() {
@@ -50,11 +59,11 @@ public class Common {
         return commonDir;
     }
 
-    public PdxRawDataLoader getCommonDataLoader() {
-        return commonDataLoader;
-    }
-
     public PlanetClasses getPlanetClasses() {
         return planetClasses;
+    }
+
+    public PdxRawDataLoader getCommonDataLoader() {
+        return commonDataLoader;
     }
 }

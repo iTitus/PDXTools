@@ -6,18 +6,14 @@ import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
+import java.util.*;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
+import static java.util.function.Predicate.not;
 
 public final class PdxScriptParser {
 
@@ -136,11 +132,11 @@ public final class PdxScriptParser {
             } else if (HSV.equals(token)) {
                 tokens.next();
                 IPdxScript s = parse(tokens);
-                value = PdxColor.fromHSV(((PdxScriptList) s).getAsNumberArray());
+                value = PdxColor.fromHSV(s.expectList().getAsNumberArray());
             } else if (RGB.equals(token)) {
                 tokens.next();
                 IPdxScript s = parse(tokens);
-                value = PdxColor.fromRGB(((PdxScriptList) s).getAsNumberArray());
+                value = PdxColor.fromRGB(s.expectList().getAsNumberArray());
             } else {
                 try {
                     value = PdxColor.fromRGBHex(token);
@@ -460,17 +456,14 @@ public final class PdxScriptParser {
         return isQuoteNecessary(s) ? quote(s) : s;
     }
 
-    public static IPdxScript parse(Path scriptFile) {
-        if (!Files.isRegularFile(scriptFile)) {
+    public static IPdxScript parse(Path... scriptFiles) {
+        if (scriptFiles.length == 0) {
+            throw new IllegalArgumentException();
+        } else if (Arrays.stream(scriptFiles).anyMatch(not(Files::isRegularFile))) {
             throw new IllegalArgumentException();
         }
 
-        try (Reader r = new BufferedReader(new InputStreamReader(Files.newInputStream(scriptFile),
-                StandardCharsets.UTF_8))) {
-            return parse(IOUtil.getCharacterIterator(r));
-        } catch (IOException e) {
-            throw new UncheckedIOException("Error while reading file: " + scriptFile, e);
-        }
+        return parse(IOUtil.getCharacterIterator(scriptFiles));
     }
 
     private static IPdxScript parse(PrimitiveIterator.OfInt charIterator) {
