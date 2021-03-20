@@ -24,16 +24,22 @@ public class Common {
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
             "achievements", "anomalies/readme.txt", "anomalies/TODO_commented_out_missing_category.txt",
-            "archaeological_site_types/example.txt", "component_templates/README_weapon_component_stat_docs.txt",
-            "edicts/README.txt", "governments/readme_requirements.txt", "HOW_TO_MAKE_NEW_SHIPS.txt",
-            "megastructures/README.txt", "tradition_categories/README.txt", "traditions/README.txt",
+            "archaeological_site_types/example.txt", "buildings/00_example.txt", "button_effects/example.txt",
+            "component_templates/README_weapon_component_stat_docs.txt", "dynamic_text/example.txt",
+            "economic_plans/00_example.txt", "edicts/README.txt", "federation_law_categories/00_example.txt",
+            "federation_laws/00_example.txt", "galactic_focuses/00_example.txt", "governments/readme_requirements.txt",
+            "HOW_TO_MAKE_NEW_SHIPS.txt", "lawsuits/00_example.txt", "megastructures/README.txt",
+            "resolution_categories/00_example.txt", "resolutions/00_example.txt",
+            "solar_system_initializers/example.txt", "tradition_categories/README.txt", "traditions/README.txt",
             "war_goals/wg_example.txt",
             // Error in script parsing
             "random_names/00_empire_names.txt", "random_names/00_war_names.txt",
             "scripted_effects/archaeology_event_effects.txt"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
+
     public final PlanetClasses planetClasses;
+
     private final Path installDir;
     private final Path commonDir;
     private final PdxRawDataLoader commonDataLoader;
