@@ -30,7 +30,7 @@ public class StellarisSaveAnalyser implements Runnable {
     private static final String SAVE_FOLDER = "mpempireofthebugs_847499604";
     private static final String SAVE_GAME = "2248.02.26";
 
-    private static final int PROGRESS_DEPTH = 4;
+    private static final int PROGRESS_DEPTH = 5;
 
     private final ReadOnlyBooleanWrapper[] visibilityProps = new ReadOnlyBooleanWrapper[PROGRESS_DEPTH];
     private final ReadOnlyDoubleWrapper[] progressProps = new ReadOnlyDoubleWrapper[PROGRESS_DEPTH];

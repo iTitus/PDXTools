@@ -31,7 +31,11 @@ public class StellarisGame {
             "dlc_metadata/dlc_info.txt", "events/fed_vote_events.txt", "gfx/models/planets/_planetary_entities.asset",
             "gfx/models/ships/titans/mammalian_01/_mammalian_01_titan_meshes.gfx",
             "gfx/models/ships/titans/molluscoid_01/_molluscoid_titan_meshes.gfx", "gfx/particles/_necroid_portrait.gfx",
-            "interface/outliner.gfx", "sound/soundeffects.asset"
+            "interface/outliner.gfx", "sound/soundeffects.asset",
+            // TODO: re-enable once there is a plan for the global variables in "scripted_variables"
+            "events",
+            // TODO: find a solution for missing/typo-ed variables and definition after use
+            "gfx", "interface"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 

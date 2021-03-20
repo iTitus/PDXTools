@@ -6,32 +6,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.impl.factory.Sets;
 
 import java.time.LocalDate;
 
 public class Planet {
-
-    // TODO: is this still used?
-    public static final ImmutableSet<String> habitablePlanetClasses = Sets.immutable.of(
-            "pc_desert",
-            "pc_tropical",
-            "pc_arid",
-            "pc_ocean",
-            "pc_tundra",
-            "pc_arctic",
-            "pc_continental",
-            "pc_alpine",
-            "pc_savannah",
-            "pc_nuked",
-            "pc_machine",
-            "pc_city",
-            "pc_gaia",
-            "pc_tomb",
-            "pc_ringworld_habitable",
-            "pc_habitat"
-    );
 
     public final boolean customName;
     public final boolean planetClassChanged;

@@ -10,7 +10,7 @@ public interface IPdxScript {
         return PdxScriptList.builder()
                 .add(this)
                 .add(script)
-                .build(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+                .build(PdxScriptList.Mode.IMPLICIT);
     }
 
     default String toPdxScript() {
@@ -47,7 +47,7 @@ public interface IPdxScript {
 
         //throw new IllegalStateException("expected list but got " + this);
         // TODO: is this smart? maybe throw instead...
-        return PdxScriptList.builder().add(this).buildRaw(PdxScriptList.Mode.IMPLICIT, PdxRelation.EQUALS);
+        return PdxScriptList.builder().add(this).build(PdxScriptList.Mode.IMPLICIT);
     }
 
     default PdxScriptObject expectObject() {

@@ -15,15 +15,12 @@ import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
-import static io.github.ititus.pdx.pdxscript.PdxHelper.*;
+import static io.github.ititus.pdx.pdxscript.PdxHelper.getTypeString;
 
 public final class PdxScriptObject implements IPdxScript {
-
-    // Disabled because of mutability due to debug usage tracking
-    // private static final Deduplicator<PdxScriptObject> DEDUPLICATOR = new Deduplicator<>(o -> !o.map.isEmpty());
-    // public static final PdxScriptObject EMPTY = builder().build(PdxRelation.EQUALS);
 
     private final PdxRelation relation;
     private final ImmutableMap<String, IPdxScript> map;
@@ -32,7 +29,7 @@ public final class PdxScriptObject implements IPdxScript {
     private PdxScriptObject(PdxRelation relation, ImmutableMap<String, IPdxScript> map) {
         this.relation = relation;
         this.map = map;
-        this.usageStatistic = new PdxUsageStatistic().init(map);
+        this.usageStatistic = new PdxUsageStatistic().init(this.map);
     }
 
     public static Builder builder() {
@@ -253,7 +250,7 @@ public final class PdxScriptObject implements IPdxScript {
     }
 
     public PdxScriptList getListOrEmpty(String key) {
-        return getList(key, PdxScriptList.EMPTY_NORMAL);
+        return getList(key, PdxScriptList.EMPTY);
     }
 
     public PdxScriptList getList(String key, PdxScriptList def) {
@@ -442,6 +439,12 @@ public final class PdxScriptObject implements IPdxScript {
         return fct.apply(extractObject(key, s));
     }
 
+    public <T> T getScriptAs(String key, Function<? super IPdxScript, ? extends T> fct) {
+        IPdxScript s = getRaw(key);
+        usageStatistic.use(key, getTypeString(s), s);
+        return fct.apply(s);
+    }
+
     public ImmutableIntIntMap getObjectAsEmptyOrIntIntMap(String key) {
         return getObjectAs(key, PdxScriptObject::getAsIntIntMap, IntIntMaps.immutable.empty());
     }
@@ -526,6 +529,16 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         return fct.apply(extractObject(key, s));
+    }
+
+    public <T> T getScriptAs(String key, Function<? super IPdxScript, ? extends T> fct, T def) {
+        IPdxScript s = getRaw(key);
+        usageStatistic.use(key, getTypeString(s), s);
+        if (s == null) {
+            return def;
+        }
+
+        return fct.apply(s);
     }
 
     public <T> T getAs(Function<? super PdxScriptObject, ? extends T> fct) {
@@ -691,9 +704,18 @@ public final class PdxScriptObject implements IPdxScript {
         return map.toImmutable();
     }
 
+
     public <V> ImmutableMap<String, V> getAsStringObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
+        return getAsStringObjectMap(null, valueFct);
+    }
+
+    public <V> ImmutableMap<String, V> getAsStringObjectMap(Predicate<String> keyFilter, Function<? super IPdxScript, ? extends V> valueFct) {
         MutableMap<String, V> map = Maps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
+            if (keyFilter != null && !keyFilter.test(oldK)) {
+                return;
+            }
+
             V v = valueFct.apply(oldV);
             if (v != null) {
                 usageStatistic.use(oldK, getTypeString(oldV), oldV);
@@ -703,17 +725,173 @@ public final class PdxScriptObject implements IPdxScript {
         return map.toImmutable();
     }
 
+    private PdxScriptObject extractObject(String key, IPdxScript s) {
+        if (s instanceof PdxScriptObject) {
+            return (PdxScriptObject) s;
+        }
+
+        throw new NoSuchElementException("expected object for key " + key + " but got " + s);
+    }
+
+    private PdxScriptList extractImplicitList(String key, IPdxScript s) {
+        if (s == null) {
+            return PdxScriptList.EMPTY_IMPLICIT;
+        } else if (s instanceof PdxScriptList) {
+            PdxScriptList l = (PdxScriptList) s;
+            if (l.getMode() == PdxScriptList.Mode.IMPLICIT) {
+                return l;
+            }
+        }
+
+        return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT);
+    }
+
+    private PdxScriptList extractList(String key, IPdxScript s) {
+        if (s instanceof PdxScriptList) {
+            PdxScriptList l = (PdxScriptList) s;
+            if (l.getMode() != PdxScriptList.Mode.IMPLICIT) {
+                return l;
+            }
+        }
+
+        throw new NoSuchElementException("expected explicit list for key " + key + " but got " + s);
+    }
+
+    private boolean extractBoolean(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Boolean) {
+                return (boolean) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected boolean for key " + key + " but got " + s);
+    }
+
+    private int extractInt(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Integer) {
+                return (int) v;
+            } else if (v instanceof String) {
+                try {
+                    return Integer.parseInt((String) v);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+        throw new NoSuchElementException("expected int for key " + key + " but got " + s);
+    }
+
+    private int extractUnsignedInt(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Integer) {
+                return (int) v;
+            } else if (v instanceof Long) {
+                long l = (long) v;
+                if (l >= 0 && l <= UNSIGNED_INT_MAX_LONG) {
+                    return (int) l;
+                }
+            } else if (v instanceof String) {
+                try {
+                    return Integer.parseUnsignedInt((String) v);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+        throw new NoSuchElementException("expected unsigned int for key " + key + " but got " + s);
+    }
+
+    private long extractLong(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Long || v instanceof Integer) {
+                return ((Number) v).longValue();
+            } else if (v instanceof String) {
+                try {
+                    return Long.parseLong((String) v);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+        throw new NoSuchElementException("expected int for key " + key + " but got " + s);
+    }
+
+    private double extractDouble(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof Double || v instanceof Long || v instanceof Integer) {
+                return ((Number) v).doubleValue();
+            } else if (v instanceof String) {
+                try {
+                    return Double.parseDouble((String) v);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
+        throw new NoSuchElementException("expected double for key " + key + " but got " + s);
+    }
+
+    private String extractString(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof String) {
+                return (String) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected string for key " + key + " but got " + s);
+    }
+
+    private String extractNullOrString(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v == null) {
+                return null;
+            } else if (v instanceof String) {
+                return (String) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected string or null for key " + key + " but got " + s);
+    }
+
+    private LocalDate extractDate(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof LocalDate) {
+                return (LocalDate) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected date for key " + key + " but got " + s);
+    }
+
+    private PdxColor extractColor(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof PdxColor) {
+                return (PdxColor) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected color for key " + key + " but got " + s);
+    }
+
     public PdxUsageStatistic getUsageStatistic() {
         MutableMap<String, PdxUsage> usages = Maps.mutable.empty();
         usageStatistic.getUsages().forEachKeyValue((key, usage) -> usages.merge(key, usage, PdxUsage::merge));
         map.forEachKeyValue((key, value) -> {
             String prefix = (key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key) + DOT_CHAR;
             if (value instanceof PdxScriptObject) {
-                ((PdxScriptObject) value).getUsageStatistic().getUsages()
-                        .forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
+                ((PdxScriptObject) value).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
             } else if (value instanceof PdxScriptList) {
-                ((PdxScriptList) value).getUsageStatistic().getUsages()
-                        .forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
+                ((PdxScriptList) value).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
             }
         });
         return new PdxUsageStatistic(usages);
@@ -744,10 +922,10 @@ public final class PdxScriptObject implements IPdxScript {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof PdxScriptObject)) {
+        } else if (!(o instanceof PdxScriptObject)) {
             return false;
         }
+
         PdxScriptObject that = (PdxScriptObject) o;
         return relation == that.relation && Objects.equals(map, that.map);
     }
@@ -767,15 +945,6 @@ public final class PdxScriptObject implements IPdxScript {
 
     public static class Builder {
 
-        /*private static final ImmutableMap<PdxRelation, PdxScriptObject> EMPTY_CACHE;
-
-        static {
-            Map<PdxRelation, PdxScriptObject> map = new EnumMap<>(PdxRelation.class);
-            Arrays.stream(PdxRelation.values()).forEach(relation -> map.put(relation, new PdxScriptObject(relation,
-            Maps.immutable.empty())));
-            EMPTY_CACHE = Maps.immutable.withAll(map);
-        }*/
-
         private final MutableMap<String, IPdxScript> map;
 
         public Builder() {
@@ -783,24 +952,26 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public Builder add(String key, IPdxScript value) {
+            Objects.requireNonNull(value);
             String interned = key; // key.intern();
-            IPdxScript object = map.get(interned);
-            if (object == null) {
+            IPdxScript existing = map.get(interned);
+            if (existing == null) {
                 map.put(interned, value);
-            } else if (object.canAppend(value)) {
-                map.put(interned, object.append(value));
+            } else if (existing.canAppend(value)) {
+                map.put(interned, existing.append(value));
             } else {
-                throw new UnsupportedOperationException("key=" + interned + ", existing=" + object + ", appendix=" + value);
+                throw new UnsupportedOperationException("key=" + interned + ", existing=" + existing + ", appendix=" + value);
             }
 
             return this;
         }
 
+        public PdxScriptObject build() {
+            return build(PdxRelation.EQUALS);
+        }
+
         public PdxScriptObject build(PdxRelation relation) {
-            /*if (map.isEmpty()) {
-                return EMPTY_CACHE.get(relation);
-            }*/
-            return /*DEDUPLICATOR.deduplicate(*/new PdxScriptObject(relation, map.toImmutable())/*)*/;
+            return new PdxScriptObject(relation, map.toImmutable());
         }
     }
 }

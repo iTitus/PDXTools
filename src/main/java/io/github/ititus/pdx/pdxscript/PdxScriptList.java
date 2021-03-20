@@ -3,7 +3,6 @@ package io.github.ititus.pdx.pdxscript;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.*;
-import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
@@ -12,7 +11,8 @@ import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -24,9 +24,9 @@ import static org.eclipse.collections.impl.collector.Collectors2.toImmutableList
 
 public final class PdxScriptList implements IPdxScript {
 
-    public static final PdxScriptList EMPTY_NORMAL = builder().buildRaw(Mode.NORMAL, PdxRelation.EQUALS);
-    public static final PdxScriptList EMPTY_COMMA = builder().buildRaw(Mode.COMMA, PdxRelation.EQUALS);
-    public static final PdxScriptList EMPTY_IMPLICIT = builder().buildRaw(Mode.IMPLICIT, PdxRelation.EQUALS);
+    public static final PdxScriptList EMPTY = new PdxScriptList(Mode.NORMAL, PdxRelation.EQUALS, Lists.immutable.empty());
+    public static final PdxScriptList EMPTY_COMMA = new PdxScriptList(Mode.COMMA, PdxRelation.EQUALS, Lists.immutable.empty());
+    public static final PdxScriptList EMPTY_IMPLICIT = new PdxScriptList(Mode.IMPLICIT, PdxRelation.EQUALS, Lists.immutable.empty());
 
     private final Mode mode;
     private final PdxRelation relation;
@@ -78,17 +78,17 @@ public final class PdxScriptList implements IPdxScript {
     }
 
     public Stream<PdxScriptValue> valueStream() {
-        return list.stream()
+        return stream()
                 .map(IPdxScript::expectValue);
     }
 
     public Stream<PdxScriptList> listStream() {
-        return list.stream()
+        return stream()
                 .map(IPdxScript::expectList);
     }
 
     public Stream<PdxScriptObject> objectStream() {
-        return list.stream()
+        return stream()
                 .map(IPdxScript::expectObject);
     }
 
@@ -226,7 +226,7 @@ public final class PdxScriptList implements IPdxScript {
     public PdxScriptList append(IPdxScript script) {
         if (mode == Mode.IMPLICIT) {
             return builder()
-                    .addAllIterable(list)
+                    .addAll(list)
                     .add(script)
                     .build(mode, relation);
         }
@@ -264,11 +264,9 @@ public final class PdxScriptList implements IPdxScript {
         MutableMap<String, PdxUsage> usages = Maps.mutable.empty();
         list.forEach(s -> {
             if (s instanceof PdxScriptObject) {
-                ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k,
-                        usage, PdxUsage::merge));
+                ((PdxScriptObject) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k, usage, PdxUsage::merge));
             } else if (s instanceof PdxScriptList) {
-                ((PdxScriptList) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k,
-                        usage, PdxUsage::merge));
+                ((PdxScriptList) s).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(k, usage, PdxUsage::merge));
             }
         });
         return new PdxUsageStatistic(usages);
@@ -278,10 +276,10 @@ public final class PdxScriptList implements IPdxScript {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof PdxScriptList)) {
+        } else if (!(o instanceof PdxScriptList)) {
             return false;
         }
+
         PdxScriptList that = (PdxScriptList) o;
         return mode == that.mode && relation == that.relation && Objects.equals(list, that.list);
     }
@@ -300,24 +298,11 @@ public final class PdxScriptList implements IPdxScript {
                 '}';
     }
 
-    enum Mode {
+    public enum Mode {
         NORMAL, COMMA, IMPLICIT
     }
 
     public static class Builder {
-
-        private static final ImmutableMap<Mode, ImmutableMap<PdxRelation, PdxScriptList>> EMPTY_CACHE;
-
-        static {
-            Map<Mode, ImmutableMap<PdxRelation, PdxScriptList>> map = new EnumMap<>(Mode.class);
-            Arrays.stream(Mode.values()).forEach(mode -> {
-                Map<PdxRelation, PdxScriptList> map1 = new EnumMap<>(PdxRelation.class);
-                Arrays.stream(PdxRelation.values()).forEach(relation -> map1.put(relation, new PdxScriptList(mode,
-                        relation, Lists.immutable.empty())));
-                map.put(mode, Maps.immutable.withAll(map1));
-            });
-            EMPTY_CACHE = Maps.immutable.withAll(map);
-        }
 
         private final MutableList<IPdxScript> list;
 
@@ -326,34 +311,44 @@ public final class PdxScriptList implements IPdxScript {
         }
 
         public Builder add(IPdxScript value) {
-            if (value != null) {
-                list.add(value);
+            list.add(Objects.requireNonNull(value));
+            return this;
+        }
+
+        public Builder addAll(IPdxScript... values) {
+            for (IPdxScript value : values) {
+                add(value);
             }
+
             return this;
         }
 
-        public Builder addAllIterable(Iterable<? extends IPdxScript> values) {
-            list.addAllIterable(values);
+        public Builder addAll(Iterable<? extends IPdxScript> values) {
+            values.forEach(this::add);
             return this;
         }
 
-        public Builder addAll(Collection<? extends IPdxScript> values) {
-            list.addAll(values);
-            return this;
+        public PdxScriptList build() {
+            return build(PdxRelation.EQUALS);
         }
 
         public PdxScriptList build(PdxRelation relation) {
             return build(Mode.NORMAL, relation);
         }
 
-        public PdxScriptList build(Mode mode, PdxRelation relation) {
-            return buildRaw(mode, relation);
+        public PdxScriptList build(Mode mode) {
+            return build(mode, PdxRelation.EQUALS);
         }
 
-        public PdxScriptList buildRaw(Mode mode, PdxRelation relation) {
-            if (list.isEmpty()) {
-                return EMPTY_CACHE.get(mode).get(relation);
+        public PdxScriptList build(Mode mode, PdxRelation relation) {
+            if (relation == PdxRelation.EQUALS && list.isEmpty()) {
+                return switch (mode) {
+                    case NORMAL -> EMPTY;
+                    case COMMA -> EMPTY_COMMA;
+                    case IMPLICIT -> EMPTY_IMPLICIT;
+                };
             }
+
             return new PdxScriptList(mode, relation, list.toImmutable());
         }
     }

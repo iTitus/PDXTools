@@ -11,7 +11,7 @@ public interface IPdxAsset {
         return switch (extension) {
             case "mesh" -> new PdxMesh(path);
             case "anim" -> new PdxAnim(path);
-            default -> throw new IllegalStateException("unexpected file extension: " + extension);
+            default -> throw new IllegalStateException("unknown asset file extension: " + extension);
         };
     }
 }

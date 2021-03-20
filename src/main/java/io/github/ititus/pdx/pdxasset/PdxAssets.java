@@ -13,9 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.util.function.Predicate.not;
 import static org.eclipse.collections.impl.collector.Collectors2.toImmutableMap;
 
 public final class PdxAssets {
@@ -29,7 +29,7 @@ public final class PdxAssets {
         try (Stream<Path> stream = Files.walk(installDir)) {
             assetFiles = stream
                     .filter(Objects::nonNull)
-                    .filter(Predicate.not(Files::isDirectory))
+                    .filter(not(Files::isDirectory))
                     .filter(FILTER)
                     .toArray(Path[]::new);
         } catch (IOException e) {

@@ -4,7 +4,9 @@ import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.collection.IteratorBuffer;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.MutableMap;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +24,7 @@ public final class PdxScriptParser {
     private PdxScriptParser() {
     }
 
-    private static IPdxScript parse(IteratorBuffer<String> tokens) {
+    private static IPdxScript parse(IteratorBuffer<String> tokens, MutableMap<String, IPdxScript> variables) {
         String token = tokens.get();
 
         PdxRelation relation = PdxRelation.get(token);
@@ -46,23 +48,27 @@ public final class PdxScriptParser {
                         throw new RuntimeException("Missing relation sign in object");
                     }
 
-                    IPdxScript s = parse(tokens);
+                    IPdxScript parsedValue = parse(tokens, variables);
                     token = tokens.get();
 
                     if (COMMA.equals(token)) {
                         // comma-separated list as value
                         PdxScriptList.Builder lb = PdxScriptList.builder();
-                        lb.add(s);
+                        lb.add(parsedValue);
                         while (COMMA.equals(token)) {
                             tokens.next();
-                            s = parse(tokens);
+                            parsedValue = parse(tokens, variables);
                             token = tokens.get();
-                            lb.add(s);
+                            lb.add(parsedValue);
                         }
-                        s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
+                        parsedValue = lb.build(PdxScriptList.Mode.COMMA, parsedValue.getRelation());
                     }
 
-                    b.add(key, s);
+                    if (key.charAt(0) == VARIABLE_PREFIX) {
+                        variables.put(key, parsedValue);
+                    } else {
+                        b.add(key, parsedValue);
+                    }
                 }
                 tokens.next();
 
@@ -75,7 +81,7 @@ public final class PdxScriptParser {
                     if (PdxRelation.get(token) != null) {
                         throw new RuntimeException("No relation sign in list allowed");
                     }
-                    IPdxScript s = parse(tokens);
+                    IPdxScript s = parse(tokens, variables);
                     token = tokens.get();
 
                     if (COMMA.equals(token)) {
@@ -84,7 +90,7 @@ public final class PdxScriptParser {
                         lb.add(s);
                         while (COMMA.equals(token)) {
                             tokens.next();
-                            s = parse(tokens);
+                            s = parse(tokens, variables);
                             token = tokens.get();
                             lb.add(s);
                         }
@@ -104,7 +110,6 @@ public final class PdxScriptParser {
             }
 
             Object value;
-
             if (token.charAt(0) == QUOTE_CHAR || token.charAt(l - 1) == QUOTE_CHAR) {
                 if (l >= 2 && token.charAt(0) == QUOTE_CHAR && token.charAt(l - 1) == QUOTE_CHAR) {
                     token = stripQuotes(token);
@@ -120,6 +125,14 @@ public final class PdxScriptParser {
                     throw new RuntimeException("Quote not closed at token " + token);
                 }
                 tokens.next();
+            } else if (token.charAt(0) == VARIABLE_PREFIX) {
+                IPdxScript resolved = variables.get(token);
+                if (resolved == null) {
+                    throw new RuntimeException("cannot resolve variable " + token);
+                }
+
+                tokens.next();
+                return resolved;
             } else if (NONE.equals(token)) {
                 value = null;
                 tokens.next();
@@ -131,11 +144,11 @@ public final class PdxScriptParser {
                 tokens.next();
             } else if (HSV.equals(token)) {
                 tokens.next();
-                IPdxScript s = parse(tokens);
+                IPdxScript s = parse(tokens, variables);
                 value = PdxColor.fromHSV(s.expectList().getAsNumberArray());
             } else if (RGB.equals(token)) {
                 tokens.next();
-                IPdxScript s = parse(tokens);
+                IPdxScript s = parse(tokens, variables);
                 value = PdxColor.fromRGB(s.expectList().getAsNumberArray());
             } else {
                 try {
@@ -158,18 +171,15 @@ public final class PdxScriptParser {
                                 value = Double.valueOf(token);
                             } catch (NumberFormatException ignored4) {
                                 token = oldToken;
-                                if (token.charAt(0) == VARIABLE_PREFIX) {
-                                    // TODO: Parse @ variables
-                                } else {
-                                    unknownLiterals.add(token.toLowerCase(Locale.ROOT)/*.intern()*/);
-                                }
+                                unknownLiterals.add(token.toLowerCase(Locale.ROOT)/*.intern()*/);
+
                                 String tokenString = token;
                                 // TODO: Fix tokenizer splitting raw tokens with math symbols in it
-                            /*String operator = tokens.get(1);
-                            PdxMathOperation operation = PdxMathOperation.get(operator);
-                            if (operation != null) {
-                                tokenString += operator;
-                            }*/
+                                /*String operator = tokens.get(1);
+                                PdxMathOperation operation = PdxMathOperation.get(operator);
+                                if (operation != null) {
+                                    tokenString += operator;
+                                }*/
                                 value = tokenString; // fallback to string
                             }
                         }
@@ -212,7 +222,7 @@ public final class PdxScriptParser {
                         PdxMathOperation operation = PdxMathOperation.get(operator);
                         if (operation != null) {
                             tokens.next();
-                            IPdxScript s = parse(tokens);
+                            IPdxScript s = parse(tokens, variables);
                             if (!(s instanceof PdxScriptValue)) {
                                 throw new RuntimeException("Expected PdxScriptValue but got " + (s != null ?
                                         s.getClass().getTypeName() : NULL));
@@ -259,14 +269,11 @@ public final class PdxScriptParser {
             final StringBuilder b = new StringBuilder();
             final MutableBoolean first = new MutableBoolean(true);
             final MutableBoolean openQuotes = new MutableBoolean(false);
-            final MutableBoolean token =
-                    new MutableBoolean(false);
+            final MutableBoolean token = new MutableBoolean(false);
             final MutableBoolean comment = new MutableBoolean(false);
-            final MutableBoolean separator =
-                    new MutableBoolean(false);
+            final MutableBoolean separator = new MutableBoolean(false);
             final MutableBoolean relation = new MutableBoolean(false);
-            final MutableBoolean mathOperator =
-                    new MutableBoolean(false);
+            final MutableBoolean mathOperator = new MutableBoolean(false);
             final MutableBoolean done = new MutableBoolean(true);
             Character last = null;
             String next = null;
@@ -470,7 +477,7 @@ public final class PdxScriptParser {
         Iterator<String> tokenIterator = tokenize(charIterator);
 
         IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenIterator, 2, 0);
-        IPdxScript s = parse(tokens);
+        IPdxScript s = parse(tokens, Maps.mutable.empty());
 
         if (tokens.hasNext()) {
             throw new RuntimeException("Unconsumed tokens left at pos " + tokens.getPos());

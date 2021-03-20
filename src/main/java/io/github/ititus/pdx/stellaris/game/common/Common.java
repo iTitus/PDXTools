@@ -1,36 +1,41 @@
 package io.github.ititus.pdx.stellaris.game.common;
 
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
+import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.stream.Stream.concat;
 
 public class Common {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "anomalies/readme.txt", "anomalies/TODO_commented_out_missing_category.txt",
+            "achievements", "anomalies/readme.txt", "anomalies/TODO_commented_out_missing_category.txt",
             "archaeological_site_types/example.txt", "component_templates/README_weapon_component_stat_docs.txt",
             "edicts/README.txt", "governments/readme_requirements.txt", "HOW_TO_MAKE_NEW_SHIPS.txt",
             "megastructures/README.txt", "tradition_categories/README.txt", "traditions/README.txt",
+            "war_goals/wg_example.txt",
             // Error in script parsing
             "random_names/00_empire_names.txt", "random_names/00_war_names.txt",
-            "scripted_effects/archaeology_event_effects.txt",
-            // Handled separately
-            "planet_classes"
+            "scripted_effects/archaeology_event_effects.txt"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
-
+    public final PlanetClasses planetClasses;
     private final Path installDir;
     private final Path commonDir;
-
-    private final PlanetClasses planetClasses;
-
     private final PdxRawDataLoader commonDataLoader;
 
     public Common(Path installDir, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
@@ -43,10 +48,11 @@ public class Common {
         int steps = 2;
 
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading planet_classes");
-        this.planetClasses = new PlanetClasses(commonDir.resolve("planet_classes"));
+        this.planetClasses = loadObject("planet_classes").getAs(PlanetClasses::new);
 
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
-        this.commonDataLoader = new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+        // TODO: re-enable once there is a plan for the global variables in "scripted_variables"
+        this.commonDataLoader = null; // new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, 2, steps, "Done");
     }
@@ -59,11 +65,33 @@ public class Common {
         return commonDir;
     }
 
-    public PlanetClasses getPlanetClasses() {
-        return planetClasses;
-    }
-
     public PdxRawDataLoader getCommonDataLoader() {
         return commonDataLoader;
+    }
+
+    private PdxScriptObject loadObject(String dir) {
+        Path[] files;
+        try (Stream<Path> stream1 = Files.list(commonDir.resolve("scripted_variables"));
+             Stream<Path> stream2 = Files.list(commonDir.resolve(dir))) {
+            files = concat(
+                    stream1
+                            .filter(Objects::nonNull)
+                            .filter(Files::isRegularFile)
+                            .filter(FILTER)
+                            .filter(p -> BLACKLIST.stream().noneMatch(p_ -> p.relativize(commonDir).startsWith(p_)))
+                            .sorted(IOUtil.asciibetical(commonDir)),
+                    stream2
+                            .filter(Objects::nonNull)
+                            .filter(Files::isRegularFile)
+                            .filter(FILTER)
+                            .filter(p -> BLACKLIST.stream().noneMatch(p_ -> p.relativize(commonDir).startsWith(p_)))
+                            .sorted(IOUtil.asciibetical(commonDir))
+            )
+                    .toArray(Path[]::new);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+        return PdxScriptParser.parse(files).expectObject();
     }
 }

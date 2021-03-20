@@ -14,7 +14,6 @@ import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -60,8 +59,7 @@ public class Test {
         MutableString lastMessage = new MutableString();
         StopWatch stepWatch = StopWatch.create();
 
-        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork,
-                                                                              msg) -> {
+        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
             if (index == 0) {
                 if (stepWatch.isRunning()) {
                     System.out.println(lastMessage.get() + ": " + DurationFormatter.format(stepWatch.stop()));

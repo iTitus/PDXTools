@@ -25,6 +25,10 @@ public final class PdxScriptValue implements IPdxScript {
         }
     }
 
+    public static PdxScriptValue of(Object value) {
+        return of(PdxRelation.EQUALS, value);
+    }
+
     public static PdxScriptValue of(PdxRelation relation, Object value) {
         return new PdxScriptValue(relation, value);
     }
@@ -197,10 +201,10 @@ public final class PdxScriptValue implements IPdxScript {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof PdxScriptValue)) {
+        } else if (!(o instanceof PdxScriptValue)) {
             return false;
         }
+
         PdxScriptValue that = (PdxScriptValue) o;
         return relation == that.relation && Objects.equals(value, that.value);
     }

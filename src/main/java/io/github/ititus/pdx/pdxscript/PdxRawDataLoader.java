@@ -66,8 +66,7 @@ public class PdxRawDataLoader {
                 : Lists.immutable.empty();
     }
 
-    private PdxScriptObject load(Path path, int index,
-                                 StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    private PdxScriptObject load(Path path, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (Files.isDirectory(path)) {
             int fileCount = progressMessageUpdater != null ? countFiles(path) : 0;
             PdxScriptObject o = parseFolder(path, path, index, new MutableInt(), fileCount, progressMessageUpdater);

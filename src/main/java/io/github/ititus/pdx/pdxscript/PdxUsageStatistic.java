@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.NULL;
 import static io.github.ititus.pdx.pdxscript.PdxConstants.NUMBER_MARKER;
+import static io.github.ititus.pdx.pdxscript.PdxHelper.getTypeString;
 
 public class PdxUsageStatistic {
 
@@ -33,12 +34,12 @@ public class PdxUsageStatistic {
 
     private void use(String key, IPdxScript actual) {
         String fKey = key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key;
-        usages.computeIfAbsent(fKey, k -> new PdxUsage()).actual(PdxHelper.getTypeString(actual));
+        usages.computeIfAbsent(fKey, k -> new PdxUsage()).actual(getTypeString(actual));
     }
 
     public void use(String key, String expectedType, IPdxScript actual) {
         String fKey = key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key;
-        usages.computeIfAbsent(fKey, k -> new PdxUsage()).expected(expectedType).actual(PdxHelper.getTypeString(actual));
+        usages.computeIfAbsent(fKey, k -> new PdxUsage()).expected(expectedType).actual(getTypeString(actual));
     }
 
     public ImmutableMap<String, PdxUsage> getUsages() {
