@@ -17,9 +17,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Test {
 
@@ -88,9 +86,8 @@ public class Test {
     public static void main(String[] args) {
         if (TEST_FILES.length > 0) {
             System.out.println("Running tests:");
-            List<IPdxScript> testScripts = Arrays.stream(TEST_FILES).map(PdxScriptParser::parse).collect(Collectors.toList());
-            List<String> testOutput = testScripts.stream().map(IPdxScript::toPdxScript).collect(Collectors.toList());
-            testOutput.forEach(System.out::println);
+            IPdxScript testScript = PdxScriptParser.parse(TEST_FILES);
+            System.out.println(testScript.toPdxScript());
             System.out.println("done");
             System.out.println();
         }

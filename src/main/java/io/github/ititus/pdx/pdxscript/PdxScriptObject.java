@@ -952,15 +952,15 @@ public final class PdxScriptObject implements IPdxScript {
         }
 
         public Builder add(String key, IPdxScript value) {
+            Objects.requireNonNull(key);
             Objects.requireNonNull(value);
-            String interned = key; // key.intern();
-            IPdxScript existing = map.get(interned);
+            IPdxScript existing = map.get(key);
             if (existing == null) {
-                map.put(interned, value);
+                map.put(key, value);
             } else if (existing.canAppend(value)) {
-                map.put(interned, existing.append(value));
+                map.put(key, existing.append(value));
             } else {
-                throw new UnsupportedOperationException("key=" + interned + ", existing=" + existing + ", appendix=" + value);
+                throw new UnsupportedOperationException("key=" + key + ", existing=" + existing + ", appendix=" + value);
             }
 
             return this;

@@ -8,17 +8,19 @@ import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.MutableMap;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
-import static java.util.function.Predicate.not;
 
 public final class PdxScriptParser {
 
+    private static final boolean COUNT_UNKNOWN_LITERALS = false;
     private static final CountingSet<String> unknownLiterals = new CountingSet<>();
 
     private PdxScriptParser() {
@@ -35,10 +37,12 @@ public final class PdxScriptParser {
         }
 
         IPdxScript object;
-        if (LIST_OBJECT_OPEN.equals(token)) {
-            if (LIST_OBJECT_CLOSE.equals(tokens.get(1)) || PdxRelation.get(tokens.get(2)) != null) {
-                //object or empty
-                token = tokens.getNext();
+        if (LIST_OBJECT_OPEN.equals(token)) { // list or object
+            token = tokens.getNext();
+            if (LIST_OBJECT_CLOSE.equals(token)) { // empty
+                tokens.next();
+                object = PdxScriptObject.builder().build(relation);
+            } else if (PdxRelation.get(tokens.get(1)) != null) { //object
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
                 while (!LIST_OBJECT_CLOSE.equals(token)) {
                     String key = stripQuotes(token);
@@ -73,9 +77,7 @@ public final class PdxScriptParser {
                 tokens.next();
 
                 object = b.build(relation);
-            } else {
-                //list
-                token = tokens.getNext();
+            } else { //list
                 PdxScriptList.Builder b = PdxScriptList.builder();
                 while (!LIST_OBJECT_CLOSE.equals(token)) {
                     if (PdxRelation.get(token) != null) {
@@ -103,16 +105,25 @@ public final class PdxScriptParser {
 
                 object = b.build(relation);
             }
-        } else {
+        } else { // value
             int l = token.length();
             if (l == 0) {
                 throw new RuntimeException("Zero length token");
             }
 
             Object value;
-            if (token.charAt(0) == QUOTE_CHAR || token.charAt(l - 1) == QUOTE_CHAR) {
-                if (l >= 2 && token.charAt(0) == QUOTE_CHAR && token.charAt(l - 1) == QUOTE_CHAR) {
-                    token = stripQuotes(token);
+            if (token.charAt(0) == VARIABLE_PREFIX) {
+                IPdxScript resolved = variables.get(token);
+                if (resolved == null) {
+                    throw new RuntimeException("cannot resolve variable " + token);
+                }
+
+                tokens.next();
+                return resolved;
+            } else if (token.charAt(0) == QUOTE_CHAR) {
+                token = stripQuotes(token);
+                l = token.length();
+                if (l > 0 && Character.isDigit(token.charAt(0))) {
                     try {
                         value = LocalDate.parse(token, DTF);
                         if (value.equals(NULL_DATE)) {
@@ -122,17 +133,10 @@ public final class PdxScriptParser {
                         value = token; // fallback to string
                     }
                 } else {
-                    throw new RuntimeException("Quote not closed at token " + token);
-                }
-                tokens.next();
-            } else if (token.charAt(0) == VARIABLE_PREFIX) {
-                IPdxScript resolved = variables.get(token);
-                if (resolved == null) {
-                    throw new RuntimeException("cannot resolve variable " + token);
+                    value = token;
                 }
 
                 tokens.next();
-                return resolved;
             } else if (NONE.equals(token)) {
                 value = null;
                 tokens.next();
@@ -171,23 +175,27 @@ public final class PdxScriptParser {
                                 value = Double.valueOf(token);
                             } catch (NumberFormatException ignored4) {
                                 token = oldToken;
-                                unknownLiterals.add(token.toLowerCase(Locale.ROOT)/*.intern()*/);
+                                if (COUNT_UNKNOWN_LITERALS) {
+                                    unknownLiterals.add(token.toLowerCase(Locale.ROOT));
+                                }
 
-                                String tokenString = token;
                                 // TODO: Fix tokenizer splitting raw tokens with math symbols in it
-                                /*String operator = tokens.get(1);
+                                /*String tokenString = token;
+                                tring operator = tokens.get(1);
                                 PdxMathOperation operation = PdxMathOperation.get(operator);
                                 if (operation != null) {
                                     tokenString += operator;
-                                }*/
+                                }
                                 value = tokenString; // fallback to string
+                                */
+                                value = token; // fallback to string
                             }
                         }
                     }
 
                     if (percent && !token.equals(oldToken)) {
                         if (value instanceof Double) {
-                            double d = (Double) value / 100D;
+                            double d = (double) value / 100D;
                             if ((int) d == d) {
                                 value = (int) d;
                             } else if ((long) d == d) {
@@ -196,21 +204,19 @@ public final class PdxScriptParser {
                                 value = d;
                             }
                         } else if (value instanceof Integer) {
-                            double d = (Integer) value / 100D;
+                            double d = (int) value / 100D;
                             if ((int) d == d) {
                                 value = (int) d;
                             } else {
                                 value = d;
                             }
-                        } else if (value instanceof Long) {
-                            double d = (Long) value / 100D;
+                        } else { // Long
+                            double d = (long) value / 100D;
                             if ((long) d == d) {
                                 value = (long) d;
                             } else {
                                 value = d;
                             }
-                        } else {
-                            throw new RuntimeException("Something went wrong while parsing a percent number");
                         }
                     }
 
@@ -218,21 +224,19 @@ public final class PdxScriptParser {
 
                     // TODO: Fix this (currently evaluated from right to left and ignores brackets)
                     if (value instanceof Number) {
-                        String operator = token;
-                        PdxMathOperation operation = PdxMathOperation.get(operator);
-                        if (operation != null) {
+                        PdxMathOperation op = PdxMathOperation.get(token);
+                        if (op != null) {
                             tokens.next();
                             IPdxScript s = parse(tokens, variables);
                             if (!(s instanceof PdxScriptValue)) {
-                                throw new RuntimeException("Expected PdxScriptValue but got " + (s != null ?
-                                        s.getClass().getTypeName() : NULL));
+                                throw new RuntimeException("Expected PdxScriptValue but got " + (s != null ? s.getClass().getTypeName() : NULL));
                             }
                             PdxScriptValue v = (PdxScriptValue) s;
                             Object o = v.getValue();
                             if (!(o instanceof Number)) {
                                 throw new RuntimeException("Can only do math with numbers but got " + (o != null ? o.getClass().getTypeName() : NULL));
                             }
-                            value = operation.apply((Number) value, (Number) o);
+                            value = op.apply((Number) value, (Number) o);
                             tokens.next();
                         }
                     }
@@ -246,21 +250,21 @@ public final class PdxScriptParser {
     }
 
     private static String stripQuotes(String s) {
-        if (s == null || s.length() < 2) {
+        int l = s.length() - 1;
+        if (l == 0) {
             return s;
         }
 
-        int beginIndex = 0;
-        if (s.charAt(beginIndex) == QUOTE_CHAR) {
-            beginIndex++;
+        boolean startsWithQuote = s.charAt(0) == QUOTE_CHAR;
+        boolean endsWithQuote = s.charAt(l) == QUOTE_CHAR;
+
+        if (startsWithQuote ^ endsWithQuote) {
+            throw new IllegalArgumentException("given string has mismatched quotes: " + s);
+        } else if (startsWithQuote) {
+            return s.substring(1, l).replace(ESCAPED_QUOTE, QUOTE);
         }
 
-        int endIndex = s.length();
-        if (s.charAt(endIndex - 1) == QUOTE_CHAR) {
-            endIndex--;
-        }
-
-        return s.substring(beginIndex, endIndex).replace(ESCAPE + QUOTE, QUOTE);
+        return s;
     }
 
     private static Iterator<String> tokenize(PrimitiveIterator.OfInt src) {
@@ -446,7 +450,9 @@ public final class PdxScriptParser {
     }
 
     public static boolean isQuoteNecessary(String s) {
-        for (char c : s.toCharArray()) {
+        int l = s.length();
+        for (int i = 0; i < l; i++) {
+            char c = s.charAt(i);
             if (Character.isWhitespace(c) || c == '=' || c == '<' || c == '>' || c == '#' || c == '{' || c == '}' || c == ',' || c == '/' || c == '"') {
                 return true;
             }
@@ -456,7 +462,7 @@ public final class PdxScriptParser {
     }
 
     public static String quote(String s) {
-        return (QUOTE_CHAR + s.replace(QUOTE, ESCAPE + QUOTE) + QUOTE_CHAR)/*.intern()*/;
+        return QUOTE_CHAR + s.replace(QUOTE, ESCAPED_QUOTE) + QUOTE_CHAR;
     }
 
     public static String quoteIfNecessary(String s) {
@@ -465,9 +471,7 @@ public final class PdxScriptParser {
 
     public static IPdxScript parse(Path... scriptFiles) {
         if (scriptFiles.length == 0) {
-            throw new IllegalArgumentException();
-        } else if (Arrays.stream(scriptFiles).anyMatch(not(Files::isRegularFile))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("got empty path array");
         }
 
         return parse(IOUtil.getCharacterIterator(scriptFiles));

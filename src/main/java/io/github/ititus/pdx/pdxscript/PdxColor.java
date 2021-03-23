@@ -15,7 +15,7 @@ public final class PdxColor {
 
     private PdxColor(Color color, String representation) {
         this.color = color;
-        this.representation = representation/*.intern()*/;
+        this.representation = representation;
     }
 
     public static PdxColor fromRGBHex(String hex) {

@@ -11,18 +11,8 @@ public final class PdxScriptValue implements IPdxScript {
     private final Object value;
 
     private PdxScriptValue(PdxRelation relation, Object value) {
-        if (relation == null || (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof LocalDate) && !(value instanceof PdxColor) && !(value instanceof String))) {
-            throw new IllegalArgumentException(Objects.toString(value));
-        }
-
         this.relation = relation;
-        if (value instanceof String) {
-            this.value = value; // ((String) value).intern();
-        } else if (value instanceof LocalDate && NULL_DATE.equals(value)) {
-            this.value = NULL_DATE;
-        } else {
-            this.value = value;
-        }
+        this.value = value;
     }
 
     public static PdxScriptValue of(Object value) {
@@ -30,6 +20,11 @@ public final class PdxScriptValue implements IPdxScript {
     }
 
     public static PdxScriptValue of(PdxRelation relation, Object value) {
+        Objects.requireNonNull(relation);
+        if (value != null && !(value instanceof Boolean) && !(value instanceof Number) && !(value instanceof LocalDate) && !(value instanceof PdxColor) && !(value instanceof String)) {
+            throw new IllegalArgumentException("unsupported value type: " + value.getClass().getTypeName());
+        }
+
         return new PdxScriptValue(relation, value);
     }
 

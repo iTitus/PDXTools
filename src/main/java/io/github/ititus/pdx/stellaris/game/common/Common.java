@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.stellaris.game.common;
 
+import io.github.ititus.data.Lazy;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -14,9 +15,11 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.stream;
 import static java.util.stream.Stream.concat;
 
 public class Common {
@@ -42,6 +45,7 @@ public class Common {
 
     private final Path installDir;
     private final Path commonDir;
+    private final Lazy<Path[]> scriptedVariableFiles;
     private final PdxRawDataLoader commonDataLoader;
 
     public Common(Path installDir, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
@@ -50,6 +54,15 @@ public class Common {
         }
         this.installDir = installDir;
         this.commonDir = commonDir;
+        this.scriptedVariableFiles = Lazy.of(() -> {
+            try (Stream<Path> stream = Files.list(commonDir.resolve("scripted_variables"))) {
+                return stream
+                        .sorted(Comparator.comparing(Path::getFileName))
+                        .toArray(Path[]::new);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
 
         int steps = 2;
 
@@ -77,16 +90,10 @@ public class Common {
 
     private PdxScriptObject loadObject(String dir) {
         Path[] files;
-        try (Stream<Path> stream1 = Files.list(commonDir.resolve("scripted_variables"));
-             Stream<Path> stream2 = Files.list(commonDir.resolve(dir))) {
+        try (Stream<Path> stream = Files.list(commonDir.resolve(dir))) {
             files = concat(
-                    stream1
-                            .filter(Objects::nonNull)
-                            .filter(Files::isRegularFile)
-                            .filter(FILTER)
-                            .filter(p -> BLACKLIST.stream().noneMatch(p_ -> p.relativize(commonDir).startsWith(p_)))
-                            .sorted(IOUtil.asciibetical(commonDir)),
-                    stream2
+                    stream(scriptedVariableFiles.get()),
+                    stream
                             .filter(Objects::nonNull)
                             .filter(Files::isRegularFile)
                             .filter(FILTER)

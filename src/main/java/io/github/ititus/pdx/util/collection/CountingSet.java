@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.util.collection;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
@@ -86,6 +87,10 @@ public class CountingSet<E> extends AbstractSet<E> {
     }
 
     public ImmutableList<E> sortedList() {
+        if (map.isEmpty()) {
+            return Lists.immutable.empty();
+        }
+
         return map.keyValuesView()
                 .toSortedList(
                         Comparator.comparingInt(ObjectIntPair<E>::getTwo).reversed()

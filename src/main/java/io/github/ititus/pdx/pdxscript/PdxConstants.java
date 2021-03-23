@@ -32,6 +32,7 @@ public final class PdxConstants {
     public static final char VARIABLE_PREFIX = '@';
     public static final String QUOTE = String.valueOf(QUOTE_CHAR);
     public static final String ESCAPE = String.valueOf(ESCAPE_CHAR);
+    public static final String ESCAPED_QUOTE = ESCAPE + QUOTE;
     public static final char PERCENT = '%';
     public static final char EQUALS_CHAR = '=';
     public static final char LESS_THAN_CHAR = '<';

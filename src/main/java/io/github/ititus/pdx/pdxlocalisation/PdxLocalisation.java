@@ -36,27 +36,22 @@ public final class PdxLocalisation {
     }
 
     public String get(String language, String key, String fallbackLanguage, String fallbackKey, String fallback) {
-        String internedLanguage = language; // language != null ? language.intern() : null;
         ImmutableMap<String, String> languageMap = null;
-        if (internedLanguage != null) {
-            languageMap = localisation.get(internedLanguage);
+        if (language != null) {
+            languageMap = localisation.get(language);
         }
-        String internedFallbackLanguage = fallbackLanguage; // fallbackLanguage != null ? fallbackLanguage.intern() :
-        // null;
-        if (languageMap == null && internedFallbackLanguage != null && !internedFallbackLanguage.equals(internedLanguage)) {
-            languageMap = localisation.get(internedFallbackLanguage);
+        if (languageMap == null && fallbackLanguage != null && !fallbackLanguage.equals(language)) {
+            languageMap = localisation.get(fallbackLanguage);
         }
         if (languageMap != null) {
-            String internedKey = key; // key != null ? key.intern() : null;
-            if (internedKey != null && languageMap.containsKey(internedKey)) {
-                return languageMap.get(internedKey);
+            if (key != null && languageMap.containsKey(key)) {
+                return languageMap.get(key);
             }
-            String internedFallbackKey = fallbackKey; // fallbackKey != null ? fallbackKey.intern() : null;
-            if (internedFallbackKey != null && !internedFallbackKey.equals(internedKey) && languageMap.containsKey(internedFallbackKey)) {
-                return languageMap.get(internedFallbackKey);
+            if (fallbackKey != null && !fallbackKey.equals(key) && languageMap.containsKey(fallbackKey)) {
+                return languageMap.get(fallbackKey);
             }
         }
-        return fallback; // fallback != null ? fallback.intern() : null;
+        return fallback;
     }
 
     public ImmutableMap<String, ImmutableMap<String, String>> getExtraLocalisation() {
