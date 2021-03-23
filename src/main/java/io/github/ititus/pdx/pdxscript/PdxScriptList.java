@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.pdx.pdxscript.internal.BasePdxScript;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.*;
@@ -22,19 +23,18 @@ import java.util.stream.Stream;
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
 import static org.eclipse.collections.impl.collector.Collectors2.toImmutableList;
 
-public final class PdxScriptList implements IPdxScript {
+public final class PdxScriptList extends BasePdxScript {
 
-    public static final PdxScriptList EMPTY = new PdxScriptList(Mode.NORMAL, PdxRelation.EQUALS, Lists.immutable.empty());
-    public static final PdxScriptList EMPTY_COMMA = new PdxScriptList(Mode.COMMA, PdxRelation.EQUALS, Lists.immutable.empty());
-    public static final PdxScriptList EMPTY_IMPLICIT = new PdxScriptList(Mode.IMPLICIT, PdxRelation.EQUALS, Lists.immutable.empty());
+    public static final PdxScriptList EMPTY = new PdxScriptList(PdxRelation.EQUALS, Mode.NORMAL, Lists.immutable.empty());
+    public static final PdxScriptList EMPTY_COMMA = new PdxScriptList(PdxRelation.EQUALS, Mode.COMMA, Lists.immutable.empty());
+    public static final PdxScriptList EMPTY_IMPLICIT = new PdxScriptList(PdxRelation.EQUALS, Mode.IMPLICIT, Lists.immutable.empty());
 
     private final Mode mode;
-    private final PdxRelation relation;
     private final ImmutableList<IPdxScript> list;
 
-    private PdxScriptList(Mode mode, PdxRelation relation, ImmutableList<IPdxScript> list) {
+    private PdxScriptList(PdxRelation relation, Mode mode, ImmutableList<IPdxScript> list) {
+        super(relation);
         this.mode = mode;
-        this.relation = relation;
         this.list = list;
     }
 
@@ -42,13 +42,13 @@ public final class PdxScriptList implements IPdxScript {
         return new Builder();
     }
 
-    public Mode getMode() {
-        return mode;
+    @Override
+    public String getTypeString() {
+        return mode == Mode.IMPLICIT ? IMPLICIT_LIST : LIST;
     }
 
-    @Override
-    public PdxRelation getRelation() {
-        return relation;
+    public Mode getMode() {
+        return mode;
     }
 
     public int size() {
@@ -231,7 +231,7 @@ public final class PdxScriptList implements IPdxScript {
                     .build(mode, relation);
         }
 
-        return IPdxScript.super.append(script);
+        return super.append(script);
     }
 
     @Override
@@ -278,15 +278,17 @@ public final class PdxScriptList implements IPdxScript {
             return true;
         } else if (!(o instanceof PdxScriptList)) {
             return false;
+        } else if (!super.equals(o)) {
+            return false;
         }
 
         PdxScriptList that = (PdxScriptList) o;
-        return mode == that.mode && relation == that.relation && Objects.equals(list, that.list);
+        return mode == that.mode && list.equals(that.list);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mode, relation, list);
+        return Objects.hash(super.hashCode(), mode, list);
     }
 
     @Override
@@ -349,7 +351,7 @@ public final class PdxScriptList implements IPdxScript {
                 };
             }
 
-            return new PdxScriptList(mode, relation, list.toImmutable());
+            return new PdxScriptList(relation, mode, list.toImmutable());
         }
     }
 }

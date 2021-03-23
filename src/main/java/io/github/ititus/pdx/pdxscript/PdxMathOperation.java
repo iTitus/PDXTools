@@ -3,6 +3,7 @@ package io.github.ititus.pdx.pdxscript;
 import java.util.function.BinaryOperator;
 
 public enum PdxMathOperation {
+
     ADD(PdxConstants.ADD, (n1, n2) -> {
         if (n1 instanceof Double || n2 instanceof Double) {
             return n1.doubleValue() + n2.doubleValue();
@@ -69,6 +70,7 @@ public enum PdxMathOperation {
                 return DIVIDE;
             }
         }
+
         return null;
     }
 

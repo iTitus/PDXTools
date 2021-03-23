@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.pdxscript;
 
-import java.time.LocalDate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,43 +23,8 @@ public final class PdxHelper {
     }
 
     public static String getTypeString(IPdxScript s) {
-        if (s instanceof PdxScriptObject) {
-            return OBJECT;
-        } else if (s instanceof PdxScriptList) {
-            if (((PdxScriptList) s).getMode() == PdxScriptList.Mode.IMPLICIT) {
-                return IMPLICIT_LIST;
-            }
-
-            return LIST;
-        } else if (s instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) s).getValue();
-            if (v instanceof LocalDate) {
-                return DATE;
-            } else if (v instanceof Double) {
-                return DOUBLE;
-            } else if (v instanceof Long) {
-                long l = (long) v;
-                if (l >= Integer.MIN_VALUE && l < 0) {
-                    return NEG_INT;
-                } else if (l >= 0 && l <= Integer.MAX_VALUE) {
-                    return INT;
-                } else if (l > Integer.MAX_VALUE && l <= UNSIGNED_INT_MAX_LONG) {
-                    return U_INT;
-                }
-
-                return LONG;
-            } else if (v instanceof Integer) {
-                int i = (int) v;
-                if (i < 0) {
-                    return NEG_INT;
-                }
-
-                return INT;
-            } else if (v instanceof Boolean) {
-                return BOOLEAN;
-            } else if (v instanceof String) {
-                return STRING;
-            }
+        if (s != null) {
+            return s.getTypeString();
         }
 
         return NULL;

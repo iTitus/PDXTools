@@ -21,12 +21,14 @@ public interface IPdxScript {
 
     PdxRelation getRelation();
 
+    String getTypeString();
+
     default PdxScriptValue expectValue() {
         if (this instanceof PdxScriptValue) {
             return (PdxScriptValue) this;
         }
 
-        throw new IllegalStateException("expected value but got " + this);
+        throw new IllegalStateException("expected value but was " + this);
     }
 
     default PdxScriptList expectList() {
@@ -34,7 +36,7 @@ public interface IPdxScript {
             return (PdxScriptList) this;
         }
 
-        throw new IllegalStateException("expected list but got " + this);
+        throw new IllegalStateException("expected list but was " + this);
     }
 
     default PdxScriptList expectImplicitList() {
@@ -45,8 +47,6 @@ public interface IPdxScript {
             }
         }
 
-        //throw new IllegalStateException("expected list but got " + this);
-        // TODO: is this smart? maybe throw instead...
         return PdxScriptList.builder().add(this).build(PdxScriptList.Mode.IMPLICIT);
     }
 
@@ -55,6 +55,6 @@ public interface IPdxScript {
             return (PdxScriptObject) this;
         }
 
-        throw new IllegalStateException("expected object but got " + this);
+        throw new IllegalStateException("expected object but was " + this);
     }
 }

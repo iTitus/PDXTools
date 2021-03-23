@@ -465,6 +465,10 @@ public final class PdxScriptParser {
         return QUOTE_CHAR + s.replace(QUOTE, ESCAPED_QUOTE) + QUOTE_CHAR;
     }
 
+    public static String quoteUnsafe(String s) {
+        return QUOTE_CHAR + s + QUOTE_CHAR;
+    }
+
     public static String quoteIfNecessary(String s) {
         return isQuoteNecessary(s) ? quote(s) : s;
     }

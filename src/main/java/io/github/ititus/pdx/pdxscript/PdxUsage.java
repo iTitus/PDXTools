@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
 
-public class PdxUsage {
+final class PdxUsage {
 
     private static final SetIterable<String> EXPECTED_INT = Sets.immutable.of(INT, NEG_INT);
     private static final SetIterable<String> EXPECTED_U_INT = Sets.immutable.of(U_INT, INT);
@@ -20,12 +20,12 @@ public class PdxUsage {
     private final MutableSet<String> expectedTypes;
     private final MutableSet<String> actualTypes;
 
-    public PdxUsage() {
+    PdxUsage() {
         this.expectedTypes = Sets.mutable.empty();
         this.actualTypes = Sets.mutable.empty();
     }
 
-    public static PdxUsage merge(PdxUsage a, PdxUsage b) {
+    static PdxUsage merge(PdxUsage a, PdxUsage b) {
         PdxUsage c = new PdxUsage();
         a.actualTypes.forEach(c::actual);
         b.actualTypes.forEach(c::actual);
@@ -34,17 +34,17 @@ public class PdxUsage {
         return c;
     }
 
-    public PdxUsage expected(String type) {
+    PdxUsage expected(String type) {
         expectedTypes.add(type);
         return this;
     }
 
-    public PdxUsage actual(String type) {
+    PdxUsage actual(String type) {
         actualTypes.add(type);
         return this;
     }
 
-    public boolean isError() {
+    boolean isError() {
         if (expectedTypes.equals(actualTypes)) {
             return false;
         } else if (expectedTypes.size() == 1) {
@@ -72,15 +72,15 @@ public class PdxUsage {
         return true;
     }
 
-    public boolean isObject() {
+    boolean isObject() {
         return actualTypes.size() == 1 && OBJECT.equals(actualTypes.getOnly());
     }
 
-    public ImmutableSet<String> getActualTypes() {
+    ImmutableSet<String> getActualTypes() {
         return actualTypes.toImmutable();
     }
 
-    public ImmutableSet<String> getExpectedTypes() {
+    ImmutableSet<String> getExpectedTypes() {
         return expectedTypes.toImmutable();
     }
 

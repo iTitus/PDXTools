@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.EMPTY;
 
-public class PdxRawDataLoader {
+public final class PdxRawDataLoader {
 
     private final Path path;
     private final ImmutableSet<String> blacklist;
