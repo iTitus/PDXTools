@@ -14,7 +14,10 @@ module io.github.ititus.pdx {
     exports io.github.ititus.pdx.stellaris;
     exports io.github.ititus.pdx.stellaris.game;
     exports io.github.ititus.pdx.stellaris.game.common;
+    exports io.github.ititus.pdx.stellaris.game.common.deposits;
+    exports io.github.ititus.pdx.stellaris.game.common.planet_classes;
     exports io.github.ititus.pdx.stellaris.game.dlc;
+    exports io.github.ititus.pdx.stellaris.shared;
     exports io.github.ititus.pdx.stellaris.user;
     exports io.github.ititus.pdx.stellaris.user.mod;
     exports io.github.ititus.pdx.stellaris.user.save;

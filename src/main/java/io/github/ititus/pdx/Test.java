@@ -100,10 +100,12 @@ public class Test {
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
+        ImmutableList<String> gameParseErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().getUsageStatistic().getErrorStrings() : null;
+        ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
+        ImmutableList<String> userDataParseErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().getUsageStatistic().getErrorStrings() : null;
+        ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
         ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
         ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
-        ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
-        ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
 
         try {
             Files.createDirectories(DEBUG_OUT.getParent());
@@ -118,7 +120,27 @@ public class Test {
                 Files.write(DEBUG_OUT, gameErrors.collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, List.of(""), StandardOpenOption.APPEND);
             }
-            /*if (missingLocalisation != null && !missingLocalisation.isEmpty()) {
+            if (gameParseErrors != null && !gameParseErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Game Parse Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, gameParseErrors, StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of(""), StandardOpenOption.APPEND);
+            }
+            if (userDataErrors != null && !userDataErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "User Data Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, userDataErrors.collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
+            }
+            if (userDataParseErrors != null && !userDataParseErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "User Data Parse Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, userDataParseErrors, StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of(""), StandardOpenOption.APPEND);
+            }
+            if (saveParseErrors != null && !saveParseErrors.isEmpty()) {
+                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Save Parse Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, saveParseErrors, StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
+            }
+            if (missingLocalisation != null && !missingLocalisation.isEmpty()) {
                 Files.write(DEBUG_OUT, List.of("#".repeat(80), "Missing Localisation:", "#".repeat(80), ""), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, missingLocalisation.keyValuesView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
@@ -126,16 +148,6 @@ public class Test {
             if (extraLocalisation != null && !extraLocalisation.isEmpty()) {
                 Files.write(DEBUG_OUT, List.of("#".repeat(80), "Extra Localisation:", "#".repeat(80), ""), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, extraLocalisation.keyValuesView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
-                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
-            }*/
-            if (userDataErrors != null && !userDataErrors.isEmpty()) {
-                Files.write(DEBUG_OUT, List.of("#".repeat(80), "User Data Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
-                Files.write(DEBUG_OUT, userDataErrors.collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
-                Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
-            }
-            if (saveParseErrors != null && !saveParseErrors.isEmpty()) {
-                Files.write(DEBUG_OUT, List.of("#".repeat(80), "Save Parse Errors:", "#".repeat(80), ""), StandardOpenOption.APPEND);
-                Files.write(DEBUG_OUT, saveParseErrors, StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
             }
         } catch (IOException e) {

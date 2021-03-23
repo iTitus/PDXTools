@@ -5,9 +5,12 @@ import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.stellaris.game.common.deposits.Deposit;
+import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClasses;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -42,6 +45,7 @@ public class Common {
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
     public final PlanetClasses planetClasses;
+    public final ImmutableMap<String, Deposit> deposits;
 
     private final Path installDir;
     private final Path commonDir;
@@ -68,6 +72,11 @@ public class Common {
 
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading planet_classes");
         this.planetClasses = loadObject("planet_classes").getAs(PlanetClasses::new);
+
+        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading deposits");
+        PdxScriptObject o = loadObject("deposits");
+        this.deposits = o.getAsStringObjectMap(Deposit::new);
+        // o.getUsageStatistic().getErrorStrings().forEach(System.out::println);
 
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
         // TODO: re-enable once there is a plan for the global variables in "scripted_variables"

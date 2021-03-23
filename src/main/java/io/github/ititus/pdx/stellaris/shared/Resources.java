@@ -1,5 +1,6 @@
-package io.github.ititus.pdx.stellaris.user.save;
+package io.github.ititus.pdx.stellaris.shared;
 
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Resources {
@@ -23,7 +24,8 @@ public class Resources {
     public final double nanites;
     public final double minorArtifacts;
 
-    public Resources(PdxScriptObject o) {
+    public Resources(IPdxScript s) {
+        PdxScriptObject o = s.expectObject();
         this.energy = o.getDouble("energy", 0);
         this.minerals = o.getDouble("minerals", 0);
         this.food = o.getDouble("food", 0);

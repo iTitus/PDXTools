@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.stellaris.game.common;
+package io.github.ititus.pdx.stellaris.game.common.planet_classes;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
