@@ -42,7 +42,7 @@ public final class PdxScriptParser {
             if (LIST_OBJECT_CLOSE.equals(token)) { // empty
                 tokens.next();
                 object = PdxScriptObject.builder().build(relation);
-            } else if (PdxRelation.get(tokens.get(1)) != null) { //object
+            } else if (PdxRelation.get(tokens.get(1)) != null) { // object
                 PdxScriptObject.Builder b = PdxScriptObject.builder();
                 while (!LIST_OBJECT_CLOSE.equals(token)) {
                     String key = stripQuotes(token);
@@ -55,7 +55,7 @@ public final class PdxScriptParser {
                     IPdxScript parsedValue = parse(tokens, variables);
                     token = tokens.get();
 
-                    if (COMMA.equals(token)) {
+                    /*if (COMMA.equals(token)) {
                         // comma-separated list as value
                         PdxScriptList.Builder lb = PdxScriptList.builder();
                         lb.add(parsedValue);
@@ -66,7 +66,7 @@ public final class PdxScriptParser {
                             lb.add(parsedValue);
                         }
                         parsedValue = lb.build(PdxScriptList.Mode.COMMA, parsedValue.getRelation());
-                    }
+                    }*/
 
                     if (key.charAt(0) == VARIABLE_PREFIX) {
                         variables.put(key, parsedValue);
@@ -83,10 +83,11 @@ public final class PdxScriptParser {
                     if (PdxRelation.get(token) != null) {
                         throw new RuntimeException("No relation sign in list allowed");
                     }
+
                     IPdxScript s = parse(tokens, variables);
                     token = tokens.get();
 
-                    if (COMMA.equals(token)) {
+                    /*if (COMMA.equals(token)) {
                         // comma-separated list as value
                         PdxScriptList.Builder lb = PdxScriptList.builder();
                         lb.add(s);
@@ -97,7 +98,7 @@ public final class PdxScriptParser {
                             lb.add(s);
                         }
                         s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
-                    }
+                    }*/
 
                     b.add(s);
                 }
@@ -106,12 +107,6 @@ public final class PdxScriptParser {
                 object = b.build(relation);
             }
         } else { // value
-            int l = token.length();
-            if (l == 0) {
-                throw new RuntimeException("Zero length token");
-            }
-
-            Object value;
             if (token.charAt(0) == VARIABLE_PREFIX) {
                 IPdxScript resolved = variables.get(token);
                 if (resolved == null) {
@@ -120,10 +115,13 @@ public final class PdxScriptParser {
 
                 tokens.next();
                 return resolved;
-            } else if (token.charAt(0) == QUOTE_CHAR) {
+            }
+
+            Object value;
+            if (token.charAt(0) == QUOTE_CHAR) {
                 token = stripQuotes(token);
-                l = token.length();
-                if (l > 0 && Character.isDigit(token.charAt(0))) {
+                int l = token.length();
+                if (l > 0 && isDigit(token.charAt(0))) {
                     try {
                         value = LocalDate.parse(token, DTF);
                         if (value.equals(NULL_DATE)) {
@@ -161,9 +159,10 @@ public final class PdxScriptParser {
                 } catch (IllegalArgumentException ignored1) {
                     String oldToken = token;
                     boolean percent = false;
-                    if (token.charAt(l - 1) == PERCENT) {
+                    int last = token.length() - 1;
+                    if (token.charAt(last) == PERCENT) {
                         percent = true;
-                        token = token.substring(0, --l);
+                        token = token.substring(0, last);
                     }
                     try {
                         value = Integer.valueOf(token);
@@ -251,7 +250,7 @@ public final class PdxScriptParser {
 
     private static String stripQuotes(String s) {
         int l = s.length() - 1;
-        if (l == 0) {
+        if (l <= 0) {
             return s;
         }
 
@@ -431,6 +430,14 @@ public final class PdxScriptParser {
                 return next != null;
             }
         };
+    }
+
+    public static boolean isDigit(int codepoint) {
+        return '0' <= codepoint && codepoint <= '9';
+    }
+
+    public static boolean isDigit(char c) {
+        return '0' <= c && c <= '9';
     }
 
     private static boolean isNewLine(char c) {

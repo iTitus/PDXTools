@@ -14,7 +14,6 @@ public class AI {
     public final ImmutableList<AIStrategy> strategies;
     public final LocalDate prepareWarDate;
     public final boolean war;
-    public final boolean station;
     public final int robotColonies;
     public final int robotColoniesWithFreeBuildings;
     public final int target;
@@ -32,7 +31,6 @@ public class AI {
         this.strategies = o.getImplicitListAsList("strategy", AIStrategy::new);
         this.prepareWarDate = o.getDate("prepare_war_date");
         this.war = o.getBoolean("war", false);
-        this.station = o.getBoolean("station", true);
         this.robotColonies = o.getInt("robot_colonies");
         this.robotColoniesWithFreeBuildings = o.getInt("robot_colonies_with_free_buildings");
         this.target = o.getInt("target", -1);

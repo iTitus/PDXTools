@@ -886,7 +886,7 @@ public final class PdxScriptObject extends BasePdxScript {
         MutableMap<String, PdxUsage> usages = Maps.mutable.empty();
         usageStatistic.getUsages().forEachKeyValue((key, usage) -> usages.merge(key, usage, PdxUsage::merge));
         map.forEachKeyValue((key, value) -> {
-            String prefix = (key.chars().allMatch(Character::isDigit) ? NUMBER_MARKER : key) + DOT_CHAR;
+            String prefix = (key.chars().allMatch(PdxScriptParser::isDigit) ? NUMBER_MARKER : key) + DOT_CHAR;
             if (value instanceof PdxScriptObject) {
                 ((PdxScriptObject) value).getUsageStatistic().getUsages().forEachKeyValue((k, usage) -> usages.merge(prefix + k, usage, PdxUsage::merge));
             } else if (value instanceof PdxScriptList) {

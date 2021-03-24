@@ -76,7 +76,7 @@ public class Common {
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading deposits");
         PdxScriptObject o = loadObject("deposits");
         this.deposits = o.getAsStringObjectMap(Deposit::new);
-        // o.getUsageStatistic().getErrorStrings().forEach(System.out::println);
+        o.getUsageStatistic().getCustomErrorStrings().forEach(System.out::println);
 
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
         // TODO: re-enable once there is a plan for the global variables in "scripted_variables"

@@ -35,6 +35,10 @@ public final class PdxRawDataLoader {
 
     private MutableSet<Pair<String, Throwable>> errors;
 
+    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter) {
+        this(path, blacklist, filter, -1, null);
+    }
+
     public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index,
                             StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (path == null || !Files.exists(path) || blacklist == null) {

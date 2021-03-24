@@ -40,12 +40,15 @@ public class StellarisSave {
 
         this.save = saveFile;
         System.out.println("Loading Save " + saveFile);
+
         StopWatch s = StopWatch.createRunning();
-        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER, -1, null);
+        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER);
         System.out.println("Parsing: " + DurationFormatter.format(s.stop()));
+
         s.start();
         this.meta = this.saveDataLoader.getRawData().getObjectAs(META, Meta::new);
         System.out.println("Meta: " + DurationFormatter.format(s.stop()));
+
         s.start();
         this.gameState = this.saveDataLoader.getRawData().getObjectAs(GAMESTATE, GameState::new);
         System.out.println("Gamestate: " + DurationFormatter.format(s.stop()));

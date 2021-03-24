@@ -71,7 +71,7 @@ public class StellarisDLC {
         this.thirdPartyContent = o.getBoolean("third_party_content");
         this.category = o.getString("category");
 
-        this.dlcArchive = new PdxRawDataLoader(installDir.resolve(archivePath), BLACKLIST, FILTER, -1, null);
+        this.dlcArchive = new PdxRawDataLoader(installDir.resolve(archivePath), BLACKLIST, FILTER);
     }
 
     public Path getInstallDir() {

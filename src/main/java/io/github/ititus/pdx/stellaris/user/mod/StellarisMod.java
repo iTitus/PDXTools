@@ -51,7 +51,7 @@ public class StellarisMod {
         this.supportedVersion = o.getString("supported_version");
 
         // TODO: Fix this
-        this.modArchive = Files.isDirectory(modFile) ? new PdxRawDataLoader(modFile, BLACKLIST, FILTER, -1, null) : null;
+        this.modArchive = Files.isDirectory(modFile) ? new PdxRawDataLoader(modFile, BLACKLIST, FILTER) : null;
     }
 
     public Path getUserDataDir() {

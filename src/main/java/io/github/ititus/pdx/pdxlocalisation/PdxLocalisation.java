@@ -104,10 +104,10 @@ public final class PdxLocalisation {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof PdxLocalisation)) {
+        } else if (!(o instanceof PdxLocalisation)) {
             return false;
         }
+
         PdxLocalisation that = (PdxLocalisation) o;
         return Objects.equals(localisation, that.localisation);
     }

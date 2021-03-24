@@ -19,9 +19,6 @@ public final class PdxColor {
     }
 
     public static PdxColor fromRGBHex(String hex) {
-        if (hex == null || hex.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
         return new PdxColor(ColorUtil.fromRGBHex(hex), hex);
     }
 

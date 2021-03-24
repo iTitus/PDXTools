@@ -21,12 +21,22 @@ public class Country {
     public final int speciesIndex;
     public final int builtSpecies;
     public final int nextTransportFleetNumber;
+    public final int nextArmyNumber;
     public final int ruler;
     public final int federation;
     public final int associatedFederation;
     public final int startingSystem;
     public final double militaryPower;
-    public final double fleetSize;
+    public final double economyPower;
+    public final int victoryRank;
+    public final double victoryScore;
+    public final double techPower;
+    public final double immigration;
+    public final double emigration;
+    public final int fleetSize;
+    public final int empireSize;
+    public final double newColonies;
+    public final double sapient;
     public final String name;
     public final String adjective;
     public final String graphicalCulture;
@@ -55,16 +65,19 @@ public class Country {
     public final ImmutableIntList ownedMegastructures;
     public final ImmutableIntList ownedArmies;
     public final ImmutableIntList ownedPlanets;
+    public final ImmutableIntList branchOfficePlanets;
     public final ImmutableIntList restrictedSystems;
     public final ImmutableIntList controlledPlanets;
     public final ImmutableIntList shipDesigns;
     public final ImmutableIntList usableBypasses;
     public final ImmutableIntList hyperlaneSystems;
+    public final Sectors sectors;
     public final ImmutableList<String> policyFlags;
     public final ImmutableList<String> shownMessageTypes;
     public final ImmutableList<String> traditions;
     public final ImmutableList<String> ascensionPerks;
     public final ImmutableList<String> seenBypassTypes;
+    public final ImmutableIntList seenBypasses;
     public final ImmutableList<Intel> intel;
     public final ImmutableList<TimedModifier> timedModifiers;
     public final ImmutableList<ActivePolicy> activePolicies;
@@ -89,6 +102,18 @@ public class Country {
     public final RandomNameVariables randomNameVariables;
     public final RelationsManager relationsManager;
     public final Property location;
+    public final ImmutableIntList warAllies;
+    public final LocalDate lastChangedCountryType;
+    public final ImmutableList<String> relics;
+    public final String lastActivatedRelic;
+    public final String lastReceivedRelic;
+    public final double givenValue;
+    public final int numUpgradedStarbase;
+    public final int starbaseCapacity;
+    public final int edictCapacity;
+    public final int employablePops;
+    public final ImmutableIntList ownedSpecies;
+    public final ImmutableIntList enslavedSpecies;
 
     public Country(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -106,9 +131,16 @@ public class Country {
         this.events = o.getObjectAs("events", Events::new);
         this.terraIncognita = o.getObjectAs("terra_incognita", TerraIncognita::new);
         this.militaryPower = o.getDouble("military_power");
-        // TODO: economy_power, victory_rank, victory_score, tech_power, immigration, emigration
-        this.fleetSize = o.getDouble("fleet_size");
-        // TODO: empire_size, empire_cohesion, new_colonies, sapient
+        this.economyPower = o.getDouble("economy_power");
+        this.victoryRank = o.getInt("victory_rank", -1);
+        this.victoryScore = o.getDouble("victory_score");
+        this.techPower = o.getDouble("tech_power");
+        this.immigration = o.getDouble("immigration");
+        this.emigration = o.getDouble("emigration");
+        this.fleetSize = o.getInt("fleet_size");
+        this.empireSize = o.getInt("empire_size", 0);
+        this.newColonies = o.getDouble("new_colonies");
+        this.sapient = o.getInt("sapient", 0);
         this.graphicalCulture = o.getString("graphical_culture", null);
         this.cityGraphicalCulture = o.getString("city_graphical_culture", null);
         this.room = o.getString("room", null);
@@ -134,6 +166,7 @@ public class Country {
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
         this.variables = o.getObjectAsEmptyOrStringDoubleMap("variables");
         this.nextTransportFleetNumber = o.getInt("next_transport_fleet_number", -1);
+        this.nextArmyNumber = o.getInt("next_army_number", -1);
         this.sensorRangeFleets = o.getListAsEmptyOrIntList("sensor_range_fleets");
         this.faction = o.getObjectAs("faction", Faction::new);
         this.nameList = o.getString("name_list");
@@ -156,25 +189,36 @@ public class Country {
         this.ascensionPerks = o.getListAsEmptyOrStringList("ascension_perks");
         this.ownedArmies = o.getListAsEmptyOrIntList("owned_armies");
         this.ownedPlanets = o.getListAsEmptyOrIntList("owned_planets");
-        // TODO: branch_office_systems
+        this.branchOfficePlanets = o.getListAsEmptyOrIntList("branch_office_planets");
         this.restrictedSystems = o.getListAsEmptyOrIntList("restricted_systems");
         this.controlledPlanets = o.getListAsEmptyOrIntList("controlled_planets");
         this.shipDesigns = o.getListAsEmptyOrIntList("ship_design");
         this.edicts = o.getListAsEmptyOrList("edicts", Edict::new);
         this.type = o.getString("type");
         this.modules = o.getObjectAs("modules", Modules::new); // TODO: check
-        // TODO: sectors
         this.initialized = o.getBoolean("initialized");
         this.regnalNumbers = o.getListAsEmptyOrList("regnal_numbers", RegnalNumber::new);
         this.randomNameVariables = o.getObjectAs("random_name_variables", RandomNameVariables::new);
         this.relationsManager = o.getObjectAs("relations_manager", RelationsManager::new); // TODO: check
         this.location = o.getObjectAsNullOr("location", Property::new);
+        this.warAllies = o.getListAsEmptyOrIntList("war_allies");
         this.speciesModTemplates = o.getListAsEmptyOrList("species_mod_templates", Species::new);
         this.customization = o.getString("customization");
+        this.lastChangedCountryType = o.getDate("last_changed_country_type", null);
         this.seenBypassTypes = o.getListAsEmptyOrStringList("seen_bypass_types");
-        // TODO: seen_bypasses
+        this.seenBypasses = o.getListAsEmptyOrIntList("seen_bypasses");
+        this.relics = o.getListAsEmptyOrStringList("relics");
+        this.lastActivatedRelic = o.getString("last_activated_relic", null);
+        this.lastReceivedRelic = o.getString("last_received_relic", null);
         this.usableBypasses = o.getListAsEmptyOrIntList("usable_bypasses");
         this.hyperlaneSystems = o.getListAsEmptyOrIntList("hyperlane_systems");
-        // TODO: owned_sectors, given_value
+        this.sectors = o.getObjectAs("sectors", Sectors::new);
+        this.givenValue = o.getDouble("given_value");
+        this.numUpgradedStarbase = o.getInt("num_upgraded_starbase");
+        this.starbaseCapacity = o.getInt("starbase_capacity");
+        this.edictCapacity = o.getInt("edict_capacity");
+        this.employablePops = o.getInt("employable_pops", 0);
+        this.ownedSpecies = o.getListAsEmptyOrIntList("owned_species");
+        this.enslavedSpecies = o.getListAsEmptyOrIntList("enslaved_species");
     }
 }

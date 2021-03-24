@@ -9,10 +9,12 @@ public class Edict {
 
     public final String edict;
     public final LocalDate date;
+    public final boolean perpetual;
 
     public Edict(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
         this.edict = o.getString("edict");
         this.date = o.getDate("date");
+        this.perpetual = o.getBoolean("perpetual", false);
     }
 }

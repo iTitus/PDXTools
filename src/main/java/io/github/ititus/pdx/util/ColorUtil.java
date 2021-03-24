@@ -76,31 +76,34 @@ public final class ColorUtil {
                     g = rgbInt(p);
                     b = rgbInt(q);
                 }
-                default -> throw new RuntimeException(
-                        "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
+                default -> throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
             }
         }
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
-            throw new RuntimeException(
-                    "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
+            throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value + ", " + alpha);
         }
         return new Color(r, g, b, a);
     }
 
     public static Color fromRGBHex(String hex) {
-        Objects.requireNonNull(hex);
+        int l = Objects.requireNonNull(hex).length();
+        if (l < 7 || l > 10) {
+            throw new IllegalArgumentException("unexpected color string length");
+        }
 
-        if (hex.startsWith("#")) {
-            hex = hex.substring(1);
-        } else if (hex.startsWith("0x")) {
-            hex = hex.substring(2);
+        int start;
+        if (hex.charAt(0) == '#') {
+            start = 1;
+            l--;
+        } else if (hex.charAt(0) == '0' && hex.charAt(1) == 'x') {
+            start = 2;
+            l -= 2;
         } else {
             throw new IllegalArgumentException("unexpected color string prefix");
         }
 
-        int l = hex.length();
         if (l == 6 || l == 8) {
-            return new Color(Integer.parseUnsignedInt(hex, 16), l == 8);
+            return new Color(Integer.parseUnsignedInt(hex, start, start + l, 16), l == 8);
         }
 
         throw new IllegalArgumentException("unexpected color string length");
