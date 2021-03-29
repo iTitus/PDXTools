@@ -73,7 +73,7 @@ public class StellarisSaves {
                     Throwable t = e.getCause() != null ? e.getCause() : e;
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();
-                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
+                    System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Suppressed: " + Arrays.toString(suppressed) : "") + (cause != null ? ", Caused By: " + cause : ""));
                     if (errors == null) {
                         errors = Lists.mutable.empty();
                     }

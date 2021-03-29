@@ -96,7 +96,7 @@ public class Test {
 
         StellarisGame game = /*null; //*/ getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
-        StellarisSave save = null; // getStellarisSave();
+        StellarisSave save = /*null; //*/ getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;

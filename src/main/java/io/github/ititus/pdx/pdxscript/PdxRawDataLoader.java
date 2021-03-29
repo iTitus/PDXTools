@@ -39,8 +39,7 @@ public final class PdxRawDataLoader {
         this(path, blacklist, filter, -1, null);
     }
 
-    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index,
-                            StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (path == null || !Files.exists(path) || blacklist == null) {
             throw new IllegalArgumentException();
         }
@@ -77,17 +76,20 @@ public final class PdxRawDataLoader {
             if (progressMessageUpdater != null) {
                 progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");
             }
+
             return o;
         } else {
             try (FileSystem fs = IOUtil.openZip(path)) {
                 Iterator<Path> rootIt = fs.getRootDirectories().iterator();
                 if (!rootIt.hasNext()) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("expected at least one root dir");
                 }
+
                 Path root = rootIt.next();
                 if (rootIt.hasNext()) {
-                    throw new RuntimeException();
+                    throw new RuntimeException("expected at most one root dir");
                 }
+
                 return load(root, index, progressMessageUpdater);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
@@ -136,8 +138,7 @@ public final class PdxRawDataLoader {
                                  StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         Path path = root.relativize(file);
         if (progressMessageUpdater != null) {
-            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading" +
-                    " File " + path);
+            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading File " + path);
         }
         IPdxScript s;
         try {
@@ -146,7 +147,7 @@ public final class PdxRawDataLoader {
             Throwable t = e.getCause() != null ? e.getCause() : e;
             Throwable[] suppressed = t.getSuppressed();
             Throwable cause = t.getCause();
-            System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Supressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
+            System.out.println("Error while parsing " + path + ": " + t + (suppressed != null && suppressed.length > 0 ? ", Suppressed: " + Arrays.toString(suppressed) : EMPTY) + (cause != null ? ", Caused By: " + cause : EMPTY));
             if (errors == null) {
                 errors = Sets.mutable.empty();
             }
