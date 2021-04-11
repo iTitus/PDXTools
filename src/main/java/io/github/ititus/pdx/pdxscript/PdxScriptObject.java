@@ -3,6 +3,7 @@ package io.github.ititus.pdx.pdxscript;
 import io.github.ititus.pdx.pdxscript.internal.BasePdxScript;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.primitive.ImmutableBooleanList;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
@@ -266,6 +267,10 @@ public final class PdxScriptObject extends BasePdxScript {
         IPdxScript s = getRaw(key);
         usageStatistic.use(key, LIST, s);
         return extractList(key, s).getAsList(fct);
+    }
+
+    public ImmutableBooleanList getListAsBooleanList(String key) {
+        return getListAs(key, PdxScriptList::getAsBooleanList);
     }
 
     public ImmutableIntList getListAsIntList(String key) {

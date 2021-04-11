@@ -15,6 +15,7 @@ public class EmpireDesign {
     public final String adjective;
     public final String authority;
     public final String government;
+    public final String advisorVoiceType;
     public final String planetName;
     public final String planetClass;
     public final String systemName;
@@ -22,6 +23,7 @@ public class EmpireDesign {
     public final String graphicalCulture;
     public final String cityGraphicalCulture;
     public final String room;
+    public final String origin;
     public final ImmutableList<String> flags;
     public final ImmutableList<String> ethics;
     public final ImmutableList<String> civics;
@@ -41,6 +43,7 @@ public class EmpireDesign {
         this.authority = o.getString("authority");
         this.flags = o.getListAsEmptyOrStringList("flags");
         this.government = o.getString("government");
+        this.advisorVoiceType = o.getString("advisor_voice_type", null);
         this.planetName = o.getString("planet_name");
         this.planetClass = o.getString("planet_class");
         this.systemName = o.getString("system_name");
@@ -55,5 +58,6 @@ public class EmpireDesign {
         this.spawnEnabled = o.getBoolean("spawn_enabled");
         this.ethics = o.getImplicitListAsStringList("ethic");
         this.civics = o.getListAsEmptyOrStringList("civics");
+        this.origin = o.getString("origin");
     }
 }

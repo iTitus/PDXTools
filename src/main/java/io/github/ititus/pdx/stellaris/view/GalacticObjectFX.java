@@ -2,7 +2,7 @@ package io.github.ititus.pdx.stellaris.view;
 
 import io.github.ititus.pdx.stellaris.user.save.Bypass;
 import io.github.ititus.pdx.stellaris.user.save.GalacticObject;
-import io.github.ititus.pdx.stellaris.user.save.MegaStructure;
+import io.github.ititus.pdx.stellaris.user.save.Megastructure;
 import io.github.ititus.pdx.stellaris.user.save.NaturalWormhole;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -47,7 +47,7 @@ public class GalacticObjectFX extends Group {
 
         ImmutableIntObjectMap<NaturalWormhole> wormholes = galaxyView.getSave().gameState.naturalWormholes;
         ImmutableIntObjectMap<Bypass> bypasses = galaxyView.getSave().gameState.bypasses;
-        ImmutableIntObjectMap<MegaStructure> megaStructures = galaxyView.getSave().gameState.megaStructures;
+        ImmutableIntObjectMap<Megastructure> megaStructures = galaxyView.getSave().gameState.megaStructures;
 
         ImmutableList<VisualHyperlane> visualHyperlanes = Stream.concat(
                 systemPair.getTwo().hyperlanes.stream()
@@ -70,7 +70,7 @@ public class GalacticObjectFX extends Group {
                                         .origin;
                             } else {
                                 targetSystemId = megaStructures.stream()
-                                        .filter(megaStructure -> megaStructure.bypass == targetId)
+                                        .filter(megastructure -> megastructure.bypass == targetId)
                                         .findAny()
                                         .get()
                                         .coordinate

@@ -17,7 +17,7 @@ public class Scope {
     public final ImmutableObjectDoubleMap<String> variables;
 
     public Scope(PdxScriptObject o) {
-        this.type = o.getString("type");
+        this.type = o.getNullOrString("type");
         this.id = o.getUnsignedInt("id");
         this.random = o.getListAsLongList("random");
         this.root = o.getObjectAsNullOr("root", Scope::new);

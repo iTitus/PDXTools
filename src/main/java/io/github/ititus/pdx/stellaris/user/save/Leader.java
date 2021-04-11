@@ -23,6 +23,7 @@ public class Leader {
     public final String agenda;
     public final LocalDate dateAdded;
     public final LocalDate date;
+    public final LocalDate deathDate;
     public final LeaderName name;
     public final Location location;
     public final Location preRulerLocation;
@@ -30,6 +31,7 @@ public class Leader {
     public final ImmutableMap<String, FlagData> flags;
     public final Type mandate;
     public final LeaderDesign design;
+    public final boolean eventLeader;
     public final boolean immortal;
     public final int cooldown;
     public final LeaderRoles roles;
@@ -52,12 +54,14 @@ public class Leader {
         this.leaderTerms = o.getInt("leader_terms", 1);
         this.dateAdded = o.getDate("date_added", null);
         this.date = o.getDate("date");
+        this.deathDate = o.getDate("death_date", null);
         this.age = o.getInt("age");
         this.popFaction = o.getInt("pop_faction", -1);
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
         this.agenda = o.getString("agenda");
         this.mandate = o.getObjectAsNullOr("mandate", Type::new);
         this.design = o.getObjectAsNullOr("design", LeaderDesign::new);
+        this.eventLeader = o.getBoolean("event_leader", false);
         this.immortal = o.getBoolean("immortal", false);
         this.cooldown = o.getInt("cooldown", 0);
         this.roles = o.getObjectAs("roles", LeaderRoles::new);

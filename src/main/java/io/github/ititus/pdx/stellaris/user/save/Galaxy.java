@@ -6,6 +6,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 public class Galaxy {
 
     public final boolean advancedStartsNearPlayer;
+    public final boolean caravaneersEnabled;
+    public final boolean xenoCompatibilityEnabled;
     public final boolean scaling;
     public final boolean clustered;
     public final boolean randomEmpires;
@@ -47,6 +49,8 @@ public class Galaxy {
         this.habitability = o.getDouble("habitability");
         this.primitive = o.getDouble("primitive");
         this.advancedStartsNearPlayer = o.getBoolean("advanced_starts_near_player");
+        this.caravaneersEnabled = o.getBoolean("caravaneers_enabled");
+        this.xenoCompatibilityEnabled = o.getBoolean("xeno_compatibility_enabled");
         this.scaling = o.getBoolean("scaling");
         this.crises = o.getDouble("crises");
         this.technology = o.getDouble("technology");

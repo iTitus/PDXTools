@@ -15,6 +15,7 @@ public class Country {
     public final boolean customName;
     public final boolean autoShipDesigns;
     public final boolean hasAdvisor;
+    public final ImmutableList<String> tutorials;
     public final boolean initialized;
     public final int colorIndex;
     public final int capital;
@@ -49,6 +50,7 @@ public class Country {
     public final String nameList;
     public final String shipPrefix;
     public final String type;
+    public final int neighborRivals;
     public final String customization;
     public final LocalDate lastDateWasHuman;
     public final LocalDate lastDateWarLost;
@@ -68,6 +70,7 @@ public class Country {
     public final ImmutableIntList branchOfficePlanets;
     public final ImmutableIntList restrictedSystems;
     public final ImmutableIntList controlledPlanets;
+    public final ImmutableList<TradeDealItem> tradeDeals;
     public final ImmutableIntList shipDesigns;
     public final ImmutableIntList usableBypasses;
     public final ImmutableIntList hyperlaneSystems;
@@ -181,6 +184,7 @@ public class Country {
         // TODO: subjects
         this.startingSystem = o.getInt("starting_system", -1);
         this.hasAdvisor = o.getBoolean("has_advisor", true);
+        this.tutorials = o.getListAsEmptyOrStringList("tutorials");
         this.shownMessageTypes = o.getListAsEmptyOrStringList("shown_message_types");
         this.ownedLeaders = o.getListAsIntList("owned_leaders");
         this.ownedFleets = o.getListAsEmptyOrIntList("owned_fleets");
@@ -192,6 +196,7 @@ public class Country {
         this.branchOfficePlanets = o.getListAsEmptyOrIntList("branch_office_planets");
         this.restrictedSystems = o.getListAsEmptyOrIntList("restricted_systems");
         this.controlledPlanets = o.getListAsEmptyOrIntList("controlled_planets");
+        this.tradeDeals = o.getListAsEmptyOrList("trade_deals", TradeDealItem::new);
         this.shipDesigns = o.getListAsEmptyOrIntList("ship_design");
         this.edicts = o.getListAsEmptyOrList("edicts", Edict::new);
         this.type = o.getString("type");
@@ -203,6 +208,7 @@ public class Country {
         this.location = o.getObjectAsNullOr("location", Property::new);
         this.warAllies = o.getListAsEmptyOrIntList("war_allies");
         this.speciesModTemplates = o.getListAsEmptyOrList("species_mod_templates", Species::new);
+        this.neighborRivals = o.getInt("neighbor_rivals", 0);
         this.customization = o.getString("customization");
         this.lastChangedCountryType = o.getDate("last_changed_country_type", null);
         this.seenBypassTypes = o.getListAsEmptyOrStringList("seen_bypass_types");

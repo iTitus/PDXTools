@@ -361,7 +361,7 @@ public final class GalaxyView extends BorderPane {
             ImmutableIntObjectMap<GalacticObject> systems = save.gameState.galacticObjects;
             ImmutableIntObjectMap<NaturalWormhole> wormholes = save.gameState.naturalWormholes;
             ImmutableIntObjectMap<Bypass> bypasses = save.gameState.bypasses;
-            ImmutableIntObjectMap<MegaStructure> megaStructures = save.gameState.megaStructures;
+            ImmutableIntObjectMap<Megastructure> megaStructures = save.gameState.megaStructures;
             ImmutableIntObjectMap<Planet> planets = save.gameState.planets.planets;
 
             MutableList<String> properties = Lists.mutable.empty();
@@ -498,7 +498,7 @@ public final class GalaxyView extends BorderPane {
                                             final int targetId = tId;
                                             final Bypass target = bypasses.get(targetId);
                                             final int targetSystemId = megaStructures.stream()
-                                                    .filter(megaStructure -> megaStructure.bypass == targetId)
+                                                    .filter(megastructure -> megastructure.bypass == targetId)
                                                     .findAny()
                                                     .get()
                                                     .coordinate
@@ -557,7 +557,7 @@ public final class GalaxyView extends BorderPane {
                         .forEachOrdered(text::append);
             }
 
-            ImmutableList<IntObjectPair<MegaStructure>> systemMegaStructures =
+            ImmutableList<IntObjectPair<Megastructure>> systemMegaStructures =
                     systemPair.getTwo().megaStructures.primitiveStream()
                             .sorted()
                             .mapToObj(megaStructureId -> PrimitiveTuples.pair(megaStructureId,

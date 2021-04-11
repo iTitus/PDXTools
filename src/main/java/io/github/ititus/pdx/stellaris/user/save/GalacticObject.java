@@ -31,6 +31,11 @@ public class GalacticObject {
     public final ImmutableList<AsteroidBelt> asteroidBelts;
     public final Coordinate coordinate;
     public final ImmutableMap<String, FlagData> flags;
+    public final TradeHub tradeHub;
+    public final TradeCollection tradeCollection;
+    public final TradePiracy tradePiracy;
+    public final int sector;
+    public final ImmutableList<TimedModifier> timedModifiers;
 
     public GalacticObject(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -57,6 +62,10 @@ public class GalacticObject {
         this.innerRadius = o.getDouble("inner_radius");
         this.outerRadius = o.getDouble("outer_radius");
         this.starbase = o.getUnsignedInt("starbase");
-        // TODO: trade_hub, trade_collection, trade_piracy, sector
+        this.tradeHub = o.getObjectAs("trade_hub", TradeHub::new);
+        this.tradeCollection = o.getObjectAs("trade_collection", TradeCollection::new);
+        this.tradePiracy = o.getObjectAs("trade_piracy", TradePiracy::new);
+        this.sector = o.getUnsignedInt("sector");
+        this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
     }
 }

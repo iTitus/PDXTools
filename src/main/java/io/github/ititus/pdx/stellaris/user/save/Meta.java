@@ -15,7 +15,7 @@ public class Meta {
     public final ImmutableList<String> requiredDLCs;
     public final String playerPortrait;
     public final Flag flag;
-    public final double fleets;
+    public final int fleets;
     public final int planets;
 
     public Meta(IPdxScript s) {
@@ -27,7 +27,7 @@ public class Meta {
         this.requiredDLCs = o.getListAsStringList("required_dlcs");
         this.playerPortrait = o.getString("player_portrait");
         this.flag = o.getObjectAs("flag", Flag::new);
-        this.fleets = o.getDouble("meta_fleets");
+        this.fleets = o.getInt("meta_fleets");
         this.planets = o.getInt("meta_planets");
     }
 }

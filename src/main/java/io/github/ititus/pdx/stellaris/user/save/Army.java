@@ -9,6 +9,7 @@ public class Army {
     public final String type;
     public final double health;
     public final double maxHealth;
+    public final String fleetName;
     public final int homePlanet;
     public final int owner;
     public final int speciesIndex;
@@ -25,6 +26,7 @@ public class Army {
         this.type = o.getString("type");
         this.health = o.getDouble("health");
         this.maxHealth = o.getDouble("max_health");
+        this.fleetName = o.getString("fleet_name", null);
         this.homePlanet = o.getInt("home_planet");
         this.owner = o.getInt("owner");
         this.speciesIndex = o.getInt("species_index", -1);

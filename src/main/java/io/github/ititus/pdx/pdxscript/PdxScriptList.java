@@ -7,6 +7,7 @@ import org.eclipse.collections.api.list.primitive.*;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.primitive.BooleanLists;
 import org.eclipse.collections.impl.factory.primitive.DoubleLists;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
@@ -90,6 +91,12 @@ public final class PdxScriptList extends BasePdxScript {
     public Stream<PdxScriptObject> objectStream() {
         return stream()
                 .map(IPdxScript::expectObject);
+    }
+
+    public ImmutableBooleanList getAsBooleanList() {
+        return valueStream()
+                .collect(BooleanLists.mutable::empty, (l, v) -> l.add(v.expectBoolean()), MutableBooleanList::addAll)
+                .toImmutable();
     }
 
     public IntStream intStream() {

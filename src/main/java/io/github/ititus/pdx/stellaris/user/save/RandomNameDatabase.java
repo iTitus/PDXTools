@@ -12,6 +12,7 @@ public class RandomNameDatabase {
     public final ImmutableList<String> nebulaNames;
     public final ImmutableList<String> asteroidPrefix;
     public final ImmutableList<ImmutableList<String>> asteroidPostfix;
+    public final boolean usePrefix;
 
     public RandomNameDatabase(PdxScriptObject o) {
         this.speciesModificationPrefix = o.getListAsStringList("species_modification_prefix");
@@ -21,5 +22,6 @@ public class RandomNameDatabase {
         this.nebulaNames = o.getListAsStringList("nebula_names");
         this.asteroidPrefix = o.getListAsStringList("asteroid_prefix");
         this.asteroidPostfix = o.getImplicitListAsList("asteroid_postfix", s -> s.expectList().getAsStringList());
+        this.usePrefix = o.getBoolean("use_prefix");
     }
 }

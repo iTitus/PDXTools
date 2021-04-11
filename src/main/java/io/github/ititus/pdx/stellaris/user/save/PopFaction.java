@@ -16,6 +16,7 @@ public class PopFaction {
     public final double factionApproval;
     public final ImmutableList<TimedModifier> timedModifiers;
     public final ImmutableIntList members;
+    public final boolean modifierDirty;
 
     public PopFaction(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -28,5 +29,6 @@ public class PopFaction {
         this.factionApproval = o.getDouble("faction_approval", 0);
         this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
         this.members = o.getListAsIntList("members");
+        this.modifierDirty = o.getBoolean("modifier_dirty");
     }
 }

@@ -25,6 +25,7 @@ public class GameState {
     public final int tick;
     public final int randomLogDay;
     public final ImmutableList<Species> species;
+    public final ImmutableList<HalfSpecies> halfSpecies;
     public final int lastCreatedSpecies;
     public final ImmutableList<Nebula> nebulas;
     public final ImmutableIntObjectMap<Pop> pops;
@@ -64,6 +65,7 @@ public class GameState {
     public final int lastDiploAction;
     public final int lastNotificationId;
     public final int lastEventId;
+    public final int cameraFocus;
     public final RandomNameDatabase randomNameDatabase;
     public final NameList nameList;
     public final Galaxy galaxy;
@@ -74,7 +76,7 @@ public class GameState {
     public final ImmutableIntObjectMap<PopFaction> popFactions;
     public final int lastCreatedPopFaction;
     public final String lastKilledCountryName;
-    public final ImmutableIntObjectMap<MegaStructure> megaStructures;
+    public final ImmutableIntObjectMap<Megastructure> megaStructures;
     public final ImmutableIntObjectMap<Bypass> bypasses;
     public final ImmutableIntObjectMap<NaturalWormhole> naturalWormholes;
     public final ImmutableIntObjectMap<TradeRoute> tradeRoutes;
@@ -103,6 +105,7 @@ public class GameState {
         this.tick = o.getInt("tick");
         this.randomLogDay = o.getInt("random_log_day");
         this.species = o.getListAsList("species", Species::new);
+        this.halfSpecies = o.getListAsEmptyOrList("half_species", HalfSpecies::new);
         this.lastCreatedSpecies = o.getInt("last_created_species", -1);
         this.nebulas = o.getImplicitListAsList("nebula", Nebula::new);
         this.pops = o.getObjectAsIntObjectMap("pop", Pop::new);
@@ -142,6 +145,7 @@ public class GameState {
         this.lastDiploAction = o.getInt("last_diplo_action_id", -1);
         this.lastNotificationId = o.getInt("last_notification_id", -1);
         this.lastEventId = o.getInt("last_event_id", -1);
+        this.cameraFocus = o.getInt("camera_focus", -1);
         this.randomNameDatabase = o.getObjectAs("random_name_database", RandomNameDatabase::new);
         this.nameList = o.getObjectAs("name_list", NameList::of);
         this.galaxy = o.getObjectAs("galaxy", Galaxy::new);
@@ -152,7 +156,7 @@ public class GameState {
         this.popFactions = o.getObjectAsIntObjectMap("pop_factions", PopFaction::new);
         this.lastCreatedPopFaction = o.getInt("last_created_pop_faction", -1);
         this.lastKilledCountryName = o.getString("last_killed_country_name");
-        this.megaStructures = o.getObjectAsIntObjectMap("megastructures", nullOr(MegaStructure::new));
+        this.megaStructures = o.getObjectAsIntObjectMap("megastructures", nullOr(Megastructure::new));
         this.bypasses = o.getObjectAsIntObjectMap("bypasses", nullOr(Bypass::new));
         this.naturalWormholes = o.getObjectAsIntObjectMap("natural_wormholes", NaturalWormhole::new);
         this.tradeRoutes = o.getObjectAsIntObjectMap("trade_routes", nullOr(TradeRoute::new));
@@ -168,7 +172,7 @@ public class GameState {
         this.usedSymbols = o.getListAsLongList("used_symbols");
         this.usedSpeciesNames = o.getImplicitListAsList("used_species_names", UsedSpeciesClassAssets::new);
         this.usedSpeciesPortraits = o.getImplicitListAsList("used_species_portrait", UsedSpeciesClassAssets::new);
-        this.randomSeed = o.getUnsignedInt("random_seed");
+        this.randomSeed = o.getInt("random_seed");
         this.randomCount = o.getInt("random_count");
         // TODO: market
         // TODO: trade_routes_manager
