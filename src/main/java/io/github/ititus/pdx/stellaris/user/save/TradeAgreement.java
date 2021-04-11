@@ -14,8 +14,8 @@ public class TradeAgreement {
     public TradeAgreement(PdxScriptObject o) {
         this.country = o.getInt("country");
         this.recipient = o.getInt("recipient");
+        this.monthlyResources = o.getObjectAsNullOr("monthly_resources", Resources::new);
         this.researchAgreement = o.getBoolean("research_agreement", false);
         this.sensorLink = o.getBoolean("sensor_link", false);
-        this.monthlyResources = o.getObjectAsNullOr("monthly_resources", Resources::new);
     }
 }
