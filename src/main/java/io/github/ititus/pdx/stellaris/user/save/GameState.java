@@ -112,28 +112,27 @@ public class GameState {
         this.planets = o.getObjectAs("planets", Planets::new);
         this.countries = o.getObjectAsIntObjectMap("country", nullOr(Country::new));
         this.construction = o.getObjectAs("construction", Construction::new);
-        this.federations = o.getObjectAsIntObjectMap("federation", Federation::new);
-        this.truces = o.getObjectAsIntObjectMap("truce", Truce::new);
-        // TODO: trade_deal values might always be none?
+        this.federations = o.getObjectAsIntObjectMap("federation", nullOr(Federation::new));
+        this.truces = o.getObjectAsIntObjectMap("truce", nullOr(Truce::new));
         this.tradeDeals = o.getObjectAsIntObjectMap("trade_deal", nullOr(TradeDeal::new));
         this.lastCreatedCountry = o.getInt("last_created_country", -1);
         this.lastRefugeeCountry = o.getUnsignedInt("last_refugee_country");
         this.lastCreatedSystem = o.getInt("last_created_system", -1);
         this.leaders = o.getObjectAsIntObjectMap("leaders", nullOr(Leader::new));
         this.savedLeaders = o.getObjectAsStringUnsignedIntMap("saved_leaders");
-        this.ships = o.getObjectAsLongObjectMap("ships", Ship::new);
-        this.fleets = o.getObjectAsIntObjectMap("fleet", Fleet::new);
+        this.ships = o.getObjectAsLongObjectMap("ships", nullOr(Ship::new));
+        this.fleets = o.getObjectAsIntObjectMap("fleet", nullOr(Fleet::new));
         this.fleetTemplates = o.getObjectAsIntObjectMap("fleet_template", FleetTemplate::new);
         this.lastCreatedFleet = o.getInt("last_created_fleet", -1);
         this.lastCreatedShip = o.getInt("last_created_ship", -1);
         this.lastCreatedLeader = o.getInt("last_created_leader", -1);
         this.lastCreatedArmy = o.getInt("last_created_army", -1);
         this.lastCreatedDesign = o.getInt("last_created_design", -1);
-        this.armies = o.getObjectAsIntObjectMap("army", Army::new);
+        this.armies = o.getObjectAsIntObjectMap("army", nullOr(Army::new));
         this.deposits = o.getObjectAsIntObjectMap("deposit", nullOr(Deposit::new));
-        this.groundCombats = o.getObjectAsIntObjectMap("ground_combat", GroundCombat::new);
+        this.groundCombats = o.getObjectAsIntObjectMap("ground_combat", nullOr(GroundCombat::new));
         this.firedEventIds = o.getListAsStringList("fired_event_ids");
-        this.wars = o.getObjectAsIntObjectMap("war", War::new);
+        this.wars = o.getObjectAsIntObjectMap("war", nullOr(War::new));
         this.debris = o.getObjectAsIntObjectMap("debris", nullOr(Debris::new));
         this.missiles = o.getObjectAsLongObjectMap("missile", nullOr(Missile::new));
         this.strikeCrafts = o.getObjectAsIntObjectMap("strike_craft", nullOr(StrikeCraft::new));
@@ -156,7 +155,7 @@ public class GameState {
         this.megaStructures = o.getObjectAsIntObjectMap("megastructures", nullOr(MegaStructure::new));
         this.bypasses = o.getObjectAsIntObjectMap("bypasses", nullOr(Bypass::new));
         this.naturalWormholes = o.getObjectAsIntObjectMap("natural_wormholes", NaturalWormhole::new);
-        this.tradeRoutes = o.getObjectAsIntObjectMap("trade_routes", TradeRoute::new);
+        this.tradeRoutes = o.getObjectAsIntObjectMap("trade_routes", nullOr(TradeRoute::new));
         this.sectors = o.getObjectAsLongObjectMap("sectors", Sector::new);
         this.buildings = o.getObjectAsIntObjectMap("buildings", nullOr(Building::new));
         // TODO: resolution

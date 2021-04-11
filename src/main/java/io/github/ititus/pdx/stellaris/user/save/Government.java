@@ -15,7 +15,7 @@ public class Government {
         this.type = o.getString("type");
         this.authority = o.getString("authority");
         this.civics = o.getListAsStringList("civics");
-        this.origin = o.getString("origin");
+        this.origin = o.getString("origin", null);
         this.heir = o.getInt("heir", -1);
     }
 }

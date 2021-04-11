@@ -24,7 +24,7 @@ public class PopFaction {
         this.name = o.getString("name");
         this.leader = o.getInt("leader", -1);
         this.parameters = o.getListAsList("parameters", Parameter::new);
-        this.support = o.getDouble("support");
+        this.support = o.getDouble("support", 0);
         this.factionApproval = o.getDouble("faction_approval", 0);
         this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
         this.members = o.getListAsIntList("members");

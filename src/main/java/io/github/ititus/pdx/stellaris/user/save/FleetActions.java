@@ -7,6 +7,6 @@ public class FleetActions {
     public final FleetActionRepeat repeat;
 
     public FleetActions(PdxScriptObject o) {
-        this.repeat = o.getObjectAs("repeat", FleetActionRepeat::new);
+        this.repeat = o.getObjectAsNullOr("repeat", FleetActionRepeat::new);
     }
 }

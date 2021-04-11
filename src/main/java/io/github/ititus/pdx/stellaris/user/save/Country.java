@@ -160,7 +160,7 @@ public class Country {
         this.surveyed = o.getListAsEmptyOrIntList("surveyed");
         this.visitedObjects = o.getListAsIntList("visited_objects");
         this.intelLevels = o.getListAsIntList("intel_level");
-        this.highestIntelLevels = o.getListAsIntList("highest_intel_level");
+        this.highestIntelLevels = o.getListAsEmptyOrIntList("highest_intel_level");
         this.intel = o.getListAsEmptyOrList("intel", Intel::new);
         this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);

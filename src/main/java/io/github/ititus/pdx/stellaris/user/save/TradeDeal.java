@@ -5,7 +5,6 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 import java.time.LocalDate;
 
-@Deprecated
 public class TradeDeal {
 
     public final TradeAgreement first;

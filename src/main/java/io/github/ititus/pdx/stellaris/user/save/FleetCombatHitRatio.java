@@ -17,6 +17,6 @@ public class FleetCombatHitRatio {
         this.shipDesign = o.getInt("ship_design");
         this.fleetIndex = o.getInt("fleet_index");
         this.evades = o.getInt("evades", 0);
-        this.hits = o.getInt("hits");
+        this.hits = o.getInt("hits", 0);
     }
 }
