@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
-import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -35,13 +34,7 @@ public class StellarisMod {
         this.userDataDir = userDataDir;
         this.modDescriptorFile = modDescriptorFile;
 
-        IPdxScript s = PdxScriptParser.parse(modDescriptorFile);
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException();
-        }
-
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = PdxScriptParser.parse(modDescriptorFile).expectObject();
         this.name = o.getString("name");
         String str = o.getString("archive", null);
         this.modFile = str != null ? Path.of(str) : userDataDir.resolve(o.getString("path"));

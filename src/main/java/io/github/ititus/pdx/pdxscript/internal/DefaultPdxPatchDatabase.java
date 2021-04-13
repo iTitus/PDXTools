@@ -20,6 +20,99 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
 
     private final Map<Path, PdxPatch> patches = Map.ofEntries(
             patch("""
+                    --- a/Stellaris/common/random_names/00_empire_names.txt
+                    +++ b/Stellaris/common/random_names/00_empire_names.txt
+                    @@ -1154,34 +1154,34 @@
+                     		"Destroyers" = 1
+                     		"Reavers" = 1
+                     		"Bloodletters" = 1
+                    -		"Annihilators"
+                    -		"Exterminators"
+                    -		"Eradicators"
+                    -		"Despoilers"
+                    -		"Purifiers"
+                    -		"Cleansers"
+                    -		"Berserkers"
+                    -		"Skull Lords"
+                    -		"Bloodborn"
+                    -		"Executioners"
+                    -		"Heralds of Death"
+                    -		"Desolators"
+                    -		"Ravagers"
+                    -		"Punishers"
+                    -		"Bloodborn"
+                    -		"Chosen"
+                    -		"Death Bringers"
+                    -		"Crusaders"
+                    -		"Slaughterers"
+                    -		"Butchers"
+                    -		"Star Hunters"
+                    -		"Euthanizers"
+                    -		"Silencers"
+                    -		"Death Lords"
+                    -		"Decimators"
+                    -		"Obliterators"
+                    -		"Slayers"
+                    -		"Reapers"
+                    +		"Annihilators" = 1
+                    +		"Exterminators" = 1
+                    +		"Eradicators" = 1
+                    +		"Despoilers" = 1
+                    +		"Purifiers" = 1
+                    +		"Cleansers" = 1
+                    +		"Berserkers" = 1
+                    +		"Skull Lords" = 1
+                    +		"Bloodborn" = 1
+                    +		"Executioners" = 1
+                    +		"Heralds of Death" = 1
+                    +		"Desolators" = 1
+                    +		"Ravagers" = 1
+                    +		"Punishers" = 1
+                    +		"Bloodborn" = 1
+                    +		"Chosen" = 1
+                    +		"Death Bringers" = 1
+                    +		"Crusaders" = 1
+                    +		"Slaughterers" = 1
+                    +		"Butchers" = 1
+                    +		"Star Hunters" = 1
+                    +		"Euthanizers" = 1
+                    +		"Silencers" = 1
+                    +		"Death Lords" = 1
+                    +		"Decimators" = 1
+                    +		"Obliterators" = 1
+                    +		"Slayers" = 1
+                    +		"Reapers" = 1
+                     	}
+                     }
+                    \s
+                    """),
+            patch("""
+                    --- a/Stellaris/common/random_names/00_war_names.txt
+                    +++ b/Stellaris/common/random_names/00_war_names.txt
+                    @@ -13,7 +13,7 @@
+                     		"Great_War" = 1
+                     		"Galactic_War" = 1
+                     		"War_of_the_Alliances" = 1
+                    -		"Federation_War"
+                    +		"Federation_War" = 1
+                     	}
+                     }
+                    \s
+                    """),
+            patch("""
+                    --- a/Stellaris/dlc_metadata/dlc_info.txt
+                    +++ b/Stellaris/dlc_metadata/dlc_info.txt
+                    @@ -34,7 +34,7 @@
+                     		steam_id = "447680"
+                     		microsoft_store_id = "9MT1H9QPRPZG"
+                     		gog_store_id = ""
+                    -		paradoxplaza_store_url ""
+                    +		paradoxplaza_store_url = ""
+                     		category = "content_pack"
+                     		gui = "arachnoid"
+                     		icon = "GFX_arachnoid"
+                    """),
+            patch("""
                     --- a/Stellaris/gfx/models/planets/_planetary_entities.asset
                     +++ b/Stellaris/gfx/models/planets/_planetary_entities.asset
                     @@ -5010,7 +5010,6 @@
@@ -78,6 +171,40 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
                     -
                     -
                     +}
+                    """),
+            patch("""
+                    --- a/Stellaris/gfx/particles/_particle_entities.asset
+                    +++ b/Stellaris/gfx/particles/_particle_entities.asset
+                    @@ -115,7 +115,6 @@
+                    \s
+                     entity = {
+                     	name = "stellarite_remnant_particle_entity"
+                    -	scale = 1
+                    \s
+                     	locator = {
+                     		name = "root"
+                    """),
+            patch("""
+                    --- a/Stellaris/sound/soundeffects.asset
+                    +++ b/Stellaris/sound/soundeffects.asset
+                    @@ -1304,7 +1304,7 @@
+                     	}\s
+                     	max_audible = 2
+                     	max_audible_behaviour = fail
+                    -	playbackrate_random_offset { -5.0 5.0 }
+                    +	playbackrate_random_offset = { -5.0 5.0 }
+                     	is3d = yes
+                     	volume = 0.25
+                     }
+                    @@ -1316,7 +1316,7 @@
+                     	}\s
+                     	max_audible = 2
+                     	max_audible_behaviour = fail
+                    -	playbackrate_random_offset { -5.0 5.0 }
+                    +	playbackrate_random_offset = { -5.0 5.0 }
+                     	is3d = yes
+                     	volume = 0.25
+                     }
                     """)
     );
 

@@ -20,19 +20,18 @@ public class StellarisGame {
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
             "ChangeLog.txt", "ChangeLogBlank.txt", "checksum_manifest.txt", "console_history.txt",
-            "interface/credits.txt", "interface/credits_l_simphinese.txt", "interface/reference.txt",
+            "interface/credits.txt", "interface/credits_l_simp_chinese.txt", "interface/reference.txt",
             "interface/startup_info.txt", "licenses", "locales", "pdx_browser", "pdx_launcher/game/motd.txt",
             "previewer_assets/previewer_filefilter.txt", "steam_appid.txt", "ThirdPartyLicenses.txt",
             // Handled separately
             "common", "dlc", "gfx", "localisation", "localisation_synced", "pdx_launcher/common/localisation",
             "pdx_online_assets/localisation",
-            // TODO: error in script parsing, use patches to load this
-            "dlc_metadata/dlc_info.txt", "events/fed_vote_events.txt", "interface/outliner.gfx",
-            "sound/soundeffects.asset",
-            // TODO: needs "scripted_variables"
+            // TODO: uses math with constants, syntax: @[<math expression>]
+            "interface/outliner.gfx",
+            // TODO: needs "scripted_variables" (for variables)
             "events",
-            // TODO: use patches to load this
-            "interface"
+            // TODO: needs "interface" (variables)
+            "interface/planet_view.gui"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 

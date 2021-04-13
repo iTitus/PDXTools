@@ -514,7 +514,6 @@ public final class PdxScriptParser {
         }
 
         if (tokens.hasNext()) {
-            System.out.println("" + tokens.getPos());
             throw new RuntimeException("Unconsumed tokens left at pos " + tokens.getPos());
         } else if ((!(s instanceof PdxScriptObject) && !(s instanceof PdxScriptList))) {
             throw new RuntimeException("Unexpected return value from parsing: " + (s != null ? s.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + tokens.getPos());

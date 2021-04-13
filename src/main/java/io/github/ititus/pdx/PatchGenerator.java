@@ -37,6 +37,7 @@ public final class PatchGenerator {
             throw new UncheckedIOException(e);
         }
 
+        System.out.println("#".repeat(80));
         for (Path changedFile : changedFiles) {
             Path relative = DESKTOP_PDX_PATCHES_DIR.relativize(changedFile);
             Path originalFile = INSTALL_DIR.resolve(DESKTOP_PDX_PATCHES_DIR.relativize(changedFile));
@@ -48,6 +49,7 @@ public final class PatchGenerator {
             Patch<String> diff = DiffUtils.diff(original, revised);
             List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("a/" + path, "b/" + path, original, diff, 3);
             unifiedDiff.forEach(System.out::println);
+            System.out.println("#".repeat(80));
         }
     }
 }

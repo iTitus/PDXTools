@@ -15,24 +15,34 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static java.util.stream.Stream.concat;
 
 public class Gfx {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // Not PDXScript
-            "fonts/arimo/LICENSE.txt",
-            // FIXME: disabled for performance
-            "advisorwindow", "lights", "particles", "pingmap", "portraits", "projectiles", "shipview", "worldgfx"
+            "arrows", "cursors", "event_pictures", "fonts", "FX", "interface", "keyicons", "loadingscreens", "map",
+            "portraits/city_sets", "portraits/environments", "portraits/leaders", "portraits/misc",
+            "projectiles/planet_destruction/example.txt", "ugc"
     );
-    private static final IPathFilter TXT = new FileExtensionFilter("txt");
+    // "advisorwindow" <- *.txt
+    // "lights" <- *.asset
+    // "models" <- *.asset
+    // "particles" <- *.asset, *.gfx
+    // "pingmap" <- *.txt
+    // "portraits/asset_selectors" <- *.txt, "portraits/portraits" <- *.txt
+    // "projectiles" <- *.txt
+    // "shipview" <- *.txt
+    // "worldgfx" <- *.txt
     private static final IPathFilter FILTER = new FileExtensionFilter("asset", "gfx", "txt");
+    private static final IPathFilter ASSET = new FileExtensionFilter("asset");
 
+    public final ImmutableList<Light> lights;
+    public final ImmutableList<Animation> animations;
     public final ImmutableList<Entity> entities;
+    public final ImmutableList<Particle> particles;
 
-    private final Path installDir;
     private final Path gfxDir;
 
     public Gfx(Path installDir, Path gfxDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
@@ -40,39 +50,30 @@ public class Gfx {
             throw new IllegalArgumentException();
         }
 
-        this.installDir = installDir;
         this.gfxDir = gfxDir;
 
-        Path[] files;
-        try (Stream<Path> stream1 = Files.list(installDir.resolve(Path.of("common", "scripted_variables")));
-             Stream<Path> stream2 = Files.walk(gfxDir)) {
-            files = concat(
-                    stream1
-                            .filter(Objects::nonNull)
-                            .filter(Files::isRegularFile)
-                            .filter(TXT)
-                            .sorted(IOUtil.ASCIIBETICAL),
-                    stream2
-                            .filter(Objects::nonNull)
-                            .filter(Files::isRegularFile)
-                            .filter(FILTER)
-                            .filter(p -> {
-                                Path r = gfxDir.relativize(p);
-                                return BLACKLIST.stream().noneMatch(r::startsWith);
-                            })
-                            .sorted(IOUtil.ASCIIBETICAL)
-            )
+        PdxScriptObject o = PdxScriptParser.parseWithDefaultPatches(findFiles(ASSET)).expectObject();
+        this.lights = o.getImplicitListAsList("light", Light::new);
+        this.animations = o.getImplicitListAsList("animation", Animation::new);
+        this.entities = o.getImplicitListAsList("entity", Entity::new);
+        this.particles = o.getImplicitListAsList("particle", Particle::new);
+    }
+
+    private Path[] findFiles(Predicate<? super Path> filter) {
+        try (Stream<Path> stream = Files.walk(gfxDir)) {
+            return stream
+                    .filter(Objects::nonNull)
+                    .filter(Files::isRegularFile)
+                    .filter(filter)
+                    .filter(p -> {
+                        Path r = gfxDir.relativize(p);
+                        return BLACKLIST.stream().noneMatch(r::startsWith);
+                    })
+                    .sorted(IOUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-
-        PdxScriptObject o = PdxScriptParser.parseWithDefaultPatches(files).expectObject();
-        this.entities = o.getImplicitListAsList("entity", Entity::new);
-    }
-
-    public Path getInstallDir() {
-        return installDir;
     }
 
     public Path getGfxDir() {

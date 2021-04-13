@@ -173,7 +173,7 @@ public final class IOUtil {
                                 try {
                                     c = reader.read();
                                 } catch (IOException e2) {
-                                    UncheckedIOException e = new UncheckedIOException("error while reading next char", e2);
+                                    UncheckedIOException e = new UncheckedIOException("error while reading next char after reopening", e2);
                                     e.addSuppressed(e1);
                                     throw e;
                                 }
@@ -187,15 +187,15 @@ public final class IOUtil {
                         closeSilently(reader);
                         reader = null;
                         return '\n';
+                    }
+
+                    read = 0;
+                    currentFile++;
+                    if (currentFile < files.length) {
+                        reader = openCurrent();
                     } else {
-                        read = 0;
-                        currentFile++;
-                        if (currentFile < files.length) {
-                            reader = openCurrent();
-                        } else {
-                            reader = null;
-                            return -1;
-                        }
+                        reader = null;
+                        return -1;
                     }
                 }
 
@@ -212,9 +212,7 @@ public final class IOUtil {
 
                 return next != -1;
             }
-        }
-
-                ;
+        };
     }
 
     public static FileSystem openZip(Path zip) throws IOException {

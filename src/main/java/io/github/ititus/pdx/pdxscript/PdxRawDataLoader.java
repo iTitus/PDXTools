@@ -142,7 +142,7 @@ public final class PdxRawDataLoader {
         }
         IPdxScript s;
         try {
-            s = PdxScriptParser.parse(file);
+            s = PdxScriptParser.parseWithDefaultPatches(file);
         } catch (Exception e) {
             Throwable t = e.getCause() != null ? e.getCause() : e;
             Throwable[] suppressed = t.getSuppressed();

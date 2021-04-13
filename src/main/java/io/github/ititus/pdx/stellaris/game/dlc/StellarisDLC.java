@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
-import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 public class StellarisDLC {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
-            // TODO: error in script parsing, use patches to load this
+            // TODO: error in script parsing, use patches to load this; problem: file is in a zip archive
             "sound/megacorp_vo.asset"
     );
     private static final IPathFilter DLC = new FileExtensionFilter("dlc");
@@ -49,16 +48,10 @@ public class StellarisDLC {
         }
 
         if (paths.length != 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("expected exactly one dlc file but found " + paths.length);
         }
 
-        IPdxScript s = PdxScriptParser.parse(paths[0]);
-        if (!(s instanceof PdxScriptObject)) {
-            throw new IllegalArgumentException();
-        }
-
-        PdxScriptObject o = (PdxScriptObject) s;
-
+        PdxScriptObject o = PdxScriptParser.parseWithDefaultPatches(paths[0]).expectObject();
         this.name = o.getString("name");
         this.localizableName = o.getString("localizable_name");
         this.archivePath = o.getString("archive");

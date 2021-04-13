@@ -37,11 +37,13 @@ public class Common {
             "resolution_categories/00_example.txt", "resolutions/00_example.txt",
             "solar_system_initializers/example.txt", "tradition_categories/README.txt", "traditions/README.txt",
             "war_goals/wg_example.txt",
-            // // TODO: error in script parsing, use patches to load this
-            "random_names/00_empire_names.txt", "random_names/00_war_names.txt",
-            "scripted_effects/archaeology_event_effects.txt",
             // Handled separately
-            "scripted_variables"
+            "deposits", "planet_classes", "scripted_variables",
+            // TODO: needs "scripted_variables" (for variables)
+            "artifact_actions", "buildings", "component_templates", "decisions", "edicts", "pop_categories", "pop_jobs",
+            "scripted_effects", "ship_sizes", "special_projects", "technology",
+            // TODO: uses math with constants, syntax: @\[<math expression>]
+            "scripted_effects/archaeology_event_effects.txt"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
@@ -84,7 +86,7 @@ public class Common {
 
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
         // TODO: re-enable once there is a plan for the global variables in "scripted_variables"
-        this.commonDataLoader = null; // new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+        this.commonDataLoader = /*null; //*/ new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, 2, steps, "Done");
     }
@@ -121,6 +123,6 @@ public class Common {
             throw new UncheckedIOException(e);
         }
 
-        return PdxScriptParser.parse(files).expectObject();
+        return PdxScriptParser.parseWithDefaultPatches(files).expectObject();
     }
 }

@@ -245,7 +245,7 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public PdxScriptList getList(String key) {
         IPdxScript s = getRaw(key);
-        usageStatistic.use(key, LIST, s);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
         return extractList(key, s);
     }
 
@@ -255,7 +255,7 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public PdxScriptList getList(String key, PdxScriptList def) {
         IPdxScript s = getRaw(key);
-        usageStatistic.use(key, LIST, s);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
         if (s == null) {
             return def;
         }
@@ -265,7 +265,7 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public <T> ImmutableList<T> getListAsList(String key, Function<? super IPdxScript, ? extends T> fct) {
         IPdxScript s = getRaw(key);
-        usageStatistic.use(key, LIST, s);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
         return extractList(key, s).getAsList(fct);
     }
 
@@ -303,7 +303,7 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public <T> T getListAs(String key, Function<? super PdxScriptList, ? extends T> fct) {
         IPdxScript s = getRaw(key);
-        usageStatistic.use(key, LIST, s);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
         return fct.apply(extractList(key, s));
     }
 
@@ -337,7 +337,7 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public <T> T getListAs(String key, Function<? super PdxScriptList, ? extends T> fct, T def) {
         IPdxScript s = getRaw(key);
-        usageStatistic.use(key, LIST, s);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
         if (s == null) {
             return def;
         }
@@ -351,7 +351,7 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public <T> ImmutableList<T> getListAsList(String key, Function<? super IPdxScript, ? extends T> fct, ImmutableList<T> def) {
         IPdxScript s = getRaw(key);
-        usageStatistic.use(key, LIST, s);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
         if (s == null) {
             return def;
         }
@@ -740,22 +740,18 @@ public final class PdxScriptObject extends BasePdxScript {
     private PdxScriptList extractImplicitList(String key, IPdxScript s) {
         if (s == null) {
             return PdxScriptList.EMPTY_IMPLICIT;
-        } else if (s instanceof PdxScriptList) {
-            PdxScriptList l = (PdxScriptList) s;
-            if (l.getMode() == PdxScriptList.Mode.IMPLICIT) {
-                return l;
-            }
+        } else if (s instanceof PdxScriptList l && l.getMode() == PdxScriptList.Mode.IMPLICIT) {
+            return l;
         }
 
         return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT);
     }
 
     private PdxScriptList extractList(String key, IPdxScript s) {
-        if (s instanceof PdxScriptList) {
-            PdxScriptList l = (PdxScriptList) s;
-            if (l.getMode() != PdxScriptList.Mode.IMPLICIT) {
-                return l;
-            }
+        if (s instanceof PdxScriptList l && l.getMode() != PdxScriptList.Mode.IMPLICIT) {
+            return l;
+        } else if (s instanceof PdxScriptObject o && o.size() == 0) {
+            return PdxScriptList.builder().build(o.relation);
         }
 
         throw new NoSuchElementException("expected explicit list for key " + key + " but got " + s);
