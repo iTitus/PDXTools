@@ -4,6 +4,7 @@ import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.collection.IteratorBuffer;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.MutableMap;
@@ -11,10 +12,7 @@ import org.eclipse.collections.api.map.MutableMap;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
+import java.util.*;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
 
@@ -55,7 +53,7 @@ public final class PdxScriptParser {
                     IPdxScript parsedValue = parse(tokens, variables);
                     token = tokens.get();
 
-                    /*if (COMMA.equals(token)) {
+                    if (COMMA.equals(token)) {
                         // comma-separated list as value
                         PdxScriptList.Builder lb = PdxScriptList.builder();
                         lb.add(parsedValue);
@@ -66,7 +64,7 @@ public final class PdxScriptParser {
                             lb.add(parsedValue);
                         }
                         parsedValue = lb.build(PdxScriptList.Mode.COMMA, parsedValue.getRelation());
-                    }*/
+                    }
 
                     if (key.charAt(0) == VARIABLE_PREFIX) {
                         variables.put(key, parsedValue);
@@ -77,7 +75,7 @@ public final class PdxScriptParser {
                 tokens.next();
 
                 object = b.build(relation);
-            } else { //list
+            } else { // list
                 PdxScriptList.Builder b = PdxScriptList.builder();
                 while (!LIST_OBJECT_CLOSE.equals(token)) {
                     if (PdxRelation.get(token) != null) {
@@ -87,7 +85,7 @@ public final class PdxScriptParser {
                     IPdxScript s = parse(tokens, variables);
                     token = tokens.get();
 
-                    /*if (COMMA.equals(token)) {
+                    if (COMMA.equals(token)) {
                         // comma-separated list as value
                         PdxScriptList.Builder lb = PdxScriptList.builder();
                         lb.add(s);
@@ -98,7 +96,7 @@ public final class PdxScriptParser {
                             lb.add(s);
                         }
                         s = lb.build(PdxScriptList.Mode.COMMA, s.getRelation());
-                    }*/
+                    }
 
                     b.add(s);
                 }
@@ -481,24 +479,46 @@ public final class PdxScriptParser {
     }
 
     public static IPdxScript parse(Path... scriptFiles) {
+        return parse(null, scriptFiles);
+    }
+
+    public static IPdxScript parseWithDefaultPatches(Path... scriptFiles) {
+        return parse(PdxPatchDatabase.DEFAULT, scriptFiles);
+    }
+
+    public static IPdxScript parse(PdxPatchDatabase patchDatabase, Path... scriptFiles) {
         if (scriptFiles.length == 0) {
             throw new IllegalArgumentException("got empty path array");
         }
 
-        return parse(IOUtil.getCharacterIterator(scriptFiles));
+        return parse(IOUtil.getCharacterIterator(patchDatabase, scriptFiles));
     }
 
     private static IPdxScript parse(PrimitiveIterator.OfInt charIterator) {
-        Iterator<String> tokenIterator = tokenize(charIterator);
+        Iterator<String> tokenIterator;
+        try {
+            tokenIterator = tokenize(charIterator);
+        } catch (Exception e) {
+            throw new RuntimeException("unable to tokenize script", e);
+        }
 
-        IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenIterator, 2, 0);
-        IPdxScript s = parse(tokens, Maps.mutable.empty());
+        List<String> tokenBuffer = Lists.mutable.empty();
+        tokenIterator.forEachRemaining(tokenBuffer::add);
+
+        IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenBuffer.iterator(), 2, 0);
+
+        IPdxScript s;
+        try {
+            s = parse(tokens, Maps.mutable.empty());
+        } catch (Exception e) {
+            throw new RuntimeException("unable to parse script", e);
+        }
 
         if (tokens.hasNext()) {
+            System.out.println("" + tokens.getPos());
             throw new RuntimeException("Unconsumed tokens left at pos " + tokens.getPos());
         } else if ((!(s instanceof PdxScriptObject) && !(s instanceof PdxScriptList))) {
-            throw new RuntimeException("Unexpected return value from parsing: " +
-                    (s != null ? s.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + tokens.getPos());
+            throw new RuntimeException("Unexpected return value from parsing: " + (s != null ? s.getClass().getTypeName() : NULL) + COMMA_CHAR + SPACE_CHAR + tokens.getPos());
         }
 
         return s;

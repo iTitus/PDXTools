@@ -3,6 +3,7 @@ module io.github.ititus.pdx {
     requires io.github.ititus.commons;
     requires org.eclipse.collections.api;
     requires org.eclipse.collections.impl;
+    requires io.github.javadiffutils;
     requires javafx.base;
     requires javafx.controls;
     requires javafx.graphics;
@@ -17,6 +18,7 @@ module io.github.ititus.pdx {
     exports io.github.ititus.pdx.stellaris.game.common.deposits;
     exports io.github.ititus.pdx.stellaris.game.common.planet_classes;
     exports io.github.ititus.pdx.stellaris.game.dlc;
+    exports io.github.ititus.pdx.stellaris.game.gfx;
     exports io.github.ititus.pdx.stellaris.shared;
     exports io.github.ititus.pdx.stellaris.user;
     exports io.github.ititus.pdx.stellaris.user.mod;

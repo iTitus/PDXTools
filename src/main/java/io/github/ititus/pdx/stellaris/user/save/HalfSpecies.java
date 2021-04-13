@@ -2,7 +2,6 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import org.eclipse.collections.api.map.ImmutableMap;
 
 public class HalfSpecies {
 

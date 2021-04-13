@@ -251,9 +251,7 @@ public final class GalaxyView extends BorderPane {
                 @Override
                 protected Void call() {
                     ImmutableIntObjectMap<Planet> planets = save.gameState.planets.planets;
-                    ImmutableList<IntObjectPair<Planet>> systemPlanets =
-                            systemPair.getTwo().planets.collect(planetId -> PrimitiveTuples.pair(planetId,
-                                    planets.get(planetId)));
+                    ImmutableList<IntObjectPair<Planet>> systemPlanets = systemPair.getTwo().planets.collect(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)));
 
                     int maxProgress = systemPlanets.size() + 1;
                     MutableInt progress = new MutableInt();

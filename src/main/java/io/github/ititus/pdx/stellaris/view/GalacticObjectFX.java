@@ -51,8 +51,7 @@ public class GalacticObjectFX extends Group {
 
         ImmutableList<VisualHyperlane> visualHyperlanes = Stream.concat(
                 systemPair.getTwo().hyperlanes.stream()
-                        .map(hyperlane -> new VisualHyperlane(systemPair.getOne(), hyperlane.to,
-                                hyperlane.bridge ? VisualHyperlane.Type.BRIDGE : VisualHyperlane.Type.NORMAL)),
+                        .map(hyperlane -> new VisualHyperlane(systemPair.getOne(), hyperlane.to, hyperlane.bridge ? VisualHyperlane.Type.BRIDGE : VisualHyperlane.Type.NORMAL)),
                 systemPair.getTwo().bypasses.primitiveStream()
                         .mapToObj(bypasses::get)
                         .flatMap(b -> b.connections.primitiveStream().mapToObj(id -> PrimitiveTuples.pair(b, id)))
@@ -65,23 +64,25 @@ public class GalacticObjectFX extends Group {
                                 targetSystemId = wormholes.stream()
                                         .filter(wormhole -> wormhole.bypass == targetId)
                                         .findAny()
-                                        .get()
+                                        .orElseThrow()
                                         .coordinate
                                         .origin;
                             } else {
                                 targetSystemId = megaStructures.stream()
                                         .filter(megastructure -> megastructure.bypass == targetId)
                                         .findAny()
-                                        .get()
+                                        .orElseThrow()
                                         .coordinate
                                         .origin;
                             }
-                            return new VisualHyperlane(systemPair.getOne(), targetSystemId,
-                                    bypassFrom.active && targetBypass.active ?
-                                            VisualHyperlane.Type.BYPASS_ACTIVE : VisualHyperlane.Type.BYPASS_INACTIVE);
+
+                            return new VisualHyperlane(
+                                    systemPair.getOne(),
+                                    targetSystemId,
+                                    bypassFrom.active && targetBypass.active ? VisualHyperlane.Type.BYPASS_ACTIVE : VisualHyperlane.Type.BYPASS_INACTIVE
+                            );
                         })
         ).collect(Collectors2.toImmutableList());
-
 
         Platform.runLater(() -> {
             Tooltip.install(this.systemSphere, this.systemTooltip);

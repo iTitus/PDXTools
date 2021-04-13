@@ -40,7 +40,7 @@ public final class PdxLocalisationParser {
                     .filter(Objects::nonNull)
                     .filter(Files::isRegularFile)
                     .filter(p -> (filter == null || filter.test(p)))
-                    .sorted(IOUtil.asciibetical(installDir))
+                    .sorted(IOUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

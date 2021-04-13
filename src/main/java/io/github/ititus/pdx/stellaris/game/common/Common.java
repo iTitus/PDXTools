@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -40,7 +39,9 @@ public class Common {
             "war_goals/wg_example.txt",
             // Error in script parsing
             "random_names/00_empire_names.txt", "random_names/00_war_names.txt",
-            "scripted_effects/archaeology_event_effects.txt"
+            "scripted_effects/archaeology_event_effects.txt",
+            // Handled separately
+            "scripted_variables"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
@@ -56,12 +57,15 @@ public class Common {
         if (installDir == null || !Files.isDirectory(installDir) || commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }
+
         this.installDir = installDir;
         this.commonDir = commonDir;
         this.scriptedVariableFiles = Lazy.of(() -> {
             try (Stream<Path> stream = Files.list(commonDir.resolve("scripted_variables"))) {
                 return stream
-                        .sorted(Comparator.comparing(Path::getFileName))
+                        .filter(Objects::nonNull)
+                        .filter(Files::isRegularFile)
+                        .sorted(IOUtil.ASCIIBETICAL)
                         .toArray(Path[]::new);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
@@ -106,8 +110,11 @@ public class Common {
                             .filter(Objects::nonNull)
                             .filter(Files::isRegularFile)
                             .filter(FILTER)
-                            .filter(p -> BLACKLIST.stream().noneMatch(p_ -> p.relativize(commonDir).startsWith(p_)))
-                            .sorted(IOUtil.asciibetical(commonDir))
+                            .filter(p -> {
+                                Path r = commonDir.relativize(p);
+                                return BLACKLIST.stream().noneMatch(r::startsWith);
+                            })
+                            .sorted(IOUtil.ASCIIBETICAL)
             )
                     .toArray(Path[]::new);
         } catch (IOException e) {

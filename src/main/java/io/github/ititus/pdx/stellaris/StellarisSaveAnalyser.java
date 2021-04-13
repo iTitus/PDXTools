@@ -28,7 +28,7 @@ public class StellarisSaveAnalyser implements Runnable {
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
 
     private static final String SAVE_FOLDER = "mpempireofthebugs_847499604";
-    private static final String SAVE_GAME = "2248.02.26";
+    private static final String SAVE_GAME = "2311.02.01";
 
     private static final int PROGRESS_DEPTH = 5;
 

@@ -117,7 +117,7 @@ public final class PdxRawDataLoader {
         try (Stream<Path> stream = Files.list(dir)) {
             stream
                     .filter(p -> isAllowed(root, p))
-                    .sorted(IOUtil.asciibetical(root))
+                    .sorted(IOUtil.ASCIIBETICAL)
                     .forEachOrdered(p -> {
                         IPdxScript s = Files.isDirectory(p) ? parseFolder(root, p, index, progress, fileCount,
                                 progressMessageUpdater) : parseFile(root, p, index, progress, fileCount,

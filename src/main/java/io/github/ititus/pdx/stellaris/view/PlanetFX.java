@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.stellaris.view;
 
+import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClass;
+import io.github.ititus.pdx.stellaris.game.gfx.Entity;
 import io.github.ititus.pdx.stellaris.user.save.Coordinate;
 import io.github.ititus.pdx.stellaris.user.save.Planet;
 import javafx.application.Platform;
@@ -13,10 +15,15 @@ import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Translate;
 import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 
+import java.util.Objects;
+import java.util.Optional;
+
 public class PlanetFX extends Group {
 
-    private static final double PLANET_STANDARD_SCALE = 11;
+    private static final double BASE_SIZE_MULTIPLIER = 1.0 / 60.0;
+    private static final double MEGASTRUCTURE_TO_PLANET_SCALE = 1.0 / 0.045;
     private static final Color ORBIT_COLOR = Color.hsb(0.44 * 360, 0.8, 0.6);
+    private static final double MOON_SCALE = 0.7;
 
     // private final Color color;
 
@@ -34,8 +41,9 @@ public class PlanetFX extends Group {
         // hash = (hash ^ (hash >>> 8)) & 0xFFFFFF;
         // this.color = Color.rgb((hash >>> 16) & 0xFF, (hash >>> 8) & 0xFF, hash & 0xFF);
 
-        this.planetSphere = new Sphere(getPlanetVisualSize(planetPair));
-        this.planetSphere.getTransforms().add(new Translate(planetPair.getTwo().coordinate.x, planetPair.getTwo().coordinate.y, 0));
+        this.planetSphere = new Sphere(calculatePlanetVisualSize());
+        Coordinate c = planetPair.getTwo().coordinate;
+        this.planetSphere.getTransforms().add(new Translate(c.x, c.y, 0));
         // this.planetSphere.setMaterial(new PhongMaterial(this.color));
         this.planetSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             galaxyView.onClickInSystemView(planetPair);
@@ -48,26 +56,39 @@ public class PlanetFX extends Group {
 
         Platform.runLater(() -> {
             Tooltip.install(this.planetSphere, this.planetTooltip);
-            this.getChildren().addAll(this.planetSphere, orbit);
+            this.getChildren().add(this.planetSphere);
+            if (orbit != null) {
+                this.getChildren().add(orbit);
+            }
         });
     }
 
     private Circle createOrbit() {
+        PlanetClass planetClass = galaxyView.getGame().getCommon().planetClasses.planetClasses.get(planetPair.getTwo().planetClass);
+        if (planetClass.star || !planetClass.orbitLines) {
+            return null;
+        }
+
         Coordinate c = planetPair.getTwo().coordinate;
         Point3D p = new Point3D(c.x, c.y, 0);
 
         Point3D center;
-        if (planetPair.getTwo().isMoon) {
+        if (planetPair.getTwo().isMoon) { // moon
+            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planetPair.getTwo().moonOf).coordinate;
+            center = new Point3D(centerC.x, centerC.y, 0);
+        } else if (planetPair.getTwo().moonOf != -1) { // more than 1 star in system, this planet is not orbiting the central one
             Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planetPair.getTwo().moonOf).coordinate;
             center = new Point3D(centerC.x, centerC.y, 0);
         } else {
             center = Point3D.ZERO;
         }
 
+        double calculatedRadius = p.distance(center);
+
         Circle orbit = new Circle();
         orbit.setCenterX(center.getX());
         orbit.setCenterY(center.getY());
-        orbit.setRadius(p.distance(center));
+        orbit.setRadius(calculatedRadius);
         orbit.setFill(null);
         orbit.setStroke(ORBIT_COLOR);
         orbit.setStrokeWidth(0.2);
@@ -75,62 +96,35 @@ public class PlanetFX extends Group {
         return orbit;
     }
 
-    private double getPlanetVisualSize(IntObjectPair<Planet> planetPair) {
-        double scale = 1D / 60;
+    private double calculatePlanetVisualSize() {
+        Planet planet = planetPair.getTwo();
 
-        String pC = planetPair.getTwo().planetClass;
-        String pE = planetPair.getTwo().entityName;
-        if (pE == null) {
-            pE = "";
+        int planetSize = planet.planetSize;
+
+        String planetClassName = planet.planetClass;
+        PlanetClass planetClass = galaxyView.getGame().getCommon().planetClasses.planetClasses.get(planetClassName);
+        double entityScaleFromPlanetClass = planetClass.entityScale;
+
+        String entityName = planetClass.entity;
+        Optional<Entity> entity = galaxyView.getGame().getGfx().entities.stream()
+                .filter(e -> Objects.equals(entityName, e.name))
+                .findAny();
+        if (entity.isEmpty()) {
+            entity = galaxyView.getGame().getGfx().entities.stream()
+                    .filter(e -> Objects.equals(entityName + "_01_entity", e.name))
+                    .findAny();
+        }
+        double entityScaleFromEntity = entity.map(value -> value.scale).orElse(1.0);
+
+        double size = BASE_SIZE_MULTIPLIER * planetSize * entityScaleFromPlanetClass * entityScaleFromEntity;
+        if (planet.isMoon) {
+            size *= MOON_SCALE;
         }
 
-        double entityScale;
-        if (pC.equals("pc_t_star")) {
-            entityScale = 30;
-        } else if (pC.endsWith("_star") || pC.equals("pc_black_hole") || pC.equals("pc_pulsar")) {
-            entityScale = 20;
-        } else if (pC.equals("pc_gas_giant") || pC.equals("pc_crystal_asteroid")) {
-            entityScale = 14;
-        } else if (pC.equals("pc_asteroid") || pC.equals("pc_ice_asteroid") || pC.equals("pc_crystal_asteroid_2")) {
-            entityScale = 1.5;
-        } else if (pC.equals("pc_cybrex") || pC.startsWith("pc_ringworld_") || pC.startsWith("pc_habitat")) {
-            entityScale = 10;//1;
-        } else {
-            entityScale = PLANET_STANDARD_SCALE;
+        if (planetClassName.startsWith("pc_ringworld") || planetClassName.startsWith("pc_habitat")) {
+            size *= MEGASTRUCTURE_TO_PLANET_SCALE;
         }
 
-        double assetScale;
-        if (pE.equals("asteroid_01_entity") || pC.contains("_asteroid") /*|| pC.equals("pc_asteroid")*/) {
-            assetScale = 30;
-        } /*else if (pE.equals("black_hole_entity")) {
-            assetScale = 20;
-        }*/ else if (pE.equals("pulsar_outbursts_entity")) {
-            assetScale = 2;
-        } else if (pC.equals("pc_b_star")) {
-            assetScale = 1.8;
-        } else if (pC.equals("pc_a_star")) {
-            assetScale = 1.6;
-        } else if (pC.equals("pc_f_star_class_star_entity")) {
-            assetScale = 1.5;
-        } else if (pE.equals("neutron_outbursts_entity")) {
-            assetScale = 1.4;
-        } else if (pC.equals("pc_g_star") || pE.equals("neutron_star_entity")) {
-            assetScale = 1.3;
-        } else if (pC.equals("pc_k_star") || pC.equals("pc_gas_giant")) {
-            assetScale = 1.2;
-        } else if (pE.equals("asteroid_entity") || pE.equals("meteor_entity") /*|| pC.equals("pc_asteroid")*/) {
-            assetScale = 0.5;
-        } else {
-            assetScale = 1;
-        }
-
-        double size = planetPair.getTwo().planetSize;
-        double result = entityScale * assetScale * size * scale;
-
-        if (planetPair.getTwo().isMoon) {
-            result *= 0.7;
-        }
-
-        return result;
+        return size;
     }
 }

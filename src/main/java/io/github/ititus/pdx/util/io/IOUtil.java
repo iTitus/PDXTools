@@ -1,5 +1,8 @@
 package io.github.ititus.pdx.util.io;
 
+import io.github.ititus.pdx.pdxscript.PdxPatch;
+import io.github.ititus.pdx.pdxscript.PdxPatchDatabase;
+
 import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -11,13 +14,42 @@ import java.util.*;
 
 public final class IOUtil {
 
-    private IOUtil() {
-    }
+    public static final Comparator<Path> ASCIIBETICAL = (p1, p2) -> {
+        try {
+            p1 = p1.toRealPath();
+            p2 = p2.toRealPath();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
 
-    public static Comparator<Path> asciibetical(Path root) {
-        Path normRoot = root.normalize();
-        return Comparator.comparingInt((Path p) -> Files.isDirectory(p) ? 1 : 0)
-                .thenComparing(p -> normRoot.relativize(p.normalize()).toString());
+        int c1 = p1.getNameCount();
+        int c2 = p2.getNameCount();
+
+        boolean sameLength = c1 == c2;
+        int min = Math.min(c1, c2);
+
+        for (int i = 0; i < min; i++) {
+            String n1 = p1.getName(i).toString();
+            String n2 = p2.getName(i).toString();
+
+            if (sameLength && i == min - 1) {
+                boolean d1 = Files.isDirectory(p1);
+                boolean d2 = Files.isDirectory(p2);
+                if (d1 != d2) {
+                    return d1 ? -1 : 1;
+                }
+            }
+
+            int c = n1.compareTo(n2);
+            if (c != 0) {
+                return c;
+            }
+        }
+
+        return c1 - c2;
+    };
+
+    private IOUtil() {
     }
 
     public static String getExtension(Path p) {
@@ -61,7 +93,7 @@ public final class IOUtil {
         }
     }
 
-    public static PrimitiveIterator.OfInt getCharacterIterator(Path... files) {
+    public static PrimitiveIterator.OfInt getCharacterIterator(PdxPatchDatabase patchDatabase, Path... files) {
         return new PrimitiveIterator.OfInt() {
 
             int currentFile = -1;
@@ -83,16 +115,39 @@ public final class IOUtil {
             }
 
             private Reader openCurrent() {
+                Path p = files[currentFile];
+                if (patchDatabase != null) {
+                    Optional<PdxPatch> patch = patchDatabase.findPatch(p);
+                    if (patch.isPresent()) {
+                        List<String> original;
+                        try {
+                            original = Files.readAllLines(p);
+                        } catch (IOException e1) {
+                            try {
+                                original = Files.readAllLines(p, StandardCharsets.ISO_8859_1);
+                            } catch (IOException e2) {
+                                UncheckedIOException e = new UncheckedIOException("unable to read file", e2);
+                                e.addSuppressed(e1);
+                                throw e;
+                            }
+                        }
+
+                        List<String> patched = patch.get().apply(original);
+                        String joined = String.join("\n", patched);
+                        return new StringReader(joined);
+                    }
+                }
+
                 try {
-                    return Files.newBufferedReader(files[currentFile]);
+                    return Files.newBufferedReader(p);
                 } catch (IOException e) {
-                    throw new UncheckedIOException("unable to open next file", e);
+                    throw new UncheckedIOException("unable to open file", e);
                 }
             }
 
             private Reader reopenCurrent() {
                 try {
-                    BufferedReader r = Files.newBufferedReader(files[currentFile], StandardCharsets.ISO_8859_1);
+                    Reader r = Files.newBufferedReader(files[currentFile], StandardCharsets.ISO_8859_1);
                     if (r.skip(read) != read) {
                         throw new IOException("unable to skip given number of characters");
                     }
@@ -104,53 +159,48 @@ public final class IOUtil {
             }
 
             private int readNext() {
-                if (reader == null) {
-                    read = 0;
-                    currentFile = 0;
-                    if (currentFile < files.length) {
-                        reader = openCurrent();
-                    } else {
-                        return -1;
-                    }
-                }
-
+                int c;
                 while (true) {
-                    try {
-                        if (reader.ready()) {
+                    if (reader != null) {
+                        try {
+                            c = reader.read();
+                        } catch (IOException e1) {
+                            closeSilently(reader);
+                            if (reader instanceof StringReader) {
+                                throw new UncheckedIOException("error while reading next char", e1);
+                            } else {
+                                reader = reopenCurrent();
+                                try {
+                                    c = reader.read();
+                                } catch (IOException e2) {
+                                    UncheckedIOException e = new UncheckedIOException("error while reading next char", e2);
+                                    e.addSuppressed(e1);
+                                    throw e;
+                                }
+                            }
+                        }
+
+                        if (c != -1) {
                             break;
                         }
-                    } catch (IOException e) {
-                        throw new UncheckedIOException("cannot query ready status on reader", e);
-                    }
 
-                    closeSilently(reader);
-
-                    read = 0;
-                    currentFile++;
-                    if (currentFile < files.length) {
-                        reader = openCurrent();
-                    } else {
+                        closeSilently(reader);
                         reader = null;
-                        return -1;
+                        return '\n';
+                    } else {
+                        read = 0;
+                        currentFile++;
+                        if (currentFile < files.length) {
+                            reader = openCurrent();
+                        } else {
+                            reader = null;
+                            return -1;
+                        }
                     }
                 }
 
-                try {
-                    int c = reader.read();
-                    read++;
-                    return c;
-                } catch (IOException e1) {
-                    reader = reopenCurrent();
-                    try {
-                        int c = reader.read();
-                        read++;
-                        return c;
-                    } catch (IOException e2) {
-                        UncheckedIOException e = new UncheckedIOException("error while ready next char", e2);
-                        e.addSuppressed(e1);
-                        throw e;
-                    }
-                }
+                read++;
+                return c;
             }
 
             @Override
@@ -162,7 +212,9 @@ public final class IOUtil {
 
                 return next != -1;
             }
-        };
+        }
+
+                ;
     }
 
     public static FileSystem openZip(Path zip) throws IOException {
