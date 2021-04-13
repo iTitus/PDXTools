@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class IteratorBuffer<T> {
+public final class IteratorBuffer<T> {
 
     private final Iterator<T> iterator;
     private final T[] buffer;
@@ -15,6 +15,10 @@ public class IteratorBuffer<T> {
     @SuppressWarnings("unchecked")
     public IteratorBuffer(Iterator<T> iterator, int forward, int backward) {
         Objects.requireNonNull(iterator);
+        if (forward < 0 || backward < 0) {
+            throw new IllegalArgumentException("required positive forward and backward buffer sizes");
+        }
+
         this.iterator = iterator;
         this.buffer = (T[]) new Object[1 + forward + backward];
         this.forward = forward;
@@ -22,24 +26,30 @@ public class IteratorBuffer<T> {
         this.cursor = backward;
         this.oldest = 0;
 
-        for (int i = 0; i <= forward; i++) {
-            next();
-        }
+        next(forward + 1);
 
         this.pos = 0;
     }
 
     public void next() {
-        buffer[oldest] = iterator.hasNext() ? Objects.requireNonNull(iterator.next()) : null;
-        oldest++;
-        if (oldest >= buffer.length) {
-            oldest -= buffer.length;
+        next(1);
+    }
+
+    public void next(int steps) {
+        for (int i = 0; i < steps; i++) {
+            buffer[oldest] = iterator.hasNext() ? Objects.requireNonNull(iterator.next(), "iterator must produce non-null elements") : null;
+            oldest++;
+            if (oldest >= buffer.length) {
+                oldest -= buffer.length;
+            }
+
+            cursor++;
+            if (cursor >= buffer.length) {
+                cursor -= buffer.length;
+            }
+
+            pos++;
         }
-        cursor++;
-        if (cursor >= buffer.length) {
-            cursor -= buffer.length;
-        }
-        pos++;
     }
 
     public boolean hasNext() {
