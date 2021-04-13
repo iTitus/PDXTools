@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ 16 ]
+        java-version: [ 15 ]
         distribution: [ adopt ]
         language: [ 'java' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
