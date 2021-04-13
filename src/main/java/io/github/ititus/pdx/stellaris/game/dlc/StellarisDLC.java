@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class StellarisDLC {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
-            // Error in script parsing
+            // TODO: error in script parsing, use patches to load this
             "sound/megacorp_vo.asset"
     );
     private static final IPathFilter DLC = new FileExtensionFilter("dlc");

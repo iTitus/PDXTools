@@ -26,12 +26,12 @@ public class StellarisGame {
             // Handled separately
             "common", "dlc", "gfx", "localisation", "localisation_synced", "pdx_launcher/common/localisation",
             "pdx_online_assets/localisation",
-            // Error in script parsing
+            // TODO: error in script parsing, use patches to load this
             "dlc_metadata/dlc_info.txt", "events/fed_vote_events.txt", "interface/outliner.gfx",
             "sound/soundeffects.asset",
-            // TODO: re-enable once there is a plan for the global variables in "scripted_variables"
+            // TODO: needs "scripted_variables"
             "events",
-            // TODO: find a solution for missing/typo-ed variables and definition after use
+            // TODO: use patches to load this
             "interface"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");

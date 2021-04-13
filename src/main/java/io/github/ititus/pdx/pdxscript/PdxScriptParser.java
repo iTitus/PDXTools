@@ -4,7 +4,6 @@ import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.collection.IteratorBuffer;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.MutableMap;
@@ -12,7 +11,10 @@ import org.eclipse.collections.api.map.MutableMap;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
 
@@ -502,10 +504,7 @@ public final class PdxScriptParser {
             throw new RuntimeException("unable to tokenize script", e);
         }
 
-        List<String> tokenBuffer = Lists.mutable.empty();
-        tokenIterator.forEachRemaining(tokenBuffer::add);
-
-        IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenBuffer.iterator(), 2, 0);
+        IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenIterator, 2, 0);
 
         IPdxScript s;
         try {

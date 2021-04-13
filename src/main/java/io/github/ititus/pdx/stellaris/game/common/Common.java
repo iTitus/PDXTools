@@ -37,7 +37,7 @@ public class Common {
             "resolution_categories/00_example.txt", "resolutions/00_example.txt",
             "solar_system_initializers/example.txt", "tradition_categories/README.txt", "traditions/README.txt",
             "war_goals/wg_example.txt",
-            // Error in script parsing
+            // // TODO: error in script parsing, use patches to load this
             "random_names/00_empire_names.txt", "random_names/00_war_names.txt",
             "scripted_effects/archaeology_event_effects.txt",
             // Handled separately
