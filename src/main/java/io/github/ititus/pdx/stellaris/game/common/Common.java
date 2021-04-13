@@ -86,7 +86,7 @@ public class Common {
 
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
         // TODO: re-enable once there is a plan for the global variables in "scripted_variables"
-        this.commonDataLoader = /*null; //*/ new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+        this.commonDataLoader = null; // new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, 2, steps, "Done");
     }

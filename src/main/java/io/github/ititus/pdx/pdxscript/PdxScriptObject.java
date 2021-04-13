@@ -740,18 +740,27 @@ public final class PdxScriptObject extends BasePdxScript {
     private PdxScriptList extractImplicitList(String key, IPdxScript s) {
         if (s == null) {
             return PdxScriptList.EMPTY_IMPLICIT;
-        } else if (s instanceof PdxScriptList l && l.getMode() == PdxScriptList.Mode.IMPLICIT) {
-            return l;
+        } else if (s instanceof PdxScriptList) {
+            PdxScriptList l = (PdxScriptList) s;
+            if (l.getMode() == PdxScriptList.Mode.IMPLICIT) {
+                return l;
+            }
         }
 
         return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT);
     }
 
     private PdxScriptList extractList(String key, IPdxScript s) {
-        if (s instanceof PdxScriptList l && l.getMode() != PdxScriptList.Mode.IMPLICIT) {
-            return l;
-        } else if (s instanceof PdxScriptObject o && o.size() == 0) {
-            return PdxScriptList.builder().build(o.relation);
+        if (s instanceof PdxScriptList) {
+            PdxScriptList l = (PdxScriptList) s;
+            if (l.getMode() != PdxScriptList.Mode.IMPLICIT) {
+                return l;
+            }
+        } else if (s instanceof PdxScriptObject) {
+            PdxScriptObject o = (PdxScriptObject) s;
+            if (o.size() == 0) {
+                return PdxScriptList.builder().build(o.getRelation());
+            }
         }
 
         throw new NoSuchElementException("expected explicit list for key " + key + " but got " + s);

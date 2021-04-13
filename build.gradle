@@ -10,11 +10,11 @@ group = 'io.github.ititus.pdx'
 version = '1.0.0'
 
 wrapper {
-    gradleVersion '7.0'
+    gradleVersion '6.8.3'
 }
 
 java {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_15
 }
 
 modularity {
@@ -60,6 +60,7 @@ test {
                 'org.junit.platform.commons/org.junit.platform.commons.util'   : 'ALL-UNNAMED',
                 'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
         ]
+        addOpens = ['io.github.ititus.pdx/io.github.ititus.pdx.util.collection': 'org.junit.platform.commons']
     }
 }
 

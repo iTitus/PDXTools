@@ -68,7 +68,8 @@ public class StellarisGame {
         this.localisation = null; // PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, 4, steps, "Loading Raw Game Data");
-        this.rawDataLoader = new PdxRawDataLoader(installDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+        // FIXME: disabled because it is slow
+        this.rawDataLoader = null; // new PdxRawDataLoader(installDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, 5, steps, "Loading Assets");
         // FIXME: disabled because it is slow
