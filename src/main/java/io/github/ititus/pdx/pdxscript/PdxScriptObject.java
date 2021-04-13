@@ -45,6 +45,18 @@ public final class PdxScriptObject extends BasePdxScript {
         return map.size();
     }
 
+    @Override
+    public void expectEmpty() {
+        if (!map.isEmpty()) {
+            super.expectEmpty();
+        }
+    }
+
+    @Override
+    public PdxScriptObject expectObject() {
+        return this;
+    }
+
     public boolean hasKey(String key) {
         return map.containsKey(key);
     }

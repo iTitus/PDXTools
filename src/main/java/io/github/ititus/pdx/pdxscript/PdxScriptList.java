@@ -56,6 +56,31 @@ public final class PdxScriptList extends BasePdxScript {
         return list.size();
     }
 
+    @Override
+    public void expectEmpty() {
+        if (!list.isEmpty()) {
+            super.expectEmpty();
+        }
+    }
+
+    @Override
+    public PdxScriptList expectList() {
+        if (mode != Mode.IMPLICIT) {
+            return this;
+        }
+
+        return super.expectList();
+    }
+
+    @Override
+    public PdxScriptList expectImplicitList() {
+        if (mode == Mode.IMPLICIT) {
+            return this;
+        }
+
+        return super.expectImplicitList();
+    }
+
     public IPdxScript getRaw(int i) {
         return i >= 0 && i < size() ? list.get(i) : null;
     }

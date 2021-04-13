@@ -42,6 +42,11 @@ public abstract class PdxScriptValue extends BasePdxScript {
 
     protected abstract String valueToPdxString();
 
+    @Override
+    public PdxScriptValue expectValue() {
+        return this;
+    }
+
     public <T> T expectNull() {
         throw new IllegalStateException("expected null but was " + getValue());
     }

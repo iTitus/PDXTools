@@ -16,7 +16,7 @@ public class TerraformProcess {
         this.total = o.getInt("total");
         this.planetClass = o.getString("planet_class");
         this.energy = o.getInt("energy");
-        // TODO: cost
+        o.getObject("cost").expectEmpty();
         this.terraformLink = o.getInt("terraform_link");
         this.who = o.getInt("who");
     }

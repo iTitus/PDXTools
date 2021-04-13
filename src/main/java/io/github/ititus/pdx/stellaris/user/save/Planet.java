@@ -7,6 +7,7 @@ import org.eclipse.collections.api.list.primitive.ImmutableBooleanList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.primitive.ImmutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 import java.time.LocalDate;
 
@@ -70,6 +71,8 @@ public class Planet {
     public final int assemblingTemplate;
     public final int forcedAssemblingTemplate;
     public final int decline;
+    public final ImmutableList<JobPriority> jobPriorities;
+    public final ImmutableMap<String, String> favoriteJobs;
     public final double stability;
     public final double migration;
     public final double crime;
@@ -81,10 +84,12 @@ public class Planet {
     public final int housingUsage;
     public final int employablePops;
     public final int numSapientPops;
+    public final ImmutableList<JobCache> jobsCache;
     public final String designation;
     public final String finalDesignation;
     public final ImmutableIntList species;
     public final ImmutableIntList enslavedSpecies;
+    public final ImmutableIntObjectMap<SpeciesInformation> speciesInformation;
     public final ImmutableBooleanList autoSlotsTaken;
 
     public Planet(IPdxScript s) {
@@ -147,7 +152,8 @@ public class Planet {
         this.assemblingTemplate = o.getInt("assembling_template", -1);
         this.forcedAssemblingTemplate = o.getInt("forced_assembling_template", -1);
         this.decline = o.getInt("decline", -1);
-        // TODO: job_priority, favorite_jobs
+        this.jobPriorities = o.getImplicitListAsList("job_priority", JobPriority::new);
+        this.favoriteJobs = o.getObjectAsStringStringMap("favorite_jobs");
         this.stability = o.getDouble("stability");
         this.migration = o.getDouble("migration");
         this.crime = o.getDouble("crime");
@@ -159,12 +165,12 @@ public class Planet {
         this.housingUsage = o.getInt("housing_usage");
         this.employablePops = o.getInt("employable_pops");
         this.numSapientPops = o.getInt("num_sapient_pops");
-        // TODO: jobs_cache
+        this.jobsCache = o.getListAsEmptyOrList("jobs_cache", JobCache::new);
         this.designation = o.getString("designation", null);
         this.finalDesignation = o.getString("final_designation", null);
         this.species = o.getListAsEmptyOrIntList("species");
         this.enslavedSpecies = o.getListAsEmptyOrIntList("enslaved_species");
-        // TODO: species_information
+        this.speciesInformation = o.getObjectAsEmptyOrIntObjectMap("species_information", SpeciesInformation::new);
         this.autoSlotsTaken = o.getListAsBooleanList("auto_slots_taken");
     }
 }
