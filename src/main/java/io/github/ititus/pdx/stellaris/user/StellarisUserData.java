@@ -28,8 +28,7 @@ public class StellarisUserData {
     private final StellarisSaves saves;
     private final PdxRawDataLoader rawDataLoader;
 
-    public StellarisUserData(Path userDataDir, int index,
-                             StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisUserData(Path userDataDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (userDataDir == null || !Files.isDirectory(userDataDir)) {
             throw new IllegalArgumentException();
         }
@@ -44,7 +43,8 @@ public class StellarisUserData {
         this.saves = new StellarisSaves(userDataDir.resolve("save games"), index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading Raw User Data");
-        this.rawDataLoader = new PdxRawDataLoader(userDataDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
+        // FIXME: disabled because it is slow
+        this.rawDataLoader = null; // new PdxRawDataLoader(userDataDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, 3, steps, "Done");
     }

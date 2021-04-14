@@ -12,7 +12,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
@@ -28,7 +27,6 @@ public final class PdxAssets {
         Path[] assetFiles;
         try (Stream<Path> stream = Files.walk(installDir)) {
             assetFiles = stream
-                    .filter(Objects::nonNull)
                     .filter(not(Files::isDirectory))
                     .filter(FILTER)
                     .toArray(Path[]::new);

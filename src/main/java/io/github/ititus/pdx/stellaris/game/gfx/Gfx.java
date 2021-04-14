@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -62,7 +61,6 @@ public class Gfx {
     private Path[] findFiles(Predicate<? super Path> filter) {
         try (Stream<Path> stream = Files.walk(gfxDir)) {
             return stream
-                    .filter(Objects::nonNull)
                     .filter(Files::isRegularFile)
                     .filter(filter)
                     .filter(p -> {

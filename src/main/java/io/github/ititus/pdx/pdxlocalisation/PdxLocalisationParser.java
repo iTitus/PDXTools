@@ -16,7 +16,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -37,7 +36,6 @@ public final class PdxLocalisationParser {
         Path[] validFiles;
         try (Stream<Path> stream = Files.walk(installDir)) {
             validFiles = stream
-                    .filter(Objects::nonNull)
                     .filter(Files::isRegularFile)
                     .filter(p -> (filter == null || filter.test(p)))
                     .sorted(IOUtil.ASCIIBETICAL)

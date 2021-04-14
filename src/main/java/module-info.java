@@ -17,6 +17,9 @@ module io.github.ititus.pdx {
     exports io.github.ititus.pdx.stellaris.game.common;
     exports io.github.ititus.pdx.stellaris.game.common.deposits;
     exports io.github.ititus.pdx.stellaris.game.common.planet_classes;
+    exports io.github.ititus.pdx.stellaris.game.common.technology;
+    exports io.github.ititus.pdx.stellaris.game.common.technology.category;
+    exports io.github.ititus.pdx.stellaris.game.common.technology.tier;
     exports io.github.ititus.pdx.stellaris.game.dlc;
     exports io.github.ititus.pdx.stellaris.game.gfx;
     exports io.github.ititus.pdx.stellaris.shared;

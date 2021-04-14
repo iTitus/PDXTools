@@ -4,11 +4,13 @@ import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
+import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
-import io.github.ititus.pdx.util.mutable.MutableString;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.tuple.Pair;
 
@@ -30,48 +32,18 @@ public class Test {
 
     private static StellarisGame getStellarisGame() {
         StopWatch s = StopWatch.createRunning();
-        MutableString lastMessage = new MutableString();
-        StopWatch stopWatch = StopWatch.create();
 
-        StellarisGame game = new StellarisGame(INSTALL_DIR, 0, (index, visible, workDone, totalWork, msg) -> {
-            if (index == 0) {
-                if (stopWatch.isRunning()) {
-                    System.out.println(lastMessage.get() + ": " + DurationFormatter.format(stopWatch.stop()));
-                } else {
-                    System.out.println("Loading Game Data");
-                }
-
-                if (!msg.equals("Done")) {
-                    lastMessage.set(msg);
-                    stopWatch.start();
-                }
-            }
-            // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
-        });
+        MutableList<StopWatch> stopWatches = Lists.mutable.empty();
+        StellarisGame game = new StellarisGame(INSTALL_DIR, 0, new TestProgressMessageUpdater());
         System.out.println("Game Data Load Time: " + DurationFormatter.format(s.stop()));
         return game;
     }
 
     private static StellarisUserData getStellarisUserData() {
         StopWatch s = StopWatch.createRunning();
-        MutableString lastMessage = new MutableString();
-        StopWatch stepWatch = StopWatch.create();
 
-        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, (index, visible, workDone, totalWork, msg) -> {
-            if (index == 0) {
-                if (stepWatch.isRunning()) {
-                    System.out.println(lastMessage.get() + ": " + DurationFormatter.format(stepWatch.stop()));
-                } else {
-                    System.out.println("Loading User Data");
-                }
-
-                if (!msg.equals("Done")) {
-                    lastMessage.set(msg);
-                    stepWatch.start();
-                }
-            }
-            // System.out.printf("%d %b %d/%d %s%n", index, visible, workDone, totalWork, msg);
-        });
+        MutableList<StopWatch> stopWatches = Lists.mutable.empty();
+        StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, new TestProgressMessageUpdater());
         System.out.println("User Data Load Time: " + DurationFormatter.format(s.stop()));
         return userData;
     }
@@ -94,9 +66,9 @@ public class Test {
 
         StopWatch s = StopWatch.createRunning();
 
-        StellarisGame game = null; // getStellarisGame();
+        StellarisGame game = /*null; //*/ getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
-        StellarisSave save = /*null; //*/ getStellarisSave();
+        StellarisSave save = null; // getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
@@ -156,5 +128,36 @@ public class Test {
 
         System.out.println("Total Loading Time: " + DurationFormatter.format(s.stop()));
         System.out.println("done");
+    }
+
+    private static final class TestProgressMessageUpdater implements StellarisSaveAnalyser.ProgressMessageUpdater {
+
+        private final MutableList<StopWatch> stopWatches = Lists.mutable.empty();
+
+        @Override
+        public void updateProgressMessage(int index, boolean visible, int workDone, int totalWork, String msg) {
+            String indent = "  ".repeat(index);
+            int last = stopWatches.size() - 1;
+            StopWatch current;
+            if (last >= index) {
+                for (; last > index; last--) {
+                    stopWatches.remove(last);
+                }
+
+                current = stopWatches.get(last);
+            } else if (last == index - 1) {
+                current = StopWatch.create();
+                stopWatches.add(current);
+            } else {
+                throw new IllegalArgumentException();
+            }
+
+            if (current.isRunning()) {
+                System.out.println(indent + "...done (" + DurationFormatter.format(current.stop()) + ")");
+            }
+
+            System.out.println(indent + msg);
+            current.start();
+        }
     }
 }

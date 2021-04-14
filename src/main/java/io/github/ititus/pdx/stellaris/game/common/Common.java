@@ -5,12 +5,14 @@ import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.stellaris.game.common.deposits.Deposit;
+import io.github.ititus.pdx.stellaris.game.common.deposits.Deposits;
 import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClasses;
+import io.github.ititus.pdx.stellaris.game.common.technology.Technologies;
+import io.github.ititus.pdx.stellaris.game.common.technology.category.TechnologyCategories;
+import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTiers;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
-import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -18,7 +20,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
@@ -38,17 +39,20 @@ public class Common {
             "solar_system_initializers/example.txt", "tradition_categories/README.txt", "traditions/README.txt",
             "war_goals/wg_example.txt",
             // Handled separately
-            "deposits", "planet_classes", "scripted_variables",
+            "scripted_variables",
             // TODO: needs "scripted_variables" (for variables)
             "artifact_actions", "buildings", "component_templates", "decisions", "edicts", "pop_categories", "pop_jobs",
-            "scripted_effects", "ship_sizes", "special_projects", "technology",
+            "scripted_effects", "ship_sizes", "special_projects",
             // TODO: uses math with constants, syntax: @\[<math expression>]
             "scripted_effects/archaeology_event_effects.txt"
     );
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
     public final PlanetClasses planetClasses;
-    public final ImmutableMap<String, Deposit> deposits;
+    public final Deposits deposits;
+    public final Technologies technologies;
+    public final TechnologyCategories technologyCategories;
+    public final TechnologyTiers technologyTiers;
 
     private final Path installDir;
     private final Path commonDir;
@@ -65,7 +69,6 @@ public class Common {
         this.scriptedVariableFiles = Lazy.of(() -> {
             try (Stream<Path> stream = Files.list(commonDir.resolve("scripted_variables"))) {
                 return stream
-                        .filter(Objects::nonNull)
                         .filter(Files::isRegularFile)
                         .sorted(IOUtil.ASCIIBETICAL)
                         .toArray(Path[]::new);
@@ -74,21 +77,28 @@ public class Common {
             }
         });
 
-        int steps = 2;
+        int steps = 6;
 
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading planet_classes");
         this.planetClasses = loadObject("planet_classes").getAs(PlanetClasses::new);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading deposits");
-        PdxScriptObject o = loadObject("deposits");
-        this.deposits = o.getAsStringObjectMap(Deposit::new);
-        // o.getUsageStatistic().getCustomErrorStrings().forEach(System.out::println);
+        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading deposits");
+        this.deposits = loadObject("deposits").getAs(Deposits::new);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Raw Common Data");
-        // TODO: re-enable once there is a plan for the global variables in "scripted_variables"
+        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading technology");
+        this.technologies = loadObject("technology").getAs(Technologies::new);
+
+        progressMessageUpdater.updateProgressMessage(index, true, 3, steps, "Loading technology/category");
+        this.technologyCategories = loadObject("technology/category").getAs(TechnologyCategories::new);
+
+        progressMessageUpdater.updateProgressMessage(index, true, 4, steps, "Loading technology/tier");
+        this.technologyTiers = loadObject("technology/tier").getAs(TechnologyTiers::new);
+
+        progressMessageUpdater.updateProgressMessage(index, true, 5, steps, "Loading Raw Common Data");
+        // FIXME: disabled because it is slow
         this.commonDataLoader = null; // new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, false, 2, steps, "Done");
+        progressMessageUpdater.updateProgressMessage(index, false, 6, steps, "Done");
     }
 
     public Path getInstallDir() {
@@ -109,7 +119,6 @@ public class Common {
             files = concat(
                     stream(scriptedVariableFiles.get()),
                     stream
-                            .filter(Objects::nonNull)
                             .filter(Files::isRegularFile)
                             .filter(FILTER)
                             .filter(p -> {

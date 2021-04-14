@@ -35,6 +35,7 @@ public class StellarisDLC {
         if (installDir == null || !Files.isDirectory(installDir) || dlcDir == null || !Files.isDirectory(dlcDir)) {
             throw new IllegalArgumentException();
         }
+
         this.installDir = installDir;
         this.dlcDir = dlcDir;
 
@@ -64,7 +65,8 @@ public class StellarisDLC {
         this.thirdPartyContent = o.getBoolean("third_party_content");
         this.category = o.getString("category");
 
-        this.dlcArchive = new PdxRawDataLoader(installDir.resolve(archivePath), BLACKLIST, FILTER);
+        // FIXME: disabled because it is slow
+        this.dlcArchive = null; // new PdxRawDataLoader(installDir.resolve(archivePath), BLACKLIST, FILTER);
     }
 
     public Path getInstallDir() {

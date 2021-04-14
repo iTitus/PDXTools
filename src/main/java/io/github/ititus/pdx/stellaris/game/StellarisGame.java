@@ -60,7 +60,7 @@ public class StellarisGame {
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading gfx");
         this.gfx = new Gfx(installDir, installDir.resolve("gfx"), index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading DLCs");
+        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading dlc");
         this.dlcs = new StellarisDLCs(installDir, installDir.resolve("dlc"), index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, 3, steps, "Loading Localisation");
