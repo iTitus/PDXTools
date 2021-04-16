@@ -6,6 +6,7 @@ import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 
 import java.nio.file.Path;
@@ -481,22 +482,38 @@ public final class PdxScriptParser {
     }
 
     public static IPdxScript parse(Path... scriptFiles) {
-        return parse(null, scriptFiles);
+        return parse((MutableMap<String, IPdxScript>) null, scriptFiles);
+    }
+
+    public static IPdxScript parse(ImmutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        return parse(null, variables.toMap(), scriptFiles);
+    }
+
+    public static IPdxScript parse(MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        return parse(null, variables, scriptFiles);
     }
 
     public static IPdxScript parseWithDefaultPatches(Path... scriptFiles) {
-        return parse(PdxPatchDatabase.DEFAULT, scriptFiles);
+        return parse(PdxPatchDatabase.DEFAULT, null, scriptFiles);
     }
 
-    public static IPdxScript parse(PdxPatchDatabase patchDatabase, Path... scriptFiles) {
+    public static IPdxScript parseWithDefaultPatches(MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        return parse(PdxPatchDatabase.DEFAULT, variables, scriptFiles);
+    }
+
+    public static IPdxScript parseWithDefaultPatches(ImmutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        return parse(PdxPatchDatabase.DEFAULT, variables.toMap(), scriptFiles);
+    }
+
+    public static IPdxScript parse(PdxPatchDatabase patchDatabase, MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
         if (scriptFiles.length == 0) {
             throw new IllegalArgumentException("got empty path array");
         }
 
-        return parse(IOUtil.getCharacterIterator(patchDatabase, scriptFiles));
+        return parse(IOUtil.getCharacterIterator(patchDatabase, scriptFiles), variables);
     }
 
-    private static IPdxScript parse(PrimitiveIterator.OfInt charIterator) {
+    private static IPdxScript parse(PrimitiveIterator.OfInt charIterator, MutableMap<String, IPdxScript> variables) {
         Iterator<String> tokenIterator;
         try {
             tokenIterator = tokenize(charIterator);
@@ -506,9 +523,10 @@ public final class PdxScriptParser {
 
         IteratorBuffer<String> tokens = new IteratorBuffer<>(tokenIterator, 2, 0);
 
+        MutableMap<String, IPdxScript> mutableVariables = variables != null ? variables : Maps.mutable.empty();
         IPdxScript s;
         try {
-            s = parse(tokens, Maps.mutable.empty());
+            s = parse(tokens, mutableVariables);
         } catch (Exception e) {
             throw new RuntimeException("unable to parse script", e);
         }

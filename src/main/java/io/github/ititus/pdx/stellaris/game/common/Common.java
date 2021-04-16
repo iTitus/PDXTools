@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.stellaris.game.common;
 
-import io.github.ititus.data.Lazy;
+import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -13,6 +13,7 @@ import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTier
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -21,9 +22,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.stream;
-import static java.util.stream.Stream.concat;
 
 public class Common {
 
@@ -40,12 +38,10 @@ public class Common {
             "war_goals/wg_example.txt",
             // Handled separately
             "scripted_variables",
-            // TODO: needs "scripted_variables" (for variables)
-            "artifact_actions", "buildings", "component_templates", "decisions", "edicts", "pop_categories", "pop_jobs",
-            "scripted_effects", "ship_sizes", "special_projects",
             // TODO: uses math with constants, syntax: @\[<math expression>]
             "scripted_effects/archaeology_event_effects.txt"
     );
+    // TODO: needs "scripted_variables" (for variables) "artifact_actions", "buildings", "component_templates", "decisions", "edicts", "pop_categories", "pop_jobs","scripted_effects", "ship_sizes", "special_projects",
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
     public final PlanetClasses planetClasses;
@@ -54,28 +50,17 @@ public class Common {
     public final TechnologyCategories technologyCategories;
     public final TechnologyTiers technologyTiers;
 
-    private final Path installDir;
     private final Path commonDir;
-    private final Lazy<Path[]> scriptedVariableFiles;
+    private final ImmutableMap<String, IPdxScript> variables;
     private final PdxRawDataLoader commonDataLoader;
 
-    public Common(Path installDir, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        if (installDir == null || !Files.isDirectory(installDir) || commonDir == null || !Files.isDirectory(commonDir)) {
+    public Common(Path commonDir, ImmutableMap<String, IPdxScript> variables, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        if (variables == null || commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }
 
-        this.installDir = installDir;
         this.commonDir = commonDir;
-        this.scriptedVariableFiles = Lazy.of(() -> {
-            try (Stream<Path> stream = Files.list(commonDir.resolve("scripted_variables"))) {
-                return stream
-                        .filter(Files::isRegularFile)
-                        .sorted(IOUtil.ASCIIBETICAL)
-                        .toArray(Path[]::new);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        });
+        this.variables = variables;
 
         int steps = 6;
 
@@ -101,10 +86,6 @@ public class Common {
         progressMessageUpdater.updateProgressMessage(index, false, 6, steps, "Done");
     }
 
-    public Path getInstallDir() {
-        return installDir;
-    }
-
     public Path getCommonDir() {
         return commonDir;
     }
@@ -116,22 +97,19 @@ public class Common {
     private PdxScriptObject loadObject(String dir) {
         Path[] files;
         try (Stream<Path> stream = Files.list(commonDir.resolve(dir))) {
-            files = concat(
-                    stream(scriptedVariableFiles.get()),
-                    stream
-                            .filter(Files::isRegularFile)
-                            .filter(FILTER)
-                            .filter(p -> {
-                                Path r = commonDir.relativize(p);
-                                return BLACKLIST.stream().noneMatch(r::startsWith);
-                            })
-                            .sorted(IOUtil.ASCIIBETICAL)
-            )
+            files = stream
+                    .filter(Files::isRegularFile)
+                    .filter(FILTER)
+                    .filter(p -> {
+                        Path r = commonDir.relativize(p);
+                        return BLACKLIST.stream().noneMatch(r::startsWith);
+                    })
+                    .sorted(IOUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 
-        return PdxScriptParser.parseWithDefaultPatches(files).expectObject();
+        return PdxScriptParser.parseWithDefaultPatches(variables, files).expectObject();
     }
 }
