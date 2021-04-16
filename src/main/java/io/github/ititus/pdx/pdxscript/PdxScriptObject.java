@@ -393,6 +393,16 @@ public final class PdxScriptObject extends BasePdxScript {
         return extractObject(key, s);
     }
 
+    public PdxScriptObject getNullOrObject(String key) {
+        IPdxScript s = getRaw(key);
+        usageStatistic.use(key, PdxHelper.getTypeString(s), s);
+        if (s == null) {
+            return null;
+        }
+
+        return extractObject(key, s);
+    }
+
     public ImmutableIntIntMap getObjectAsIntIntMap(String key) {
         return getObjectAs(key, PdxScriptObject::getAsIntIntMap);
     }

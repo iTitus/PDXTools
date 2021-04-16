@@ -32,8 +32,6 @@ public class Test {
 
     private static StellarisGame getStellarisGame() {
         StopWatch s = StopWatch.createRunning();
-
-        MutableList<StopWatch> stopWatches = Lists.mutable.empty();
         StellarisGame game = new StellarisGame(INSTALL_DIR, 0, new TestProgressMessageUpdater());
         System.out.println("Game Data Load Time: " + DurationFormatter.format(s.stop()));
         return game;
@@ -41,8 +39,6 @@ public class Test {
 
     private static StellarisUserData getStellarisUserData() {
         StopWatch s = StopWatch.createRunning();
-
-        MutableList<StopWatch> stopWatches = Lists.mutable.empty();
         StellarisUserData userData = new StellarisUserData(USER_DATA_DIR, 1, new TestProgressMessageUpdater());
         System.out.println("User Data Load Time: " + DurationFormatter.format(s.stop()));
         return userData;
@@ -66,9 +62,9 @@ public class Test {
 
         StopWatch s = StopWatch.createRunning();
 
-        StellarisGame game = null; // getStellarisGame();
+        StellarisGame game = /*null; //*/ getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
-        StellarisSave save = /*null; //*/ getStellarisSave();
+        StellarisSave save = null; // getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
