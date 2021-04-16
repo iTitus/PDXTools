@@ -8,7 +8,6 @@ import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.ImmutableLongObjectMap;
-import org.eclipse.collections.api.map.primitive.ImmutableObjectIntMap;
 
 import java.time.LocalDate;
 
@@ -24,7 +23,8 @@ public class GameState {
     public final ImmutableList<Player> players;
     public final int tick;
     public final int randomLogDay;
-    public final ImmutableList<Species> species;
+    public final ImmutableIntObjectMap<Species> speciesDb;
+    public final int dummy_species;
     public final ImmutableList<HalfSpecies> halfSpecies;
     public final int lastCreatedSpecies;
     public final ImmutableList<Nebula> nebulas;
@@ -42,7 +42,7 @@ public class GameState {
     public final int lastRefugeeCountry;
     public final int lastCreatedSystem;
     public final ImmutableIntObjectMap<Leader> leaders;
-    public final ImmutableObjectIntMap<String> savedLeaders;
+    // public final ImmutableObjectIntMap<String> savedLeaders;
     public final ImmutableLongObjectMap<Ship> ships;
     public final ImmutableIntObjectMap<Fleet> fleets;
     public final ImmutableIntObjectMap<FleetTemplate> fleetTemplates;
@@ -54,7 +54,7 @@ public class GameState {
     public final ImmutableIntObjectMap<Army> armies;
     public final ImmutableIntObjectMap<Deposit> deposits;
     public final ImmutableIntObjectMap<GroundCombat> groundCombats;
-    public final ImmutableList<String> firedEventIds;
+    // public final ImmutableList<String> firedEventIds;
     public final ImmutableIntObjectMap<War> wars;
     public final ImmutableIntObjectMap<Debris> debris;
     public final ImmutableLongObjectMap<Missile> missiles;
@@ -67,7 +67,6 @@ public class GameState {
     public final int lastEventId;
     public final int cameraFocus;
     public final RandomNameDatabase randomNameDatabase;
-    public final NameList nameList;
     public final Galaxy galaxy;
     public final double galaxyRadius;
     public final ImmutableMap<String, FlagData> flags;
@@ -84,6 +83,7 @@ public class GameState {
     public final ImmutableIntObjectMap<Building> buildings;
     public final ArchaeologicalSites archaeologicalSites;
     public final ImmutableList<GlobalShipDesign> globalShipDesigns;
+    public final ImmutableIntList achievement;
     public final ImmutableList<Cluster> clusters;
     public final ImmutableIntList rimGalacticObjects;
     public final boolean endGameCrisis;
@@ -104,11 +104,13 @@ public class GameState {
         this.players = o.getListAsList("player", Player::new);
         this.tick = o.getInt("tick");
         this.randomLogDay = o.getInt("random_log_day");
-        this.species = o.getListAsList("species", Species::new);
+        this.speciesDb = o.getObjectAsIntObjectMap("species_db", Species::new);
         this.halfSpecies = o.getListAsEmptyOrList("half_species", HalfSpecies::new);
-        this.lastCreatedSpecies = o.getInt("last_created_species", -1);
+        this.dummy_species = o.getInt("dummy_species");
+        // TODO: spy_networks, espionage_assets
+        this.lastCreatedSpecies = o.getInt("last_created_species_ref", -1);
         this.nebulas = o.getImplicitListAsList("nebula", Nebula::new);
-        this.pops = o.getObjectAsIntObjectMap("pop", Pop::new);
+        this.pops = o.getObjectAsIntObjectMap("pop", nullOr(Pop::new));
         this.lastCreatedPop = o.getInt("last_created_pop", -1);
         this.galacticObjects = o.getObjectAsIntObjectMap("galactic_object", GalacticObject::new);
         this.starbaseManager = o.getObjectAs("starbase_mgr", StarbaseManager::new);
@@ -122,7 +124,8 @@ public class GameState {
         this.lastRefugeeCountry = o.getUnsignedInt("last_refugee_country");
         this.lastCreatedSystem = o.getInt("last_created_system", -1);
         this.leaders = o.getObjectAsIntObjectMap("leaders", nullOr(Leader::new));
-        this.savedLeaders = o.getObjectAsStringUnsignedIntMap("saved_leaders");
+        // this.savedLeaders = o.getObjectAsStringUnsignedIntMap("saved_leaders");
+        // TODO: system_initializer_counter
         this.ships = o.getObjectAsLongObjectMap("ships", nullOr(Ship::new));
         this.fleets = o.getObjectAsIntObjectMap("fleet", nullOr(Fleet::new));
         this.fleetTemplates = o.getObjectAsIntObjectMap("fleet_template", FleetTemplate::new);
@@ -134,7 +137,7 @@ public class GameState {
         this.armies = o.getObjectAsIntObjectMap("army", nullOr(Army::new));
         this.deposits = o.getObjectAsIntObjectMap("deposit", nullOr(Deposit::new));
         this.groundCombats = o.getObjectAsIntObjectMap("ground_combat", nullOr(GroundCombat::new));
-        this.firedEventIds = o.getListAsStringList("fired_event_ids");
+        // this.firedEventIds = o.getListAsStringList("fired_event_ids");
         this.wars = o.getObjectAsIntObjectMap("war", nullOr(War::new));
         this.debris = o.getObjectAsIntObjectMap("debris", nullOr(Debris::new));
         this.missiles = o.getObjectAsLongObjectMap("missile", nullOr(Missile::new));
@@ -147,24 +150,26 @@ public class GameState {
         this.lastEventId = o.getInt("last_event_id", -1);
         this.cameraFocus = o.getInt("camera_focus", -1);
         this.randomNameDatabase = o.getObjectAs("random_name_database", RandomNameDatabase::new);
-        this.nameList = o.getObjectAs("name_list", NameList::of);
+        o.getObject("name_list").expectEmpty();
         this.galaxy = o.getObjectAs("galaxy", Galaxy::new);
         this.galaxyRadius = o.getDouble("galaxy_radius");
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
         this.savedEventTargets = o.getImplicitListAsList("saved_event_target", SavedEventTarget::new);
         this.shipDesigns = o.getObjectAsIntObjectMap("ship_design", nullOr(ShipDesign::new));
-        this.popFactions = o.getObjectAsIntObjectMap("pop_factions", PopFaction::new);
+        this.popFactions = o.getObjectAsEmptyOrIntObjectMap("pop_factions", PopFaction::new);
         this.lastCreatedPopFaction = o.getInt("last_created_pop_faction", -1);
-        this.lastKilledCountryName = o.getString("last_killed_country_name");
+        this.lastKilledCountryName = o.getString("last_killed_country_name", null);
         this.megaStructures = o.getObjectAsIntObjectMap("megastructures", nullOr(Megastructure::new));
         this.bypasses = o.getObjectAsIntObjectMap("bypasses", nullOr(Bypass::new));
         this.naturalWormholes = o.getObjectAsIntObjectMap("natural_wormholes", NaturalWormhole::new);
-        this.tradeRoutes = o.getObjectAsIntObjectMap("trade_routes", nullOr(TradeRoute::new));
+        this.tradeRoutes = o.getObjectAsEmptyOrIntObjectMap("trade_routes", nullOr(TradeRoute::new));
         this.sectors = o.getObjectAsLongObjectMap("sectors", Sector::new);
         this.buildings = o.getObjectAsIntObjectMap("buildings", nullOr(Building::new));
         // TODO: resolution
         this.archaeologicalSites = o.getObjectAs("archaeological_sites", ArchaeologicalSites::new);
+        // TODO: espionage_operations
         this.globalShipDesigns = o.getListAsList("global_ship_design", GlobalShipDesign::new);
+        this.achievement = o.getListAsEmptyOrIntList("achievement");
         this.clusters = o.getListAsList("clusters", Cluster::new);
         this.rimGalacticObjects = o.getListAsIntList("rim_galactic_objects");
         this.endGameCrisis = o.getBoolean("end_game_crisis", false);
@@ -174,9 +179,6 @@ public class GameState {
         this.usedSpeciesPortraits = o.getImplicitListAsList("used_species_portrait", UsedSpeciesClassAssets::new);
         this.randomSeed = o.getInt("random_seed");
         this.randomCount = o.getInt("random_count");
-        // TODO: market
-        // TODO: trade_routes_manager
-        // TODO: slave_market_manager
-        // TODO: galactic_community
+        // TODO: market, trade_routes_manager, slave_market_manager, galactic_community, first_contacts
     }
 }

@@ -47,8 +47,7 @@ public class StellarisSaves {
         int progress0 = 0;
 
         for (Path saveFolder : saveFolders) {
-            progressMessageUpdater.updateProgressMessage(index, true, progress0++, saveFolderCount, "Loading Save " +
-                    "Game Folder " + saveFolder.getFileName());
+            progressMessageUpdater.updateProgressMessage(index, true, progress0++, saveFolderCount, "Loading Save Game Folder " + saveFolder.getFileName());
 
             MutableMap<String, StellarisSave> saveMap = Maps.mutable.empty();
             Path[] saveGames;

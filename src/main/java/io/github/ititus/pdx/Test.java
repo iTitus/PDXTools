@@ -27,7 +27,7 @@ public class Test {
     private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
-    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/2311.02.01_extracted_2.8.1");
+    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/3.0.1");
     private static final Path[] TEST_FILES = { /*USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
 
     private static StellarisGame getStellarisGame() {
@@ -66,9 +66,9 @@ public class Test {
 
         StopWatch s = StopWatch.createRunning();
 
-        StellarisGame game = /*null; //*/ getStellarisGame();
+        StellarisGame game = null; // getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
-        StellarisSave save = null; // getStellarisSave();
+        StellarisSave save = /*null; //*/ getStellarisSave();
 
         ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;

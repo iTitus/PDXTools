@@ -21,6 +21,9 @@ public class TechStatus {
     public final ImmutableObjectIntMap<String> potential;
     public final TechLeaders leaders;
     public final ImmutableList<String> alwaysAvailableTech;
+    public final boolean auto_researching_physics;
+    public final boolean auto_researching_society;
+    public final boolean auto_researching_engineering;
     public final String lastIncreasedTech;
 
     public TechStatus(PdxScriptObject o) {
@@ -34,6 +37,9 @@ public class TechStatus {
         this.potential = o.getObjectAsEmptyOrStringIntMap("potential");
         this.leaders = o.getObjectAs("leaders", TechLeaders::new, null);
         this.alwaysAvailableTech = o.getImplicitListAsStringList("always_available_tech");
+        this.auto_researching_physics = o.getBoolean("auto_researching_physics");
+        this.auto_researching_society = o.getBoolean("auto_researching_society");
+        this.auto_researching_engineering = o.getBoolean("auto_researching_engineering");
         this.lastIncreasedTech = o.getString("last_increased_tech", null);
     }
 

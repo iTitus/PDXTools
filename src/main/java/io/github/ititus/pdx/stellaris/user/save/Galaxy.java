@@ -36,6 +36,7 @@ public class Galaxy {
     public final String playerLocations;
     public final String difficulty;
     public final String aggressiveness;
+    public final String crisisType;
     public final String name;
     public final ImmutableList<EmpireDesign> designs;
 
@@ -63,6 +64,7 @@ public class Galaxy {
         this.playerLocations = o.getString("player_locations");
         this.difficulty = o.getString("difficulty");
         this.aggressiveness = o.getString("aggressiveness");
+        this.crisisType = o.getString("crisis_type");
         this.name = o.getString("name");
         this.ironman = o.getBoolean("ironman");
         this.numGateways = o.getDouble("num_gateways");

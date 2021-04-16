@@ -27,8 +27,8 @@ public class StellarisSaveAnalyser implements Runnable {
     private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
 
-    private static final String SAVE_FOLDER = "mpempireofthebugs_847499604";
-    private static final String SAVE_GAME = "2311.02.01";
+    private static final String SAVE_FOLDER = "thorquellalliance_1699596464";
+    private static final String SAVE_GAME = "ironman";
 
     private static final int PROGRESS_DEPTH = 5;
 

@@ -10,8 +10,8 @@ public class TechAlternatives {
     public final ImmutableList<String> engineering;
 
     public TechAlternatives(PdxScriptObject o) {
-        this.physics = o.getListAsStringList("physics");
-        this.society = o.getListAsStringList("society");
-        this.engineering = o.getListAsStringList("engineering");
+        this.physics = o.getListAsEmptyOrStringList("physics");
+        this.society = o.getListAsEmptyOrStringList("society");
+        this.engineering = o.getListAsEmptyOrStringList("engineering");
     }
 }

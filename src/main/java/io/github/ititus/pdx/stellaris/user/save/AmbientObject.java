@@ -9,6 +9,7 @@ public class AmbientObject {
     public final Coordinate coordinate;
     public final String data;
     public final ImmutableMap<String, FlagData> flags;
+    public final boolean killed;
     public final AmbientObjectProperties properties;
 
     public AmbientObject(IPdxScript s) {
@@ -16,6 +17,7 @@ public class AmbientObject {
         this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
         this.data = o.getString("data");
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
+        this.killed = o.getBoolean("killed", false);
         this.properties = o.getObjectAs("properties", AmbientObjectProperties::new);
     }
 }

@@ -105,6 +105,22 @@ public final class PdxScriptObject extends BasePdxScript {
         return extractString(key, s);
     }
 
+    public <T> T getEnum(String key, Function<? super String, ? extends T> fct) {
+        IPdxScript s = getRaw(key);
+        usageStatistic.use(key, STRING, s);
+        return fct.apply(extractEnum(key, s));
+    }
+
+    public <T> T getEnum(String key, Function<? super String, ? extends T> fct, T def) {
+        IPdxScript s = getRaw(key);
+        usageStatistic.use(key, STRING, s);
+        if (s == null) {
+            return def;
+        }
+
+        return fct.apply(extractEnum(key, s));
+    }
+
     public boolean getBoolean(String key) {
         IPdxScript s = getRaw(key);
         usageStatistic.use(key, BOOLEAN, s);
@@ -867,6 +883,17 @@ public final class PdxScriptObject extends BasePdxScript {
         }
 
         throw new NoSuchElementException("expected string for key " + key + " but got " + s);
+    }
+
+    private String extractEnum(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof String) {
+                return (String) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected enum (string) for key " + key + " but got " + s);
     }
 
     private String extractNullOrString(String key, IPdxScript s) {

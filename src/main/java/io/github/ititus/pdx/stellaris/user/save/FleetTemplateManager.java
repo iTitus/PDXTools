@@ -5,9 +5,9 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class FleetTemplateManager {
 
-    public final ImmutableIntList fleetTemplate;
+    public final ImmutableIntList fleetTemplates;
 
     public FleetTemplateManager(PdxScriptObject o) {
-        this.fleetTemplate = o.getListAsEmptyOrIntList("fleet_template");
+        this.fleetTemplates = o.getListAsEmptyOrIntList("fleet_template");
     }
 }

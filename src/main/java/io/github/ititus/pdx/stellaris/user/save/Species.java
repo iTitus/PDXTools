@@ -24,14 +24,14 @@ public class Species {
 
     public Species(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
-        this.base = o.getInt("base", -1);
+        this.base = o.getInt("base_ref", -1);
         this.killed = o.getBoolean("killed", false);
-        this.nameList = o.getString("name_list");
-        this.name = o.getString("name");
+        this.nameList = o.getString("name_list", null);
+        this.name = o.getString("name", null);
         this.plural = o.getString("plural", null);
         this.adjective = o.getString("adjective", null);
         this.speciesClass = o.getString("class", null);
-        this.portrait = o.getString("portrait");
+        this.portrait = o.getString("portrait", null);
         this.traits = o.getObjectAs("traits", Traits::new);
         this.homePlanet = o.getInt("home_planet", -1);
         this.uplifter = o.getInt("uplifter", -1);

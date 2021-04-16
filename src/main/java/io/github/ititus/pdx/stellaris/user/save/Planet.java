@@ -61,6 +61,7 @@ public class Planet {
     public final int surveyedBy;
     public final boolean surveyed;
     public final boolean preventAnomaly;
+    public final boolean killed;
     public final boolean triggerMegastructureIcon;
     public final ImmutableIntList deposits;
     public final double growth;
@@ -142,13 +143,14 @@ public class Planet {
         this.surveyedBy = o.getInt("surveyed_by", -1);
         this.surveyed = o.getBoolean("surveyed", false);
         this.preventAnomaly = o.getBoolean("prevent_anomaly", false);
+        this.killed = o.getBoolean("killed", false);
         this.triggerMegastructureIcon = o.getBoolean("trigger_megastructure_icon", false);
         this.deposits = o.getListAsEmptyOrIntList("deposits");
         this.growth = o.getDouble("growth", 0);
-        this.growthSpecies = o.getInt("growth_species", -1);
-        this.forcedGrowthSpecies = o.getInt("forced_growth_species", -1);
+        this.growthSpecies = o.getInt("growth_species_ref", -1);
+        this.forcedGrowthSpecies = o.getInt("forced_growth_species_ref", -1);
         this.popAssembly = o.getDouble("pop_assembly", 0);
-        this.assemblingSpecies = o.getInt("assembling_species", -1);
+        this.assemblingSpecies = o.getInt("assembling_species_ref", -1);
         this.assemblingTemplate = o.getInt("assembling_template", -1);
         this.forcedAssemblingTemplate = o.getInt("forced_assembling_template", -1);
         this.decline = o.getInt("decline", -1);
@@ -168,8 +170,8 @@ public class Planet {
         this.jobsCache = o.getListAsEmptyOrList("jobs_cache", JobCache::new);
         this.designation = o.getString("designation", null);
         this.finalDesignation = o.getString("final_designation", null);
-        this.species = o.getListAsEmptyOrIntList("species");
-        this.enslavedSpecies = o.getListAsEmptyOrIntList("enslaved_species");
+        this.species = o.getListAsEmptyOrIntList("species_refs");
+        this.enslavedSpecies = o.getListAsEmptyOrIntList("enslaved_species_refs");
         this.speciesInformation = o.getObjectAsEmptyOrIntObjectMap("species_information", SpeciesInformation::new);
         this.autoSlotsTaken = o.getListAsBooleanList("auto_slots_taken");
     }

@@ -4,7 +4,6 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class FleetActionRepeatData {
 
-    // TODO: Maybe consolidate into FleetActionRepeat
     public FleetActionRepeatData(PdxScriptObject o) {
         // TODO: this
     }

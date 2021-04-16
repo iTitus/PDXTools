@@ -19,7 +19,7 @@ public class Country {
     public final boolean initialized;
     public final int colorIndex;
     public final int capital;
-    public final int speciesIndex;
+    public final int founderSpecies;
     public final int builtSpecies;
     public final int nextTransportFleetNumber;
     public final int nextArmyNumber;
@@ -114,9 +114,7 @@ public class Country {
     public final int numUpgradedStarbase;
     public final int starbaseCapacity;
     public final int edictCapacity;
-    public final int employablePops;
     public final ImmutableIntList ownedSpecies;
-    public final ImmutableIntList enslavedSpecies;
 
     public Country(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -147,10 +145,10 @@ public class Country {
         this.graphicalCulture = o.getString("graphical_culture", null);
         this.cityGraphicalCulture = o.getString("city_graphical_culture", null);
         this.room = o.getString("room", null);
-        this.ai = o.getObjectAs("ai", AI::new);
+        this.ai = o.getObjectAsNullOr("ai", AI::new);
         this.capital = o.getInt("capital", -1);
-        this.speciesIndex = o.getInt("species_index");
-        this.builtSpecies = o.getInt("built_species", -1);
+        this.founderSpecies = o.getInt("founder_species_ref");
+        this.builtSpecies = o.getInt("built_species_ref", -1);
         this.ethos = o.getObjectAsNullOr("ethos", Ethos::new);
         this.lastAllianceName = o.getString("last_alliance_name", null);
         this.fleetTemplateManager = o.getObjectAs("fleet_template_manager", FleetTemplateManager::new);
@@ -199,12 +197,14 @@ public class Country {
         this.tradeDeals = o.getListAsEmptyOrList("trade_deals", TradeDealItem::new);
         this.shipDesigns = o.getListAsEmptyOrIntList("ship_design");
         this.edicts = o.getListAsEmptyOrList("edicts", Edict::new);
+        // TODO: ship_design_collection
         this.type = o.getString("type");
-        this.modules = o.getObjectAs("modules", Modules::new); // TODO: check
+        this.modules = o.getObjectAs("modules", Modules::new);
         this.initialized = o.getBoolean("initialized");
+        // TODO: espionage_manager, intel_manager
         this.regnalNumbers = o.getListAsEmptyOrList("regnal_numbers", RegnalNumber::new);
-        this.randomNameVariables = o.getObjectAs("random_name_variables", RandomNameVariables::new);
-        this.relationsManager = o.getObjectAs("relations_manager", RelationsManager::new); // TODO: check
+        this.randomNameVariables = o.getObjectAsNullOr("random_name_variables", RandomNameVariables::new);
+        this.relationsManager = o.getObjectAsNullOr("relations_manager", RelationsManager::new);
         this.location = o.getObjectAsNullOr("location", Property::new);
         this.warAllies = o.getListAsEmptyOrIntList("war_allies");
         this.speciesModTemplates = o.getListAsEmptyOrList("species_mod_templates", Species::new);
@@ -223,8 +223,7 @@ public class Country {
         this.numUpgradedStarbase = o.getInt("num_upgraded_starbase");
         this.starbaseCapacity = o.getInt("starbase_capacity");
         this.edictCapacity = o.getInt("edict_capacity");
-        this.employablePops = o.getInt("employable_pops", 0);
-        this.ownedSpecies = o.getListAsEmptyOrIntList("owned_species");
-        this.enslavedSpecies = o.getListAsEmptyOrIntList("enslaved_species");
+        // TODO: first_contact
+        this.ownedSpecies = o.getListAsEmptyOrIntList("owned_species_refs");
     }
 }

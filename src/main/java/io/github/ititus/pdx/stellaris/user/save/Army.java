@@ -12,7 +12,7 @@ public class Army {
     public final String fleetName;
     public final int homePlanet;
     public final int owner;
-    public final int speciesIndex;
+    public final int species;
     public final int ship;
     public final int leader;
     public final int planet;
@@ -29,7 +29,7 @@ public class Army {
         this.fleetName = o.getString("fleet_name", null);
         this.homePlanet = o.getInt("home_planet");
         this.owner = o.getInt("owner");
-        this.speciesIndex = o.getInt("species_index", -1);
+        this.species = o.getInt("species", -1);
         this.ship = o.getInt("ship", -1);
         this.leader = o.getInt("leader", -1);
         this.planet = o.getInt("planet", -1);

@@ -87,22 +87,9 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
                     \s
                     """),
             patch("""
-                    --- a/Stellaris/common/random_names/00_war_names.txt
-                    +++ b/Stellaris/common/random_names/00_war_names.txt
-                    @@ -13,7 +13,7 @@
-                     		"Great_War" = 1
-                     		"Galactic_War" = 1
-                     		"War_of_the_Alliances" = 1
-                    -		"Federation_War"
-                    +		"Federation_War" = 1
-                     	}
-                     }
-                    \s
-                    """),
-            patch("""
                     --- a/Stellaris/common/technology/00_soc_tech.txt
                     +++ b/Stellaris/common/technology/00_soc_tech.txt
-                    @@ -4119,7 +4119,6 @@
+                    @@ -4212,7 +4212,6 @@
                      	is_dangerous = yes
                      	prerequisites = { "tech_precognition_interface" }
                      	weight = @tier5weight2
@@ -125,18 +112,6 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
                      		icon = "GFX_arachnoid"
                     """),
             patch("""
-                    --- a/Stellaris/gfx/models/planets/_planetary_entities.asset
-                    +++ b/Stellaris/gfx/models/planets/_planetary_entities.asset
-                    @@ -5010,7 +5010,6 @@
-                     	default_state = "idle"
-                     	state = { name = "idle" animation = "idle" time_offset = { 0 100 }\s
-                     		start_event = { trigger_once = yes sound = { soundeffect = "amb_planet_world_relic" } }
-                    -		}
-                     	}
-                     \t
-                     }
-                    """),
-            patch("""
                     --- a/Stellaris/gfx/models/ships/caravaneer_01/_caravaneer_01_ships_entities.asset
                     +++ b/Stellaris/gfx/models/ships/caravaneer_01/_caravaneer_01_ships_entities.asset
                     @@ -240,8 +240,8 @@
@@ -152,16 +127,6 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
                      	attach = { "root" = "caravaneer_cruiser_01_lights_entity" }
                     """),
             patch("""
-                    --- a/Stellaris/gfx/models/ships/titans/mammalian_01/_mammalian_01_titan_meshes.gfx
-                    +++ b/Stellaris/gfx/models/ships/titans/mammalian_01/_mammalian_01_titan_meshes.gfx
-                    @@ -64,5 +64,3 @@
-                     		}
-                     	}
-                     }
-                    -
-                    -}
-                    """),
-            patch("""
                     --- a/Stellaris/gfx/models/ships/titans/molluscoid_01/_molluscoid_titan_meshes.gfx
                     +++ b/Stellaris/gfx/models/ships/titans/molluscoid_01/_molluscoid_titan_meshes.gfx
                     @@ -64,5 +64,3 @@
@@ -170,19 +135,6 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
                      }
                     -
                     -}
-                    """),
-            patch("""
-                    --- a/Stellaris/gfx/particles/_necroid_portrait.gfx
-                    +++ b/Stellaris/gfx/particles/_necroid_portrait.gfx
-                    @@ -6,7 +6,4 @@
-                     	\t
-                     		scale = 1.0
-                     	}
-                    -
-                    -
-                    -
-                    -
-                    +}
                     """),
             patch("""
                     --- a/Stellaris/gfx/particles/_particle_entities.asset

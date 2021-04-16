@@ -4,9 +4,9 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Homepop {
 
-    public final int speciesIndex;
+    public final int species;
 
     public Homepop(PdxScriptObject o) {
-        this.speciesIndex = o.getInt("species_index");
+        this.species = o.getInt("species");
     }
 }

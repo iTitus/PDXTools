@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public class Leader {
 
-    public final int speciesIndex;
+    public final int species;
     public final int country;
     public final int creator;
     public final int level;
@@ -39,7 +39,7 @@ public class Leader {
     public Leader(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
         this.name = o.getObjectAsNullOr("name", LeaderName::new);
-        this.speciesIndex = o.getInt("species_index");
+        this.species = o.getInt("species");
         this.portrait = o.getString("portrait");
         this.gender = o.getString("gender", null);
         this.country = o.getInt("country", -1);

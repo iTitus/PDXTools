@@ -6,7 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class Technology {
 
-    public final String area;
+    public final Area area;
     public final int cost;
     public final int costPerLevel;
     public final int level;
@@ -23,7 +23,7 @@ public class Technology {
 
     public Technology(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
-        this.area = o.getString("area");
+        this.area = o.getEnum("area", Area::of);
         this.cost = o.getInt("cost", 0);
         this.costPerLevel = o.getInt("cost_per_level", 0);
         this.level = o.getInt("level", 1);
@@ -37,5 +37,20 @@ public class Technology {
         this.prerequisites = o.getListAsEmptyOrStringList("prerequisites");
         this.gateway = o.getString("gateway", null);
         this.aiUpdateType = o.getString("ai_update_type", null);
+    }
+
+    public enum Area {
+
+        PHYSICS, SOCIETY, ENGINEERING;
+
+        public static Area of(String name) {
+            return switch (name) {
+                case "physics" -> PHYSICS;
+                case "society" -> SOCIETY;
+                case "engineering" -> ENGINEERING;
+                default -> throw new IllegalArgumentException("unknown area name " + name);
+            };
+        }
+
     }
 }
