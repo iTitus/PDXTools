@@ -15,6 +15,6 @@ public class NandTrigger extends Trigger {
 
     @Override
     public boolean evaluate(Scope scope) {
-        return !triggers.allSatisfy(t -> t.evaluate(scope));
+        return !evaluateAnd(scope, triggers);
     }
 }

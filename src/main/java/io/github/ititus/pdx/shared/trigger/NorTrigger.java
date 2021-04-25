@@ -15,6 +15,6 @@ public class NorTrigger extends Trigger {
 
     @Override
     public boolean evaluate(Scope scope) {
-        return !triggers.anySatisfy(t -> t.evaluate(scope));
+        return !evaluateOr(scope, triggers);
     }
 }
