@@ -2,6 +2,10 @@ package io.github.ititus.pdx.stellaris.game.common.technology;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.shared.scope.Scope;
+import io.github.ititus.pdx.shared.trigger.Trigger;
+import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.shared.Modifier;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 
@@ -21,16 +25,19 @@ public class Technology {
     public final boolean isDangerous;
     public final boolean isReverseEngineerable;
     public final boolean startTech;
-    public final PdxScriptObject modifier;
+    public final Modifier modifier;
     public final ImmutableList<String> featureFlags;
-    public final PdxScriptObject prereqforDesc;
-    public final PdxScriptObject potential;
-    public final PdxScriptObject weightModifier;
-    public final PdxScriptObject aiWeight;
+    public final TechnologyPreReqForDesc prereqforDesc;
+    public final ImmutableList<Trigger> potential;
+    public final TechnologyWeightModifiers weightModifier;
+    public final TechnologyWeightModifiers aiWeight;
     public final ImmutableList<String> weightGroups;
     public final ImmutableObjectDoubleMap<String> modWeightIfGroupPicked;
 
-    public Technology(IPdxScript s) {
+    private final StellarisGame game;
+
+    public Technology(StellarisGame game, IPdxScript s) {
+        this.game = game;
         PdxScriptObject o = s.expectObject();
         this.cost = o.getInt("cost", 0);
         this.area = o.getEnum("area", Area::of);
@@ -46,19 +53,31 @@ public class Technology {
         this.isDangerous = o.getBoolean("is_dangerous", false);
         this.isReverseEngineerable = o.getBoolean("is_reverse_engineerable", true);
         this.startTech = o.getBoolean("start_tech", false);
-        this.modifier = o.getNullOrObject("modifier");
+        this.modifier = o.getObjectAsNullOr("modifier", Modifier::new);
         this.featureFlags = o.getListAsEmptyOrStringList("feature_flags");
-        this.prereqforDesc = o.getNullOrObject("prereqfor_desc");
-        this.potential = o.getNullOrObject("potential");
-        this.weightModifier = o.getNullOrObject("weight_modifier");
-        this.aiWeight = o.getNullOrObject("ai_weight");
+        this.prereqforDesc = o.getObjectAsNullOr("prereqfor_desc", TechnologyPreReqForDesc::new);
+        this.potential = o.getObjectAsNullOr("potential", game.triggers::create);
+        this.weightModifier = o.getObjectAsNullOr("weight_modifier", o_ -> new TechnologyWeightModifiers(game, o_));
+        this.aiWeight = o.getObjectAsNullOr("ai_weight", o_ -> new TechnologyWeightModifiers(game, o_));
         this.weightGroups = o.getListAsEmptyOrStringList("weight_groups");
         this.modWeightIfGroupPicked = o.getObjectAsEmptyOrStringDoubleMap("mod_weight_if_group_picked");
     }
 
+    public boolean hasPotential(Scope scope) {
+        return Trigger.evaluateAnd(scope, potential);
+    }
+
     public enum Area {
 
-        PHYSICS, SOCIETY, ENGINEERING;
+        PHYSICS("physics"),
+        SOCIETY("society"),
+        ENGINEERING("engineering");
+
+        private final String name;
+
+        Area(String name) {
+            this.name = name;
+        }
 
         public static Area of(String name) {
             return switch (name) {
@@ -67,6 +86,10 @@ public class Technology {
                 case "engineering" -> ENGINEERING;
                 default -> throw new IllegalArgumentException("unknown area name " + name);
             };
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

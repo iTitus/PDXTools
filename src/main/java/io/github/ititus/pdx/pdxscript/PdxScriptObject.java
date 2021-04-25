@@ -729,8 +729,16 @@ public final class PdxScriptObject extends BasePdxScript {
     }
 
     public ImmutableObjectDoubleMap<String> getAsStringDoubleMap() {
+        return getAsStringDoubleMap(null);
+    }
+
+    public ImmutableObjectDoubleMap<String> getAsStringDoubleMap(Predicate<String> keyFilter) {
         MutableObjectDoubleMap<String> map = ObjectDoubleMaps.mutable.empty();
         this.map.forEachKeyValue((oldK, oldV) -> {
+            if (keyFilter != null && !keyFilter.test(oldK)) {
+                return;
+            }
+
             usageStatistic.use(oldK, oldV.getTypeString(), oldV);
             map.put(oldK, oldV.expectValue().expectDouble());
         });

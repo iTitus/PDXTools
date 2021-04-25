@@ -1,10 +1,10 @@
 package io.github.ititus.pdx.stellaris.game.common;
 
-import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.game.common.deposits.Deposits;
 import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClasses;
 import io.github.ititus.pdx.stellaris.game.common.technology.Technologies;
@@ -13,7 +13,6 @@ import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTier
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
-import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -50,17 +49,17 @@ public class Common {
     public final TechnologyCategories technologyCategories;
     public final TechnologyTiers technologyTiers;
 
+    private final StellarisGame game;
     private final Path commonDir;
-    private final ImmutableMap<String, IPdxScript> variables;
     private final PdxRawDataLoader commonDataLoader;
 
-    public Common(Path commonDir, ImmutableMap<String, IPdxScript> variables, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
-        if (variables == null || commonDir == null || !Files.isDirectory(commonDir)) {
+    public Common(StellarisGame game, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+        if (commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }
 
+        this.game = game;
         this.commonDir = commonDir;
-        this.variables = variables;
 
         int steps = 6;
 
@@ -71,7 +70,7 @@ public class Common {
         this.deposits = loadObject("deposits").getAs(Deposits::new);
 
         progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading technology");
-        this.technologies = loadObject("technology").getAs(Technologies::new);
+        this.technologies = loadObject("technology").getAs(o -> new Technologies(game, o));
 
         progressMessageUpdater.updateProgressMessage(index, true, 3, steps, "Loading technology/category");
         this.technologyCategories = loadObject("technology/category").getAs(TechnologyCategories::new);
@@ -84,6 +83,10 @@ public class Common {
         this.commonDataLoader = null; // new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, 6, steps, "Done");
+    }
+
+    public StellarisGame getGame() {
+        return game;
     }
 
     public Path getCommonDir() {
@@ -110,6 +113,6 @@ public class Common {
             throw new UncheckedIOException(e);
         }
 
-        return PdxScriptParser.parseWithDefaultPatches(variables, files).expectObject();
+        return PdxScriptParser.parseWithDefaultPatches(game.scriptedVariables, files).expectObject();
     }
 }

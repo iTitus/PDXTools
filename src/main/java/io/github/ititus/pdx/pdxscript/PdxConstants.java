@@ -35,11 +35,13 @@ public final class PdxConstants {
     public static final String ESCAPED_QUOTE = ESCAPE + QUOTE;
     public static final char PERCENT = '%';
     public static final char EQUALS_CHAR = '=';
+    public static final char NOT_CHAR = '!';
     public static final char LESS_THAN_CHAR = '<';
     public static final char GREATER_THAN_CHAR = '>';
     public static final String EQUALS = String.valueOf(EQUALS_CHAR);
     public static final String LESS_THAN = String.valueOf(LESS_THAN_CHAR);
     public static final String GREATER_THAN = String.valueOf(GREATER_THAN_CHAR);
+    public static final String NOT_EQUALS = NOT_CHAR + EQUALS;
     public static final String LESS_THAN_OR_EQUALS = LESS_THAN_CHAR + EQUALS;
     public static final String GREATER_THAN_OR_EQUALS = GREATER_THAN_CHAR + EQUALS;
     /**

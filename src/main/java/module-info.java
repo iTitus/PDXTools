@@ -12,6 +12,9 @@ module io.github.ititus.pdx {
     exports io.github.ititus.pdx.pdxasset;
     exports io.github.ititus.pdx.pdxlocalisation;
     exports io.github.ititus.pdx.pdxscript;
+    exports io.github.ititus.pdx.shared.effect;
+    exports io.github.ititus.pdx.shared.scope;
+    exports io.github.ititus.pdx.shared.trigger;
     exports io.github.ititus.pdx.stellaris;
     exports io.github.ititus.pdx.stellaris.game;
     exports io.github.ititus.pdx.stellaris.game.common;
@@ -22,6 +25,7 @@ module io.github.ititus.pdx {
     exports io.github.ititus.pdx.stellaris.game.common.technology.tier;
     exports io.github.ititus.pdx.stellaris.game.dlc;
     exports io.github.ititus.pdx.stellaris.game.gfx;
+    exports io.github.ititus.pdx.stellaris.game.trigger;
     exports io.github.ititus.pdx.stellaris.shared;
     exports io.github.ititus.pdx.stellaris.user;
     exports io.github.ititus.pdx.stellaris.user.mod;

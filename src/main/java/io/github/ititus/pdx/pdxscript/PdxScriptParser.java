@@ -450,7 +450,7 @@ public final class PdxScriptParser {
     }
 
     private static boolean isRelation(char c) {
-        return c == EQUALS_CHAR || c == LESS_THAN_CHAR || c == GREATER_THAN_CHAR;
+        return c == EQUALS_CHAR || c == NOT_CHAR || c == LESS_THAN_CHAR || c == GREATER_THAN_CHAR;
     }
 
     private static boolean isMathOperator(char c) {
