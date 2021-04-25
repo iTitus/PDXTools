@@ -26,7 +26,7 @@ public class Message {
     public Message(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
         this.type = o.getString("type");
-        this.localization = o.getString("localization");
+        this.localization = o.getString("localization", null);
         this.variables = o.getListAsEmptyOrList("variables", Entry::new);
         this.receiver = o.getInt("receiver");
         this.targetSystem = o.getInt("target_system", -1);

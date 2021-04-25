@@ -20,7 +20,7 @@ public class Planet {
     public final Coordinate coordinate;
     public final double orbit;
     public final int planetSize;
-    public final int bombardmentDamage;
+    public final double bombardmentDamage;
     public final LocalDate lastBombardment;
     public final boolean automatedDevelopment;
     public final ImmutableIntList moons;
@@ -102,7 +102,7 @@ public class Planet {
         this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
         this.orbit = o.getDouble("orbit");
         this.planetSize = o.getInt("planet_size");
-        this.bombardmentDamage = o.getInt("bombardment_damage");
+        this.bombardmentDamage = o.getDouble("bombardment_damage");
         this.lastBombardment = o.getDate("last_bombardment");
         this.automatedDevelopment = o.getBoolean("automated_development");
         this.moons = o.getListAsEmptyOrIntList("moons");
