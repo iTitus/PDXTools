@@ -13,6 +13,8 @@ import org.eclipse.collections.impl.factory.primitive.IntLists;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
@@ -26,14 +28,14 @@ import static org.eclipse.collections.impl.collector.Collectors2.toImmutableList
 
 public final class PdxScriptList extends BasePdxScript {
 
-    public static final PdxScriptList EMPTY = new PdxScriptList(PdxRelation.EQUALS, Mode.NORMAL, Lists.immutable.empty());
-    public static final PdxScriptList EMPTY_COMMA = new PdxScriptList(PdxRelation.EQUALS, Mode.COMMA, Lists.immutable.empty());
-    public static final PdxScriptList EMPTY_IMPLICIT = new PdxScriptList(PdxRelation.EQUALS, Mode.IMPLICIT, Lists.immutable.empty());
+    public static final PdxScriptList EMPTY = new PdxScriptList(PdxRelation.EQUALS, Mode.NORMAL, List.of());
+    public static final PdxScriptList EMPTY_COMMA = new PdxScriptList(PdxRelation.EQUALS, Mode.COMMA, List.of());
+    public static final PdxScriptList EMPTY_IMPLICIT = new PdxScriptList(PdxRelation.EQUALS, Mode.IMPLICIT, List.of());
 
     private final Mode mode;
-    private final ImmutableList<IPdxScript> list;
+    private final List<IPdxScript> list;
 
-    private PdxScriptList(PdxRelation relation, Mode mode, ImmutableList<IPdxScript> list) {
+    private PdxScriptList(PdxRelation relation, Mode mode, List<IPdxScript> list) {
         super(relation);
         this.mode = mode;
         this.list = list;
@@ -383,7 +385,7 @@ public final class PdxScriptList extends BasePdxScript {
                 };
             }
 
-            return new PdxScriptList(relation, mode, list.toImmutable());
+            return new PdxScriptList(relation, mode, Collections.unmodifiableList(list));
         }
     }
 }

@@ -26,8 +26,8 @@ public final class PdxUsageStatistic {
         this.usages = usages;
     }
 
-    public PdxUsageStatistic init(ImmutableMap<String, IPdxScript> map) {
-        map.forEachKeyValue(this::use);
+    public PdxUsageStatistic init(Map<String, IPdxScript> map) {
+        map.forEach(this::use);
         return this;
     }
 

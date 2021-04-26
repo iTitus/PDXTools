@@ -6,12 +6,14 @@ import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectIntMap;
-import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
-import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TechStatus {
 
-    public final ImmutableObjectIntMap<String> technologies;
+    public final Map<String, Integer> technologies;
     public final ImmutableList<TechQueueItem> physicsQueue;
     public final ImmutableList<TechQueueItem> societyQueue;
     public final ImmutableList<TechQueueItem> engineeringQueue;
@@ -43,20 +45,20 @@ public class TechStatus {
         this.lastIncreasedTech = o.getString("last_increased_tech", null);
     }
 
-    private static ImmutableObjectIntMap<String> getTechnologies(PdxScriptObject o) {
+    private static Map<String, Integer> getTechnologies(PdxScriptObject o) {
         ImmutableList<String> technology = o.getImplicitListAsStringList("technology");
         ImmutableIntList level = o.getImplicitListAsIntList("level");
         if (technology.size() != level.size()) {
             throw new IllegalArgumentException("size mismatch between technologies and levels");
         }
 
-        MutableObjectIntMap<String> technologies = ObjectIntMaps.mutable.empty();
+        Map<String, Integer> technologies = new LinkedHashMap<>();
         for (int i = 0; i < technology.size(); i++) {
             String techName = technology.get(i);
             int techLevel = level.get(i);
             technologies.put(techName, techLevel);
         }
 
-        return technologies.toImmutable();
+        return Collections.unmodifiableMap(technologies);
     }
 }
