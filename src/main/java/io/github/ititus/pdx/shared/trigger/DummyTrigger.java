@@ -1,7 +1,10 @@
 package io.github.ititus.pdx.shared.trigger;
 
+import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
 
 public class DummyTrigger extends Trigger {
 
@@ -21,5 +24,10 @@ public class DummyTrigger extends Trigger {
     @Override
     public boolean evaluate(Scope scope) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+        return Lists.immutable.of(s.toPdxScript(0, false, name));
     }
 }

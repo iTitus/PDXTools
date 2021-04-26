@@ -45,7 +45,7 @@ public class Triggers {
 
         PdxScriptObject scriptedTrigger = scriptedTriggers.get(name);
         if (scriptedTrigger != null) {
-            return (triggers, s) -> new ScriptedTrigger(triggers, name, scriptedTrigger, s);
+            return (triggers, s) -> ScriptedTrigger.of(triggers, name, scriptedTrigger, s);
         }
 
         throw new RuntimeException("unknown trigger " + name);

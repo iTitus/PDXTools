@@ -70,7 +70,7 @@ public class StellarisGame {
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating triggers");
         this.triggers = new Triggers();
-        addIntegratedTriggers();
+        addEngineTriggers();
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common/scripted_variables");
         MutableMap<String, IPdxScript> variables = Maps.mutable.empty();
@@ -117,7 +117,7 @@ public class StellarisGame {
         }
     }
 
-    private void addIntegratedTriggers() {
+    private void addEngineTriggers() {
         // always
         triggers.addEngineTrigger("always", AlwaysTrigger::new);
 
@@ -134,81 +134,82 @@ public class StellarisGame {
         addDummyTrigger("else");
 
         // scopes
-        addDummyTrigger("target");
-        addDummyTrigger("orbit");
-        addDummyTrigger("planet");
-        addDummyTrigger("star");
-        addDummyTrigger("branch_office_owner");
-        addDummyTrigger("pop");
-        addDummyTrigger("species");
-        addDummyTrigger("assembling_species");
-        addDummyTrigger("built_species");
-        addDummyTrigger("declining_species");
-        addDummyTrigger("fleet");
-        addDummyTrigger("from");
-        addDummyTrigger("this");
-        addDummyTrigger("root");
-        addDummyTrigger("prev");
-        addDummyTrigger("capital_scope");
-        addDummyTrigger("owner");
-        addDummyTrigger("controller");
-        addDummyTrigger("fromfrom");
-        addDummyTrigger("prevprev");
-        addDummyTrigger("prevprevprev");
-        addDummyTrigger("prevprevprevprev");
-        addDummyTrigger("home_planet");
-        addDummyTrigger("last_created_fleet");
-        addDummyTrigger("owner_main_species");
-        addDummyTrigger("last_created_country");
-        addDummyTrigger("last_created_species");
-        addDummyTrigger("alliance");
-        addDummyTrigger("overlord");
-        addDummyTrigger("federation");
-        addDummyTrigger("research_station");
-        addDummyTrigger("mining_station");
-        addDummyTrigger("last_created_pop");
-        addDummyTrigger("spaceport");
-        addDummyTrigger("last_created_system");
-        addDummyTrigger("planet_owner");
-        addDummyTrigger("last_created_ambient_object");
-        addDummyTrigger("last_created_ship");
-        addDummyTrigger("orbital_station");
-        addDummyTrigger("last_created_leader");
-        addDummyTrigger("owner_species");
-        addDummyTrigger("fromfromfrom");
-        addDummyTrigger("last_created_army");
-        addDummyTrigger("envoy_location_country");
-        addDummyTrigger("contact_country");
-        addDummyTrigger("sector_capital");
-        addDummyTrigger("observation_outpost_owner");
-        addDummyTrigger("federation_leader");
-        addDummyTrigger("associated_federation");
-        addDummyTrigger("sector");
-        addDummyTrigger("pop_faction");
-        addDummyTrigger("last_created_pop_faction");
-        addDummyTrigger("unhappiest_pop");
-        addDummyTrigger("heir");
-        addDummyTrigger("default_pop_faction");
-        addDummyTrigger("fromfromfromfrom");
-        addDummyTrigger("megastructure");
-        addDummyTrigger("last_refugee_country");
-        addDummyTrigger("starbase");
-        addDummyTrigger("capital_star");
-        addDummyTrigger("system_star");
-        addDummyTrigger("no_scope");
-        addDummyTrigger("archaeological_site");
-        addDummyTrigger("excavator_fleet");
-        addDummyTrigger("reverse_first_contact");
-        addDummyTrigger("spynetwork");
-        addDummyTrigger("growing_species");
-        addDummyTrigger("attacker");
-        addDummyTrigger("defender");
-        addDummyTrigger("leader");
-        addDummyTrigger("solar_system");
-        addDummyTrigger("space_owner");
-        addDummyTrigger("ruler");
+        addScopeTrigger("target");
+        addScopeTrigger("orbit");
+        addScopeTrigger("planet");
+        addScopeTrigger("star");
+        addScopeTrigger("branch_office_owner");
+        addScopeTrigger("pop");
+        addScopeTrigger("species");
+        addScopeTrigger("assembling_species");
+        addScopeTrigger("built_species");
+        addScopeTrigger("declining_species");
+        addScopeTrigger("fleet");
+        addScopeTrigger("from");
+        addScopeTrigger("this");
+        addScopeTrigger("root");
+        addScopeTrigger("prev");
+        addScopeTrigger("capital_scope");
+        addScopeTrigger("owner");
+        addScopeTrigger("controller");
+        addScopeTrigger("fromfrom");
+        addScopeTrigger("prevprev");
+        addScopeTrigger("prevprevprev");
+        addScopeTrigger("prevprevprevprev");
+        addScopeTrigger("home_planet");
+        addScopeTrigger("last_created_fleet");
+        addScopeTrigger("owner_main_species");
+        addScopeTrigger("last_created_country");
+        addScopeTrigger("last_created_species");
+        addScopeTrigger("alliance");
+        addScopeTrigger("overlord");
+        addScopeTrigger("federation");
+        addScopeTrigger("research_station");
+        addScopeTrigger("mining_station");
+        addScopeTrigger("last_created_pop");
+        addScopeTrigger("spaceport");
+        addScopeTrigger("last_created_system");
+        addScopeTrigger("planet_owner");
+        addScopeTrigger("last_created_ambient_object");
+        addScopeTrigger("last_created_ship");
+        addScopeTrigger("orbital_station");
+        addScopeTrigger("last_created_leader");
+        addScopeTrigger("owner_species");
+        addScopeTrigger("fromfromfrom");
+        addScopeTrigger("last_created_army");
+        addScopeTrigger("envoy_location_country");
+        addScopeTrigger("contact_country");
+        addScopeTrigger("sector_capital");
+        addScopeTrigger("observation_outpost_owner");
+        addScopeTrigger("federation_leader");
+        addScopeTrigger("associated_federation");
+        addScopeTrigger("sector");
+        addScopeTrigger("pop_faction");
+        addScopeTrigger("last_created_pop_faction");
+        addScopeTrigger("unhappiest_pop");
+        addScopeTrigger("heir");
+        addScopeTrigger("default_pop_faction");
+        addScopeTrigger("fromfromfromfrom");
+        addScopeTrigger("megastructure");
+        addScopeTrigger("last_refugee_country");
+        addScopeTrigger("starbase");
+        addScopeTrigger("capital_star");
+        addScopeTrigger("system_star");
+        addScopeTrigger("no_scope");
+        addScopeTrigger("archaeological_site");
+        addScopeTrigger("excavator_fleet");
+        addScopeTrigger("reverse_first_contact");
+        addScopeTrigger("spynetwork");
+        addScopeTrigger("growing_species");
+        addScopeTrigger("attacker");
+        addScopeTrigger("defender");
+        addScopeTrigger("leader");
+        addScopeTrigger("solar_system");
+        addScopeTrigger("space_owner");
+        addScopeTrigger("ruler");
 
         // Engine Triggers for Stellaris
+        triggers.addEngineTrigger("any_member", AnyMemberTrigger::new);
         triggers.addEngineTrigger("any_neighbor_country", AnyNeighborCountryTrigger::new);
         triggers.addEngineTrigger("any_owned_planet", AnyOwnedPlanetTrigger::new);
         triggers.addEngineTrigger("any_owned_pop", AnyOwnedPopTrigger::new);
@@ -216,7 +217,7 @@ public class StellarisGame {
         triggers.addEngineTrigger("any_relation", AnyRelationTrigger::new);
         triggers.addEngineTrigger("any_system_planet", AnySystemPlanetTrigger::new);
         triggers.addEngineTrigger("any_system_within_border", AnySystemWithinBorderTrigger::new);
-        triggers.addEngineTrigger("count_owned_pop", CountOwnedPopsTrigger::new);
+        triggers.addEngineTrigger("count_owned_pop", CountOwnedPopsTrigger::of);
         triggers.addEngineTrigger("count_starbase_sizes", CountStarbaseSizesTrigger::new);
         triggers.addEngineTrigger("research_leader", ResearchLeaderTrigger::new);
 
@@ -255,10 +256,16 @@ public class StellarisGame {
         addDummyTrigger("has_megastructure");
         addDummyTrigger("pop_has_trait");
         addDummyTrigger("is_sapient");
+        addDummyTrigger("has_federation_perk");
+        addDummyTrigger("is_archetype");
     }
 
     private void addDummyTrigger(String name) {
         triggers.addEngineTrigger(name, DummyTrigger.factory(name));
+    }
+
+    private void addScopeTrigger(String name) {
+        triggers.addEngineTrigger(name, ScopeTrigger.factory(name));
     }
 
     public Path[] findScriptFiles(String dir) {

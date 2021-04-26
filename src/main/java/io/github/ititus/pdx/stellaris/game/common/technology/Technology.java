@@ -6,6 +6,7 @@ import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.shared.Modifier;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 
@@ -56,7 +57,7 @@ public class Technology {
         this.modifier = o.getObjectAsNullOr("modifier", Modifier::new);
         this.featureFlags = o.getListAsEmptyOrStringList("feature_flags");
         this.prereqforDesc = o.getObjectAsNullOr("prereqfor_desc", TechnologyPreReqForDesc::new);
-        this.potential = o.getObjectAsNullOr("potential", game.triggers::create);
+        this.potential = o.getObjectAs("potential", game.triggers::create, Lists.immutable.empty());
         this.weightModifier = o.getObjectAsNullOr("weight_modifier", o_ -> new TechnologyWeightModifiers(game, o_));
         this.aiWeight = o.getObjectAsNullOr("ai_weight", o_ -> new TechnologyWeightModifiers(game, o_));
         this.weightGroups = o.getListAsEmptyOrStringList("weight_groups");

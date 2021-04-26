@@ -1,26 +1,32 @@
 package io.github.ititus.pdx.shared.trigger;
 
+import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.shared.scope.Scope;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
-public class ScriptedTrigger extends Trigger {
+public class ScriptedTrigger extends TriggerBasedTrigger {
 
     public final String name;
     public final boolean expected;
-    public final ImmutableList<Trigger> triggers;
 
-    public ScriptedTrigger(Triggers triggers, String name, PdxScriptObject scriptedTrigger, IPdxScript s) {
-        super(triggers);
+    private ScriptedTrigger(Triggers triggers, PdxScriptObject scriptedTrigger, String name, boolean expected) {
+        super(triggers, scriptedTrigger);
         this.name = name;
+        this.expected = expected;
+    }
 
+    public static ScriptedTrigger of(Triggers triggers, String name, PdxScriptObject scriptedTrigger, IPdxScript s) {
+        boolean expected;
         PdxScriptObject parameters;
         if (s instanceof PdxScriptObject) {
-            this.expected = true;
+            expected = true;
             parameters = s.expectObject();
         } else {
-            this.expected = s.expectValue().expectBoolean();
+            expected = s.expectValue().expectBoolean();
             parameters = null;
         }
 
@@ -28,11 +34,18 @@ public class ScriptedTrigger extends Trigger {
             throw new UnsupportedOperationException();
         }
 
-        this.triggers = create(scriptedTrigger);
+        return new ScriptedTrigger(triggers, scriptedTrigger, name, expected);
     }
 
     @Override
     public boolean evaluate(Scope scope) {
-        return evaluateAnd(scope, triggers) == expected;
+        return evaluateAnd(scope, children) == expected;
+    }
+
+    @Override
+    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+        MutableList<String> list = Lists.mutable.of("scripted_trigger " + name + "=" + expected + ", which means:");
+        localiseChildren(list, localisation, language, indent);
+        return list.toImmutable();
     }
 }
