@@ -27,7 +27,7 @@ public class CountOwnedPopsTrigger extends TriggerBasedTrigger {
         PdxScriptObject o = s.expectObject();
         PdxScriptObject limit = o.getObject("limit");
 
-        PdxScriptValue v = o.getRaw("count").expectValue();
+        PdxScriptValue v = o.get("count").expectValue();
         PdxRelation relation = v.getRelation();
         int count = v.expectInt();
 

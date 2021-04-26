@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -81,6 +82,10 @@ public final class PdxScriptList extends BasePdxScript {
         }
 
         return super.expectImplicitList();
+    }
+
+    public void forEach(Consumer<? super IPdxScript> action) {
+        list.forEach(action);
     }
 
     public IPdxScript getRaw(int i) {

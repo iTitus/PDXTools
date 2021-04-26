@@ -15,10 +15,7 @@ import static java.util.function.Predicate.not;
 
 public class TechnologyWeightModifier {
 
-    private static final ImmutableSet<String> IGNORE = Sets.immutable.of(
-            "factor",
-            "add"
-    );
+    private static final ImmutableSet<String> IGNORE = Sets.immutable.of("factor", "add");
     private static final Predicate<String> FILTER = not(IGNORE::contains);
 
     public final double factor;

@@ -21,7 +21,7 @@ public class CountStarbaseSizesTrigger extends Trigger {
         super(triggers);
         PdxScriptObject o = s.expectObject();
         this.starbaseSize = o.getString("starbase_size");
-        PdxScriptValue v = o.getRaw("count").expectValue();
+        PdxScriptValue v = o.get("count").expectValue();
         this.relation = v.getRelation();
         this.count = v.expectInt();
     }

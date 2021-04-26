@@ -15,6 +15,7 @@ import org.eclipse.collections.impl.factory.primitive.*;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -62,6 +63,10 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public boolean hasKey(String key, String type) {
         return map.containsKey(key) && PdxHelper.getTypeString(getRaw(key)).equals(type);
+    }
+
+    public void forEach(BiConsumer<? super String, ? super IPdxScript> action) {
+        map.forEach(action);
     }
 
     public IPdxScript getRaw(String key) {

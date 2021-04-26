@@ -123,16 +123,17 @@ public class StellarisGame {
         triggers.addEngineTrigger("always", AlwaysTrigger::new);
 
         // logical operators
-        triggers.addEngineTrigger("NOT", NotTrigger::new);
-        triggers.addEngineTrigger("OR", OrTrigger::new);
-        triggers.addEngineTrigger("AND", AndTrigger::new);
-        triggers.addEngineTrigger("NOR", NorTrigger::new);
-        triggers.addEngineTrigger("NAND", NandTrigger::new);
+        triggers.addEngineTrigger("not", NotTrigger::new);
+        triggers.addEngineTrigger("or", OrTrigger::new);
+        triggers.addEngineTrigger("and", AndTrigger::new);
+        triggers.addEngineTrigger("nor", NorTrigger::new);
+        triggers.addEngineTrigger("nand", NandTrigger::new);
 
         // branching
-        addDummyTrigger("if");
-        addDummyTrigger("else_if");
-        addDummyTrigger("else");
+        triggers.addEngineTrigger("if", IfElseTrigger::dummy);
+        triggers.addEngineTrigger("else_if", IfElseTrigger::dummy);
+        triggers.addEngineTrigger("else", IfElseTrigger::dummy);
+        triggers.addEngineTrigger("switch", SwitchTrigger::new);
 
         // scopes
         addScopeTrigger("target");

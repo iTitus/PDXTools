@@ -8,7 +8,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 
-import java.util.function.Function;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 public class Triggers {
@@ -22,33 +22,35 @@ public class Triggers {
     }
 
     public void addEngineTrigger(String name, TriggerFactory factory) {
+        name = name.toLowerCase(Locale.ROOT);
         if (triggers.put(name, factory) != null) {
             throw new IllegalArgumentException("engine trigger " + name + " already exists");
         }
     }
 
-    public void addScriptedTrigger(String name, PdxScriptObject scriptedTrigger) {
-        if (scriptedTriggers.put(name, scriptedTrigger) != null) {
+    public void addScriptedTrigger(String name, IPdxScript scriptedTrigger) {
+        if (scriptedTriggers.put(name, scriptedTrigger.expectObject()) != null) {
             throw new IllegalArgumentException("scripted trigger " + name + " already exists");
         }
     }
 
     public void addScriptedTriggers(IPdxScript s) {
-        s.expectObject().getAsStringObjectMap(IPdxScript::expectObject).forEachKeyValue(this::addScriptedTrigger);
+        s.expectObject().forEach(this::addScriptedTrigger);
     }
 
     public TriggerFactory getFactory(String name) {
-        TriggerFactory factory = triggers.get(name);
+        String lowerName = name.toLowerCase(Locale.ROOT);
+        TriggerFactory factory = triggers.get(lowerName);
         if (factory != null) {
             return factory;
         }
 
-        PdxScriptObject scriptedTrigger = scriptedTriggers.get(name);
+        PdxScriptObject scriptedTrigger = scriptedTriggers.get(lowerName);
         if (scriptedTrigger != null) {
-            return (triggers, s) -> ScriptedTrigger.of(triggers, name, scriptedTrigger, s);
+            return (triggers, s) -> ScriptedTrigger.of(triggers, lowerName, scriptedTrigger, s);
         }
 
-        throw new RuntimeException("unknown trigger " + name);
+        throw new RuntimeException("unknown trigger " + lowerName);
     }
 
     public ImmutableList<Trigger> create(IPdxScript s) {
@@ -77,15 +79,41 @@ public class Triggers {
 
     public ImmutableList<Trigger> create(PdxScriptObject o, Predicate<String> keyFilter) {
         MutableList<Trigger> triggers = Lists.mutable.empty();
-        o.getAsStringObjectMap(keyFilter, Function.identity())
-                .forEachKeyValue((k, v) -> {
-                    TriggerFactory factory = getFactory(k);
-                    if (factory == null) {
-                        throw new RuntimeException("unknown trigger " + k + " with value " + v);
+        IfElseTrigger.Builder[] ifElseTriggerBuilder = new IfElseTrigger.Builder[1];
+        o.forEach((k, v) -> {
+            k = k.toLowerCase(Locale.ROOT);
+            if (keyFilter != null && !keyFilter.test(k)) {
+                return;
+            }
+
+            TriggerFactory factory = getFactory(k);
+            if (factory == null) {
+                throw new RuntimeException("unknown trigger " + k + " with value " + v);
+            }
+
+            switch (k) {
+                case "if" -> {
+                    if (ifElseTriggerBuilder[0] != null) {
+                        triggers.add(ifElseTriggerBuilder[0].build());
                     }
 
-                    triggers.addAllIterable(v.expectImplicitList().getAsList(s -> factory.create(this, s)));
-                });
+                    ifElseTriggerBuilder[0] = IfElseTrigger.builder(this).addIf(v);
+                }
+                case "else_if" -> ifElseTriggerBuilder[0].addElseIf(v);
+                case "else" -> ifElseTriggerBuilder[0].addElse(v);
+                default -> {
+                    if (ifElseTriggerBuilder[0] != null) {
+                        triggers.add(ifElseTriggerBuilder[0].build());
+                        ifElseTriggerBuilder[0] = null;
+                    }
+                    v.expectImplicitList().forEach(s -> triggers.add(factory.create(this, s)));
+                }
+            }
+        });
+        if (ifElseTriggerBuilder[0] != null) {
+            triggers.add(ifElseTriggerBuilder[0].build());
+        }
+
         return triggers.toImmutable();
     }
 }

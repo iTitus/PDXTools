@@ -20,6 +20,11 @@ public abstract class TriggerBasedTrigger extends Trigger {
         this.children = create(s, keyFilter);
     }
 
+    protected TriggerBasedTrigger(Triggers triggers, ImmutableList<Trigger> children) {
+        super(triggers);
+        this.children = children;
+    }
+
     protected void localiseChildren(MutableList<String> list, PdxLocalisation localisation, String language, int indent) {
         list.addAllIterable(localise(localisation, language, indent, children));
     }
