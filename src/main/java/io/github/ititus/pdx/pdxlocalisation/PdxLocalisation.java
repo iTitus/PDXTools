@@ -2,102 +2,84 @@ package io.github.ititus.pdx.pdxlocalisation;
 
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.multimap.MutableMultimap;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.factory.Multimaps;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
+import static io.github.ititus.pdx.pdxscript.PdxConstants.DEFAULT;
+import static io.github.ititus.pdx.pdxscript.PdxConstants.DEFAULT_LANGUAGE;
 
 public final class PdxLocalisation {
 
+    private final ImmutableSet<String> languages;
     private final ImmutableMap<String, ImmutableMap<String, String>> localisation;
 
-    public PdxLocalisation(ImmutableMap<String, ImmutableMap<String, String>> localisation) {
+    public PdxLocalisation(ImmutableSet<String> languages, ImmutableMap<String, ImmutableMap<String, String>> localisation) {
+        this.languages = languages;
         this.localisation = localisation;
     }
 
-    public RichIterable<String> getLanguages() {
+    public ImmutableSet<String> getLanguages() {
+        return languages;
+    }
+
+    public RichIterable<String> getTranslationKeys() {
         return localisation.keysView();
     }
 
-    public String get(String language, String key) {
-        return get(language, key, DEFAULT_LANGUAGE, key, key);
+    public String translate(String key) {
+        return get(DEFAULT_LANGUAGE, key).orElse(key);
     }
 
-    public String get(String language, String key, String fallbackLanguage) {
-        return get(language, key, fallbackLanguage, key, key);
+    public String translate(String language, String key) {
+        return get(language, key).orElse(key);
     }
 
-    public String get(String language, String key, String fallbackLanguage, String fallbackKey) {
-        return get(language, key, fallbackLanguage, fallbackKey, key);
-    }
-
-    public String get(String language, String key, String fallbackLanguage, String fallbackKey, String fallback) {
-        ImmutableMap<String, String> languageMap = null;
-        if (language != null) {
-            languageMap = localisation.get(language);
+    private Optional<String> get(String language, String key) {
+        ImmutableMap<String, String> translationMap = localisation.get(key);
+        if (translationMap == null) {
+            return Optional.empty();
         }
-        if (languageMap == null && fallbackLanguage != null && !fallbackLanguage.equals(language)) {
-            languageMap = localisation.get(fallbackLanguage);
+
+        String translation = translationMap.get(language);
+        if (translation == null && !Objects.equals(language, DEFAULT_LANGUAGE)) {
+            translation = translationMap.get(DEFAULT_LANGUAGE);
         }
-        if (languageMap != null) {
-            if (key != null && languageMap.containsKey(key)) {
-                return languageMap.get(key);
-            }
-            if (fallbackKey != null && !fallbackKey.equals(key) && languageMap.containsKey(fallbackKey)) {
-                return languageMap.get(fallbackKey);
-            }
+
+        if (translation == null && !Objects.equals(language, DEFAULT)) {
+            translation = translationMap.get(DEFAULT);
         }
-        return fallback;
+
+        return Optional.ofNullable(translation);
     }
 
-    public ImmutableMap<String, ImmutableMap<String, String>> getExtraLocalisation() {
-        ImmutableMap<String, String> defaultLangMap = localisation.get(DEFAULT_LANGUAGE);
-        MutableMap<String, MutableMap<String, String>> map = Maps.mutable.empty();
-        localisation.forEachKeyValue((lang, langMap) -> {
-            if (!DEFAULT_LANGUAGE.equals(lang)) {
-                map.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(langMap.toMap().entrySet().stream().filter(p -> !defaultLangMap.containsKey(p.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    public ImmutableMultimap<String, String> getExtraLocalisation() {
+        MutableMultimap<String, String> map = Multimaps.mutable.set.empty();
+        localisation.forEachKeyValue((key, translationMap) -> {
+            if (!translationMap.containsKey(DEFAULT_LANGUAGE) && !translationMap.containsKey(DEFAULT)) {
+                map.putAll(key, translationMap.keysView());
             }
         });
-        MutableMap<String, ImmutableMap<String, String>> ret = Maps.mutable.empty();
-        map.forEachKeyValue((lang, langMap) -> ret.put(lang, langMap.toImmutable()));
-        return ret.toImmutable();
+
+        return map.toImmutable();
     }
 
-    public ImmutableMap<String, ImmutableMap<String, String>> getMissingLocalisation() {
-        MutableMap<String, String> defaultLanguageMap = localisation.get(DEFAULT_LANGUAGE).toMap();
-        MutableMap<String, MutableMap<String, String>> map = Maps.mutable.empty();
-        localisation.forEachKeyValue((lang, langMap) -> {
-            if (!DEFAULT_LANGUAGE.equals(lang)) {
-                map.computeIfAbsent(lang, k -> Maps.mutable.empty()).putAll(defaultLanguageMap.entrySet().stream().filter(p -> !langMap.containsKey(p.getKey()) || langMap.get(p.getKey()).equals(p.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    public ImmutableMultimap<String, String> getMissingLocalisation() {
+        MutableMultimap<String, String> map = Multimaps.mutable.set.empty();
+        localisation.forEachKeyValue((key, translationMap) -> {
+            if (translationMap.containsKey(DEFAULT_LANGUAGE)) {
+                MutableSet<String> copy = languages.toSet();
+                copy.removeAllIterable(localisation.keysView());
+                map.putAll(key, copy);
             }
         });
-        MutableMap<String, ImmutableMap<String, String>> ret = Maps.mutable.empty();
-        map.forEachKeyValue((lang, langMap) -> ret.put(lang, langMap.toImmutable()));
-        return ret.toImmutable();
-    }
 
-    public String toYML() {
-        StringBuilder b = new StringBuilder();
-        localisation.forEachKeyValue((lang, langMap) -> {
-            b.append(lang).append(COLON_CHAR).append(LINE_FEED);
-            langMap.forEachKeyValue((k, v) ->
-                    b
-                            .append(SPACE_CHAR)
-                            .append(k)
-                            .append(COLON_CHAR)
-                            .append(ZERO_CHAR)
-                            .append(SPACE_CHAR)
-                            .append(QUOTE_CHAR)
-                            .append(v)
-                            .append(QUOTE_CHAR)
-                            .append(LINE_FEED)
-            );
-        });
-        return b.toString();
+        return map.toImmutable();
     }
 
     @Override

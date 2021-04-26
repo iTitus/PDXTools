@@ -11,7 +11,7 @@ import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.eclipse.collections.api.tuple.Pair;
 
 import java.io.IOException;
@@ -72,8 +72,9 @@ public class Test {
         ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;
         ImmutableList<String> userDataParseErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().getUsageStatistic().getErrorStrings() : null;
         ImmutableList<String> saveParseErrors = save != null ? save.getErrors() : null;
-        ImmutableMap<String, ImmutableMap<String, String>> missingLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() : null;
-        ImmutableMap<String, ImmutableMap<String, String>> extraLocalisation = game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() : null;
+        // FIXME: disabled for performance
+        ImmutableMultimap<String, String> missingLocalisation = /*game != null && game.getLocalisation() != null ? game.getLocalisation().getMissingLocalisation() :*/ null;
+        ImmutableMultimap<String, String> extraLocalisation = /*game != null && game.getLocalisation() != null ? game.getLocalisation().getExtraLocalisation() :*/ null;
 
         try {
             Files.createDirectories(DEBUG_OUT.getParent());
@@ -110,12 +111,12 @@ public class Test {
             }
             if (missingLocalisation != null && !missingLocalisation.isEmpty()) {
                 Files.write(DEBUG_OUT, List.of("#".repeat(80), "Missing Localisation:", "#".repeat(80), ""), StandardOpenOption.APPEND);
-                Files.write(DEBUG_OUT, missingLocalisation.keyValuesView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, missingLocalisation.keyMultiValuePairsView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
             }
             if (extraLocalisation != null && !extraLocalisation.isEmpty()) {
                 Files.write(DEBUG_OUT, List.of("#".repeat(80), "Extra Localisation:", "#".repeat(80), ""), StandardOpenOption.APPEND);
-                Files.write(DEBUG_OUT, extraLocalisation.keyValuesView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
+                Files.write(DEBUG_OUT, extraLocalisation.keyMultiValuePairsView().collect(p -> p.getOne() + ": " + p.getTwo()), StandardOpenOption.APPEND);
                 Files.write(DEBUG_OUT, List.of("", ""), StandardOpenOption.APPEND);
             }
         } catch (IOException e) {

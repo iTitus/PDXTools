@@ -73,6 +73,7 @@ public final class PdxConstants {
     public static final String DATE = "value:date";
     public static final String COLOR = "value:color";
     public static final String NULL = "null";
+
     public static final String DEFAULT = "l_default";
     public static final String ENGLISH = "l_english";
     public static final String BRAZ_POR = "l_braz_por";
@@ -81,7 +82,10 @@ public final class PdxConstants {
     public static final String SPANISH = "l_spanish";
     public static final String POLISH = "l_polish";
     public static final String RUSSIAN = "l_russian";
+    public static final String SIMP_CHINESE = "l_simp_chinese";
     public static final String DEFAULT_LANGUAGE = ENGLISH;
+    public static final int LANGUAGE_COUNT = 9;
+
     public static final String KEY_LANGUAGE = "language";
     public static final String KEY_INDENT = "indent";
     public static final String KEY_KEY = "key";
