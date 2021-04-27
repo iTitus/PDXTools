@@ -135,6 +135,8 @@ public class StellarisGame {
         triggers.addEngineTrigger("else", IfElseTrigger::dummy);
         triggers.addEngineTrigger("switch", SwitchTrigger::new);
 
+        // TODO: hidden_trigger, custom_tooltip, text
+
         // scopes
         addScopeTrigger("target");
         addScopeTrigger("orbit");

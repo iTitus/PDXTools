@@ -64,7 +64,7 @@ public abstract class Trigger {
         return localise(localisation, language, 0, triggers);
     }
 
-    public static ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent, Iterable<Trigger> triggers) {
+    protected static ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent, Iterable<Trigger> triggers) {
         MutableList<String> list = Lists.mutable.empty();
         boolean empty = true;
         for (Trigger t : triggers) {
@@ -83,7 +83,7 @@ public abstract class Trigger {
         return localise(localisation, language, 0, triggers);
     }
 
-    public static ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent, Trigger... triggers) {
+    protected static ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent, Trigger... triggers) {
         MutableList<String> list = Lists.mutable.empty();
         if (triggers.length == 0) {
             list.add(indent(indent) + "<empty>");
@@ -97,7 +97,7 @@ public abstract class Trigger {
     }
 
     private static void localiseSingle(MutableList<String> list, Trigger t, PdxLocalisation localisation, String language, int indent) {
-        ImmutableList<String> localised = t.localise(localisation, language, indent + 1);
+        ImmutableList<String> localised = t.localise(localisation, language, indent);
         list.add(indent(indent) + "- " + localised.get(0));
         for (int i = 1; i < localised.size(); i++) {
             list.add(localised.get(i));
@@ -142,6 +142,6 @@ public abstract class Trigger {
         return localise(localisation, language, 0);
     }
 
-    public abstract ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent);
+    protected abstract ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent);
 
 }

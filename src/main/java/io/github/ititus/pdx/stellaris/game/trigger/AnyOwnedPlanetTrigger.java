@@ -32,7 +32,7 @@ public class AnyOwnedPlanetTrigger extends TriggerBasedTrigger {
     @Override
     public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
         MutableList<String> list = Lists.mutable.of("any_owned_planet:");
-        localiseChildren(list, localisation, language, indent);
+        localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();
     }
 }

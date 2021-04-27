@@ -59,15 +59,15 @@ public class IfElseTrigger extends TriggerBasedTrigger {
                 list.add("else_if:");
             }
 
-            list.addAllIterable(localise(localisation, language, indent, b.limit));
+            list.addAllIterable(localise(localisation, language, indent + 1, b.limit));
 
             list.add("then:");
-            list.addAllIterable(localise(localisation, language, indent, b.children));
+            list.addAllIterable(localise(localisation, language, indent + 1, b.children));
         }
 
         if (children != null) {
             list.add("else:");
-            list.addAllIterable(localise(localisation, language, indent, children));
+            list.addAllIterable(localise(localisation, language, indent + 1, children));
         }
 
         return list.toImmutable();

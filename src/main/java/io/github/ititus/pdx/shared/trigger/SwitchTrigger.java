@@ -50,12 +50,12 @@ public class SwitchTrigger extends Trigger {
         list.add("switch on " + trigger + ":");
         cases.forEach((v, t) -> {
             list.add("case " + v + ":");
-            list.addAllIterable(localise(localisation, language, indent, t));
+            list.addAllIterable(localise(localisation, language, indent + 1, t));
         });
 
         if (defaultTriggers != null) {
             list.add("default:");
-            list.addAllIterable(localise(localisation, language, indent, defaultTriggers));
+            list.addAllIterable(localise(localisation, language, indent + 1, defaultTriggers));
         }
 
         return list.toImmutable();
