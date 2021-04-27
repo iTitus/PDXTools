@@ -6,6 +6,7 @@ import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
+import io.github.ititus.pdx.shared.effect.Effects;
 import io.github.ititus.pdx.shared.trigger.*;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.common.Common;
@@ -49,6 +50,7 @@ public class StellarisGame {
     // private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 
     public final Triggers triggers;
+    public final Effects effects;
     public final ImmutableMap<String, IPdxScript> scriptedVariables;
     public final Common common;
     public final Gfx gfx;
@@ -66,12 +68,16 @@ public class StellarisGame {
 
         this.installDir = installDir;
 
-        int steps = 9;
+        int steps = 10;
         int progress = 0;
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating triggers");
         this.triggers = new Triggers();
         addEngineTriggers();
+
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating effects");
+        this.effects = new Effects();
+        addEngineEffects();
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common/scripted_variables");
         MutableMap<String, IPdxScript> variables = Maps.mutable.empty();
@@ -136,7 +142,7 @@ public class StellarisGame {
         triggers.addEngineTrigger("switch", SwitchTrigger::new);
         triggers.addEngineTrigger("inverted_switch", InvertedSwitchTrigger::new);
 
-        // TODO: hidden_trigger, custom_tooltip, text
+        // TODO: hidden_trigger, custom_tooltip, custom_tooltip_success, custom_tooltip_fail, conditional_tooltip, log, text, debug_break
 
         // scopes
         addScopeTrigger("target");
@@ -263,6 +269,9 @@ public class StellarisGame {
         addDummyTrigger("is_sapient");
         addDummyTrigger("has_federation_perk");
         addDummyTrigger("is_archetype");
+    }
+
+    private void addEngineEffects() {
     }
 
     private void addDummyTrigger(String name) {
