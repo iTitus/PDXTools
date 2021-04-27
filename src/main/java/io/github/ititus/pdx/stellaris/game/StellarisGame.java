@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.game;
 
 import io.github.ititus.pdx.pdxasset.PdxAssets;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
+import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
@@ -92,8 +93,7 @@ public class StellarisGame {
         this.dlcs = null; // new StellarisDLCs(installDir, installDir.resolve("dlc"), index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading Localisation");
-        // FIXME: disabled because it is slow
-        this.localisation = null; // PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);
+        this.localisation = PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading Raw Game Data");
         // FIXME: disabled because it is slow
