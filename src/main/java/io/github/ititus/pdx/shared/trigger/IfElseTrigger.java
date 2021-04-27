@@ -68,7 +68,7 @@ public class IfElseTrigger extends TriggerBasedTrigger {
         }
 
         if (children != null) {
-            list.add(indent(indent + 1) + "else triggers:");
+            list.add(indent(indent + 1) + "- else triggers:");
             list.addAllIterable(localise(localisation, language, indent + 2, children));
         }
 
