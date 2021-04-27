@@ -29,12 +29,6 @@ public class TechnologyWeightModifier {
         PdxScriptObject o = s.expectObject();
         this.factor = o.getDouble("factor", 1);
         this.add = o.getDouble("add", 0);
-        if (factor != 1 && add != 0) {
-            throw new RuntimeException("factor and add both present");
-        } else if (factor == 1 && add == 0) {
-            throw new RuntimeException("factor and add both absent");
-        }
-
         this.triggers = game.triggers.create(o, FILTER);
     }
 
