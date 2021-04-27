@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.javamodularity.moduleplugin' version '1.7.0'
+    id 'org.javamodularity.moduleplugin' version '1.8.1'
     id 'org.openjfx.javafxplugin' version '0.0.9'
     id 'org.beryx.jlink' version '2.23.7'
 }
@@ -10,11 +10,13 @@ group = 'io.github.ititus.pdx'
 version = '1.0.0'
 
 wrapper {
-    gradleVersion '6.8.3'
+    gradleVersion '7.0'
 }
 
 java {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_15
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
 }
 
 modularity {
@@ -56,11 +58,6 @@ test {
 
     moduleOptions {
         addReads = ['io.github.ititus.pdx': 'org.junit.jupiter.params']
-        addExports = [
-                'org.junit.platform.commons/org.junit.platform.commons.util'   : 'ALL-UNNAMED',
-                'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
-        ]
-        addOpens = ['io.github.ititus.pdx/io.github.ititus.pdx.util.collection': 'org.junit.platform.commons']
     }
 }
 
