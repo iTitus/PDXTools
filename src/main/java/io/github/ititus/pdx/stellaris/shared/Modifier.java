@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.stellaris.shared;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -30,7 +31,10 @@ public class Modifier {
     public final String customTooltip;
     public final ImmutableObjectDoubleMap<String> modifiers;
 
-    public Modifier(PdxScriptObject o) {
+    private final StellarisGame game;
+
+    public Modifier(StellarisGame game, PdxScriptObject o) {
+        this.game = game;
         this.icon = o.getString("icon", null);
         this.iconFrame = o.getInt("icon_frame", 0);
         this.applyModifierToOtherPlanets = o.getString("apply_modifier_to_other_planets", null);

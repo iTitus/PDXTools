@@ -5,13 +5,9 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
-import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
 
 import java.util.function.Predicate;
-
-import static java.util.function.Predicate.not;
 
 public record TechnologyWeightModifier(
         StellarisGame game,
@@ -20,8 +16,7 @@ public record TechnologyWeightModifier(
         ImmutableList<Trigger> triggers
 ) {
 
-    private static final ImmutableSet<String> IGNORE = Sets.immutable.of("factor", "add");
-    private static final Predicate<String> FILTER = not(IGNORE::contains);
+    private static final Predicate<String> FILTER = s -> !"factor".equals(s) && !"add".equals(s);
 
     public static TechnologyWeightModifier of(StellarisGame game, IPdxScript s) {
         PdxScriptObject o = s.expectObject();

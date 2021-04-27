@@ -2,6 +2,7 @@ package io.github.ititus.pdx.shared.trigger;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
@@ -14,10 +15,12 @@ import java.util.function.Predicate;
 
 public class Triggers {
 
+    private final StellarisGame game;
     private final MutableMap<String, TriggerFactory> triggers;
     private final MutableMap<String, PdxScriptObject> scriptedTriggers;
 
-    public Triggers() {
+    public Triggers(StellarisGame game) {
+        this.game = game;
         this.triggers = Maps.mutable.empty();
         this.scriptedTriggers = Maps.mutable.empty();
     }
@@ -119,5 +122,9 @@ public class Triggers {
         }
 
         return triggers.toImmutable();
+    }
+
+    public StellarisGame getGame() {
+        return game;
     }
 }

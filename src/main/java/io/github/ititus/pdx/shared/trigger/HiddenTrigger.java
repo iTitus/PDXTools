@@ -6,20 +6,20 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-public class OrTrigger extends TriggerBasedTrigger {
+public class HiddenTrigger extends TriggerBasedTrigger {
 
-    public OrTrigger(Triggers triggers, IPdxScript s) {
+    public HiddenTrigger(Triggers triggers, IPdxScript s) {
         super(triggers, s);
     }
 
     @Override
     public boolean evaluate(Scope scope) {
-        return evaluateOr(scope, children);
+        return evaluateAnd(scope, children);
     }
 
     @Override
     public ImmutableList<String> localise(String language, int indent) {
-        MutableList<String> list = Lists.mutable.of("or:");
+        MutableList<String> list = Lists.mutable.of("hidden_trigger:");
         localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();
     }

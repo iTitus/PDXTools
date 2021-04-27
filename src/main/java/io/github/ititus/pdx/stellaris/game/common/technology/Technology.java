@@ -1,17 +1,26 @@
 package io.github.ititus.pdx.stellaris.game.common.technology;
 
+import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.shared.localisation.ExternalLocalisable;
+import io.github.ititus.pdx.shared.localisation.Localisable;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.shared.Modifier;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
+
+import java.util.stream.Collectors;
+
+import static io.github.ititus.pdx.pdxscript.PdxConstants.INDENT;
 
 public record Technology(
         StellarisGame game,
+        String name,
         int cost,
         Area area,
         int tier,
@@ -34,9 +43,9 @@ public record Technology(
         TechnologyWeightModifiers aiWeight,
         ImmutableList<String> weightGroups,
         ImmutableObjectDoubleMap<String> modWeightIfGroupPicked
-) {
+) implements Localisable {
 
-    public static Technology of(StellarisGame game, IPdxScript s) {
+    public static Technology of(StellarisGame game, String name, IPdxScript s) {
         PdxScriptObject o = s.expectObject();
         int cost = o.getInt("cost", 0);
         Area area = o.getEnum("area", Area::of);
@@ -52,7 +61,7 @@ public record Technology(
         boolean isDangerous = o.getBoolean("is_dangerous", false);
         boolean isReverseEngineerable = o.getBoolean("is_reverse_engineerable", true);
         boolean startTech = o.getBoolean("start_tech", false);
-        Modifier modifier = o.getObjectAsNullOr("modifier", Modifier::new);
+        Modifier modifier = o.getObjectAsNullOr("modifier", o_ -> new Modifier(game, o_));
         ImmutableList<String> featureFlags = o.getListAsEmptyOrStringList("feature_flags");
         TechnologyPreReqForDesc prereqforDesc = o.getObjectAsNullOr("prereqfor_desc", TechnologyPreReqForDesc::new);
         ImmutableList<Trigger> potential = o.getObjectAs("potential", game.triggers::create, Lists.immutable.empty());
@@ -60,7 +69,37 @@ public record Technology(
         TechnologyWeightModifiers aiWeight = o.getObjectAsNullOr("ai_weight", o_ -> TechnologyWeightModifiers.of(game, o_));
         ImmutableList<String> weightGroups = o.getListAsEmptyOrStringList("weight_groups");
         ImmutableObjectDoubleMap<String> modWeightIfGroupPicked = o.getObjectAsEmptyOrStringDoubleMap("mod_weight_if_group_picked");
-        return new Technology(game, cost, area, tier, category, levels, costPerLevel, prerequisites, weight, gateway, aiUpdateType, isRare, isDangerous, isReverseEngineerable, startTech, modifier, featureFlags, prereqforDesc, potential, weightModifier, aiWeight, weightGroups, modWeightIfGroupPicked);
+        return new Technology(game, name, cost, area, tier, category, levels, costPerLevel, prerequisites, weight, gateway, aiUpdateType, isRare, isDangerous, isReverseEngineerable, startTech, modifier, featureFlags, prereqforDesc, potential, weightModifier, aiWeight, weightGroups, modWeightIfGroupPicked);
+    }
+
+    private static void localiseWeightModifiers(MutableList<String> list, String language, TechnologyWeightModifiers weightModifiers) {
+        if (weightModifiers.factor() != 1) {
+            list.add(" - Factor: " + weightModifiers.factor());
+        }
+
+        for (TechnologyWeightModifier m : weightModifiers.modifiers()) {
+            if (m.factor() == 1 && m.add() == 0) {
+                return;
+            }
+
+            list.add(" - Modifier:");
+            if (m.factor() != 1) {
+                list.add(INDENT + " - Factor: " + m.factor());
+            }
+            if (m.add() != 0) {
+                list.add(INDENT + " - Add: " + m.add());
+            }
+            list.add(INDENT + " - Triggers:");
+            list.addAllIterable(Trigger.localise(language, 2, m.triggers()));
+        }
+    }
+
+    public boolean isRepeatable() {
+        return levels != 1;
+    }
+
+    public boolean isInfinite() {
+        return levels == -1;
     }
 
     public boolean hasPotential(Scope scope) {
@@ -80,16 +119,106 @@ public record Technology(
         return weight;
     }
 
-    public enum Area {
+    @Override
+    public ImmutableList<String> localise(String language) {
+        MutableList<String> list = Lists.mutable.of("Technology " + game.localisation.translate(language, name) + " (" + name + ")");
+        list.add("Description: " + game.localisation.translate(language, name + "_desc"));
+        list.add("Cost: " + cost);
+        list.add("Area: " + area.localise(game.localisation, language).getOnly());
+        list.add("Tier: " + tier);
+        list.add("Category: " + category);
+        if (isRepeatable()) {
+            list.add("Repeatable: " + (isInfinite() ? "infinite" : levels));
+            list.add("Cost per Level: " + costPerLevel);
+        }
+        if (prerequisites.notEmpty()) {
+            list.add("Prerequisites: " + prerequisites.stream()
+                    .map(tech -> game.localisation.translate(language, tech) + " (" + tech + ")")
+                    .collect(Collectors.joining(", "))
+            );
+        }
+        list.add("Weight: " + weight + (weightModifier != null ? " (Modified: " + getBaseWeight() + ")" : ""));
+        if (gateway != null) {
+            list.add("Gateway: " + gateway);
+        }
+        if (aiUpdateType != null) {
+            list.add("AI Update Type: " + aiUpdateType);
+        }
+        MutableList<String> properties = Lists.mutable.empty();
+        if (isRare) {
+            properties.add("rare");
+        }
+        if (isDangerous) {
+            properties.add("dangerous");
+        }
+        if (isReverseEngineerable) {
+            properties.add("not reverse engineerable");
+        }
+        if (startTech) {
+            properties.add("start tech");
+        }
+        if (properties.notEmpty()) {
+            list.add("Properties: " + String.join(", ", properties));
+        }
+        if (modifier != null) {
+            list.add("Modifier:");
+            if (modifier.description != null) {
+                list.add(" - Description: " + game.localisation.translate(language, modifier.description.description, modifier.description.descriptionParameters));
+            }
+            if (modifier.customTooltip != null) {
+                list.add(" - Custom Tooltip: " + game.localisation.translate(language, modifier.customTooltip));
+            }
+            modifier.modifiers.forEachKeyValue((k, v) -> list.add(" - " + game.localisation.translate(language, "mod_" + k) + ": " + v));
+        }
+        if (featureFlags.notEmpty()) {
+            list.add("Feature Flags: " + String.join(", ", featureFlags));
+        }
+        if (prereqforDesc != null) {
+            if (prereqforDesc.ship != null) {
+                list.add("Prerequisite for ship: " + game.localisation.translate(language, prereqforDesc.ship.title));
+            }
+            if (prereqforDesc.component != null) {
+                list.add("Prerequisite for component: " + game.localisation.translate(language, prereqforDesc.component.title));
+            }
+            if (prereqforDesc.custom.notEmpty()) {
+                list.add("Prerequisite for: " + prereqforDesc.custom.stream().map(p -> game.localisation.translate(language, p.title)).collect(Collectors.joining(", ")));
+            }
+        }
+        if (potential.notEmpty()) {
+            list.add("Potential:");
+            list.addAllIterable(Trigger.localise(language, potential));
+        }
+        if (weightModifier != null) {
+            list.add("Weight Modifiers:");
+            localiseWeightModifiers(list, language, weightModifier);
+        }
+        if (aiWeight != null) {
+            list.add("AI Weight Modifiers:");
+            localiseWeightModifiers(list, language, aiWeight);
+        }
+        if (weightGroups.notEmpty()) {
+            list.add("Weight Groups: " + String.join(", ", weightGroups));
+        }
+        if (modWeightIfGroupPicked.notEmpty()) {
+            list.add("Modifiers for Weight Groups:");
+            modWeightIfGroupPicked.forEachKeyValue((k, v) -> list.add(" - " + k + "=" + v));
+        }
 
-        PHYSICS("physics"),
-        SOCIETY("society"),
-        ENGINEERING("engineering");
+        return list.toImmutable();
+    }
+
+    public enum Area implements ExternalLocalisable {
+
+        PHYSICS("physics", "PHYSICS"),
+        SOCIETY("society", "SOCIETY"),
+        ENGINEERING("engineering", "ENGINEERING");
 
         private final String name;
+        private final String translationKey;
 
-        Area(String name) {
+        Area(String name, String translationKey) {
             this.name = name;
+            this.translationKey = translationKey;
         }
 
         public static Area of(String name) {
@@ -103,6 +232,15 @@ public record Technology(
 
         public String getName() {
             return name;
+        }
+
+        public String getTranslationKey() {
+            return translationKey;
+        }
+
+        @Override
+        public ImmutableList<String> localise(PdxLocalisation localisation, String language) {
+            return Lists.immutable.of(localisation.translate(translationKey));
         }
     }
 }

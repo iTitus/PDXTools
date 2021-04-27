@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.shared.trigger;
 
-import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
 import org.eclipse.collections.api.factory.Lists;
@@ -48,28 +47,28 @@ public class IfElseTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+    public ImmutableList<String> localise(String language, int indent) {
         boolean first = true;
         MutableList<String> list = Lists.mutable.of();
         list.add("if_then_else:");
         for (IfElse b : branches) {
             if (first) {
-                list.add(indent(indent + 1) + "- if:");
+                list.add(indent(indent + 1) + " - if:");
                 first = false;
             } else {
-                list.add(indent(indent + 1) + "- else_if:");
+                list.add(indent(indent + 1) + " - else_if:");
             }
 
-            list.add(indent(indent + 2) + "- condition:");
-            list.addAllIterable(localise(localisation, language, indent + 3, b.limit));
+            list.add(indent(indent + 2) + " - condition:");
+            list.addAllIterable(localise(language, indent + 3, b.limit));
 
-            list.add(indent(indent + 2) + "- triggers:");
-            list.addAllIterable(localise(localisation, language, indent + 3, b.children));
+            list.add(indent(indent + 2) + " - triggers:");
+            list.addAllIterable(localise(language, indent + 3, b.children));
         }
 
         if (children != null) {
-            list.add(indent(indent + 1) + "- else triggers:");
-            list.addAllIterable(localise(localisation, language, indent + 2, children));
+            list.add(indent(indent + 1) + " - else triggers:");
+            list.addAllIterable(localise(language, indent + 2, children));
         }
 
         return list.toImmutable();

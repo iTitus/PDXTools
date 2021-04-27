@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.game.trigger;
 
-import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRelation;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
@@ -30,7 +29,7 @@ public class YearsPassedTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+    public ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of("years_passed" + relation.getSign() + relation);
     }
 }

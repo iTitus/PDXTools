@@ -12,6 +12,6 @@ public class Technologies {
 
     public Technologies(StellarisGame game, PdxScriptObject o) {
         this.game = game;
-        this.technologies = o.getAsStringObjectMap(s -> Technology.of(game, s));
+        this.technologies = o.getAsStringObjectMap((k, v) -> Technology.of(game, k, v));
     }
 }

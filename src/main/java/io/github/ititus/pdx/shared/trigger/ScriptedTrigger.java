@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.shared.trigger;
 
-import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.shared.scope.Scope;
@@ -43,8 +42,8 @@ public class ScriptedTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
-        MutableList<String> list = Lists.mutable.of("scripted_trigger " + name + "=" + expected + ", which means:");
+    public ImmutableList<String> localise(String language, int indent) {
+        MutableList<String> list = Lists.mutable.of("scripted_trigger " + name + "=" + expected + ", where " + name + " means:");
         localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();
     }

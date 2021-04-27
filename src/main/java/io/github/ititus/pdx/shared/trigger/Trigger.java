@@ -3,6 +3,7 @@ package io.github.ititus.pdx.shared.trigger;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.shared.localisation.Localisable;
 import io.github.ititus.pdx.shared.scope.Scope;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -10,14 +11,17 @@ import org.eclipse.collections.api.list.MutableList;
 
 import java.util.function.Predicate;
 
+import static io.github.ititus.pdx.pdxscript.PdxConstants.DEFAULT_LANGUAGE;
 import static io.github.ititus.pdx.pdxscript.PdxConstants.INDENT;
 
-public abstract class Trigger {
+public abstract class Trigger implements Localisable {
 
     protected final Triggers triggers;
+    protected final PdxLocalisation localisation;
 
     protected Trigger(Triggers triggers) {
         this.triggers = triggers;
+        this.localisation = triggers.getGame().localisation;
     }
 
     public static boolean evaluateAnd(Scope scope, Trigger... triggers) {
@@ -60,45 +64,53 @@ public abstract class Trigger {
         return false;
     }
 
-    public static ImmutableList<String> localise(PdxLocalisation localisation, String language, Iterable<Trigger> triggers) {
-        return localise(localisation, language, 0, triggers);
+    public static ImmutableList<String> localise(Iterable<Trigger> triggers) {
+        return localise(DEFAULT_LANGUAGE, 0, triggers);
     }
 
-    protected static ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent, Iterable<Trigger> triggers) {
+    public static ImmutableList<String> localise(String language, Iterable<Trigger> triggers) {
+        return localise(language, 0, triggers);
+    }
+
+    public static ImmutableList<String> localise(String language, int indent, Iterable<Trigger> triggers) {
         MutableList<String> list = Lists.mutable.empty();
         boolean empty = true;
         for (Trigger t : triggers) {
             empty = false;
-            localiseSingle(list, t, localisation, language, indent);
+            localiseSingle(list, t, language, indent);
         }
 
         if (empty) {
-            list.add(indent(indent) + "<empty>");
+            list.add(indent(indent) + " <empty>");
         }
 
         return list.toImmutable();
     }
 
-    public static ImmutableList<String> localise(PdxLocalisation localisation, String language, Trigger... triggers) {
-        return localise(localisation, language, 0, triggers);
+    public static ImmutableList<String> localise(Trigger... triggers) {
+        return localise(DEFAULT_LANGUAGE, 0, triggers);
     }
 
-    protected static ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent, Trigger... triggers) {
+    public static ImmutableList<String> localise(String language, Trigger... triggers) {
+        return localise(language, 0, triggers);
+    }
+
+    public static ImmutableList<String> localise(String language, int indent, Trigger... triggers) {
         MutableList<String> list = Lists.mutable.empty();
         if (triggers.length == 0) {
             list.add(indent(indent) + "<empty>");
         } else {
             for (Trigger t : triggers) {
-                localiseSingle(list, t, localisation, language, indent);
+                localiseSingle(list, t, language, indent);
             }
         }
 
         return list.toImmutable();
     }
 
-    private static void localiseSingle(MutableList<String> list, Trigger t, PdxLocalisation localisation, String language, int indent) {
-        ImmutableList<String> localised = t.localise(localisation, language, indent);
-        list.add(indent(indent) + "- " + localised.get(0));
+    private static void localiseSingle(MutableList<String> list, Trigger t, String language, int indent) {
+        ImmutableList<String> localised = t.localise(language, indent);
+        list.add(indent(indent) + " - " + localised.get(0));
         for (int i = 1; i < localised.size(); i++) {
             list.add(localised.get(i));
         }
@@ -138,10 +150,11 @@ public abstract class Trigger {
 
     public abstract boolean evaluate(Scope scope);
 
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language) {
-        return localise(localisation, language, 0);
+    @Override
+    public ImmutableList<String> localise(String language) {
+        return localise(language, 0);
     }
 
-    protected abstract ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent);
+    protected abstract ImmutableList<String> localise(String language, int indent);
 
 }

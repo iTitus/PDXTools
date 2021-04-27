@@ -72,11 +72,11 @@ public class StellarisGame {
         int progress = 0;
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating triggers");
-        this.triggers = new Triggers();
+        this.triggers = new Triggers(this);
         addEngineTriggers();
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating effects");
-        this.effects = new Effects();
+        this.effects = new Effects(this);
         addEngineEffects();
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common/scripted_variables");
@@ -142,7 +142,18 @@ public class StellarisGame {
         triggers.addEngineTrigger("switch", SwitchTrigger::new);
         triggers.addEngineTrigger("inverted_switch", InvertedSwitchTrigger::new);
 
-        // TODO: hidden_trigger, custom_tooltip, custom_tooltip_success, custom_tooltip_fail, conditional_tooltip, log, text, debug_break
+        // tooltip
+        triggers.addEngineTrigger("hidden_trigger", HiddenTrigger::new);
+        triggers.addEngineTrigger("custom_tooltip", CustomTooltipTrigger::new);
+        triggers.addEngineTrigger("custom_tooltip_fail", CustomTooltipFailTrigger::new);
+        triggers.addEngineTrigger("custom_tooltip_success", CustomTooltipSuccessTrigger::new);
+        triggers.addEngineTrigger("conditional_tooltip", ConditionalTooltipTrigger::new);
+
+        // debug
+        triggers.addEngineTrigger("log", LogTrigger::new);
+        triggers.addEngineTrigger("debug_break", DebugBreakTrigger::new);
+
+        // TODO: find out if 'text' is really a valid trigger
 
         // scopes
         addScopeTrigger("target");

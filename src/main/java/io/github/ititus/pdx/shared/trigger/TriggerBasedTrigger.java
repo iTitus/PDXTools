@@ -26,6 +26,6 @@ public abstract class TriggerBasedTrigger extends Trigger {
     }
 
     protected void localiseChildren(MutableList<String> list, PdxLocalisation localisation, String language, int indent) {
-        list.addAllIterable(localise(localisation, language, indent, children));
+        list.addAllIterable(localise(language, indent, children));
     }
 }

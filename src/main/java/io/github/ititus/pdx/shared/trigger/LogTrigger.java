@@ -4,23 +4,24 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
-public class OrTrigger extends TriggerBasedTrigger {
+public class LogTrigger extends Trigger {
 
-    public OrTrigger(Triggers triggers, IPdxScript s) {
-        super(triggers, s);
+    public final String text;
+
+    public LogTrigger(Triggers triggers, IPdxScript s) {
+        super(triggers);
+        this.text = s.expectValue().expectString();
     }
 
     @Override
     public boolean evaluate(Scope scope) {
-        return evaluateOr(scope, children);
+        System.out.println("log trigger: " + text);
+        return true;
     }
 
     @Override
     public ImmutableList<String> localise(String language, int indent) {
-        MutableList<String> list = Lists.mutable.of("or:");
-        localiseChildren(list, localisation, language, indent + 1);
-        return list.toImmutable();
+        return Lists.immutable.of("log=" + text);
     }
 }

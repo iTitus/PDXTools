@@ -16,6 +16,7 @@ import org.eclipse.collections.impl.factory.primitive.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -593,56 +594,56 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public ImmutableIntIntMap getAsIntIntMap() {
         MutableIntIntMap map = IntIntMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Integer.parseInt(oldK), oldV.expectValue().expectInt());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Integer.parseInt(k), oldV.expectValue().expectInt());
         });
         return map.toImmutable();
     }
 
     public ImmutableIntIntMap getAsIntUnsignedIntMap() {
         MutableIntIntMap map = IntIntMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Integer.parseInt(oldK), oldV.expectValue().expectUnsignedInt());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Integer.parseInt(k), oldV.expectValue().expectUnsignedInt());
         });
         return map.toImmutable();
     }
 
     public ImmutableIntLongMap getAsIntLongMap() {
         MutableIntLongMap map = IntLongMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Integer.parseInt(oldK), oldV.expectValue().expectLong());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Integer.parseInt(k), oldV.expectValue().expectLong());
         });
         return map.toImmutable();
     }
 
     public ImmutableIntDoubleMap getAsIntDoubleMap() {
         MutableIntDoubleMap map = IntDoubleMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Integer.parseInt(oldK), oldV.expectValue().expectDouble());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Integer.parseInt(k), oldV.expectValue().expectDouble());
         });
         return map.toImmutable();
     }
 
     public ImmutableIntObjectMap<String> getAsIntStringMap() {
         MutableIntObjectMap<String> map = IntObjectMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Integer.parseInt(oldK), oldV.expectValue().expectString());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Integer.parseInt(k), oldV.expectValue().expectString());
         });
         return map.toImmutable();
     }
 
     public <V> ImmutableIntObjectMap<V> getAsIntObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
         MutableIntObjectMap<V> map = IntObjectMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
+        this.map.forEach((k, oldV) -> {
             V v = valueFct.apply(oldV);
             if (v != null) {
-                usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-                map.put(Integer.parseInt(oldK), v);
+                usageStatistic.use(k, oldV.getTypeString(), oldV);
+                map.put(Integer.parseInt(k), v);
             }
         });
         return map.toImmutable();
@@ -650,56 +651,56 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public ImmutableLongIntMap getAsLongIntMap() {
         MutableLongIntMap map = LongIntMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Long.parseLong(oldK), oldV.expectValue().expectInt());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Long.parseLong(k), oldV.expectValue().expectInt());
         });
         return map.toImmutable();
     }
 
     public ImmutableLongIntMap getAsLongUnsignedIntMap() {
         MutableLongIntMap map = LongIntMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Long.parseLong(oldK), oldV.expectValue().expectUnsignedInt());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Long.parseLong(k), oldV.expectValue().expectUnsignedInt());
         });
         return map.toImmutable();
     }
 
     public ImmutableLongLongMap getAsLongLongMap() {
         MutableLongLongMap map = LongLongMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Long.parseLong(oldK), oldV.expectValue().expectLong());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Long.parseLong(k), oldV.expectValue().expectLong());
         });
         return map.toImmutable();
     }
 
     public ImmutableLongDoubleMap getAsLongDoubleMap() {
         MutableLongDoubleMap map = LongDoubleMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Long.parseLong(oldK), oldV.expectValue().expectDouble());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Long.parseLong(k), oldV.expectValue().expectDouble());
         });
         return map.toImmutable();
     }
 
     public ImmutableLongObjectMap<String> getAsLongStringMap() {
         MutableLongObjectMap<String> map = LongObjectMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(Long.parseLong(oldK), oldV.expectValue().expectString());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(Long.parseLong(k), oldV.expectValue().expectString());
         });
         return map.toImmutable();
     }
 
     public <V> ImmutableLongObjectMap<V> getAsLongObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
         MutableLongObjectMap<V> map = LongObjectMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
+        this.map.forEach((k, oldV) -> {
             V v = valueFct.apply(oldV);
             if (v != null) {
-                usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-                map.put(Long.parseLong(oldK), v);
+                usageStatistic.use(k, oldV.getTypeString(), oldV);
+                map.put(Long.parseLong(k), v);
             }
         });
         return map.toImmutable();
@@ -707,27 +708,27 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public ImmutableObjectIntMap<String> getAsStringIntMap() {
         MutableObjectIntMap<String> map = ObjectIntMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(oldK, oldV.expectValue().expectInt());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(k, oldV.expectValue().expectInt());
         });
         return map.toImmutable();
     }
 
     public ImmutableObjectIntMap<String> getAsStringUnsignedIntMap() {
         MutableObjectIntMap<String> map = ObjectIntMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(oldK, oldV.expectValue().expectUnsignedInt());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(k, oldV.expectValue().expectUnsignedInt());
         });
         return map.toImmutable();
     }
 
     public ImmutableObjectLongMap<String> getAsStringLongMap() {
         MutableObjectLongMap<String> map = ObjectLongMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(oldK, oldV.expectValue().expectLong());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(k, oldV.expectValue().expectLong());
         });
         return map.toImmutable();
     }
@@ -738,22 +739,22 @@ public final class PdxScriptObject extends BasePdxScript {
 
     public ImmutableObjectDoubleMap<String> getAsStringDoubleMap(Predicate<String> keyFilter) {
         MutableObjectDoubleMap<String> map = ObjectDoubleMaps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            if (keyFilter != null && !keyFilter.test(oldK)) {
+        this.map.forEach((k, oldV) -> {
+            if (keyFilter != null && !keyFilter.test(k)) {
                 return;
             }
 
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(oldK, oldV.expectValue().expectDouble());
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(k, oldV.expectValue().expectDouble());
         });
         return map.toImmutable();
     }
 
     public ImmutableMap<String, String> getAsStringStringMap() {
         MutableMap<String, String> map = Maps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-            map.put(oldK, oldV.expectValue().expectString());
+        this.map.forEach((k, oldV) -> {
+            usageStatistic.use(k, oldV.getTypeString(), oldV);
+            map.put(k, oldV.expectValue().expectString());
         });
         return map.toImmutable();
     }
@@ -763,17 +764,37 @@ public final class PdxScriptObject extends BasePdxScript {
         return getAsStringObjectMap(null, valueFct);
     }
 
+    public <V> ImmutableMap<String, V> getAsStringObjectMap(BiFunction<? super String, ? super IPdxScript, ? extends V> valueFct) {
+        return getAsStringObjectMap(null, valueFct);
+    }
+
     public <V> ImmutableMap<String, V> getAsStringObjectMap(Predicate<String> keyFilter, Function<? super IPdxScript, ? extends V> valueFct) {
         MutableMap<String, V> map = Maps.mutable.empty();
-        this.map.forEach((oldK, oldV) -> {
-            if (keyFilter != null && !keyFilter.test(oldK)) {
+        this.map.forEach((k, oldV) -> {
+            if (keyFilter != null && !keyFilter.test(k)) {
                 return;
             }
 
             V v = valueFct.apply(oldV);
             if (v != null) {
-                usageStatistic.use(oldK, oldV.getTypeString(), oldV);
-                map.put(oldK, v);
+                usageStatistic.use(k, oldV.getTypeString(), oldV);
+                map.put(k, v);
+            }
+        });
+        return map.toImmutable();
+    }
+
+    public <V> ImmutableMap<String, V> getAsStringObjectMap(Predicate<String> keyFilter, BiFunction<? super String, ? super IPdxScript, ? extends V> valueFct) {
+        MutableMap<String, V> map = Maps.mutable.empty();
+        this.map.forEach((k, oldV) -> {
+            if (keyFilter != null && !keyFilter.test(k)) {
+                return;
+            }
+
+            V v = valueFct.apply(k, oldV);
+            if (v != null) {
+                usageStatistic.use(k, oldV.getTypeString(), oldV);
+                map.put(k, v);
             }
         });
         return map.toImmutable();

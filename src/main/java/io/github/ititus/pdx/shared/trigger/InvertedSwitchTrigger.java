@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.shared.trigger;
 
-import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
@@ -50,20 +49,20 @@ public class InvertedSwitchTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+    public ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.empty();
         list.add("switch on " + trigger + ":");
         cases.forEach((v, t) -> {
-            list.add(indent(indent + 1) + "- case:");
-            list.add(indent(indent + 2) + "- condition:");
-            list.addAllIterable(localise(localisation, language, indent + 3, t.getOne()));
-            list.add(indent(indent + 2) + "- triggers:");
-            list.addAllIterable(localise(localisation, language, indent + 3, t.getTwo()));
+            list.add(indent(indent + 1) + " - case:");
+            list.add(indent(indent + 2) + " - condition:");
+            list.addAllIterable(localise(language, indent + 3, t.getOne()));
+            list.add(indent(indent + 2) + " - triggers:");
+            list.addAllIterable(localise(language, indent + 3, t.getTwo()));
         });
 
         if (defaultTriggers != null) {
-            list.add(indent(indent + 1) + "- default triggers:");
-            list.addAllIterable(localise(localisation, language, indent + 2, defaultTriggers));
+            list.add(indent(indent + 1) + " - default triggers:");
+            list.addAllIterable(localise(language, indent + 2, defaultTriggers));
         }
 
         return list.toImmutable();

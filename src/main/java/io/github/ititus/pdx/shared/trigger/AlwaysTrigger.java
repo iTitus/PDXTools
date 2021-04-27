@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.shared.trigger;
 
-import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
 import org.eclipse.collections.api.factory.Lists;
@@ -21,7 +20,7 @@ public class AlwaysTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+    public ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of("always=" + value);
     }
 }

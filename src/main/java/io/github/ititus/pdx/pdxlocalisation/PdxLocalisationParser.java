@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.UTF_8_BOM;
@@ -87,14 +88,15 @@ public final class PdxLocalisationParser {
                         if (language.isNotNull()) {
                             int separator = line.indexOf(':');
                             if (separator >= 0) {
-                                int valueStart = line.indexOf('"', separator + 2);
+                                int valueStart = line.indexOf('"', separator + 1);
                                 if (valueStart >= 0) {
                                     int valueEnd = line.lastIndexOf('"');
                                     if (valueEnd > valueStart) {
-                                        String key = line.substring(0, separator);
+                                        String key = line.substring(0, separator).toLowerCase(Locale.ROOT);
                                         String value = line.substring(valueStart + 1, valueEnd);
                                         localisation.computeIfAbsent(key, k -> Maps.mutable.withInitialCapacity(PdxConstants.LANGUAGE_COUNT))
                                                 .put(language.get(), value);
+
                                         return;
                                     }
                                 }

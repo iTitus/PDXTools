@@ -1,6 +1,5 @@
 package io.github.ititus.pdx.stellaris.game.trigger;
 
-import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
@@ -25,7 +24,7 @@ public class HasTraditionTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
+    public ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of("has_tradition=" + tradition);
     }
 }
