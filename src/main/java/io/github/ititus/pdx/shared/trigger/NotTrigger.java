@@ -20,7 +20,7 @@ public class NotTrigger extends TriggerBasedTrigger {
 
     @Override
     public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
-        MutableList<String> list = Lists.mutable.of("NOT:");
+        MutableList<String> list = Lists.mutable.of("not:");
         localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();
     }

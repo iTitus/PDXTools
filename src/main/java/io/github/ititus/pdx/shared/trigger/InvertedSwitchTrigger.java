@@ -15,13 +15,13 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SwitchTrigger extends Trigger {
+public class InvertedSwitchTrigger extends Trigger {
 
     public final String trigger;
     public final Map<String, Pair<Trigger, ImmutableList<Trigger>>> cases;
     public final ImmutableList<Trigger> defaultTriggers;
 
-    public SwitchTrigger(Triggers triggers, IPdxScript s) {
+    public InvertedSwitchTrigger(Triggers triggers, IPdxScript s) {
         super(triggers);
         PdxScriptObject o = s.expectObject();
         this.trigger = o.getString("trigger");
@@ -29,7 +29,7 @@ public class SwitchTrigger extends Trigger {
         o.forEach((k, v) -> {
             if (!"trigger".equals(k) && !"default".equals(k)) {
                 cases.put(k, Tuples.pair(
-                        create(PdxScriptObject.builder().add(trigger, PdxScriptValue.of(v.getRelation(), k)).build()).getOnly(),
+                        create(PdxScriptObject.builder().add("not", PdxScriptObject.builder().add(trigger, PdxScriptValue.of(v.getRelation(), k)).build()).build()).getOnly(),
                         create(v)
                 ));
             }

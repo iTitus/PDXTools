@@ -51,23 +51,25 @@ public class IfElseTrigger extends TriggerBasedTrigger {
     public ImmutableList<String> localise(PdxLocalisation localisation, String language, int indent) {
         boolean first = true;
         MutableList<String> list = Lists.mutable.of();
+        list.add("if_then_else:");
         for (IfElse b : branches) {
             if (first) {
-                list.add("if:");
+                list.add(indent(indent + 1) + "- if:");
                 first = false;
             } else {
-                list.add("else_if:");
+                list.add(indent(indent + 1) + "- else_if:");
             }
 
-            list.addAllIterable(localise(localisation, language, indent + 1, b.limit));
+            list.add(indent(indent + 2) + "- condition:");
+            list.addAllIterable(localise(localisation, language, indent + 3, b.limit));
 
-            list.add("then:");
-            list.addAllIterable(localise(localisation, language, indent + 1, b.children));
+            list.add(indent(indent + 2) + "- triggers:");
+            list.addAllIterable(localise(localisation, language, indent + 3, b.children));
         }
 
         if (children != null) {
-            list.add("else:");
-            list.addAllIterable(localise(localisation, language, indent + 1, children));
+            list.add(indent(indent + 1) + "else triggers:");
+            list.addAllIterable(localise(localisation, language, indent + 2, children));
         }
 
         return list.toImmutable();
