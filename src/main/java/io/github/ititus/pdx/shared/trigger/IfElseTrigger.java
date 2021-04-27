@@ -73,15 +73,7 @@ public class IfElseTrigger extends TriggerBasedTrigger {
         return list.toImmutable();
     }
 
-    public static final class IfElse {
-
-        public final ImmutableList<Trigger> children;
-        public final ImmutableList<Trigger> limit;
-
-        private IfElse(ImmutableList<Trigger> children, ImmutableList<Trigger> limit) {
-            this.children = children;
-            this.limit = limit;
-        }
+    public record IfElse(ImmutableList<Trigger> children, ImmutableList<Trigger> limit) {
     }
 
     public static final class Builder {
@@ -113,9 +105,11 @@ public class IfElseTrigger extends TriggerBasedTrigger {
                 throw new IllegalStateException();
             }
 
-            ImmutableList<Trigger> limit = triggers.create(s.expectObject().get("limit"));
-            ImmutableList<Trigger> children = triggers.create(s, NOT_LIMIT);
-            branches.add(new IfElse(limit, children));
+            s.expectImplicitList().forEach(s_ -> {
+                ImmutableList<Trigger> limit = triggers.create(s_.expectObject());
+                ImmutableList<Trigger> children = triggers.create(s_, NOT_LIMIT);
+                branches.add(new IfElse(limit, children));
+            });
 
             return this;
         }

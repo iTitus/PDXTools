@@ -2,6 +2,7 @@ package io.github.ititus.pdx.shared.trigger;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -79,6 +80,7 @@ public class Triggers {
 
     public ImmutableList<Trigger> create(PdxScriptObject o, Predicate<String> keyFilter) {
         MutableList<Trigger> triggers = Lists.mutable.empty();
+        MutableBoolean ifElseFound = new MutableBoolean();
         IfElseTrigger.Builder[] ifElseTriggerBuilder = new IfElseTrigger.Builder[1];
         o.forEach((k, v) -> {
             k = k.toLowerCase(Locale.ROOT);
@@ -93,19 +95,21 @@ public class Triggers {
 
             switch (k) {
                 case "if" -> {
-                    if (ifElseTriggerBuilder[0] != null) {
-                        triggers.add(ifElseTriggerBuilder[0].build());
+                    if (ifElseFound.get()) {
+                        throw new IllegalStateException();
                     }
 
+                    ifElseFound.set(true);
                     ifElseTriggerBuilder[0] = IfElseTrigger.builder(this).addIf(v);
                 }
                 case "else_if" -> ifElseTriggerBuilder[0].addElseIf(v);
                 case "else" -> ifElseTriggerBuilder[0].addElse(v);
                 default -> {
-                    if (ifElseTriggerBuilder[0] != null) {
+                    if (ifElseFound.get()) {
                         triggers.add(ifElseTriggerBuilder[0].build());
                         ifElseTriggerBuilder[0] = null;
                     }
+
                     v.expectImplicitList().forEach(s -> triggers.add(factory.create(this, s)));
                 }
             }
