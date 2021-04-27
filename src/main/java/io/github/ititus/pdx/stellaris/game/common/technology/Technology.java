@@ -19,7 +19,7 @@ public record Technology(
         int levels,
         int costPerLevel,
         ImmutableList<String> prerequisites,
-        int weight,
+        double weight,
         String gateway,
         String aiUpdateType,
         boolean isRare,
@@ -45,7 +45,7 @@ public record Technology(
         int levels = o.getInt("levels", 1);
         int costPerLevel = o.getInt("cost_per_level", 0);
         ImmutableList<String> prerequisites = o.getListAsEmptyOrStringList("prerequisites");
-        int weight = o.getInt("weight", 0);
+        double weight = o.getDouble("weight", 0);
         String gateway = o.getString("gateway", null);
         String aiUpdateType = o.getString("ai_update_type", null);
         boolean isRare = o.getBoolean("is_rare", false);
@@ -56,8 +56,8 @@ public record Technology(
         ImmutableList<String> featureFlags = o.getListAsEmptyOrStringList("feature_flags");
         TechnologyPreReqForDesc prereqforDesc = o.getObjectAsNullOr("prereqfor_desc", TechnologyPreReqForDesc::new);
         ImmutableList<Trigger> potential = o.getObjectAs("potential", game.triggers::create, Lists.immutable.empty());
-        TechnologyWeightModifiers weightModifier = o.getObjectAsNullOr("weight_modifier", o_ -> new TechnologyWeightModifiers(game, o_));
-        TechnologyWeightModifiers aiWeight = o.getObjectAsNullOr("ai_weight", o_ -> new TechnologyWeightModifiers(game, o_));
+        TechnologyWeightModifiers weightModifier = o.getObjectAsNullOr("weight_modifier", o_ -> TechnologyWeightModifiers.of(game, o_));
+        TechnologyWeightModifiers aiWeight = o.getObjectAsNullOr("ai_weight", o_ -> TechnologyWeightModifiers.of(game, o_));
         ImmutableList<String> weightGroups = o.getListAsEmptyOrStringList("weight_groups");
         ImmutableObjectDoubleMap<String> modWeightIfGroupPicked = o.getObjectAsEmptyOrStringDoubleMap("mod_weight_if_group_picked");
         return new Technology(game, cost, area, tier, category, levels, costPerLevel, prerequisites, weight, gateway, aiUpdateType, isRare, isDangerous, isReverseEngineerable, startTech, modifier, featureFlags, prereqforDesc, potential, weightModifier, aiWeight, weightGroups, modWeightIfGroupPicked);
@@ -74,16 +74,7 @@ public record Technology(
     public double getWeight(Scope scope) {
         double weight = this.weight;
         if (weightModifier != null) {
-            weight *= weightModifier.factor;
-
-            if (scope != null) {
-                for (TechnologyWeightModifier m : weightModifier.modifiers) {
-                    if (Trigger.evaluateAnd(scope, m.triggers)) {
-                        weight *= m.factor;
-                        weight += m.add * this.weight;
-                    }
-                }
-            }
+            weight = weightModifier.modifyWeight(weight, this.weight, scope);
         }
 
         return weight;

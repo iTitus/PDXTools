@@ -1,19 +1,30 @@
 package io.github.ititus.pdx.stellaris.game.common.technology;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import org.eclipse.collections.api.list.ImmutableList;
 
-public class TechnologyWeightModifiers {
+public record TechnologyWeightModifiers(
+        StellarisGame game,
+        double factor,
+        ImmutableList<TechnologyWeightModifier> modifiers
+) {
 
-    public final double factor;
-    public final ImmutableList<TechnologyWeightModifier> modifiers;
+    public static TechnologyWeightModifiers of(StellarisGame game, PdxScriptObject o) {
+        double factor = o.getDouble("factor", 1);
+        ImmutableList<TechnologyWeightModifier> modifiers = o.getImplicitListAsList("modifier", s -> TechnologyWeightModifier.of(game, s));
+        return new TechnologyWeightModifiers(game, factor, modifiers);
+    }
 
-    private final StellarisGame game;
+    public double modifyWeight(double currentWeight, double baseWeight, Scope scope) {
+        currentWeight *= factor;
+        if (scope != null) {
+            for (TechnologyWeightModifier m : modifiers) {
+                currentWeight = m.modifyWeight(currentWeight, baseWeight, scope);
+            }
+        }
 
-    public TechnologyWeightModifiers(StellarisGame game, PdxScriptObject o) {
-        this.game = game;
-        this.factor = o.getDouble("factor", 1);
-        this.modifiers = o.getImplicitListAsList("modifier", s -> new TechnologyWeightModifier(game, s));
+        return currentWeight;
     }
 }

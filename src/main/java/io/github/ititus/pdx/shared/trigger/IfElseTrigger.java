@@ -73,7 +73,10 @@ public class IfElseTrigger extends TriggerBasedTrigger {
         return list.toImmutable();
     }
 
-    public record IfElse(ImmutableList<Trigger> children, ImmutableList<Trigger> limit) {
+    public record IfElse(
+            ImmutableList<Trigger> children,
+            ImmutableList<Trigger> limit
+    ) {
     }
 
     public static final class Builder {

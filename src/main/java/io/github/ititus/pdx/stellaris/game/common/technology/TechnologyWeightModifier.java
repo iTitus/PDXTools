@@ -13,26 +13,34 @@ import java.util.function.Predicate;
 
 import static java.util.function.Predicate.not;
 
-public class TechnologyWeightModifier {
+public record TechnologyWeightModifier(
+        StellarisGame game,
+        double factor,
+        double add,
+        ImmutableList<Trigger> triggers
+) {
 
     private static final ImmutableSet<String> IGNORE = Sets.immutable.of("factor", "add");
     private static final Predicate<String> FILTER = not(IGNORE::contains);
 
-    public final double factor;
-    public final double add;
-    public final ImmutableList<Trigger> triggers;
-
-    private final StellarisGame game;
-
-    public TechnologyWeightModifier(StellarisGame game, IPdxScript s) {
-        this.game = game;
+    public static TechnologyWeightModifier of(StellarisGame game, IPdxScript s) {
         PdxScriptObject o = s.expectObject();
-        this.factor = o.getDouble("factor", 1);
-        this.add = o.getDouble("add", 0);
-        this.triggers = game.triggers.create(o, FILTER);
+        double factor = o.getDouble("factor", 1);
+        double add = o.getDouble("add", 0);
+        ImmutableList<Trigger> triggers = game.triggers.create(o, FILTER);
+        return new TechnologyWeightModifier(game, factor, add, triggers);
     }
 
     public boolean isActive(Scope scope) {
         return Trigger.evaluateAnd(scope, triggers);
+    }
+
+    public double modifyWeight(double currentWeight, double baseWeight, Scope scope) {
+        if (isActive(scope)) {
+            currentWeight *= factor;
+            currentWeight += add * baseWeight;
+        }
+
+        return currentWeight;
     }
 }
