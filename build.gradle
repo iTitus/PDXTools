@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.javamodularity.moduleplugin' version '1.8.1'
+    id 'org.javamodularity.moduleplugin' version '1.8.2'
     id 'org.openjfx.javafxplugin' version '0.0.9'
     id 'org.beryx.jlink' version '2.23.7'
 }
@@ -46,19 +46,8 @@ dependencies {
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
 }
 
-compileTestJava {
-    moduleOptions {
-        addModules = ['org.junit.jupiter.params']
-        addReads = ['io.github.ititus.pdx': 'org.junit.jupiter.params']
-    }
-}
-
 test {
     useJUnitPlatform()
-
-    moduleOptions {
-        addReads = ['io.github.ititus.pdx': 'org.junit.jupiter.params']
-    }
 }
 
 javafx {
