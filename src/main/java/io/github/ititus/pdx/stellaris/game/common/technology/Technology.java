@@ -5,9 +5,9 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.shared.localisation.ExternalLocalisable;
 import io.github.ititus.pdx.shared.localisation.Localisable;
-import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import io.github.ititus.pdx.stellaris.shared.Modifier;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -102,7 +102,7 @@ public record Technology(
         return levels == -1;
     }
 
-    public boolean hasPotential(Scope scope) {
+    public boolean hasPotential(CountryScope scope) {
         return Trigger.evaluateAnd(scope, potential);
     }
 
@@ -110,7 +110,7 @@ public record Technology(
         return getWeight(null);
     }
 
-    public double getWeight(Scope scope) {
+    public double getWeight(CountryScope scope) {
         double weight = this.weight;
         if (weightModifier != null) {
             weight = weightModifier.modifyWeight(weight, this.weight, scope);

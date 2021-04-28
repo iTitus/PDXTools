@@ -5,6 +5,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import java.util.function.Predicate;
@@ -30,7 +31,7 @@ public record TechnologyWeightModifier(
         return Trigger.evaluateAnd(scope, triggers);
     }
 
-    public double modifyWeight(double currentWeight, double baseWeight, Scope scope) {
+    public double modifyWeight(double currentWeight, double baseWeight, CountryScope scope) {
         if (isActive(scope)) {
             currentWeight *= factor;
             currentWeight += add * baseWeight;

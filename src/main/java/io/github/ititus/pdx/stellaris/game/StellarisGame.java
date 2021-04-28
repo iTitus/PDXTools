@@ -71,22 +71,22 @@ public class StellarisGame {
         int steps = 10;
         int progress = 0;
 
-        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating triggers");
-        this.triggers = new Triggers(this);
-        addEngineTriggers();
-
-        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating effects");
-        this.effects = new Effects(this);
-        addEngineEffects();
-
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common/scripted_variables");
         MutableMap<String, IPdxScript> variables = Maps.mutable.empty();
         PdxScriptParser.parseWithDefaultPatches(variables, findScriptFiles("common/scripted_variables")).expectEmpty();
         this.scriptedVariables = variables.toImmutable();
 
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating triggers");
+        this.triggers = new Triggers(this);
+        addEngineTriggers();
+
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common/scripted_triggers");
         IPdxScript s = PdxScriptParser.parseWithDefaultPatches(this.scriptedVariables, findScriptFiles("common/scripted_triggers"));
         this.triggers.addScriptedTriggers(s);
+
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating effects");
+        this.effects = new Effects(this);
+        addEngineEffects();
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common");
         this.common = new Common(this, installDir.resolve("common"), index + 1, progressMessageUpdater);
@@ -231,6 +231,41 @@ public class StellarisGame {
         addScopeTrigger("ruler");
 
         // Engine Triggers for Stellaris
+        triggers.addEngineValueTrigger("is_planet_class");
+        triggers.addEngineValueTrigger("has_origin");
+        triggers.addEngineValueTrigger("has_trait");
+        triggers.addEngineValueTrigger("years_passed");
+        triggers.addEngineValueTrigger("has_technology");
+        triggers.addEngineValueTrigger("has_tradition");
+        triggers.addEngineValueTrigger("has_ethic");
+        triggers.addEngineValueTrigger("host_has_dlc");
+        triggers.addEngineValueTrigger("has_country_flag");
+        triggers.addEngineValueTrigger("has_civic");
+        triggers.addEngineValueTrigger("has_valid_civic");
+        triggers.addEngineValueTrigger("has_ascension_perk");
+        triggers.addEngineValueTrigger("has_federation");
+        triggers.addEngineValueTrigger("has_deposit");
+        triggers.addEngineValueTrigger("has_authority");
+        triggers.addEngineValueTrigger("has_modifier");
+        triggers.addEngineValueTrigger("has_policy_flag");
+        triggers.addEngineValueTrigger("has_ai_personality_behaviour");
+        triggers.addEngineValueTrigger("num_owned_planets");
+        triggers.addEngineValueTrigger("num_communications");
+        triggers.addEngineValueTrigger("is_country_type");
+        triggers.addEngineValueTrigger("has_level");
+        triggers.addEngineValueTrigger("is_ai");
+        triggers.addEngineValueTrigger("has_global_flag");
+        triggers.addEngineValueTrigger("has_communications");
+        triggers.addEngineValueTrigger("has_seen_any_bypass");
+        triggers.addEngineValueTrigger("owns_any_bypass");
+        triggers.addEngineValueTrigger("is_galactic_community_member");
+        triggers.addEngineValueTrigger("is_enslaved");
+        triggers.addEngineValueTrigger("has_megastructure");
+        triggers.addEngineValueTrigger("pop_has_trait");
+        triggers.addEngineValueTrigger("is_sapient");
+        triggers.addEngineValueTrigger("has_federation_perk");
+        triggers.addEngineValueTrigger("is_archetype");
+
         triggers.addEngineTrigger("any_member", AnyMemberTrigger::new);
         triggers.addEngineTrigger("any_neighbor_country", AnyNeighborCountryTrigger::new);
         triggers.addEngineTrigger("any_owned_planet", AnyOwnedPlanetTrigger::new);
@@ -243,43 +278,8 @@ public class StellarisGame {
         triggers.addEngineTrigger("count_starbase_sizes", CountStarbaseSizesTrigger::new);
         triggers.addEngineTrigger("research_leader", ResearchLeaderTrigger::new);
 
-        triggers.addEngineTrigger("is_planet_class", IsPlanetClassTrigger::new);
-        triggers.addEngineTrigger("has_origin", HasOriginTrigger::new);
-        triggers.addEngineTrigger("has_trait", HasTraitTrigger::new);
-        triggers.addEngineTrigger("years_passed", YearsPassedTrigger::new);
-        triggers.addEngineTrigger("has_technology", HasTechnologyTrigger::new);
-        triggers.addEngineTrigger("has_tradition", HasTraditionTrigger::new);
-        triggers.addEngineTrigger("has_ethic", HasEthicTrigger::new);
-        triggers.addEngineTrigger("host_has_dlc", HostHasDlcTrigger::new);
-        triggers.addEngineTrigger("has_country_flag", HasCountryFlagTrigger::new);
-        triggers.addEngineTrigger("has_civic", HasCivicTrigger::new);
-        triggers.addEngineTrigger("has_valid_civic", HasValidCivicTrigger::new);
-
-        addDummyTrigger("has_ascension_perk");
-        addDummyTrigger("has_federation");
-        addDummyTrigger("has_deposit");
-        addDummyTrigger("has_authority");
-        addDummyTrigger("has_modifier");
-        addDummyTrigger("has_policy_flag");
-        addDummyTrigger("has_ai_personality_behaviour");
-        addDummyTrigger("num_owned_planets");
-        addDummyTrigger("num_communications");
-        addDummyTrigger("is_country_type");
-        addDummyTrigger("has_level");
         addDummyTrigger("num_districts");
-        addDummyTrigger("is_ai");
         addDummyTrigger("has_resource");
-        addDummyTrigger("has_global_flag");
-        addDummyTrigger("has_communications");
-        addDummyTrigger("has_seen_any_bypass");
-        addDummyTrigger("owns_any_bypass");
-        addDummyTrigger("is_galactic_community_member");
-        addDummyTrigger("is_enslaved");
-        addDummyTrigger("has_megastructure");
-        addDummyTrigger("pop_has_trait");
-        addDummyTrigger("is_sapient");
-        addDummyTrigger("has_federation_perk");
-        addDummyTrigger("is_archetype");
     }
 
     private void addEngineEffects() {

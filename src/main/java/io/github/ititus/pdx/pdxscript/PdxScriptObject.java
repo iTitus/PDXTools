@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.function.BiIntObjFunction;
 import io.github.ititus.pdx.pdxscript.internal.BasePdxScript;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -108,6 +109,13 @@ public final class PdxScriptObject extends BasePdxScript {
         }
 
         return extractString(key, s);
+    }
+
+    public <T> T getNullOrEnum(String key, Function<? super String, ? extends T> fct) {
+        IPdxScript s = getRaw(key);
+        usageStatistic.use(key, STRING, s);
+        String enumName = extractNullOrEnum(key, s);
+        return enumName != null ? fct.apply(enumName) : null;
     }
 
     public <T> T getEnum(String key, Function<? super String, ? extends T> fct) {
@@ -432,6 +440,10 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, o -> o.getAsIntObjectMap(fct));
     }
 
+    public <V> ImmutableIntObjectMap<V> getObjectAsIntObjectMap(String key, BiIntObjFunction<? super IPdxScript, ? extends V> fct) {
+        return getObjectAs(key, o -> o.getAsIntObjectMap(fct));
+    }
+
     public ImmutableLongIntMap getObjectAsLongIntMap(String key) {
         return getObjectAs(key, PdxScriptObject::getAsLongIntMap);
     }
@@ -644,6 +656,19 @@ public final class PdxScriptObject extends BasePdxScript {
             if (v != null) {
                 usageStatistic.use(k, oldV.getTypeString(), oldV);
                 map.put(Integer.parseInt(k), v);
+            }
+        });
+        return map.toImmutable();
+    }
+
+    public <V> ImmutableIntObjectMap<V> getAsIntObjectMap(BiIntObjFunction<? super IPdxScript, ? extends V> valueFct) {
+        MutableIntObjectMap<V> map = IntObjectMaps.mutable.empty();
+        this.map.forEach((oldK, oldV) -> {
+            int k = Integer.parseInt(oldK);
+            V v = valueFct.apply(k, oldV);
+            if (v != null) {
+                usageStatistic.use(oldK, oldV.getTypeString(), oldV);
+                map.put(k, v);
             }
         });
         return map.toImmutable();
@@ -928,17 +953,6 @@ public final class PdxScriptObject extends BasePdxScript {
         throw new NoSuchElementException("expected string for key " + key + " but got " + s);
     }
 
-    private String extractEnum(String key, IPdxScript s) {
-        if (s instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) s).getValue();
-            if (v instanceof String) {
-                return (String) v;
-            }
-        }
-
-        throw new NoSuchElementException("expected enum (string) for key " + key + " but got " + s);
-    }
-
     private String extractNullOrString(String key, IPdxScript s) {
         if (s instanceof PdxScriptValue) {
             Object v = ((PdxScriptValue) s).getValue();
@@ -950,6 +964,31 @@ public final class PdxScriptObject extends BasePdxScript {
         }
 
         throw new NoSuchElementException("expected string or null for key " + key + " but got " + s);
+    }
+
+
+    private String extractEnum(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v instanceof String) {
+                return (String) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected enum (string) for key " + key + " but got " + s);
+    }
+
+    private String extractNullOrEnum(String key, IPdxScript s) {
+        if (s instanceof PdxScriptValue) {
+            Object v = ((PdxScriptValue) s).getValue();
+            if (v == null) {
+                return null;
+            } else if (v instanceof String) {
+                return (String) v;
+            }
+        }
+
+        throw new NoSuchElementException("expected enum (string) or null for key " + key + " but got " + s);
     }
 
     private LocalDate extractDate(String key, IPdxScript s) {
@@ -1064,7 +1103,7 @@ public final class PdxScriptObject extends BasePdxScript {
         }
 
         public PdxScriptObject build(PdxRelation relation) {
-            return new PdxScriptObject(relation, Collections.unmodifiableMap(map));
+            return new PdxScriptObject(relation, map.isEmpty() ? Map.of() : Collections.unmodifiableMap(map));
         }
     }
 }

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 
 public class Country {
 
+    public final int id;
     public final boolean customName;
     public final boolean autoShipDesigns;
     public final boolean hasAdvisor;
@@ -116,7 +117,8 @@ public class Country {
     public final int edictCapacity;
     public final ImmutableIntList ownedSpecies;
 
-    public Country(IPdxScript s) {
+    public Country(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.flag = o.getObjectAs("flag", Flag::new);
         this.colorIndex = o.getInt("color_index");

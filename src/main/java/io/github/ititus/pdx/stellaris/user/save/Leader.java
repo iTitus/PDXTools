@@ -66,4 +66,8 @@ public class Leader {
         this.cooldown = o.getInt("cooldown", 0);
         this.roles = o.getObjectAs("roles", LeaderRoles::new);
     }
+
+    public boolean hasTrait(String trait) {
+        return roles.hasTrait(trait);
+    }
 }

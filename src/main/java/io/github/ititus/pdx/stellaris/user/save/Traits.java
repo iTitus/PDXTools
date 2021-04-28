@@ -10,4 +10,8 @@ public class Traits {
     public Traits(PdxScriptObject o) {
         this.traits = o.getImplicitListAsStringList("trait");
     }
+
+    public boolean hasTrait(String trait) {
+        return traits.contains(trait);
+    }
 }

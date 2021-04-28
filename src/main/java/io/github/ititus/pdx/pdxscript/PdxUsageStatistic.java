@@ -16,6 +16,8 @@ import static io.github.ititus.pdx.pdxscript.PdxConstants.NUMBER_MARKER;
 
 public final class PdxUsageStatistic {
 
+    private static final boolean ENABLE_TRACKING = false;
+
     private final MutableMap<String, PdxUsage> usages;
 
     public PdxUsageStatistic() {
@@ -27,18 +29,25 @@ public final class PdxUsageStatistic {
     }
 
     public PdxUsageStatistic init(Map<String, IPdxScript> map) {
-        map.forEach(this::use);
+        if (ENABLE_TRACKING) {
+            map.forEach(this::use);
+        }
+
         return this;
     }
 
     private void use(String key, IPdxScript actual) {
-        String fKey = key.chars().allMatch(PdxScriptParser::isDigit) ? NUMBER_MARKER : key;
-        usages.computeIfAbsent(fKey, k -> new PdxUsage()).actual(PdxHelper.getTypeString(actual));
+        if (ENABLE_TRACKING) {
+            String fKey = key.chars().allMatch(PdxScriptParser::isDigit) ? NUMBER_MARKER : key;
+            usages.computeIfAbsent(fKey, k -> new PdxUsage()).actual(PdxHelper.getTypeString(actual));
+        }
     }
 
     public void use(String key, String expectedType, IPdxScript actual) {
-        String fKey = key.chars().allMatch(PdxScriptParser::isDigit) ? NUMBER_MARKER : key;
-        usages.computeIfAbsent(fKey, k -> new PdxUsage()).expected(expectedType).actual(PdxHelper.getTypeString(actual));
+        if (ENABLE_TRACKING) {
+            String fKey = key.chars().allMatch(PdxScriptParser::isDigit) ? NUMBER_MARKER : key;
+            usages.computeIfAbsent(fKey, k -> new PdxUsage()).expected(expectedType).actual(PdxHelper.getTypeString(actual));
+        }
     }
 
     ImmutableMap<String, PdxUsage> getUsages() {

@@ -17,4 +17,12 @@ public class LeaderRoles {
         this.governor = o.getObjectAsNullOr("governor", Traits::new);
         this.ruler = o.getObjectAsNullOr("ruler", Traits::new);
     }
+
+    public boolean hasTrait(String trait) {
+        return hasTrait(admiral, trait) || hasTrait(general, trait) || hasTrait(scientist, trait) || hasTrait(governor, trait) || hasTrait(ruler, trait);
+    }
+
+    private static boolean hasTrait(Traits traits, String trait) {
+        return traits != null && traits.hasTrait(trait);
+    }
 }

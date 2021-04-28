@@ -1,7 +1,6 @@
 package io.github.ititus.pdx.stellaris.game.gfx;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
@@ -51,7 +50,10 @@ public class Gfx {
 
         this.gfxDir = gfxDir;
 
-        PdxScriptObject o = PdxScriptParser.parseWithDefaultPatches(findFiles(ASSET)).expectObject();
+        // FIXME: disabled for performance
+        // Path[] files = findFiles(ASSET);
+        PdxScriptObject o = PdxScriptObject.builder().build(); // PdxScriptParser.parseWithDefaultPatches(files).expectObject();
+
         this.lights = o.getImplicitListAsList("light", Light::new);
         this.animations = o.getImplicitListAsList("animation", Animation::new);
         this.entities = o.getImplicitListAsList("entity", Entity::new);

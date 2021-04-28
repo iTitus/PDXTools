@@ -20,8 +20,8 @@ import java.nio.file.Path;
 public class StellarisSaveAnalyser implements Runnable {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
-    private static final Path INSTALL_DIR = Path.of("C:", "Program Files (x86)", "Steam", "steamapps", "common", "Stellaris");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
+    private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
 
     private static final String SAVE_FOLDER = "mpthorquellalliance_-677535411";
     private static final String SAVE_GAME = "2285.03.17";

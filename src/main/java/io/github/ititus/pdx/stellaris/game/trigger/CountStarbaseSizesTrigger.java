@@ -7,6 +7,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.shared.trigger.Triggers;
+import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -27,9 +28,8 @@ public class CountStarbaseSizesTrigger extends Trigger {
 
     @Override
     public boolean evaluate(Scope scope) {
-        // scopes: country
-        // return scope.getStarbaseCount(starbaseSize) <relation> count;
-        throw new UnsupportedOperationException();
+        CountryScope cs = CountryScope.expect(scope);
+        return relation.compare(cs.getStarbaseCount(starbaseSize) ,count);
     }
 
     @Override

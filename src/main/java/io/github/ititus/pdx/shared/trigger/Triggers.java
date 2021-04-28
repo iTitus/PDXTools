@@ -32,6 +32,11 @@ public class Triggers {
         }
     }
 
+    public void addEngineValueTrigger(String name) {
+        name = name.toLowerCase(Locale.ROOT);
+        addEngineTrigger(name, ValueTrigger.factory(name));
+    }
+
     public void addScriptedTrigger(String name, IPdxScript scriptedTrigger) {
         if (scriptedTriggers.put(name, scriptedTrigger.expectObject()) != null) {
             throw new IllegalArgumentException("scripted trigger " + name + " already exists");

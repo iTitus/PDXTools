@@ -24,10 +24,10 @@ import java.util.List;
 public class Test {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
-    private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
-    private static final Path SAVE = USER_HOME.resolve("Desktop/pdx/3.0.1");
+    private static final Path SAVE_DIR = USER_DATA_DIR.resolve("save games/mpthorquellalliance_-677535411");
+    private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
     private static final Path[] TEST_FILES = { /*USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
 
     private static StellarisGame getStellarisGame() {
@@ -46,7 +46,7 @@ public class Test {
 
     private static StellarisSave getStellarisSave() {
         StopWatch s = StopWatch.createRunning();
-        StellarisSave save = new StellarisSave(SAVE);
+        StellarisSave save = StellarisSave.loadLastModified(SAVE_DIR);
         System.out.println("Test Save Load Time: " + DurationFormatter.format(s.stop()));
         return save;
     }
