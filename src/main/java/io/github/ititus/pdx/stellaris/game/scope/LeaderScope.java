@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.game.scope;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 import io.github.ititus.pdx.shared.scope.Scope;
+import io.github.ititus.pdx.shared.scope.ScopeHelper;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.Leader;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
@@ -32,6 +33,7 @@ public class LeaderScope extends BaseScope {
     @Override
     public boolean evaluateValueTrigger(String name, PdxScriptValue v) {
         return switch (name) {
+            case "has_level" -> ScopeHelper.compare(leader.level, v);
             case "has_trait" -> leader.hasTrait(v.expectString());
             default -> super.evaluateValueTrigger(name, v);
         };

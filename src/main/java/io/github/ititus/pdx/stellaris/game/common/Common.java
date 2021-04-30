@@ -14,7 +14,6 @@ import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTier
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
-import org.eclipse.collections.api.bimap.ImmutableBiMap;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -69,7 +68,7 @@ public class Common {
         int progress = 0;
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading deposits");
-        this.deposits = loadObject("deposits").getAs(o_->new Deposits(game, o_));
+        this.deposits = loadObject("deposits").getAs(o_ -> new Deposits(game, o_));
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading planet_classes");
         this.planetClasses = loadObject("planet_classes").getAs(PlanetClasses::new);

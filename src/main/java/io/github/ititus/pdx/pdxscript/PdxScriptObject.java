@@ -1037,7 +1037,6 @@ public final class PdxScriptObject extends BasePdxScript {
 
         PdxHelper.listObjectOpen(indent, root, key, b, relation, map.isEmpty());
 
-        // TODO: Print alphabetically sorted by k
         map.forEach((k, v) -> {
             b.append(v.toPdxScript(root ? indent : indent + 1, false, k));
             b.append(LINE_FEED);

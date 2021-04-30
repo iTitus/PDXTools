@@ -11,13 +11,14 @@ import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.multimap.list.MutableListMultimap;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
+import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.io.IOException;
@@ -142,36 +143,43 @@ public class Test {
             return;
         }
 
-        int countryId = 0;
-        Technology.Area area = Technology.Area.ENGINEERING;
+        System.out.println();
 
+        int countryId = 0;
         CountryScope cs = new CountryScope(game, save, countryId);
 
-        MutableSet<String> openTechNames = game.common.technologies.all().collect(Technology::name, Sets.mutable.empty());
-        openTechNames.removeAllIterable(cs.getCountry().techStatus.technologies.keySet());
+        MutableSet<Technology> techs = game.common.technologies.all().toSet();
+        techs.removeIf(t -> cs.getCountry().techStatus.technologies.containsKey(t.name()));
         if (cs.getCountry().techStatus.physicsQueueItem != null) {
-            openTechNames.remove(cs.getCountry().techStatus.physicsQueueItem.technology);
+            techs.removeIf(t -> t.name().equals(cs.getCountry().techStatus.physicsQueueItem.technology));
         }
         if (cs.getCountry().techStatus.societyQueueItem != null) {
-            openTechNames.remove(cs.getCountry().techStatus.societyQueueItem.technology);
+            techs.removeIf(t -> t.name().equals(cs.getCountry().techStatus.societyQueueItem.technology));
         }
         if (cs.getCountry().techStatus.engineeringQueueItem != null) {
-            openTechNames.remove(cs.getCountry().techStatus.engineeringQueueItem.technology);
+            techs.removeIf(t -> t.name().equals(cs.getCountry().techStatus.engineeringQueueItem.technology));
         }
-        MutableSet<Technology> openTechs = openTechNames.collect(game.common.technologies::get);
+        techs.removeIf(t -> !t.hasAllPrerequisites(cs) || !t.hasPotential(cs) || !t.hasTierCondition(cs));
 
-        openTechs = openTechs.select(t -> t.area() == area);
+        MutableListMultimap<Technology.Area, ObjectDoublePair<Technology>> availableTechs = techs
+                .groupByAndCollect(Technology::area, t -> PrimitiveTuples.pair(t, t.getWeight(cs)), Multimaps.mutable.list.empty());
+        availableTechs = availableTechs.rejectKeysValues((k, v) -> v.getTwo() <= 0);
 
-        openTechs.removeIf(t -> !t.hasAllPrerequisites(cs) || !t.hasPotential(cs) || !t.hasTierCondition(cs));
+        int researchAlternatives = cs.getCountry().techStatus.alternatives.get(Technology.Area.PHYSICS)
+                .count(t -> !cs.getCountry().techStatus.alwaysAvailableTech.contains(t));
+        System.out.println("Tech Alternatives: " + researchAlternatives);
 
-        MutableList<ObjectDoublePair<Technology>> weightedTech = openTechs.collect(t -> PrimitiveTuples.pair(t, t.getWeight(cs)))
-                .toSortedList(Comparator.comparing(ObjectDoublePair<Technology>::getTwo).reversed());
-        weightedTech.removeIf(p -> p.getTwo() <= 0);
+        for (Technology.Area area : Technology.Area.values()) {
+            MutableList<ObjectDoublePair<Technology>> techsInArea = availableTechs.get(area)
+                    .toSortedList(Comparator.comparing(ObjectDoublePair<Technology>::getTwo).reversed());
 
-        double totalWeight = weightedTech.sumOfDouble(ObjectDoublePair::getTwo);
+            double totalWeight = techsInArea.sumOfDouble(ObjectDoublePair::getTwo);
 
-        System.out.println("Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
-        weightedTech.forEach(p -> System.out.printf(Locale.ROOT, "%s (%s) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getTwo(), 100 * p.getTwo() / totalWeight));
+            System.out.println();
+            System.out.println("Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
+            techsInArea.forEach(p -> System.out.printf(Locale.ROOT, "%s (%s) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getTwo(), 100 * p.getTwo() / totalWeight));
+            System.out.println();
+        }
     }
 
     private static final class TestProgressMessageUpdater implements StellarisSaveAnalyser.ProgressMessageUpdater {

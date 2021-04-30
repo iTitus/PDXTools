@@ -2,7 +2,6 @@ package io.github.ititus.pdx.stellaris.game.scope.interfaces;
 
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.stellaris.game.scope.GalacticObjectScope;
-import io.github.ititus.pdx.stellaris.game.scope.PlanetScope;
 import org.eclipse.collections.api.RichIterable;
 
 public interface GalacticObjectOwnerScope extends Scope {

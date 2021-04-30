@@ -72,6 +72,7 @@ public final class PdxConstants {
     public static final String DOUBLE = "value:double";
     public static final String DATE = "value:date";
     public static final String COLOR = "value:color";
+    public static final String NULL_VALUE = "value:null";
     public static final String NULL = "null";
 
     public static final String DEFAULT = "l_default";

@@ -267,6 +267,7 @@ public class StellarisGame {
         triggers.addEngineValueTrigger("has_federation_perk");
         triggers.addEngineValueTrigger("is_archetype");
         triggers.addEngineValueTrigger("is_homeworld");
+        triggers.addEngineValueTrigger("is_capital");
         triggers.addEngineValueTrigger("has_district");
 
         triggers.addEngineTrigger("any_member", AnyMemberTrigger::new);

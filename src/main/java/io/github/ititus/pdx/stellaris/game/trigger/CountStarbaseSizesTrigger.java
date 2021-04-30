@@ -29,7 +29,7 @@ public class CountStarbaseSizesTrigger extends Trigger {
     @Override
     public boolean evaluate(Scope scope) {
         CountryScope cs = CountryScope.expect(scope);
-        return relation.compare(cs.getStarbaseCount(starbaseSize) ,count);
+        return relation.compare(cs.getStarbaseCount(starbaseSize), count);
     }
 
     @Override

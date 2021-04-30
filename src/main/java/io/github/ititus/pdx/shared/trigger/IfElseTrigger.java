@@ -38,7 +38,6 @@ public class IfElseTrigger extends TriggerBasedTrigger {
             }
         }
 
-        // TODO: find out if this evaluation is correct, maybe return false instead?
         if (children == null) {
             throw new IllegalStateException("all if/else_if evaluated to false but there is no else");
         }

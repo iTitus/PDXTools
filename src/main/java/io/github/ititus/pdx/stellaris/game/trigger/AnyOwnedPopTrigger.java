@@ -4,7 +4,6 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.AnyTrigger;
 import io.github.ititus.pdx.shared.trigger.Triggers;
-import io.github.ititus.pdx.stellaris.game.scope.PopScope;
 import io.github.ititus.pdx.stellaris.game.scope.interfaces.PopOwnerScope;
 
 public class AnyOwnedPopTrigger extends AnyTrigger {

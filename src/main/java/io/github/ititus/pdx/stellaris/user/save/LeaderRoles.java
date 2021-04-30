@@ -18,11 +18,11 @@ public class LeaderRoles {
         this.ruler = o.getObjectAsNullOr("ruler", Traits::new);
     }
 
-    public boolean hasTrait(String trait) {
-        return hasTrait(admiral, trait) || hasTrait(general, trait) || hasTrait(scientist, trait) || hasTrait(governor, trait) || hasTrait(ruler, trait);
-    }
-
     private static boolean hasTrait(Traits traits, String trait) {
         return traits != null && traits.hasTrait(trait);
+    }
+
+    public boolean hasTrait(String trait) {
+        return hasTrait(admiral, trait) || hasTrait(general, trait) || hasTrait(scientist, trait) || hasTrait(governor, trait) || hasTrait(ruler, trait);
     }
 }

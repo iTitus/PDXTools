@@ -8,10 +8,9 @@ import io.github.ititus.pdx.stellaris.shared.Resources;
 
 public class Deposit {
 
-    private final StellarisGame game;
-
     public final boolean isNull;
     public final DepositResources resources;
+    private final StellarisGame game;
 
     public Deposit(StellarisGame game, IPdxScript s) {
         this.game = game;

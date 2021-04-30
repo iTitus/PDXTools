@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.game.scope;
 
-import io.github.ititus.pdx.pdxscript.PdxRelation;
 import io.github.ititus.pdx.pdxscript.PdxScriptValue;
 import io.github.ititus.pdx.shared.scope.Scope;
+import io.github.ititus.pdx.shared.scope.ScopeHelper;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.game.common.technology.Technology;
 import io.github.ititus.pdx.stellaris.game.scope.interfaces.GalacticObjectOwnerScope;
@@ -11,14 +11,12 @@ import io.github.ititus.pdx.stellaris.game.scope.interfaces.PopOwnerScope;
 import io.github.ititus.pdx.stellaris.game.scope.interfaces.ResourceOwnerScope;
 import io.github.ititus.pdx.stellaris.shared.Resources;
 import io.github.ititus.pdx.stellaris.user.save.Country;
-import io.github.ititus.pdx.stellaris.user.save.Leader;
 import io.github.ititus.pdx.stellaris.user.save.Starbase;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.impl.collector.Collectors2;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope, PopOwnerScope, GalacticObjectOwnerScope, ResourceOwnerScope {
 
@@ -73,26 +71,16 @@ public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope
             case "is_ai" -> v.expectBoolean() != save.gameState.players.anySatisfy(p -> p.country == country.id);
             case "is_country_type" -> v.expectString().equals(country.type);
             case "is_galactic_community_member" -> v.expectBoolean() == save.gameState.galacticCommunity.members.contains(country.id);
-            case "num_owned_planets" -> compare(country.ownedPlanets.size(), v);
-            case "num_communications" -> compare(country.relationsManager.relations.count(r_ -> r_.communications), v);
+            case "num_owned_planets" -> ScopeHelper.compare(country.ownedPlanets.size(), v);
+            case "num_communications" -> ScopeHelper.compare(country.relationsManager.relations.count(r_ -> r_.communications), v);
             case "owns_any_bypass" -> save.gameState.bypasses.anySatisfy(b -> b.owner.id == country.id && v.expectString().equals(b.type));
             default -> super.evaluateValueTrigger(name, v);
         };
     }
 
-    protected static boolean compare(int value, PdxScriptValue v) {
-        PdxRelation r = v.getRelation();
-        return r.compare(value, v.expectInt());
-    }
-
     public LeaderScope getResearchLeader(Technology.Area area) {
-        Optional<Leader> leader = save.gameState.leaders.stream()
-                .filter(l -> l.location.id == country.id)
-                .filter(l -> l.location.area == area)
-                .filter(l -> "tech".equals(l.location.type))
-                .findAny();
-
-        return leader.map(l -> new LeaderScope(game, save, l)).orElse(null);
+        int leaderId = country.techStatus.leaders.getLeader(area);
+        return leaderId != -1 ? new LeaderScope(game, save, leaderId) : null;
     }
 
     public int getStarbaseCount(String starbaseSize) {
@@ -143,17 +131,9 @@ public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope
     }
 
     public Iterable<CountryScope> getNeighborCountries() {
-        return save.gameState.galacticObjects.stream()
-                .filter(go -> {
-                    Starbase starbase = save.gameState.starbaseManager.get(go.starbase);
-                    return starbase != null && starbase.owner == country.id;
-                })
-                .flatMap(go -> go.hyperlanes.stream().map(hl -> save.gameState.galacticObjects.get(hl.to)))
-                .map(go -> save.gameState.starbaseManager.get(go.starbase))
-                .filter(Objects::nonNull)
-                .mapToInt(sb -> sb.owner)
-                .filter(owner -> owner != country.id)
-                .distinct()
+        return country.relationsManager.relations.stream()
+                .filter(r -> r.borders)
+                .mapToInt(r -> r.country)
                 .mapToObj(id -> new CountryScope(game, save, id))
                 .collect(Collectors2.toList());
     }

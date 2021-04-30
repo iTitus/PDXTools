@@ -9,11 +9,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class DepositResources {
 
-    private final StellarisGame game;
-
     public final String category;
     public final ImmutableList<TriggeredResources> produces;
     public final ImmutableList<TriggeredResources> cost;
+    private final StellarisGame game;
 
     public DepositResources(StellarisGame game, PdxScriptObject o) {
         this.game = game;

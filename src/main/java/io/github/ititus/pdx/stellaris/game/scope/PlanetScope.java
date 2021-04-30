@@ -42,9 +42,13 @@ public class PlanetScope extends BaseScope implements PopOwnerScope, ResourceOwn
             case "has_modifier" -> planet.timedModifiers.contains(v.expectString());
             case "has_planet_flag" -> planet.flags.containsKey(v.expectString());
             case "has_planet_modifier" -> planet.planetModifiers.contains(v.expectString());
-            case "is_homeworld" -> {
+            case "is_capital" -> {
                 Country c = save.gameState.countries.get(planet.owner);
                 yield v.expectBoolean() == (c != null && c.capital == planet.id);
+            }
+            case "is_homeworld" -> {
+                Country c = save.gameState.countries.get(planet.owner);
+                yield v.expectBoolean() == (c != null && c.startingSystem == planet.id);
             }
             case "is_planet_class" -> v.expectString().equals(planet.planetClass);
             default -> super.evaluateValueTrigger(name, v);

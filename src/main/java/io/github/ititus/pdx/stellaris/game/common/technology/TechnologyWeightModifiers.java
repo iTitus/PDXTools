@@ -1,7 +1,6 @@
 package io.github.ititus.pdx.stellaris.game.common.technology;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import org.eclipse.collections.api.list.ImmutableList;

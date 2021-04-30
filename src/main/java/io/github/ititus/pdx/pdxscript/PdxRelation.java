@@ -58,10 +58,6 @@ public enum PdxRelation {
         return compare(Integer.compare(a, b));
     }
 
-    public boolean compareUnsigned(long a, long b) {
-        return compare(Long.compareUnsigned(a, b));
-    }
-
     public boolean compare(long a, long b) {
         return compare(Long.compare(a, b));
     }

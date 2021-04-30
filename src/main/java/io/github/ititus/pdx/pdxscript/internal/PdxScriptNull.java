@@ -7,7 +7,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.NONE;
-import static io.github.ititus.pdx.pdxscript.PdxConstants.NULL;
+import static io.github.ititus.pdx.pdxscript.PdxConstants.NULL_VALUE;
 
 public final class PdxScriptNull extends PdxScriptValue {
 
@@ -23,8 +23,7 @@ public final class PdxScriptNull extends PdxScriptValue {
 
     @Override
     public String getTypeString() {
-        // TODO: maybe use value:null as type
-        return NULL;
+        return NULL_VALUE;
     }
 
     @Override
