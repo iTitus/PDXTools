@@ -7,12 +7,15 @@ import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.game.common.deposits.Deposits;
 import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClasses;
+import io.github.ititus.pdx.stellaris.game.common.species_classes.SpeciesClass;
 import io.github.ititus.pdx.stellaris.game.common.technology.Technologies;
 import io.github.ititus.pdx.stellaris.game.common.technology.category.TechnologyCategories;
 import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTiers;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
 import io.github.ititus.pdx.util.io.IOUtil;
 import io.github.ititus.pdx.util.io.IPathFilter;
+import org.eclipse.collections.api.bimap.ImmutableBiMap;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -43,8 +46,9 @@ public class Common {
     // TODO: needs "scripted_variables" (for variables) "artifact_actions", "buildings", "component_templates", "decisions", "edicts", "pop_categories", "pop_jobs","scripted_effects", "ship_sizes", "special_projects",
     private static final IPathFilter FILTER = new FileExtensionFilter("txt");
 
-    public final PlanetClasses planetClasses;
     public final Deposits deposits;
+    public final PlanetClasses planetClasses;
+    public final ImmutableMap<String, SpeciesClass> speciesClasses;
     public final Technologies technologies;
     public final TechnologyCategories technologyCategories;
     public final TechnologyTiers technologyTiers;
@@ -62,27 +66,31 @@ public class Common {
         this.commonDir = commonDir;
 
         int steps = 6;
+        int progress = 0;
 
-        progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading planet_classes");
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading deposits");
+        this.deposits = loadObject("deposits").getAs(o_->new Deposits(game, o_));
+
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading planet_classes");
         this.planetClasses = loadObject("planet_classes").getAs(PlanetClasses::new);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading deposits");
-        this.deposits = loadObject("deposits").getAs(Deposits::new);
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading species_classes");
+        this.speciesClasses = loadObject("species_classes").getAsStringObjectMap(SpeciesClass::of);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 2, steps, "Loading technology");
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading technology");
         this.technologies = loadObject("technology").getAs(o -> new Technologies(game, o));
 
-        progressMessageUpdater.updateProgressMessage(index, true, 3, steps, "Loading technology/category");
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading technology/category");
         this.technologyCategories = loadObject("technology/category").getAs(TechnologyCategories::new);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 4, steps, "Loading technology/tier");
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading technology/tier");
         this.technologyTiers = loadObject("technology/tier").getAs(TechnologyTiers::new);
 
-        progressMessageUpdater.updateProgressMessage(index, true, 5, steps, "Loading Raw Common Data");
+        progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading Raw Common Data");
         // FIXME: disabled because it is slow
         this.commonDataLoader = null; // new PdxRawDataLoader(commonDir, BLACKLIST, FILTER, index + 1, progressMessageUpdater);
 
-        progressMessageUpdater.updateProgressMessage(index, false, 6, steps, "Done");
+        progressMessageUpdater.updateProgressMessage(index, false, progress, steps, "Done");
     }
 
     public StellarisGame getGame() {

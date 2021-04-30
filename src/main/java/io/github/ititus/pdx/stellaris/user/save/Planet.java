@@ -13,6 +13,7 @@ import java.time.LocalDate;
 
 public class Planet {
 
+    public final int id;
     public final String name;
     public final boolean customName;
     public final String planetClass;
@@ -93,7 +94,8 @@ public class Planet {
     public final ImmutableIntObjectMap<SpeciesInformation> speciesInformation;
     public final ImmutableBooleanList autoSlotsTaken;
 
-    public Planet(IPdxScript s) {
+    public Planet(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.name = o.getString("name");
         this.customName = o.getBoolean("custom_name", false);

@@ -9,12 +9,26 @@ import java.time.LocalDate;
 
 public class Relation {
 
-    public final boolean contact, alliance, defensivePact, friendly, hostile, migrationAccess, neutral, borders,
-            isRival, communications, closedBorders;
-    public final int killedShips, owner, country, truce, borderRange;
+    public final boolean contact;
+    public final boolean alliance;
+    public final boolean defensivePact;
+    public final boolean friendly;
+    public final boolean hostile;
+    public final boolean migrationAccess;
+    public final boolean neutral;
+    public final boolean borders;
+    public final boolean isRival;
+    public final boolean communications;
+    public final boolean closedBorders;
+    public final int killedShips;
+    public final int owner;
+    public final int country;
+    public final int truce;
+    public final int borderRange;
     public final double trust;
     public final String preCommunicationsName;
-    public final LocalDate rivalDate, forcedOpenBorders;
+    public final LocalDate rivalDate;
+    public final LocalDate forcedOpenBorders;
     public final ImmutableList<RelationModifier> modifiers;
     public final ImmutableMap<String, FlagData> flags;
 

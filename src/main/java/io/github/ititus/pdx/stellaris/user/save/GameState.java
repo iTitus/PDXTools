@@ -92,8 +92,9 @@ public class GameState {
     public final ImmutableLongList usedSymbols;
     public final ImmutableList<UsedSpeciesClassAssets> usedSpeciesNames;
     public final ImmutableList<UsedSpeciesClassAssets> usedSpeciesPortraits;
-    public final int randomCount;
     public final int randomSeed;
+    public final int randomCount;
+    public final GalacticCommunity galacticCommunity;
 
     public GameState(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -180,6 +181,8 @@ public class GameState {
         this.usedSpeciesPortraits = o.getImplicitListAsList("used_species_portrait", UsedSpeciesClassAssets::new);
         this.randomSeed = o.getInt("random_seed");
         this.randomCount = o.getInt("random_count");
-        // TODO: market, trade_routes_manager, slave_market_manager, galactic_community, first_contacts
+        // TODO: market, trade_routes_manager, slave_market_manager
+        this.galacticCommunity = o.getObjectAs("galactic_community", GalacticCommunity::new);
+        // TODO: first_contacts
     }
 }

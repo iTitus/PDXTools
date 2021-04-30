@@ -9,6 +9,6 @@ public class TechnologyTier {
 
     public TechnologyTier(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
-        this.previouslyUnlocked = o.getInt("previously_unlocked", -1);
+        this.previouslyUnlocked = o.getInt("previously_unlocked", 0);
     }
 }

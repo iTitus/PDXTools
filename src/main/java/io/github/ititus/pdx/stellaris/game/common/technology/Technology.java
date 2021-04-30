@@ -7,6 +7,7 @@ import io.github.ititus.pdx.shared.localisation.ExternalLocalisable;
 import io.github.ititus.pdx.shared.localisation.Localisable;
 import io.github.ititus.pdx.shared.trigger.Trigger;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTier;
 import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import io.github.ititus.pdx.stellaris.shared.Modifier;
 import org.eclipse.collections.api.factory.Lists;
@@ -106,13 +107,36 @@ public record Technology(
         return Trigger.evaluateAnd(scope, potential);
     }
 
+
+    public boolean hasAllPrerequisites(CountryScope cs) {
+        return prerequisites.allSatisfy(cs.getCountry().techStatus.technologies::containsKey);
+    }
+
+    public boolean hasTierCondition(CountryScope cs) {
+        TechnologyTier tier = cs.getGame().common.technologyTiers.tiers.get(this.tier);
+        int required = tier.previouslyUnlocked;
+        if (required <= 0) {
+            return true;
+        }
+
+        int n = 0;
+        for (String name : cs.getCountry().techStatus.technologies.keySet()) {
+            Technology t = cs.getGame().common.technologies.get(name);
+            if (t.area == area && t.tier == this.tier - 1 && ++n >= required) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public double getBaseWeight() {
         return getWeight(null);
     }
 
     public double getWeight(CountryScope scope) {
         double weight = this.weight;
-        if (weightModifier != null) {
+        if (weight != 0 && weightModifier != null) {
             weight = weightModifier.modifyWeight(weight, this.weight, scope);
         }
 
@@ -209,16 +233,14 @@ public record Technology(
 
     public enum Area implements ExternalLocalisable {
 
-        PHYSICS("physics", "PHYSICS"),
-        SOCIETY("society", "SOCIETY"),
-        ENGINEERING("engineering", "ENGINEERING");
+        PHYSICS("physics"),
+        SOCIETY("society"),
+        ENGINEERING("engineering");
 
         private final String name;
-        private final String translationKey;
 
-        Area(String name, String translationKey) {
+        Area(String name) {
             this.name = name;
-            this.translationKey = translationKey;
         }
 
         public static Area of(String name) {
@@ -234,13 +256,9 @@ public record Technology(
             return name;
         }
 
-        public String getTranslationKey() {
-            return translationKey;
-        }
-
         @Override
         public ImmutableList<String> localise(PdxLocalisation localisation, String language) {
-            return Lists.immutable.of(localisation.translate(translationKey));
+            return Lists.immutable.of(localisation.translate(name));
         }
     }
 }

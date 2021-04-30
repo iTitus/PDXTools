@@ -3,6 +3,7 @@ package io.github.ititus.pdx.stellaris.user.save;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,7 @@ public class Federation {
     public final LocalDate startDate;
     public final ImmutableIntList shipDesigns;
     public final int leader;
+    public final ImmutableMap<String, FlagData> flags;
 
     public Federation(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -23,5 +25,6 @@ public class Federation {
         this.startDate = o.getDate("start_date");
         this.shipDesigns = o.getListAsIntList("ship_design");
         this.leader = o.getInt("leader");
+        this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
     }
 }

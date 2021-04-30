@@ -21,8 +21,7 @@ public class ScopeTrigger extends TriggerBasedTrigger {
 
     @Override
     public boolean evaluate(Scope scope) {
-        // switch scope to given scope and evaluate children
-        throw new UnsupportedOperationException();
+        return evaluateAnd(scope.getScope(name), children);
     }
 
     @Override

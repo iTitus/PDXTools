@@ -22,7 +22,7 @@ public class DummyTrigger extends Trigger {
 
     @Override
     public boolean evaluate(Scope scope) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(name + " is not implemented yet");
     }
 
     @Override

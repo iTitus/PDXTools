@@ -156,6 +156,7 @@ public class StellarisGame {
         // TODO: find out if 'text' is really a valid trigger
 
         // scopes
+        triggers.addEngineValueTrigger("exists");
         addScopeTrigger("target");
         addScopeTrigger("orbit");
         addScopeTrigger("planet");
@@ -265,6 +266,8 @@ public class StellarisGame {
         triggers.addEngineValueTrigger("is_sapient");
         triggers.addEngineValueTrigger("has_federation_perk");
         triggers.addEngineValueTrigger("is_archetype");
+        triggers.addEngineValueTrigger("is_homeworld");
+        triggers.addEngineValueTrigger("has_district");
 
         triggers.addEngineTrigger("any_member", AnyMemberTrigger::new);
         triggers.addEngineTrigger("any_neighbor_country", AnyNeighborCountryTrigger::new);
@@ -274,12 +277,12 @@ public class StellarisGame {
         triggers.addEngineTrigger("any_relation", AnyRelationTrigger::new);
         triggers.addEngineTrigger("any_system_planet", AnySystemPlanetTrigger::new);
         triggers.addEngineTrigger("any_system_within_border", AnySystemWithinBorderTrigger::new);
-        triggers.addEngineTrigger("count_owned_pop", CountOwnedPopsTrigger::of);
+        triggers.addEngineTrigger("count_owned_pop", CountOwnedPopsTrigger::new);
         triggers.addEngineTrigger("count_starbase_sizes", CountStarbaseSizesTrigger::new);
         triggers.addEngineTrigger("research_leader", ResearchLeaderTrigger::new);
+        triggers.addEngineTrigger("has_resource", HasResourceTrigger::new);
 
         addDummyTrigger("num_districts");
-        addDummyTrigger("has_resource");
     }
 
     private void addEngineEffects() {

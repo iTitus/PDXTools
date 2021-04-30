@@ -51,8 +51,26 @@ public abstract class PdxScriptValue extends BasePdxScript {
         throw new IllegalStateException("expected null but was " + getValue());
     }
 
+    public boolean isBoolean() {
+        try {
+            expectBoolean();
+            return true;
+        } catch (IllegalStateException ignored) {
+            return false;
+        }
+    }
+
     public boolean expectBoolean() {
         throw new IllegalStateException("expected boolean but was " + getValue());
+    }
+
+    public boolean isInt() {
+        try {
+            expectInt();
+            return true;
+        } catch (IllegalStateException ignored) {
+            return false;
+        }
     }
 
     public int expectInt() {
@@ -90,6 +108,15 @@ public abstract class PdxScriptValue extends BasePdxScript {
         }
 
         throw new IllegalStateException("expected number but was " + getValue());
+    }
+
+    public boolean isString() {
+        try {
+            expectString();
+            return true;
+        } catch (IllegalStateException ignored) {
+            return false;
+        }
     }
 
     public String expectString() {

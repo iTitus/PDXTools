@@ -8,6 +8,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 
 public class GalacticObject {
 
+    public final int id;
     public final int arm;
     public final int initParent;
     public final int starbase;
@@ -37,7 +38,8 @@ public class GalacticObject {
     public final int sector;
     public final ImmutableList<TimedModifier> timedModifiers;
 
-    public GalacticObject(IPdxScript s) {
+    public GalacticObject(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
         this.type = o.getString("type");

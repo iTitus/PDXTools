@@ -2,36 +2,19 @@ package io.github.ititus.pdx.stellaris.game.trigger;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
-import io.github.ititus.pdx.shared.trigger.TriggerBasedTrigger;
+import io.github.ititus.pdx.shared.trigger.AnyTrigger;
 import io.github.ititus.pdx.shared.trigger.Triggers;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
+import io.github.ititus.pdx.stellaris.game.scope.PlanetScope;
+import io.github.ititus.pdx.stellaris.game.scope.interfaces.HabitablePlanetOwnerScope;
 
-public class AnyOwnedPlanetTrigger extends TriggerBasedTrigger {
+public class AnyOwnedPlanetTrigger extends AnyTrigger {
 
     public AnyOwnedPlanetTrigger(Triggers triggers, IPdxScript s) {
-        super(triggers, s);
+        super(triggers, s, "any_owned_planet");
     }
 
     @Override
-    public boolean evaluate(Scope scope) {
-        // scopes: country sector
-        /*
-        for (Planet p : scope.getOwnedPlanets()) {
-            if (evaluate(p, children)) {
-                return true;
-            }
-        }
-        return false;
-        */
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ImmutableList<String> localise(String language, int indent) {
-        MutableList<String> list = Lists.mutable.of("any_owned_planet:");
-        localiseChildren(list, localisation, language, indent + 1);
-        return list.toImmutable();
+    protected Iterable<? extends Scope> getScopes(Scope scope) {
+        return HabitablePlanetOwnerScope.expect(scope).getOwnedPlanets();
     }
 }

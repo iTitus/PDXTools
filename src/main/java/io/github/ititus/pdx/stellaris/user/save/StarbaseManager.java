@@ -10,4 +10,8 @@ public class StarbaseManager {
     public StarbaseManager(PdxScriptObject o) {
         this.starbases = o.getObjectAsIntObjectMap("starbases", Starbase::new);
     }
+
+    public Starbase get(int starbaseId) {
+        return starbases.get(starbaseId);
+    }
 }

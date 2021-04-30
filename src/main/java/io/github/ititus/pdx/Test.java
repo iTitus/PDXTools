@@ -6,20 +6,28 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.game.common.technology.Technology;
+import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
+import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class Test {
 
@@ -27,7 +35,8 @@ public class Test {
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
     private static final Path SAVE_DIR = USER_DATA_DIR.resolve("save games/mpthorquellalliance_-677535411");
-    private static final Path DEBUG_OUT = USER_HOME.resolve("Desktop/pdx/out.txt");
+    private static final Path PDX_TEMP_DIR = USER_HOME.resolve("Desktop/pdx");
+    private static final Path DEBUG_OUT = PDX_TEMP_DIR.resolve("out.txt");
     private static final Path[] TEST_FILES = { /*USER_HOME.resolve("Desktop/pdx/test.txt")*/ };
 
     private static StellarisGame getStellarisGame() {
@@ -124,7 +133,45 @@ public class Test {
         }
 
         System.out.println("Total Loading Time: " + DurationFormatter.format(s.stop()));
+        doTechThings(game, userData, save);
         System.out.println("done");
+    }
+
+    private static void doTechThings(StellarisGame game, StellarisUserData userData, StellarisSave save) {
+        if (game == null || save == null) {
+            return;
+        }
+
+        int countryId = 0;
+        Technology.Area area = Technology.Area.ENGINEERING;
+
+        CountryScope cs = new CountryScope(game, save, countryId);
+
+        MutableSet<String> openTechNames = game.common.technologies.all().collect(Technology::name, Sets.mutable.empty());
+        openTechNames.removeAllIterable(cs.getCountry().techStatus.technologies.keySet());
+        if (cs.getCountry().techStatus.physicsQueueItem != null) {
+            openTechNames.remove(cs.getCountry().techStatus.physicsQueueItem.technology);
+        }
+        if (cs.getCountry().techStatus.societyQueueItem != null) {
+            openTechNames.remove(cs.getCountry().techStatus.societyQueueItem.technology);
+        }
+        if (cs.getCountry().techStatus.engineeringQueueItem != null) {
+            openTechNames.remove(cs.getCountry().techStatus.engineeringQueueItem.technology);
+        }
+        MutableSet<Technology> openTechs = openTechNames.collect(game.common.technologies::get);
+
+        openTechs = openTechs.select(t -> t.area() == area);
+
+        openTechs.removeIf(t -> !t.hasAllPrerequisites(cs) || !t.hasPotential(cs) || !t.hasTierCondition(cs));
+
+        MutableList<ObjectDoublePair<Technology>> weightedTech = openTechs.collect(t -> PrimitiveTuples.pair(t, t.getWeight(cs)))
+                .toSortedList(Comparator.comparing(ObjectDoublePair<Technology>::getTwo).reversed());
+        weightedTech.removeIf(p -> p.getTwo() <= 0);
+
+        double totalWeight = weightedTech.sumOfDouble(ObjectDoublePair::getTwo);
+
+        System.out.println("Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
+        weightedTech.forEach(p -> System.out.printf(Locale.ROOT, "%s (%s) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getTwo(), 100 * p.getTwo() / totalWeight));
     }
 
     private static final class TestProgressMessageUpdater implements StellarisSaveAnalyser.ProgressMessageUpdater {

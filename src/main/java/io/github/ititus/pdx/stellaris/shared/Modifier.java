@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.shared;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
+import io.github.ititus.pdx.stellaris.game.common.technology.Description;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 import org.eclipse.collections.api.set.ImmutableSet;

@@ -6,6 +6,7 @@ import io.github.ititus.pdx.shared.trigger.TriggerBasedTrigger;
 import io.github.ititus.pdx.shared.trigger.Triggers;
 import io.github.ititus.pdx.stellaris.game.common.technology.Technology;
 import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
+import io.github.ititus.pdx.stellaris.game.scope.LeaderScope;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -28,7 +29,8 @@ public class ResearchLeaderTrigger extends TriggerBasedTrigger {
     @Override
     public boolean evaluate(Scope scope) {
         CountryScope cs = CountryScope.expect(scope);
-        return evaluateAnd(cs.getResearchLeader(area), children);
+        LeaderScope ls = cs.getResearchLeader(area);
+        return ls != null && evaluateAnd(ls, children);
     }
 
     @Override

@@ -6,17 +6,19 @@ import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.Leader;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 
+import java.util.Objects;
+
 public class LeaderScope extends BaseScope {
 
     private final Leader leader;
 
-    public LeaderScope(StellarisGame game, StellarisSave save, Leader leader) {
-        this(game, save, "leader", leader);
+    public LeaderScope(StellarisGame game, StellarisSave save, int leaderId) {
+        this(game, save, save.gameState.leaders.get(leaderId));
     }
 
-    public LeaderScope(StellarisGame game, StellarisSave save, String name, Leader leader) {
-        super(game, save, name);
-        this.leader = leader;
+    public LeaderScope(StellarisGame game, StellarisSave save, Leader leader) {
+        super(game, save, "leader");
+        this.leader = Objects.requireNonNull(leader);
     }
 
     public static LeaderScope expect(Scope scope) {

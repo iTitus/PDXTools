@@ -4,6 +4,7 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
+import org.eclipse.collections.api.map.ImmutableMap;
 
 public class PopFaction {
 
@@ -16,6 +17,7 @@ public class PopFaction {
     public final double factionApproval;
     public final ImmutableList<TimedModifier> timedModifiers;
     public final ImmutableIntList members;
+    public final ImmutableMap<String, FlagData> flags;
 
     public PopFaction(IPdxScript s) {
         PdxScriptObject o = s.expectObject();
@@ -28,5 +30,6 @@ public class PopFaction {
         this.factionApproval = o.getDouble("faction_approval", 0);
         this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
         this.members = o.getListAsIntList("members");
+        this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
     }
 }

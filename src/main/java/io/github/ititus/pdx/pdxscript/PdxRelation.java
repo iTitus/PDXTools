@@ -65,4 +65,8 @@ public enum PdxRelation {
     public boolean compare(long a, long b) {
         return compare(Long.compare(a, b));
     }
+
+    public boolean compare(double a, double b) {
+        return compare(Double.compare(a, b));
+    }
 }

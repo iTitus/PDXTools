@@ -10,4 +10,8 @@ public class Planets {
     public Planets(PdxScriptObject o) {
         this.planets = o.getObjectAsIntObjectMap("planet", Planet::new);
     }
+
+    public Planet get(int id) {
+        return planets.get(id);
+    }
 }

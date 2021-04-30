@@ -6,4 +6,8 @@ public interface Scope {
 
     boolean evaluateValueTrigger(String name, PdxScriptValue v);
 
+    Scope getScope(String name);
+
+    String getName();
+
 }
