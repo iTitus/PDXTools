@@ -10,11 +10,11 @@ import io.github.ititus.pdx.stellaris.game.common.technology.Technology;
 import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
+import io.github.ititus.pdx.stellaris.user.save.TechQueueItem;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
-import org.eclipse.collections.api.multimap.list.MutableListMultimap;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.api.tuple.primitive.ObjectDoublePair;
 import org.eclipse.collections.impl.factory.Multimaps;
@@ -148,33 +148,29 @@ public class Test {
         int countryId = 0;
         CountryScope cs = new CountryScope(game, save, countryId);
 
-        MutableList<Technology> techs = game.common.technologies.all().toList();
-        techs.removeIf(t -> cs.getCountry().techStatus.technologies.containsKey(t.name()));
-        if (cs.getCountry().techStatus.physicsQueueItem != null) {
-            techs.removeIf(t -> t.name().equals(cs.getCountry().techStatus.physicsQueueItem.technology));
-        }
-        if (cs.getCountry().techStatus.societyQueueItem != null) {
-            techs.removeIf(t -> t.name().equals(cs.getCountry().techStatus.societyQueueItem.technology));
-        }
-        if (cs.getCountry().techStatus.engineeringQueueItem != null) {
-            techs.removeIf(t -> t.name().equals(cs.getCountry().techStatus.engineeringQueueItem.technology));
+        var techs = game.common.technologies.all().toList();
+        techs.removeIf(t -> cs.getCountry().techStatus.hasTech(t.name()));
+        for (Technology.Area area : Technology.Area.values()) {
+            TechQueueItem i = cs.getCountry().techStatus.getCurrentlyResearchedTech(area);
+            if (i != null) {
+                techs.removeIf(t -> t.name().equals(i.technology));
+            }
         }
         techs.removeIf(t -> cs.getCountry().techStatus.alwaysAvailableTech.contains(t.name()));
         techs.removeIf(t -> !t.hasPotential(cs) || t.getBaseWeight() <= 0); // remove unobtainable/event techs
-        MutableList<Technology> blockedTechs = techs.select(t -> !t.hasAllPrerequisites(cs) || !t.hasTierCondition(cs));
 
+        var blockedTechs = techs.select(t -> !t.hasAllPrerequisites(cs) || !t.hasTierCondition(cs));
         techs.removeIf(t -> !t.hasAllPrerequisites(cs) || !t.hasTierCondition(cs));
-        MutableListMultimap<Technology.Area, ObjectDoublePair<Technology>> availableTechs = techs
-                .groupByAndCollect(Technology::area, t -> PrimitiveTuples.pair(t, t.getWeight(cs)), Multimaps.mutable.list.empty());
-        availableTechs.forEachKeyValue((k, v) -> {
+
+        var availableWeightedTechs = techs.groupByAndCollect(Technology::area, t -> PrimitiveTuples.pair(t, t.getWeight(cs)), Multimaps.mutable.list.empty());
+        availableWeightedTechs.forEachKeyValue((k, v) -> {
             if (v.getTwo() <= 0) {
                 blockedTechs.add(v.getOne());
             }
         });
-        availableTechs = availableTechs.rejectKeysValues((k, v) -> v.getTwo() <= 0);
+        availableWeightedTechs = availableWeightedTechs.rejectKeysValues((k, v) -> v.getTwo() <= 0);
 
-        MutableListMultimap<Technology.Area, ObjectDoublePair<Technology>> blockedWeightedTechs = blockedTechs
-                .groupByAndCollect(Technology::area, t -> PrimitiveTuples.pair(t, t.getWeight(cs)), Multimaps.mutable.list.empty());
+        var blockedWeightedTechs = blockedTechs.groupByAndCollect(Technology::area, t -> PrimitiveTuples.pair(t, t.getWeight(cs)), Multimaps.mutable.list.empty());
 
         int researchAlternatives = cs.getCountry().techStatus.alternatives.get(Technology.Area.PHYSICS)
                 .count(t -> !cs.getCountry().techStatus.alwaysAvailableTech.contains(t));
@@ -186,42 +182,36 @@ public class Test {
                         .map(t -> game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ")")
                         .collect(Collectors.joining(", "))
         );
-        if (cs.getCountry().techStatus.physicsQueueItem != null && cs.getCountry().techStatus.physicsQueueItem.technology != null) {
-            Technology t = game.common.technologies.get(cs.getCountry().techStatus.physicsQueueItem.technology);
-            System.out.println("Currently researching (physics): " + game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ")");
-        }
-        if (cs.getCountry().techStatus.societyQueueItem != null && cs.getCountry().techStatus.societyQueueItem.technology != null) {
-            Technology t = game.common.technologies.get(cs.getCountry().techStatus.societyQueueItem.technology);
-            System.out.println("Currently researching (society): " + game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ")");
-        }
-        if (cs.getCountry().techStatus.engineeringQueueItem != null && cs.getCountry().techStatus.engineeringQueueItem.technology != null) {
-            Technology t = game.common.technologies.get(cs.getCountry().techStatus.engineeringQueueItem.technology);
-            System.out.println("Currently researching (engineering): " + game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ")");
+        for (Technology.Area area : Technology.Area.values()) {
+            TechQueueItem i = cs.getCountry().techStatus.getCurrentlyResearchedTech(area);
+            if (i != null) {
+                Technology t = game.common.technologies.get(i.technology);
+                System.out.println("Currently researching (" + area.getName() + "): " + game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ") " + (int) i.progress + "/" + t.cost(cs));
+            }
         }
 
         for (Technology.Area area : Technology.Area.values()) {
-            MutableList<ObjectDoublePair<Technology>> techsInArea = availableTechs.get(area)
+            var techsInArea = availableWeightedTechs.get(area)
                     .toSortedList(Comparator.comparing(ObjectDoublePair<Technology>::getTwo).reversed());
-
             double totalWeight = techsInArea.sumOfDouble(ObjectDoublePair::getTwo);
 
             System.out.println();
             System.out.println("Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
-            techsInArea.forEach(p -> System.out.printf(Locale.ROOT, "%s (%s, tier=%d) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getTwo(), 100 * p.getTwo() / totalWeight));
+            techsInArea.forEach(p -> System.out.printf(Locale.ROOT, "%s (%s, tier=%d, cost=%d) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getOne().cost(cs), p.getTwo(), 100 * p.getTwo() / totalWeight));
             System.out.println();
         }
 
         System.out.println("Blocked Techs:");
         for (Technology.Area area : Technology.Area.values()) {
-            MutableList<ObjectDoublePair<Technology>> blockedTechsInArea = blockedWeightedTechs.get(area)
+            var blockedTechsInArea = blockedWeightedTechs.get(area)
                     .toSortedList(Comparator.comparing(ObjectDoublePair<Technology>::getTwo).reversed());
 
             System.out.println();
             System.out.println("Blocked Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
             blockedTechsInArea.forEach(p -> {
-                ImmutableList<String> missingPrereqs = p.getOne().prerequisites()
-                        .select(prereq -> !cs.getCountry().techStatus.technologies.containsKey(prereq));
+                var missingPrereqs = p.getOne().prerequisites().select(prereq -> !cs.getCountry().techStatus.hasTech(prereq));
                 String missingPrereqsString = missingPrereqs.notEmpty() ? " missing_prereqs=" + missingPrereqs : "";
+
                 int previousTierRequired = game.common.technologyTiers.tiers.get(p.getOne().tier()).previouslyUnlocked;
                 int alreadyUnlocked = (int) cs.getCountry().techStatus.technologies.keySet().stream()
                         .map(game.common.technologies::get)
@@ -229,7 +219,8 @@ public class Test {
                         .filter(t -> t.tier() == p.getOne().tier() - 1)
                         .count();
                 String tierString = alreadyUnlocked < previousTierRequired ? " previous_tier=" + alreadyUnlocked + "/" + previousTierRequired : "";
-                System.out.printf(Locale.ROOT, "%s (%s, tier=%d)%s%s weight=%.1f%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), missingPrereqsString, tierString, p.getTwo());
+
+                System.out.printf(Locale.ROOT, "%s (%s, tier=%d, cost=%d)%s%s weight=%.1f%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getOne().cost(cs), missingPrereqsString, tierString, p.getTwo());
             });
             System.out.println();
         }

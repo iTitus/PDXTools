@@ -264,6 +264,13 @@ public final class PdxScriptList extends BasePdxScript {
     @Override
     public PdxScriptList append(IPdxScript script) {
         if (mode == Mode.IMPLICIT) {
+            if (script instanceof PdxScriptList l && l.mode == Mode.IMPLICIT) {
+                return builder()
+                        .addAll(this)
+                        .addAll(l)
+                        .build(mode, relation);
+            }
+
             return builder()
                     .addAll(list)
                     .add(script)
@@ -361,6 +368,11 @@ public final class PdxScriptList extends BasePdxScript {
                 add(value);
             }
 
+            return this;
+        }
+
+        public Builder addAll(PdxScriptList l) {
+            l.list.forEach(this::add);
             return this;
         }
 

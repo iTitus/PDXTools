@@ -65,7 +65,7 @@ public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope
             case "has_origin" -> v.expectString().equals(country.government.origin);
             case "has_policy_flag" -> country.policyFlags.contains(v.expectString());
             case "has_seen_any_bypass" -> country.seenBypassTypes.contains(v.expectString());
-            case "has_technology" -> country.techStatus.technologies.containsKey(v.expectString());
+            case "has_technology" -> country.techStatus.hasTech(v.expectString());
             case "has_tradition" -> country.traditions.contains(v.expectString());
             case "has_trait" -> save.gameState.speciesDb.get(country.founderSpecies).traits.hasTrait(v.expectString()); // FIXME: dominant species != founder species
             case "has_valid_civic" -> country.government.civics.contains(v.expectString()) && true; // FIXME: evaluate civic.possible

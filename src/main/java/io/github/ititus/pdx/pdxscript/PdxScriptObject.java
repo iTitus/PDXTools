@@ -1082,6 +1082,11 @@ public final class PdxScriptObject extends BasePdxScript {
             this.map = new LinkedHashMap<>();
         }
 
+        public Builder addAll(PdxScriptObject o) {
+            o.forEach(this::add);
+            return this;
+        }
+
         public Builder add(String key, IPdxScript value) {
             Objects.requireNonNull(key);
             Objects.requireNonNull(value);

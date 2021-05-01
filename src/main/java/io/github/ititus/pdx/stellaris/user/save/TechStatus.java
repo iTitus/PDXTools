@@ -1,6 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.stellaris.game.common.technology.Technology;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
@@ -65,5 +66,24 @@ public class TechStatus {
         }
 
         return Collections.unmodifiableMap(technologies);
+    }
+
+    public boolean hasTech(String name) {
+        return getTechLevel(name) > 0;
+    }
+
+    public int getTechLevel(String name) {
+        Integer level = technologies.get(name);
+        return level != null ? level : 0;
+    }
+
+    public TechQueueItem getCurrentlyResearchedTech(Technology.Area area) {
+        TechQueueItem item = switch (area) {
+            case PHYSICS -> physicsQueueItem;
+            case SOCIETY -> societyQueueItem;
+            case ENGINEERING -> engineeringQueueItem;
+        };
+
+        return item != null && item.technology != null ? item : null;
     }
 }

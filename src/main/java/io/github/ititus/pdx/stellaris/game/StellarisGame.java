@@ -73,7 +73,7 @@ public class StellarisGame {
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading common/scripted_variables");
         MutableMap<String, IPdxScript> variables = Maps.mutable.empty();
-        PdxScriptParser.parseWithDefaultPatches(variables, findScriptFiles("common/scripted_variables")).expectEmpty();
+        PdxScriptParser.parseWithDefaultPatchesAndCommonVariables(variables, findScriptFiles("common/scripted_variables")).expectEmpty();
         this.scriptedVariables = variables.toImmutable();
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Creating triggers");

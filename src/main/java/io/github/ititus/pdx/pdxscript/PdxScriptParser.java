@@ -482,14 +482,10 @@ public final class PdxScriptParser {
     }
 
     public static IPdxScript parse(Path... scriptFiles) {
-        return parse((MutableMap<String, IPdxScript>) null, scriptFiles);
+        return parse(null, null, scriptFiles);
     }
 
     public static IPdxScript parse(ImmutableMap<String, IPdxScript> variables, Path... scriptFiles) {
-        return parse(null, variables.toMap(), scriptFiles);
-    }
-
-    public static IPdxScript parse(MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
         return parse(null, variables, scriptFiles);
     }
 
@@ -497,15 +493,32 @@ public final class PdxScriptParser {
         return parse(PdxPatchDatabase.DEFAULT, null, scriptFiles);
     }
 
-    public static IPdxScript parseWithDefaultPatches(MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+    public static IPdxScript parseWithDefaultPatches(ImmutableMap<String, IPdxScript> variables, Path... scriptFiles) {
         return parse(PdxPatchDatabase.DEFAULT, variables, scriptFiles);
     }
 
-    public static IPdxScript parseWithDefaultPatches(ImmutableMap<String, IPdxScript> variables, Path... scriptFiles) {
-        return parse(PdxPatchDatabase.DEFAULT, variables.toMap(), scriptFiles);
+    public static IPdxScript parse(PdxPatchDatabase patchDatabase, ImmutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        if (scriptFiles.length == 0) {
+            throw new IllegalArgumentException("got empty path array");
+        }
+
+        PdxScriptObject.Builder b = PdxScriptObject.builder();
+        for (Path p : scriptFiles) {
+            b.addAll(parse(IOUtil.getCharacterIterator(patchDatabase, p), variables != null ? variables.toMap() : null).expectObject());
+        }
+
+        return b.build();
     }
 
-    public static IPdxScript parse(PdxPatchDatabase patchDatabase, MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+    public static IPdxScript parseWithCommonVariables(MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        return parseWithCommonVariables(null, variables, scriptFiles);
+    }
+
+    public static IPdxScript parseWithDefaultPatchesAndCommonVariables(MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
+        return parseWithCommonVariables(PdxPatchDatabase.DEFAULT, variables, scriptFiles);
+    }
+
+    public static IPdxScript parseWithCommonVariables(PdxPatchDatabase patchDatabase, MutableMap<String, IPdxScript> variables, Path... scriptFiles) {
         if (scriptFiles.length == 0) {
             throw new IllegalArgumentException("got empty path array");
         }

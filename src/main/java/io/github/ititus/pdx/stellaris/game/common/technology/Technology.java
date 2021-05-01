@@ -107,9 +107,8 @@ public record Technology(
         return Trigger.evaluateAnd(scope, potential);
     }
 
-
     public boolean hasAllPrerequisites(CountryScope cs) {
-        return prerequisites.allSatisfy(cs.getCountry().techStatus.technologies::containsKey);
+        return prerequisites.allSatisfy(cs.getCountry().techStatus::hasTech);
     }
 
     public boolean hasTierCondition(CountryScope cs) {
@@ -141,6 +140,15 @@ public record Technology(
         }
 
         return weight;
+    }
+
+    public int cost(int currentLevel) {
+        return cost + currentLevel * costPerLevel;
+    }
+
+
+    public int cost(CountryScope cs) {
+        return cost(cs.getCountry().techStatus.getTechLevel(name));
     }
 
     @Override
