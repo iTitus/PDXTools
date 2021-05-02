@@ -39,7 +39,7 @@ public record TechnologyWeightModifiers(
             }
 
             if (m.add() != 0) {
-                return false;
+                alwaysZero = false;
             }
         }
 
