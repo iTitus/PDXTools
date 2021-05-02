@@ -89,7 +89,7 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
             patch("""
                     --- a/Stellaris/common/technology/00_soc_tech.txt
                     +++ b/Stellaris/common/technology/00_soc_tech.txt
-                    @@ -4212,7 +4212,6 @@
+                    @@ -4239,7 +4239,6 @@
                      	is_dangerous = yes
                      	prerequisites = { "tech_precognition_interface" }
                      	weight = @tier5weight2

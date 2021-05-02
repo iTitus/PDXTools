@@ -55,6 +55,7 @@ public abstract class BaseScope implements Scope {
             case "exists" -> getScope(v.expectString()) != null;
             case "has_global_flag" -> save.gameState.flags.containsKey(v.expectString());
             case "host_has_dlc" -> save.gameState.requiredDLCs.contains(v.expectString());
+            case "is_active_resolution" -> false; // TODO: this
             case "years_passed" -> {
                 PdxRelation r = v.getRelation();
                 int yearsPassed = Period.between(START_DATE, save.gameState.date).getYears();

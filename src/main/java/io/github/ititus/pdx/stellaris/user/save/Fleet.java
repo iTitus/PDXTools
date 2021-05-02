@@ -39,7 +39,7 @@ public class Fleet {
         this.autoMovement = o.getObjectAsNullOr("auto_movement", FleetAutoMovement::new);
         this.fleetStats = o.getObjectAs("fleet_stats", FleetStats::new);
         this.currentOrder = o.getObjectAsNullOr("current_order", FleetOrders::new);
-        this.owner = o.getInt("owner");
+        this.owner = o.getInt("owner", -1);
         this.previousOwner = o.getInt("previous_owner", -1);
         this.civilian = o.getBoolean("civilian", false);
         this.station = o.getBoolean("station", false);

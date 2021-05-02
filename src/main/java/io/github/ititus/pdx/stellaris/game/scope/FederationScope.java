@@ -32,7 +32,8 @@ public class FederationScope extends BaseScope {
     @Override
     public boolean evaluateValueTrigger(String name, PdxScriptValue v) {
         return switch (name) {
-            //case "has_federation_flag" -> federation.flags.containsKey(v.expectString());
+            case "has_federation_flag" -> federation.flags.containsKey(v.expectString());
+            case "has_federation_perk" -> federation.federationProgression.hasPerk(v.expectString());
             default -> super.evaluateValueTrigger(name, v);
         };
     }

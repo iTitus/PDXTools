@@ -14,7 +14,7 @@ public class Missile {
     public final double forwardX;
     public final double forwardY;
     public final double speed;
-    public final int health;
+    public final double health;
     public final int armor;
     public final int shield;
     public final double rotationRate;
@@ -32,7 +32,7 @@ public class Missile {
         this.forwardX = o.getDouble("forward_x");
         this.forwardY = o.getDouble("forward_y");
         this.speed = o.getDouble("speed");
-        this.health = o.getInt("health");
+        this.health = o.getDouble("health");
         this.armor = o.getInt("armor");
         this.shield = o.getInt("shield");
         this.rotationRate = o.getDouble("rotation_rate");

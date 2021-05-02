@@ -269,6 +269,7 @@ public class StellarisGame {
         triggers.addEngineValueTrigger("is_homeworld");
         triggers.addEngineValueTrigger("is_capital");
         triggers.addEngineValueTrigger("has_district");
+        triggers.addEngineValueTrigger("is_active_resolution");
 
         triggers.addEngineTrigger("any_member", AnyMemberTrigger::new);
         triggers.addEngineTrigger("any_neighbor_country", AnyNeighborCountryTrigger::new);

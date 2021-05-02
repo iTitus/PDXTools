@@ -149,7 +149,7 @@ public class Test {
         CountryScope cs = new CountryScope(game, save, countryId);
 
         var techs = game.common.technologies.all().toList();
-        techs.removeIf(t -> cs.getCountry().techStatus.hasTech(t.name()));
+        techs.removeIf(t -> t.levels() >= 1 && cs.getCountry().techStatus.getTechLevel(t.name()) >= t.levels());
         for (Technology.Area area : Technology.Area.values()) {
             TechQueueItem i = cs.getCountry().techStatus.getCurrentlyResearchedTech(area);
             if (i != null) {
@@ -172,6 +172,16 @@ public class Test {
 
         var blockedWeightedTechs = blockedTechs.groupByAndCollect(Technology::area, t -> PrimitiveTuples.pair(t, t.getWeight(cs)), Multimaps.mutable.list.empty());
 
+        for (Technology.Area area : Technology.Area.values()) {
+            TechQueueItem i = cs.getCountry().techStatus.getCurrentlyResearchedTech(area);
+            if (i != null) {
+                Technology t = game.common.technologies.get(i.technology);
+                int level = 1 + cs.getCountry().techStatus.getTechLevel(t.name());
+                System.out.println("Currently researching (" + area.getName() + "): " + game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + (t.isRepeatable() ? ", level=" + level + "/" + t.levels() : "") + ") " + (int) i.progress + "/" + t.cost(cs));
+            }
+        }
+
+        System.out.println();
         int researchAlternatives = cs.getCountry().techStatus.alternatives.get(Technology.Area.PHYSICS)
                 .count(t -> !cs.getCountry().techStatus.alwaysAvailableTech.contains(t));
         System.out.println("Tech Alternatives: " + researchAlternatives);
@@ -182,13 +192,6 @@ public class Test {
                         .map(t -> game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ")")
                         .collect(Collectors.joining(", "))
         );
-        for (Technology.Area area : Technology.Area.values()) {
-            TechQueueItem i = cs.getCountry().techStatus.getCurrentlyResearchedTech(area);
-            if (i != null) {
-                Technology t = game.common.technologies.get(i.technology);
-                System.out.println("Currently researching (" + area.getName() + "): " + game.localisation.translate(t.name()) + " (" + t.name() + ", " + t.area().getName() + ", tier=" + t.tier() + ") " + (int) i.progress + "/" + t.cost(cs));
-            }
-        }
 
         for (Technology.Area area : Technology.Area.values()) {
             var techsInArea = availableWeightedTechs.get(area)
@@ -197,7 +200,11 @@ public class Test {
 
             System.out.println();
             System.out.println("Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
-            techsInArea.forEach(p -> System.out.printf(Locale.ROOT, "%s (%s, tier=%d, cost=%d) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getOne().cost(cs), p.getTwo(), 100 * p.getTwo() / totalWeight));
+            techsInArea.forEach(p -> {
+                int level = 1 + cs.getCountry().techStatus.getTechLevel(p.getOne().name());
+                String levelString = p.getOne().isRepeatable() ? ", level=" + level + "/" + p.getOne().levels() : "";
+                System.out.printf(Locale.ROOT, "%s (%s, tier=%d, cost=%d%s) W: %.1f (%.1f%%)%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getOne().cost(cs), levelString, p.getTwo(), 100 * p.getTwo() / totalWeight);
+            });
             System.out.println();
         }
 
@@ -209,6 +216,9 @@ public class Test {
             System.out.println();
             System.out.println("Blocked Tech Weights for " + cs.getCountry().name + " in " + game.localisation.translate(area.getName()) + ":");
             blockedTechsInArea.forEach(p -> {
+                int level = 1 + cs.getCountry().techStatus.getTechLevel(p.getOne().name());
+                String levelString = p.getOne().isRepeatable() ? ", level=" + level + "/" + p.getOne().levels() : "";
+
                 var missingPrereqs = p.getOne().prerequisites().select(prereq -> !cs.getCountry().techStatus.hasTech(prereq));
                 String missingPrereqsString = missingPrereqs.notEmpty() ? " missing_prereqs=" + missingPrereqs : "";
 
@@ -220,7 +230,7 @@ public class Test {
                         .count();
                 String tierString = alreadyUnlocked < previousTierRequired ? " previous_tier=" + alreadyUnlocked + "/" + previousTierRequired : "";
 
-                System.out.printf(Locale.ROOT, "%s (%s, tier=%d, cost=%d)%s%s weight=%.1f%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getOne().cost(cs), missingPrereqsString, tierString, p.getTwo());
+                System.out.printf(Locale.ROOT, "%s (%s, tier=%d, cost=%d%s)%s%s weight=%.1f%n", game.localisation.translate(p.getOne().name()), p.getOne().name(), p.getOne().tier(), p.getOne().cost(cs), levelString, missingPrereqsString, tierString, p.getTwo());
             });
             System.out.println();
         }

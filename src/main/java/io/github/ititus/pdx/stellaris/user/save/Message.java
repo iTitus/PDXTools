@@ -28,13 +28,13 @@ public class Message {
         this.type = o.getString("type");
         this.localization = o.getString("localization", null);
         this.variables = o.getListAsEmptyOrList("variables", Entry::new);
-        this.receiver = o.getInt("receiver");
+        this.receiver = o.getInt("receiver", -1);
         this.targetSystem = o.getInt("target_system", -1);
         this.technology = o.getString("technology", null);
         this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
-        this.end = o.getDate("end");
+        this.end = o.getDate("end", null);
         this.date = o.getDate("date");
-        this.notification = o.getInt("notification");
+        this.notification = o.getInt("notification", -1);
         this.gameText = o.getBoolean("game_text", false);
         this.diplomaticAction3rdParty = o.getObjectAsNullOr("diplomatic_action_3rd_party", DiplomaticResponse::new);
         this.diplomaticResponse = o.getObjectAsNullOr("diplomatic_response", DiplomaticResponse::new);

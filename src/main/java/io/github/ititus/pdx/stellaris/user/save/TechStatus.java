@@ -15,9 +15,9 @@ import java.util.Map;
 public class TechStatus {
 
     public final Map<String, Integer> technologies;
-    public final TechQueueItem physicsQueueItem;
-    public final TechQueueItem societyQueueItem;
-    public final TechQueueItem engineeringQueueItem;
+    public final ImmutableList<TechQueueItem> physicsQueue;
+    public final ImmutableList<TechQueueItem> societyQueue;
+    public final ImmutableList<TechQueueItem> engineeringQueue;
     public final ImmutableObjectDoubleMap<String> storedTechpointsForTech;
     public final ImmutableDoubleList storedTechpoints;
     public final TechAlternatives alternatives;
@@ -31,9 +31,9 @@ public class TechStatus {
 
     public TechStatus(PdxScriptObject o) {
         this.technologies = getTechnologies(o);
-        this.physicsQueueItem = getQueueItem(o, "physics_queue");
-        this.societyQueueItem = getQueueItem(o, "society_queue");
-        this.engineeringQueueItem = getQueueItem(o, "engineering_queue");
+        this.physicsQueue = o.getListAsEmptyOrList("physics_queue", TechQueueItem::new);
+        this.societyQueue = o.getListAsEmptyOrList("society_queue", TechQueueItem::new);
+        this.engineeringQueue = o.getListAsEmptyOrList("engineering_queue", TechQueueItem::new);
         this.storedTechpointsForTech = o.getObjectAsEmptyOrStringDoubleMap("stored_techpoints_for_tech");
         this.storedTechpoints = o.getListAsEmptyOrDoubleList("stored_techpoints");
         this.alternatives = o.getObjectAs("alternatives", TechAlternatives::new);
@@ -44,11 +44,6 @@ public class TechStatus {
         this.auto_researching_society = o.getBoolean("auto_researching_society");
         this.auto_researching_engineering = o.getBoolean("auto_researching_engineering");
         this.lastIncreasedTech = o.getString("last_increased_tech", null);
-    }
-
-    private static TechQueueItem getQueueItem(PdxScriptObject o, String name) {
-        ImmutableList<TechQueueItem> queue = o.getListAsEmptyOrList(name, TechQueueItem::new);
-        return queue.isEmpty() ? null : queue.getOnly();
     }
 
     private static Map<String, Integer> getTechnologies(PdxScriptObject o) {
@@ -78,12 +73,17 @@ public class TechStatus {
     }
 
     public TechQueueItem getCurrentlyResearchedTech(Technology.Area area) {
-        TechQueueItem item = switch (area) {
-            case PHYSICS -> physicsQueueItem;
-            case SOCIETY -> societyQueueItem;
-            case ENGINEERING -> engineeringQueueItem;
+        ImmutableList<TechQueueItem> queue = switch (area) {
+            case PHYSICS -> physicsQueue;
+            case SOCIETY -> societyQueue;
+            case ENGINEERING -> engineeringQueue;
         };
+        for (TechQueueItem item : queue) {
+            if (item != null && item.technology != null) {
+                return item;
+            }
+        }
 
-        return item != null && item.technology != null ? item : null;
+        return null;
     }
 }
