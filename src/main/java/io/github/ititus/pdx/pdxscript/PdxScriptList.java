@@ -290,9 +290,9 @@ public final class PdxScriptList extends BasePdxScript {
 
         PdxHelper.listObjectOpen(indent, root || mode == Mode.IMPLICIT, key, b, relation, list.isEmpty());
 
-        // TODO: Add support for printing lists in comma mode
         if (mode == Mode.COMMA) {
-            b.append(PdxHelper.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
+            // b.append(PdxHelper.indent(indent + 1)).append(COMMENT_CHAR).append(SPACE_CHAR).append("COMMA LIST").append(LINE_FEED);
+            throw new UnsupportedOperationException(); // TODO: Add support for printing lists in comma mode
         }
 
         list.forEach(script -> {
