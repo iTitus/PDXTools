@@ -20,7 +20,7 @@ public class DebugBreakTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of("debug_break=" + value);
     }
 }

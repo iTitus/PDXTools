@@ -27,7 +27,7 @@ public class ValueTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of(v.toPdxScript(0, false, name));
     }
 }

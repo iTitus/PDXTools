@@ -26,7 +26,7 @@ public class DummyTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of(s.toPdxScript(0, false, name));
     }
 }

@@ -95,4 +95,8 @@ public class Ship {
         this.targeting = o.getDouble("targeting", 0);
         this.upgradable = o.getBoolean("upgradable", true);
     }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
+    }
 }

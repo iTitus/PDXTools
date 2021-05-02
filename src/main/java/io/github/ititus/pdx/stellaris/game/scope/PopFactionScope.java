@@ -10,7 +10,7 @@ import org.eclipse.collections.api.RichIterable;
 
 import java.util.Objects;
 
-public class PopFactionScope extends BaseScope implements PopOwnerScope {
+public class PopFactionScope extends StellarisScope implements PopOwnerScope {
 
     private final PopFaction popFaction;
 
@@ -34,6 +34,7 @@ public class PopFactionScope extends BaseScope implements PopOwnerScope {
     @Override
     public boolean evaluateValueTrigger(String name, PdxScriptValue v) {
         return switch (name) {
+            case "has_modifier" -> popFaction.hasModifier(v.expectString());
             case "has_pop_faction_flag" -> popFaction.flags.containsKey(v.expectString());
             default -> super.evaluateValueTrigger(name, v);
         };

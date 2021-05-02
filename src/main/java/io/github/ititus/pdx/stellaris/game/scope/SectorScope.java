@@ -11,7 +11,7 @@ import org.eclipse.collections.api.RichIterable;
 
 import java.util.Objects;
 
-public class SectorScope extends BaseScope implements HabitablePlanetOwnerScope, PopOwnerScope, GalacticObjectOwnerScope {
+public class SectorScope extends StellarisScope implements HabitablePlanetOwnerScope, PopOwnerScope, GalacticObjectOwnerScope {
 
     private final Sector sector;
 

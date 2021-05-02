@@ -9,7 +9,7 @@ import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 
 import java.util.Objects;
 
-public class DepositScope extends BaseScope implements ResourceOwnerScope {
+public class DepositScope extends StellarisScope implements ResourceOwnerScope {
 
     private final Deposit deposit;
 

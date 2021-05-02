@@ -70,4 +70,8 @@ public class GalacticObject {
         this.sector = o.getUnsignedInt("sector");
         this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
     }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
+    }
 }

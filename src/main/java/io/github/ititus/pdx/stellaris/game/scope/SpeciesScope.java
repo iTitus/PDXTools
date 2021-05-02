@@ -8,7 +8,7 @@ import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 
 import java.util.Objects;
 
-public class SpeciesScope extends BaseScope {
+public class SpeciesScope extends StellarisScope {
 
     private final Species species;
 

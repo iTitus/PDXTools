@@ -9,7 +9,7 @@ import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 
 import java.util.Objects;
 
-public class LeaderScope extends BaseScope {
+public class LeaderScope extends StellarisScope {
 
     private final Leader leader;
 

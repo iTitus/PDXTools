@@ -60,4 +60,8 @@ public class Pop {
         this.approvalModifier = o.getString("approval_modifier", null);
         this.spawnedArmies = o.getListAsEmptyOrIntList("spawned_armies");
     }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
+    }
 }

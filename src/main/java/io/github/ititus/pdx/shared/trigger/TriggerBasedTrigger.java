@@ -2,6 +2,7 @@ package io.github.ititus.pdx.shared.trigger;
 
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
+import io.github.ititus.pdx.shared.scope.Scope;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
@@ -27,5 +28,15 @@ public abstract class TriggerBasedTrigger extends Trigger {
 
     protected void localiseChildren(MutableList<String> list, PdxLocalisation localisation, String language, int indent) {
         list.addAllIterable(localise(language, indent, children));
+    }
+
+    @FunctionalInterface
+    public interface Evaluator {
+
+        static Evaluator not(Evaluator e) {
+            return (scope, children) -> !e.evaluate(scope, children);
+        }
+
+        boolean evaluate(Scope scope, ImmutableList<Trigger> children);
     }
 }

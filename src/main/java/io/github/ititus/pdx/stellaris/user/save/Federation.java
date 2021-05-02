@@ -2,6 +2,7 @@ package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 import org.eclipse.collections.api.map.ImmutableMap;
 
@@ -16,6 +17,7 @@ public class Federation {
     public final LocalDate startDate;
     public final ImmutableIntList shipDesigns;
     public final int leader;
+    public final ImmutableList<TimedModifier> timedModifiers;
     public final ImmutableMap<String, FlagData> flags;
 
     public Federation(IPdxScript s) {
@@ -28,5 +30,10 @@ public class Federation {
         this.shipDesigns = o.getListAsEmptyOrIntList("ship_design");
         this.leader = o.getInt("leader");
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
+        this.timedModifiers = o.getImplicitListAsList("timed_modifier", TimedModifier::new);
+    }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
     }
 }

@@ -129,11 +129,11 @@ public class StellarisGame {
         triggers.addEngineTrigger("always", AlwaysTrigger::new);
 
         // logical operators
-        triggers.addEngineTrigger("not", NotTrigger::new);
-        triggers.addEngineTrigger("or", OrTrigger::new);
-        triggers.addEngineTrigger("and", AndTrigger::new);
-        triggers.addEngineTrigger("nor", NorTrigger::new);
-        triggers.addEngineTrigger("nand", NandTrigger::new);
+        triggers.addEngineTrigger("not", LogicTrigger.not());
+        triggers.addEngineTrigger("or", LogicTrigger.or());
+        triggers.addEngineTrigger("and", LogicTrigger.and());
+        triggers.addEngineTrigger("nor", LogicTrigger.nor());
+        triggers.addEngineTrigger("nand", LogicTrigger.nand());
 
         // branching
         triggers.addEngineTrigger("if", IfElseTrigger::dummy);
@@ -279,12 +279,12 @@ public class StellarisGame {
         triggers.addEngineTrigger("any_relation", AnyRelationTrigger::new);
         triggers.addEngineTrigger("any_system_planet", AnySystemPlanetTrigger::new);
         triggers.addEngineTrigger("any_system_within_border", AnySystemWithinBorderTrigger::new);
+        triggers.addEngineTrigger("any_playable_country", AnyPlayableCountryTrigger::new);
         triggers.addEngineTrigger("count_owned_pop", CountOwnedPopsTrigger::new);
         triggers.addEngineTrigger("count_starbase_sizes", CountStarbaseSizesTrigger::new);
         triggers.addEngineTrigger("research_leader", ResearchLeaderTrigger::new);
         triggers.addEngineTrigger("has_resource", HasResourceTrigger::new);
-
-        addDummyTrigger("num_districts");
+        triggers.addEngineTrigger("num_districts", NumDistrictsTrigger::new);
     }
 
     private void addEngineEffects() {

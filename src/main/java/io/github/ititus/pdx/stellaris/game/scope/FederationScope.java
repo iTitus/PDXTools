@@ -8,7 +8,7 @@ import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 
 import java.util.Objects;
 
-public class FederationScope extends BaseScope {
+public class FederationScope extends StellarisScope {
 
     private final Federation federation;
 
@@ -34,6 +34,7 @@ public class FederationScope extends BaseScope {
         return switch (name) {
             case "has_federation_flag" -> federation.flags.containsKey(v.expectString());
             case "has_federation_perk" -> federation.federationProgression.hasPerk(v.expectString());
+            case "has_modifier" -> federation.hasModifier(v.expectString());
             default -> super.evaluateValueTrigger(name, v);
         };
     }

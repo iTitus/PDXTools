@@ -8,7 +8,7 @@ import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 
 import java.util.Objects;
 
-public class PopScope extends BaseScope {
+public class PopScope extends StellarisScope {
 
     private final Pop pop;
 
@@ -32,6 +32,7 @@ public class PopScope extends BaseScope {
     @Override
     public boolean evaluateValueTrigger(String name, PdxScriptValue v) {
         return switch (name) {
+            case "has_modifier" -> pop.hasModifier(v.expectString());
             case "has_pop_flag" -> pop.flags.containsKey(v.expectString());
             case "has_trait", "pop_has_trait" -> save.gameState.speciesDb.get(pop.species).traits.hasTrait(v.expectString());
             case "is_enslaved" -> v.expectBoolean() == pop.enslaved;

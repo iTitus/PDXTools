@@ -228,4 +228,8 @@ public class Country {
         // TODO: first_contact
         this.ownedSpecies = o.getListAsEmptyOrIntList("owned_species_refs");
     }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
+    }
 }

@@ -9,7 +9,7 @@ import org.eclipse.collections.api.RichIterable;
 
 import java.util.Objects;
 
-public class GalacticObjectScope extends BaseScope {
+public class GalacticObjectScope extends StellarisScope {
 
     private final GalacticObject galacticObject;
 
@@ -34,6 +34,7 @@ public class GalacticObjectScope extends BaseScope {
     public boolean evaluateValueTrigger(String name, PdxScriptValue v) {
         return switch (name) {
             case "has_megastructure" -> galacticObject.megaStructures.anySatisfy(id -> v.expectString().equals(save.gameState.megaStructures.get(id).type));
+            case "has_modifier" -> galacticObject.hasModifier(v.expectString());
             case "has_pop_faction_flag" -> galacticObject.flags.containsKey(v.expectString());
             default -> super.evaluateValueTrigger(name, v);
         };

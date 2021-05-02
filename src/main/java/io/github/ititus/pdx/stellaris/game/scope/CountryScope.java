@@ -18,7 +18,7 @@ import org.eclipse.collections.impl.collector.Collectors2;
 
 import java.util.Objects;
 
-public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope, PopOwnerScope, GalacticObjectOwnerScope, ResourceOwnerScope {
+public class CountryScope extends StellarisScope implements HabitablePlanetOwnerScope, PopOwnerScope, GalacticObjectOwnerScope, ResourceOwnerScope {
 
     private final Country country;
 
@@ -61,7 +61,7 @@ public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope
             case "has_country_flag" -> country.flags.containsKey(v.expectString());
             case "has_ethic" -> country.ethos.ethics.contains(v.expectString());
             case "has_federation" -> (country.federation != -1) == v.expectBoolean();
-            case "has_modifier" -> country.timedModifiers.contains(v.expectString());
+            case "has_modifier" -> country.hasModifier(v.expectString());
             case "has_origin" -> v.expectString().equals(country.government.origin);
             case "has_policy_flag" -> country.policyFlags.contains(v.expectString());
             case "has_seen_any_bypass" -> country.seenBypassTypes.contains(v.expectString());
@@ -131,7 +131,7 @@ public class CountryScope extends BaseScope implements HabitablePlanetOwnerScope
         return country.relationsManager.relations.collect(r -> new CountryScope(game, save, r.country));
     }
 
-    public Iterable<CountryScope> getNeighborCountries() {
+    public RichIterable<CountryScope> getNeighborCountries() {
         return country.relationsManager.relations.stream()
                 .filter(r -> r.borders)
                 .mapToInt(r -> r.country)

@@ -177,4 +177,8 @@ public class Planet {
         this.speciesInformation = o.getObjectAsEmptyOrIntObjectMap("species_information", SpeciesInformation::new);
         this.autoSlotsTaken = o.getListAsBooleanList("auto_slots_taken");
     }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
+    }
 }

@@ -30,7 +30,7 @@ public abstract class CountTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.of(name + relation.getSign() + count + ", where:");
         localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();

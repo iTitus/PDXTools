@@ -42,7 +42,7 @@ public class ScriptedTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.of("scripted_trigger " + name + "=" + expected + ", where " + name + " means:");
         localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();

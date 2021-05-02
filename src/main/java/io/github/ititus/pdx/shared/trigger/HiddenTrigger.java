@@ -18,7 +18,7 @@ public class HiddenTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.of("hidden_trigger:");
         localiseChildren(list, localisation, language, indent + 1);
         return list.toImmutable();

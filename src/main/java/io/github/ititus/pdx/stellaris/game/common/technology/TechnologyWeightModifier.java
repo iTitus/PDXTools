@@ -31,7 +31,7 @@ public record TechnologyWeightModifier(
         return Trigger.evaluateAnd(scope, triggers);
     }
 
-    public double modifyWeight(double currentWeight, double baseWeight, CountryScope scope) {
+    double modifyWeight(double currentWeight, double baseWeight, CountryScope scope) {
         if (isActive(scope)) {
             currentWeight *= factor;
             currentWeight += add * baseWeight;

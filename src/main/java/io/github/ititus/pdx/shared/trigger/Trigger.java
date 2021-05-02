@@ -64,6 +64,22 @@ public abstract class Trigger implements Localisable {
         return false;
     }
 
+    public static boolean evaluateNand(Scope scope, Trigger... triggers) {
+        return !evaluateAnd(scope, triggers);
+    }
+
+    public static boolean evaluateNand(Scope scope, Iterable<Trigger> triggers) {
+        return !evaluateAnd(scope, triggers);
+    }
+
+    public static boolean evaluateNor(Scope scope, Trigger... triggers) {
+        return !evaluateOr(scope, triggers);
+    }
+
+    public static boolean evaluateNor(Scope scope, Iterable<Trigger> triggers) {
+        return !evaluateOr(scope, triggers);
+    }
+
     public static ImmutableList<String> localise(Iterable<Trigger> triggers) {
         return localise(DEFAULT_LANGUAGE, 0, triggers);
     }

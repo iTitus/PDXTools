@@ -148,6 +148,9 @@ public class Test {
         int countryId = 0;
         CountryScope cs = new CountryScope(game, save, countryId);
 
+
+        game.common.technologies.get("tech_ascension_theory").localise().forEach(System.out::println);
+
         var techs = game.common.technologies.all().toList();
         techs.removeIf(t -> t.levels() >= 1 && cs.getCountry().techStatus.getTechLevel(t.name()) >= t.levels());
         for (Technology.Area area : Technology.Area.values()) {
@@ -157,7 +160,7 @@ public class Test {
             }
         }
         techs.removeIf(t -> cs.getCountry().techStatus.alwaysAvailableTech.contains(t.name()));
-        techs.removeIf(t -> !t.hasPotential(cs) || t.getBaseWeight() <= 0); // remove unobtainable/event techs
+        techs.removeIf(t -> anyPrerequisitesUnavailable(game, cs, t)); // remove unobtainable/event techs
 
         var blockedTechs = techs.select(t -> !t.hasAllPrerequisites(cs) || !t.hasTierCondition(cs));
         techs.removeIf(t -> !t.hasAllPrerequisites(cs) || !t.hasTierCondition(cs));
@@ -234,6 +237,17 @@ public class Test {
             });
             System.out.println();
         }
+    }
+
+    private static boolean anyPrerequisitesUnavailable(StellarisGame game, CountryScope cs, Technology t) {
+        if (!t.hasPotential(cs) || t.getBaseWeight() <= 0) {
+            return true;
+        }
+
+        return t.prerequisites().stream()
+                .filter(name -> !cs.getCountry().techStatus.hasTech(name))
+                .map(game.common.technologies::get)
+                .anyMatch(prereq -> anyPrerequisitesUnavailable(game, cs, prereq));
     }
 
     private static final class TestProgressMessageUpdater implements StellarisSaveAnalyser.ProgressMessageUpdater {

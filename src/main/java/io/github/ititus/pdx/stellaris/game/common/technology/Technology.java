@@ -134,12 +134,11 @@ public record Technology(
     }
 
     public double getWeight(CountryScope scope) {
-        double weight = this.weight;
-        if (weight != 0 && weightModifier != null) {
-            weight = weightModifier.modifyWeight(weight, this.weight, scope);
+        if (this.weight != 0 && weightModifier != null) {
+            return weightModifier.getModifiedWeight(scope, this.weight);
         }
 
-        return weight;
+        return this.weight;
     }
 
     public int cost(int currentLevel) {
@@ -193,7 +192,7 @@ public record Technology(
             list.add("Properties: " + String.join(", ", properties));
         }
         if (modifier != null) {
-            list.add("Modifier:");
+            list.add("Modifiers:");
             if (modifier.description != null) {
                 list.add(" - Description: " + game.localisation.translate(language, modifier.description.description, modifier.description.descriptionParameters));
             }

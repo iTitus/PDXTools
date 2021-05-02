@@ -49,7 +49,7 @@ public class InvertedSwitchTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.empty();
         list.add("switch on " + trigger + ":");
         cases.forEach((v, t) -> {

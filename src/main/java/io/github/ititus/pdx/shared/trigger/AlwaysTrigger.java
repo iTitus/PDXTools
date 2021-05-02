@@ -5,7 +5,7 @@ import io.github.ititus.pdx.shared.scope.Scope;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-public class AlwaysTrigger extends Trigger {
+public final class AlwaysTrigger extends Trigger {
 
     public final boolean value;
 
@@ -20,7 +20,7 @@ public class AlwaysTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of("always=" + value);
     }
 }

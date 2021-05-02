@@ -13,7 +13,7 @@ import org.eclipse.collections.api.RichIterable;
 
 import java.util.Objects;
 
-public class PlanetScope extends BaseScope implements PopOwnerScope, ResourceOwnerScope {
+public class PlanetScope extends StellarisScope implements PopOwnerScope, ResourceOwnerScope {
 
     private final Planet planet;
 
@@ -39,7 +39,7 @@ public class PlanetScope extends BaseScope implements PopOwnerScope, ResourceOwn
         return switch (name) {
             case "has_deposit" -> v.isBoolean() ? v.expectBoolean() == planet.deposits.notEmpty() : planet.deposits.anySatisfy(id -> v.expectString().equals(save.gameState.deposits.get(id).type));
             case "has_district" -> v.isBoolean() ? v.expectBoolean() == planet.districts.notEmpty() : planet.districts.contains(v.expectString());
-            case "has_modifier" -> planet.timedModifiers.contains(v.expectString());
+            case "has_modifier" -> planet.hasModifier(v.expectString());
             case "has_planet_flag" -> planet.flags.containsKey(v.expectString());
             case "has_planet_modifier" -> planet.planetModifiers.contains(v.expectString());
             case "is_capital" -> {
@@ -69,5 +69,13 @@ public class PlanetScope extends BaseScope implements PopOwnerScope, ResourceOwn
         }
 
         return resources;
+    }
+
+    public int getDistrictCount(String type) {
+        if ("any".equals(type)) {
+            return planet.districts.size();
+        }
+
+        return planet.districts.count(type::equals);
     }
 }

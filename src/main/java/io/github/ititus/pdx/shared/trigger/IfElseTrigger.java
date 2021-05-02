@@ -46,7 +46,7 @@ public class IfElseTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         boolean first = true;
         MutableList<String> list = Lists.mutable.of();
         list.add("if_then_else:");

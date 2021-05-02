@@ -34,7 +34,7 @@ public class HasResourceTrigger extends Trigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         return Lists.immutable.of("has_resource: type=" + type + " amount" + relation.getSign() + amount);
     }
 }

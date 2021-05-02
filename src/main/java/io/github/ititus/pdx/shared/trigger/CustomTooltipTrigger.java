@@ -33,7 +33,7 @@ public class CustomTooltipTrigger extends TriggerBasedTrigger {
     }
 
     @Override
-    public ImmutableList<String> localise(String language, int indent) {
+    protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.of("custom_tooltip:");
         list.add(indent(indent + 1) + " - fail_text: " + localisation.translate(language, failText));
         list.add(indent(indent + 1) + " - success_text: " + localisation.translate(language, successText));

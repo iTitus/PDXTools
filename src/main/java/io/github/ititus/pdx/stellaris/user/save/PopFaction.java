@@ -32,4 +32,8 @@ public class PopFaction {
         this.members = o.getListAsIntList("members");
         this.flags = o.getObjectAsEmptyOrStringObjectMap("flags", FlagData::of);
     }
+
+    public boolean hasModifier(String name) {
+        return timedModifiers.anySatisfy(m -> name.equals(m.modifier));
+    }
 }
