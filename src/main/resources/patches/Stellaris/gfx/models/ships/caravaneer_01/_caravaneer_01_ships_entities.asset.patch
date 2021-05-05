@@ -1,0 +1,13 @@
+--- a/Stellaris/gfx/models/ships/caravaneer_01/_caravaneer_01_ships_entities.asset
++++ b/Stellaris/gfx/models/ships/caravaneer_01/_caravaneer_01_ships_entities.asset
+@@ -240,8 +240,8 @@
+ 	game_data = {
+ 		trail_locators = {
+ 			"engine_large_01" = 		{ width = @large_trail_W 	lenght = @large_trail_L   	}
+-			"engine_medium_01" = 		{ width = @mnedium_trail_W 	lenght = @medium_trail_L   	}
+-			"engine_medium_02" = 		{ width = @mnedium_trail_W 	lenght = @medium_trail_L   	}
++			"engine_medium_01" = 		{ width = @medium_trail_W 	lenght = @medium_trail_L   	}
++			"engine_medium_02" = 		{ width = @medium_trail_W 	lenght = @medium_trail_L   	}
+ 		}
+ 	}
+ 	attach = { "root" = "caravaneer_cruiser_01_lights_entity" }

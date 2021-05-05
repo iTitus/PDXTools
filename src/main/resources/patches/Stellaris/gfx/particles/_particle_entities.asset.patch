@@ -1,0 +1,10 @@
+--- a/Stellaris/gfx/particles/_particle_entities.asset
++++ b/Stellaris/gfx/particles/_particle_entities.asset
+@@ -115,7 +115,6 @@
+ 
+ entity = {
+ 	name = "stellarite_remnant_particle_entity"
+-	scale = 1
+ 
+ 	locator = {
+ 		name = "root"

@@ -1,0 +1,8 @@
+--- a/Stellaris/gfx/models/ships/titans/molluscoid_01/_molluscoid_titan_meshes.gfx
++++ b/Stellaris/gfx/models/ships/titans/molluscoid_01/_molluscoid_titan_meshes.gfx
+@@ -64,5 +64,3 @@
+ 		}
+ 	}
+ }
+-
+-}

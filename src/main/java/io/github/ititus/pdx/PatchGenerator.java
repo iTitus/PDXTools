@@ -17,6 +17,7 @@ public final class PatchGenerator {
 
     private static final Path PATCHES_DIR = Path.of(System.getProperty("user.home"), "Desktop/pdx/patches");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common");
+    private static final Path OUTPUT_DIR = Path.of("src/main/resources/patches");
 
     private PatchGenerator() {
     }
@@ -44,6 +45,15 @@ public final class PatchGenerator {
             Patch<String> diff = DiffUtils.diff(original, revised);
             List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("a/" + path, "b/" + path, original, diff, 3);
             unifiedDiff.forEach(System.out::println);
+
+            Path outputFile = OUTPUT_DIR.resolve(path + ".patch");
+            try {
+                Files.createDirectories(outputFile.getParent());
+                Files.write(outputFile, unifiedDiff);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+
             System.out.println("#".repeat(80));
         }
     }

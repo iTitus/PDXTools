@@ -1,0 +1,11 @@
+--- a/Stellaris/dlc_metadata/dlc_info.txt
++++ b/Stellaris/dlc_metadata/dlc_info.txt
+@@ -34,7 +34,7 @@
+ 		steam_id = "447680"
+ 		microsoft_store_id = "9MT1H9QPRPZG"
+ 		gog_store_id = ""
+-		paradoxplaza_store_url ""
++		paradoxplaza_store_url = ""
+ 		category = "content_pack"
+ 		gui = "arachnoid"
+ 		icon = "GFX_arachnoid"

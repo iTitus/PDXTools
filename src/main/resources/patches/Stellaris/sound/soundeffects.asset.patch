@@ -1,0 +1,20 @@
+--- a/Stellaris/sound/soundeffects.asset
++++ b/Stellaris/sound/soundeffects.asset
+@@ -1304,7 +1304,7 @@
+ 	} 
+ 	max_audible = 2
+ 	max_audible_behaviour = fail
+-	playbackrate_random_offset { -5.0 5.0 }
++	playbackrate_random_offset = { -5.0 5.0 }
+ 	is3d = yes
+ 	volume = 0.25
+ }
+@@ -1316,7 +1316,7 @@
+ 	} 
+ 	max_audible = 2
+ 	max_audible_behaviour = fail
+-	playbackrate_random_offset { -5.0 5.0 }
++	playbackrate_random_offset = { -5.0 5.0 }
+ 	is3d = yes
+ 	volume = 0.25
+ }

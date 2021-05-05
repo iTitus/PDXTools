@@ -1,0 +1,65 @@
+--- a/Stellaris/common/random_names/00_empire_names.txt
++++ b/Stellaris/common/random_names/00_empire_names.txt
+@@ -1154,34 +1154,34 @@
+ 		"Destroyers" = 1
+ 		"Reavers" = 1
+ 		"Bloodletters" = 1
+-		"Annihilators"
+-		"Exterminators"
+-		"Eradicators"
+-		"Despoilers"
+-		"Purifiers"
+-		"Cleansers"
+-		"Berserkers"
+-		"Skull Lords"
+-		"Bloodborn"
+-		"Executioners"
+-		"Heralds of Death"
+-		"Desolators"
+-		"Ravagers"
+-		"Punishers"
+-		"Bloodborn"
+-		"Chosen"
+-		"Death Bringers"
+-		"Crusaders"
+-		"Slaughterers"
+-		"Butchers"
+-		"Star Hunters"
+-		"Euthanizers"
+-		"Silencers"
+-		"Death Lords"
+-		"Decimators"
+-		"Obliterators"
+-		"Slayers"
+-		"Reapers"
++		"Annihilators" = 1
++		"Exterminators" = 1
++		"Eradicators" = 1
++		"Despoilers" = 1
++		"Purifiers" = 1
++		"Cleansers" = 1
++		"Berserkers" = 1
++		"Skull Lords" = 1
++		"Bloodborn" = 1
++		"Executioners" = 1
++		"Heralds of Death" = 1
++		"Desolators" = 1
++		"Ravagers" = 1
++		"Punishers" = 1
++		"Bloodborn" = 1
++		"Chosen" = 1
++		"Death Bringers" = 1
++		"Crusaders" = 1
++		"Slaughterers" = 1
++		"Butchers" = 1
++		"Star Hunters" = 1
++		"Euthanizers" = 1
++		"Silencers" = 1
++		"Death Lords" = 1
++		"Decimators" = 1
++		"Obliterators" = 1
++		"Slayers" = 1
++		"Reapers" = 1
+ 	}
+ }
+ 
