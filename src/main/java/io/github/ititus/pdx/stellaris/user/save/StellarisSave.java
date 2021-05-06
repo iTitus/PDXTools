@@ -1,11 +1,11 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.io.FileNameFilter;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
-import io.github.ititus.pdx.util.io.FileNameFilter;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -86,7 +86,7 @@ public class StellarisSave {
         try (Stream<Path> stream = Files.list(saveDir)) {
             latest = stream
                     .filter(StellarisSave::isValidSaveFile)
-                    .max(Comparator.comparing(p -> LocalDate.parse(IOUtil.getNameWithoutExtension(p), DTF)));
+                    .max(Comparator.comparing(p -> LocalDate.parse(PathUtil.getNameWithoutExtension(p), DTF)));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -95,7 +95,7 @@ public class StellarisSave {
     }
 
     public static boolean isValidSaveFile(Path saveFile) {
-        return saveFile != null && Files.isRegularFile(saveFile) && IOUtil.getExtension(saveFile).orElseThrow().equals("sav");
+        return saveFile != null && Files.isRegularFile(saveFile) && PathUtil.getExtension(saveFile).orElseThrow().equals("sav");
     }
 
     public static boolean isValidSaveFileOrDir(Path saveFile) {

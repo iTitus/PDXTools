@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.IOUtil;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
@@ -29,7 +29,7 @@ public class StellarisDLCs {
         try (Stream<Path> stream = Files.list(dlcDir)) {
             paths = stream
                     .filter(Files::isDirectory)
-                    .sorted(IOUtil.ASCIIBETICAL)
+                    .sorted(PathUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

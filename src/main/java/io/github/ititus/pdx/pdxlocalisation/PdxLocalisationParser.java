@@ -1,13 +1,13 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
+import io.github.ititus.data.mutable.Mutable;
+import io.github.ititus.data.mutable.MutableBoolean;
+import io.github.ititus.io.FileExtensionFilter;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
-import io.github.ititus.pdx.util.mutable.MutableBoolean;
-import io.github.ititus.pdx.util.mutable.MutableString;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.MutableSet;
@@ -40,7 +40,7 @@ public final class PdxLocalisationParser {
             files = stream
                     .filter(Files::isRegularFile)
                     .filter(p -> (filter == null || filter.test(p)))
-                    .sorted(IOUtil.ASCIIBETICAL)
+                    .sorted(PathUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -56,8 +56,8 @@ public final class PdxLocalisationParser {
     }
 
     private static void parseInternal(MutableSet<String> languages, MutableMap<String, MutableMap<String, String>> localisation, Path installDir, Path p) {
-        MutableBoolean first = new MutableBoolean(true);
-        MutableString language = new MutableString();
+        MutableBoolean first = MutableBoolean.ofTrue();
+        Mutable<String> language = Mutable.empty();
         try (Stream<String> stream = Files.lines(p)) {
             stream
                     .filter(s -> !s.isEmpty())

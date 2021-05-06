@@ -1,10 +1,10 @@
 package io.github.ititus.pdx.stellaris.game.gfx;
 
+import io.github.ititus.io.FileExtensionFilter;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -69,7 +69,7 @@ public class Gfx {
                         Path r = gfxDir.relativize(p);
                         return BLACKLIST.stream().noneMatch(r::startsWith);
                     })
-                    .sorted(IOUtil.ASCIIBETICAL)
+                    .sorted(PathUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

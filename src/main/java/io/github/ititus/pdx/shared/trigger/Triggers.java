@@ -1,9 +1,9 @@
 package io.github.ititus.pdx.shared.trigger;
 
+import io.github.ititus.data.mutable.MutableBoolean;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
-import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -88,7 +88,7 @@ public class Triggers {
 
     public ImmutableList<Trigger> create(PdxScriptObject o, Predicate<String> keyFilter) {
         MutableList<Trigger> triggers = Lists.mutable.empty();
-        MutableBoolean ifElseFound = new MutableBoolean();
+        MutableBoolean ifElseFound = MutableBoolean.ofFalse();
         IfElseTrigger.Builder[] ifElseTriggerBuilder = new IfElseTrigger.Builder[1];
         o.forEach((k, v) -> {
             k = k.toLowerCase(Locale.ROOT);

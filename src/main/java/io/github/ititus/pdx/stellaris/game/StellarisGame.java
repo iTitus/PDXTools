@@ -1,5 +1,8 @@
 package io.github.ititus.pdx.stellaris.game;
 
+import io.github.ititus.io.FileExtensionFilter;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.pdxasset.PdxAssets;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
@@ -13,9 +16,6 @@ import io.github.ititus.pdx.stellaris.game.common.Common;
 import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
 import io.github.ititus.pdx.stellaris.game.gfx.Gfx;
 import io.github.ititus.pdx.stellaris.game.trigger.*;
-import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -117,7 +117,7 @@ public class StellarisGame {
             return stream
                     .filter(Files::isRegularFile)
                     .filter(SCRIPT)
-                    .sorted(IOUtil.ASCIIBETICAL)
+                    .sorted(PathUtil.ASCIIBETICAL)
                     .toArray(Path[]::new);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

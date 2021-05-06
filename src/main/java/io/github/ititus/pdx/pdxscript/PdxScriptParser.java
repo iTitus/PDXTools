@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.collection.IteratorBuffer;
+import io.github.ititus.data.IteratorBuffer;
+import io.github.ititus.data.mutable.MutableBoolean;
 import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.SortedBags;
@@ -271,14 +271,14 @@ public final class PdxScriptParser {
         return new Iterator<>() {
 
             final StringBuilder b = new StringBuilder();
-            final MutableBoolean first = new MutableBoolean(true);
-            final MutableBoolean openQuotes = new MutableBoolean(false);
-            final MutableBoolean token = new MutableBoolean(false);
-            final MutableBoolean comment = new MutableBoolean(false);
-            final MutableBoolean separator = new MutableBoolean(false);
-            final MutableBoolean relation = new MutableBoolean(false);
-            final MutableBoolean mathOperator = new MutableBoolean(false);
-            final MutableBoolean done = new MutableBoolean(true);
+            final MutableBoolean first = MutableBoolean.ofTrue();
+            final MutableBoolean openQuotes = MutableBoolean.ofFalse();
+            final MutableBoolean token = MutableBoolean.ofFalse();
+            final MutableBoolean comment = MutableBoolean.ofFalse();
+            final MutableBoolean separator = MutableBoolean.ofFalse();
+            final MutableBoolean relation = MutableBoolean.ofFalse();
+            final MutableBoolean mathOperator = MutableBoolean.ofFalse();
+            final MutableBoolean done = MutableBoolean.ofTrue();
             Character last = null;
             String next = null;
             boolean hasNextCalled = false;

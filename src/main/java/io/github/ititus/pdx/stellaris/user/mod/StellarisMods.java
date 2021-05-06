@@ -1,10 +1,10 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
+import io.github.ititus.data.mutable.MutableInt;
+import io.github.ititus.io.FileExtensionFilter;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
-import io.github.ititus.pdx.util.mutable.MutableInt;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
@@ -43,12 +43,11 @@ public class StellarisMods {
         }
 
         int fileCount = paths.length;
-        MutableInt progress = new MutableInt();
+        MutableInt progress = MutableInt.ofZero();
 
         Arrays.stream(paths).forEach(f -> {
-            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading" +
-                    " Mod " + IOUtil.getNameWithoutExtension(f));
-            map.put(IOUtil.getNameWithoutExtension(f), new StellarisMod(userDataDir, f));
+            progressMessageUpdater.updateProgressMessage(index, true, progress.getAndIncrement(), fileCount, "Loading Mod " + PathUtil.getNameWithoutExtension(f));
+            map.put(PathUtil.getNameWithoutExtension(f), new StellarisMod(userDataDir, f));
         });
         progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");
         this.mods = map.toImmutable();

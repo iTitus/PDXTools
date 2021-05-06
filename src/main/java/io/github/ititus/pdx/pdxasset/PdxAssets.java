@@ -1,9 +1,9 @@
 package io.github.ititus.pdx.pdxasset;
 
+import io.github.ititus.data.mutable.MutableInt;
+import io.github.ititus.io.FileExtensionFilter;
+import io.github.ititus.io.PathFilter;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.PathFilter;
-import io.github.ititus.pdx.util.mutable.MutableInt;
 import org.eclipse.collections.api.map.ImmutableMap;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public final class PdxAssets {
             throw new UncheckedIOException(e);
         }
 
-        MutableInt progress = new MutableInt();
+        MutableInt progress = MutableInt.ofZero();
         this.assets = Arrays.stream(assetFiles)
                 .peek(p -> {
                     if (progressMessageUpdater != null) {

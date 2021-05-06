@@ -16,7 +16,7 @@ import static io.github.ititus.pdx.pdxscript.PdxConstants.NUMBER_MARKER;
 
 public final class PdxUsageStatistic {
 
-    private static final boolean ENABLE_TRACKING = true;
+    private static final boolean ENABLE_TRACKING = false;
 
     private final MutableMap<String, PdxUsage> usages;
 

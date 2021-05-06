@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.ititus:ititus-commons:1.4.6'
+    implementation 'io.github.ititus:ititus-commons:1.5.1'
     implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'

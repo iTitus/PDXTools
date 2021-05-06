@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.view;
 
+import io.github.ititus.data.mutable.MutableInt;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.*;
-import io.github.ititus.pdx.util.mutable.MutableInt;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -169,7 +169,7 @@ public final class GalaxyView extends BorderPane {
                 ImmutableIntObjectMap<Country> countries = save.gameState.countries;
 
                 int maxProgress = systems.size() + countries.size();
-                MutableInt progress = new MutableInt();
+                MutableInt progress = MutableInt.ofZero();
 
                 for (IntObjectPair<GalacticObject> pair : systems.keyValuesView()) {
                     if (isCancelled()) {
@@ -254,7 +254,7 @@ public final class GalaxyView extends BorderPane {
                     ImmutableList<IntObjectPair<Planet>> systemPlanets = systemPair.getTwo().planets.collect(planetId -> PrimitiveTuples.pair(planetId, planets.get(planetId)));
 
                     int maxProgress = systemPlanets.size() + 1;
-                    MutableInt progress = new MutableInt();
+                    MutableInt progress = MutableInt.ofZero();
 
                     for (IntObjectPair<Planet> pair : systemPlanets) {
                         if (isCancelled()) {

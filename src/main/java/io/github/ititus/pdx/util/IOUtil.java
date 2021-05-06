@@ -1,5 +1,6 @@
 package io.github.ititus.pdx.util;
 
+import io.github.ititus.io.IO;
 import io.github.ititus.pdx.pdxscript.PdxPatch;
 import io.github.ititus.pdx.pdxscript.PdxPatchDatabase;
 
@@ -7,90 +8,15 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.PrimitiveIterator;
 
 public final class IOUtil {
-
-    public static final Comparator<Path> ASCIIBETICAL = (p1, p2) -> {
-        try {
-            p1 = p1.toRealPath();
-            p2 = p2.toRealPath();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        int c1 = p1.getNameCount();
-        int c2 = p2.getNameCount();
-
-        boolean sameLength = c1 == c2;
-        int min = Math.min(c1, c2);
-
-        for (int i = 0; i < min; i++) {
-            String n1 = p1.getName(i).toString();
-            String n2 = p2.getName(i).toString();
-
-            if (sameLength && i == min - 1) {
-                boolean d1 = Files.isDirectory(p1);
-                boolean d2 = Files.isDirectory(p2);
-                if (d1 != d2) {
-                    return d1 ? -1 : 1;
-                }
-            }
-
-            int c = n1.compareTo(n2);
-            if (c != 0) {
-                return c;
-            }
-        }
-
-        return c1 - c2;
-    };
-
-    private IOUtil() {
-    }
-
-    public static Optional<String> getExtension(Path p) {
-        return getExtension(p.getFileName().toString());
-    }
-
-    public static Optional<String> getExtension(String name) {
-        int i = name.lastIndexOf('.');
-        if (i > 0 && i < name.length() - 1) {
-            return Optional.of(name.substring(i + 1).toLowerCase(Locale.ROOT));
-        }
-
-        return Optional.empty();
-    }
-
-    public static String getNameWithoutExtension(Path p) {
-        return getNameWithoutExtension(p.getFileName().toString());
-    }
-
-    public static String getNameWithoutExtension(String name) {
-        int i = name.lastIndexOf('.');
-        if (i > 0 && i < name.length() - 1) {
-            return name.substring(0, i);
-        }
-
-        return name;
-    }
-
-    private static void closeSilently(AutoCloseable c) {
-        if (c == null) {
-            return;
-        }
-
-        try {
-            c.close();
-        } catch (Exception ignored) {
-        }
-    }
 
     public static PrimitiveIterator.OfInt getCharacterIterator(PdxPatchDatabase patchDatabase, Path... files) {
         return new PrimitiveIterator.OfInt() {
@@ -164,7 +90,7 @@ public final class IOUtil {
                         try {
                             c = reader.read();
                         } catch (IOException e1) {
-                            closeSilently(reader);
+                            IO.closeSilently(reader);
                             if (reader instanceof StringReader) {
                                 throw new UncheckedIOException("error while reading next char", e1);
                             } else {
@@ -183,7 +109,7 @@ public final class IOUtil {
                             break;
                         }
 
-                        closeSilently(reader);
+                        IO.closeSilently(reader);
                         reader = null;
                         return '\n';
                     }
@@ -212,15 +138,5 @@ public final class IOUtil {
                 return next != -1;
             }
         };
-    }
-
-    public static FileSystem openZip(Path zip) throws IOException {
-        return openZip(zip, false);
-    }
-
-    public static FileSystem openZip(Path zip, boolean create) throws IOException {
-        URI uri = URI.create("jar:file:" + zip.toUri().getRawPath());
-        Map<String, ?> env = Map.of("create", create);
-        return FileSystems.newFileSystem(uri, env);
     }
 }

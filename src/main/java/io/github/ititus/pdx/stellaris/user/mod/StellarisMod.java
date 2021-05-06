@@ -1,11 +1,11 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
+import io.github.ititus.io.FileExtensionFilter;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -28,7 +28,7 @@ public class StellarisMod {
     private final PdxRawDataLoader modArchive;
 
     public StellarisMod(Path userDataDir, Path modDescriptorFile) {
-        if (userDataDir == null || !Files.isDirectory(userDataDir) || modDescriptorFile == null || !Files.isRegularFile(modDescriptorFile) || !IOUtil.getExtension(modDescriptorFile).orElseThrow().equals("mod")) {
+        if (userDataDir == null || !Files.isDirectory(userDataDir) || modDescriptorFile == null || !Files.isRegularFile(modDescriptorFile) || !PathUtil.getExtension(modDescriptorFile).orElseThrow().equals("mod")) {
             throw new IllegalArgumentException();
         }
 

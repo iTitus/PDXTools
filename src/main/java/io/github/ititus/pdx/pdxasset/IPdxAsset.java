@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.pdxasset;
 
-import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.io.PathUtil;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface IPdxAsset {
 
     static IPdxAsset load(Path path) {
-        Optional<String> ext = IOUtil.getExtension(path);
+        Optional<String> ext = PathUtil.getExtension(path);
         if (ext.isEmpty()) {
             throw new IllegalStateException("given file has no extension");
         }

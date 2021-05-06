@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.IOUtil;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
@@ -66,9 +66,9 @@ public class StellarisSaves {
                 progressMessageUpdater.updateProgressMessage(index + 1, true, progress1++, saveGameCount, "Loading Save Game " + saveFile.getFileName());
 
                 try {
-                    saveMap.put(IOUtil.getNameWithoutExtension(saveFile), new StellarisSave(saveFile));
+                    saveMap.put(PathUtil.getNameWithoutExtension(saveFile), new StellarisSave(saveFile));
                 } catch (Exception e) {
-                    String path = saveFolder.getFileName().toString() + '/' + IOUtil.getNameWithoutExtension(saveFile);
+                    String path = saveFolder.getFileName().toString() + '/' + PathUtil.getNameWithoutExtension(saveFile);
                     Throwable t = e.getCause() != null ? e.getCause() : e;
                     Throwable[] suppressed = t.getSuppressed();
                     Throwable cause = t.getCause();

@@ -1,9 +1,10 @@
 package io.github.ititus.pdx.pdxscript;
 
+import io.github.ititus.data.mutable.MutableInt;
+import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
+import io.github.ititus.io.ZipUtil;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.IOUtil;
-import io.github.ititus.pdx.util.io.PathFilter;
-import io.github.ititus.pdx.util.mutable.MutableInt;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
@@ -72,14 +73,14 @@ public final class PdxRawDataLoader {
     private PdxScriptObject load(Path path, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (Files.isDirectory(path)) {
             int fileCount = progressMessageUpdater != null ? countFiles(path) : 0;
-            PdxScriptObject o = parseFolder(path, path, index, new MutableInt(), fileCount, progressMessageUpdater);
+            PdxScriptObject o = parseFolder(path, path, index, MutableInt.ofZero(), fileCount, progressMessageUpdater);
             if (progressMessageUpdater != null) {
                 progressMessageUpdater.updateProgressMessage(index, false, fileCount, fileCount, "Done");
             }
 
             return o;
         } else {
-            try (FileSystem fs = IOUtil.openZip(path)) {
+            try (FileSystem fs = ZipUtil.openZip(path)) {
                 Iterator<Path> rootIt = fs.getRootDirectories().iterator();
                 if (!rootIt.hasNext()) {
                     throw new RuntimeException("expected at least one root dir");
@@ -117,7 +118,7 @@ public final class PdxRawDataLoader {
         try (Stream<Path> stream = Files.list(dir)) {
             stream
                     .filter(p -> isAllowed(root, p))
-                    .sorted(IOUtil.ASCIIBETICAL)
+                    .sorted(PathUtil.ASCIIBETICAL)
                     .forEachOrdered(p -> {
                         IPdxScript s = Files.isDirectory(p) ? parseFolder(root, p, index, progress, fileCount,
                                 progressMessageUpdater) : parseFile(root, p, index, progress, fileCount,
