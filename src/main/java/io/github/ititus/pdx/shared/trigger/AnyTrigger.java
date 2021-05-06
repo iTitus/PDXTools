@@ -61,7 +61,7 @@ public abstract class AnyTrigger extends TriggerBasedTrigger {
     @Override
     protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.of(name + ":");
-        localiseChildren(list, localisation, language, indent + 1);
+        localiseChildren(list, language, indent + 1);
         return list.toImmutable();
     }
 }

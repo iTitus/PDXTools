@@ -38,7 +38,7 @@ public class CustomTooltipTrigger extends TriggerBasedTrigger {
         list.add(indent(indent + 1) + " - fail_text: " + localisation.translate(language, failText));
         list.add(indent(indent + 1) + " - success_text: " + localisation.translate(language, successText));
         list.add(indent(indent + 1) + " - triggers:");
-        localiseChildren(list, localisation, language, indent + 2);
+        localiseChildren(list, language, indent + 2);
         return list.toImmutable();
     }
 }

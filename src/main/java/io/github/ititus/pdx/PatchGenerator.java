@@ -3,58 +3,75 @@ package io.github.ititus.pdx;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.Patch;
-import io.github.ititus.pdx.util.io.IOUtil;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class PatchGenerator {
 
-    private static final Path PATCHES_DIR = Path.of(System.getProperty("user.home"), "Desktop/pdx/patches");
-    private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common");
-    private static final Path OUTPUT_DIR = Path.of("src/main/resources/patches");
+    private static final Path PATCHES_DIR = toRealPath(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
+    private static final Path INSTALL_DIR = toRealPath(Path.of("C:/Program Files (x86)/Steam/steamapps/common"));
+    private static final Path OUTPUT_DIR = toRealPath(Path.of("src/main/resources/patches"));
+
+    private static final int CONTEXT_SIZE = 3;
 
     private PatchGenerator() {
     }
 
-    public static void main(String[] args) throws Exception {
-        List<Path> changedFiles;
+    public static void main(String[] args) {
         try (Stream<Path> stream = Files.walk(PATCHES_DIR)) {
-            changedFiles = stream
+            stream
                     .filter(Files::isRegularFile)
-                    .sorted(IOUtil.ASCIIBETICAL)
-                    .collect(Collectors.toList());
+                    .map(PatchGenerator::toRealPath)
+                    .forEach(PatchGenerator::generatePatch);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static void generatePatch(Path changedFile) {
+        System.out.println("#".repeat(80));
+
+        Path relative = PATCHES_DIR.relativize(changedFile);
+        String relativePath = relative.toString().replace('\\', '/');
+        Path originalFile = INSTALL_DIR.resolve(PATCHES_DIR.relativize(changedFile));
+
+        List<String> original, revised;
+        try {
+            original = Files.readAllLines(originalFile);
+            revised = Files.readAllLines(changedFile);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 
-        System.out.println("#".repeat(80));
-        for (Path changedFile : changedFiles) {
-            Path relative = PATCHES_DIR.relativize(changedFile);
-            Path originalFile = INSTALL_DIR.resolve(PATCHES_DIR.relativize(changedFile));
-            String path = relative.toString().replace('\\', '/');
+        System.out.println("Generating diff for " + relativePath + ":");
+        Patch<String> diff = DiffUtils.diff(original, revised);
+        if (diff.getDeltas().isEmpty()) {
+            System.out.println("Empty!");
+            return;
+        }
 
-            List<String> original = Files.readAllLines(originalFile);
-            List<String> revised = Files.readAllLines(changedFile);
+        List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("a/" + relativePath, "b/" + relativePath, original, diff, CONTEXT_SIZE);
+        unifiedDiff.forEach(System.out::println);
 
-            Patch<String> diff = DiffUtils.diff(original, revised);
-            List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("a/" + path, "b/" + path, original, diff, 3);
-            unifiedDiff.forEach(System.out::println);
+        Path outputFile = OUTPUT_DIR.resolve(relativePath + ".patch");
+        try {
+            Files.createDirectories(outputFile.getParent());
+            Files.write(outputFile, unifiedDiff);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
-            Path outputFile = OUTPUT_DIR.resolve(path + ".patch");
-            try {
-                Files.createDirectories(outputFile.getParent());
-                Files.write(outputFile, unifiedDiff);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-
-            System.out.println("#".repeat(80));
+    private static Path toRealPath(Path p) {
+        try {
+            return p.toRealPath();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 }

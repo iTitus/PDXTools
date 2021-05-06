@@ -290,10 +290,6 @@ public class StellarisGame {
     private void addEngineEffects() {
     }
 
-    private void addDummyTrigger(String name) {
-        triggers.addEngineTrigger(name, DummyTrigger.factory(name));
-    }
-
     private void addScopeTrigger(String name) {
         triggers.addEngineTrigger(name, ScopeTrigger.factory(name));
     }

@@ -36,7 +36,7 @@ public class ResearchLeaderTrigger extends TriggerBasedTrigger {
     @Override
     protected ImmutableList<String> localise(String language, int indent) {
         MutableList<String> list = Lists.mutable.of("research_leader in " + area.getName() + ":");
-        localiseChildren(list, localisation, language, indent + 1);
+        localiseChildren(list, language, indent + 1);
         return list.toImmutable();
     }
 }

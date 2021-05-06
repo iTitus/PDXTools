@@ -29,7 +29,7 @@ public class CustomTooltipFailTrigger extends TriggerBasedTrigger {
         MutableList<String> list = Lists.mutable.of("custom_tooltip_fail:");
         list.add(indent(indent + 1) + " - text: " + localisation.translate(language, text));
         list.add(indent(indent + 1) + " - triggers:");
-        localiseChildren(list, localisation, language, indent + 2);
+        localiseChildren(list, language, indent + 2);
         return list.toImmutable();
     }
 }
