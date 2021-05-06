@@ -4,8 +4,8 @@ import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
 import io.github.ititus.pdx.util.mutable.MutableString;
 import org.eclipse.collections.api.factory.Sets;
@@ -25,7 +25,7 @@ import static io.github.ititus.pdx.pdxscript.PdxConstants.UTF_8_BOM;
 
 public final class PdxLocalisationParser {
 
-    private static final IPathFilter FILTER = new FileExtensionFilter("yml");
+    private static final PathFilter FILTER = new FileExtensionFilter("yml");
 
     private PdxLocalisationParser() {
     }
@@ -34,7 +34,7 @@ public final class PdxLocalisationParser {
         return parse(installDir, FILTER, index, progressMessageUpdater);
     }
 
-    public static PdxLocalisation parse(Path installDir, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public static PdxLocalisation parse(Path installDir, PathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         Path[] files;
         try (Stream<Path> stream = Files.walk(installDir)) {
             files = stream

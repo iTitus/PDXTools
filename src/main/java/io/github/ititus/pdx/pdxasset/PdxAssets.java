@@ -2,7 +2,7 @@ package io.github.ititus.pdx.pdxasset;
 
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.io.PathFilter;
 import io.github.ititus.pdx.util.mutable.MutableInt;
 import org.eclipse.collections.api.map.ImmutableMap;
 
@@ -19,7 +19,7 @@ import static org.eclipse.collections.impl.collector.Collectors2.toImmutableMap;
 
 public final class PdxAssets {
 
-    private static final IPathFilter FILTER = new FileExtensionFilter("mesh", "anim");
+    private static final PathFilter FILTER = new FileExtensionFilter("mesh", "anim");
 
     private final ImmutableMap<String, IPdxAsset> assets;
 

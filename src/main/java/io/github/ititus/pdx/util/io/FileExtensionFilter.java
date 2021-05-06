@@ -1,39 +1,38 @@
 package io.github.ititus.pdx.util.io;
 
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.impl.factory.Sets;
+import io.github.ititus.pdx.util.IOUtil;
 
 import java.nio.file.Path;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class FileExtensionFilter implements IPathFilter {
+public class FileExtensionFilter implements PathFilter {
 
-    private final ImmutableSet<String> extensions;
+    private final Set<String> extensions;
+
+    public FileExtensionFilter(Collection<? extends String> extensions) {
+        this.extensions = extensions.stream()
+                .map(s -> s.toLowerCase(Locale.ROOT))
+                .collect(Collectors.toUnmodifiableSet());
+    }
 
     public FileExtensionFilter(String... extensions) {
-        if (extensions == null || extensions.length == 0) {
-            throw new IllegalArgumentException();
-        }
-        for (int i = 0; i < extensions.length; i++) {
-            String ext = extensions[i];
-            if (ext == null || ext.length() == 0) {
-                throw new IllegalArgumentException("Each extension must be non-null and not empty");
-            }
-            extensions[i] = ext.toLowerCase(Locale.ROOT);
-        }
-        this.extensions = Sets.immutable.of(extensions);
+        this.extensions = Arrays.stream(extensions)
+                .map(s -> s.toLowerCase(Locale.ROOT))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public boolean test(Path p) {
         if (p != null) {
-            String ext = IOUtil.getExtension(p);
-            return !ext.isEmpty() && extensions.contains(ext);
+            Optional<String> ext = IOUtil.getExtension(p);
+            return ext.isPresent() && extensions.contains(ext.get());
         }
+
         return false;
     }
 
-    public ImmutableSet<String> getExtensions() {
+    public Set<String> getExtensions() {
         return extensions;
     }
 }

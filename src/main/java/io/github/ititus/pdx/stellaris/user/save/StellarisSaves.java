@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.IOUtil;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;

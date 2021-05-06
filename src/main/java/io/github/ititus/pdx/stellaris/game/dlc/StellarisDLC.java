@@ -4,7 +4,7 @@ import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -20,8 +20,8 @@ public class StellarisDLC {
             // TODO: error in script parsing, use patches to load this; problem: file is in a zip archive
             "sound/megacorp_vo.asset"
     );
-    private static final IPathFilter DLC = new FileExtensionFilter("dlc");
-    private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx", "txt");
+    private static final PathFilter DLC = new FileExtensionFilter("dlc");
+    private static final PathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx", "txt");
 
     private final Path installDir, dlcDir;
 

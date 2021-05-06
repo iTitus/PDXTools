@@ -76,7 +76,7 @@ public class Test {
         StellarisUserData userData = null; // getStellarisUserData();
         StellarisSave save = /*null; //*/ getStellarisSave();
 
-        ImmutableList<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
+        List<String> unknownLiterals = PdxScriptParser.getUnknownLiterals();
         ImmutableList<Pair<String, Throwable>> gameErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getErrors() : null;
         ImmutableList<String> gameParseErrors = game != null && game.getRawDataLoader() != null ? game.getRawDataLoader().getRawData().getUsageStatistic().getErrorStrings() : null;
         ImmutableList<Pair<String, Throwable>> userDataErrors = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getErrors() : null;

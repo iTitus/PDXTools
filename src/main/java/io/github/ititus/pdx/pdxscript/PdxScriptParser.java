@@ -1,28 +1,28 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.pdx.util.collection.CountingSet;
 import io.github.ititus.pdx.util.collection.IteratorBuffer;
-import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.IOUtil;
 import io.github.ititus.pdx.util.mutable.MutableBoolean;
+import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.factory.SortedBags;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static io.github.ititus.pdx.pdxscript.PdxConstants.*;
 
 public final class PdxScriptParser {
 
     private static final boolean COUNT_UNKNOWN_LITERALS = false;
-    private static final CountingSet<String> unknownLiterals = new CountingSet<>();
+    private static final MutableSortedBag<String> unknownLiterals = SortedBags.mutable.empty();
 
     private PdxScriptParser() {
     }
@@ -553,7 +553,12 @@ public final class PdxScriptParser {
         return s;
     }
 
-    public static ImmutableList<String> getUnknownLiterals() {
-        return unknownLiterals.sortedList();
+    public static List<String> getUnknownLiterals() {
+        Stream.Builder<ObjectIntPair<String>> b = Stream.builder();
+        unknownLiterals.forEachWithOccurrences((s, i) -> b.accept(PrimitiveTuples.pair(s, i)));
+        return b.build()
+                .sorted(Comparator.<ObjectIntPair<String>>comparingInt(ObjectIntPair::getTwo).reversed())
+                .map(ObjectIntPair::getOne)
+                .toList();
     }
 }

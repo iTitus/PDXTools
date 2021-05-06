@@ -12,8 +12,8 @@ import io.github.ititus.pdx.stellaris.game.common.technology.Technologies;
 import io.github.ititus.pdx.stellaris.game.common.technology.category.TechnologyCategories;
 import io.github.ititus.pdx.stellaris.game.common.technology.tier.TechnologyTiers;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -43,7 +43,7 @@ public class Common {
             "scripted_effects/archaeology_event_effects.txt"
     );
     // TODO: needs "scripted_variables" (for variables) "artifact_actions", "buildings", "component_templates", "decisions", "edicts", "pop_categories", "pop_jobs","scripted_effects", "ship_sizes", "special_projects",
-    private static final IPathFilter FILTER = new FileExtensionFilter("txt");
+    private static final PathFilter FILTER = new FileExtensionFilter("txt");
 
     public final Deposits deposits;
     public final PlanetClasses planetClasses;

@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import io.github.ititus.pdx.util.mutable.MutableInt;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -29,17 +29,17 @@ public final class PdxRawDataLoader {
 
     private final Path path;
     private final ImmutableSet<String> blacklist;
-    private final IPathFilter filter;
+    private final PathFilter filter;
 
     private final PdxScriptObject rawData;
 
     private MutableSet<Pair<String, Throwable>> errors;
 
-    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter) {
+    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, PathFilter filter) {
         this(path, blacklist, filter, -1, null);
     }
 
-    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, IPathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public PdxRawDataLoader(Path path, ImmutableSet<String> blacklist, PathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (path == null || !Files.exists(path) || blacklist == null) {
             throw new IllegalArgumentException();
         }

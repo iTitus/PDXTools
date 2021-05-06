@@ -1,9 +1,12 @@
-package io.github.ititus.pdx.util.io;
+package io.github.ititus.pdx.util;
 
 import io.github.ititus.pdx.pdxscript.PdxPatch;
 import io.github.ititus.pdx.pdxscript.PdxPatchDatabase;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
@@ -52,44 +55,40 @@ public final class IOUtil {
     private IOUtil() {
     }
 
-    public static String getExtension(Path p) {
-        if (p == null) {
-            throw new IllegalArgumentException();
-        }
+    public static Optional<String> getExtension(Path p) {
         return getExtension(p.getFileName().toString());
     }
 
-    public static String getExtension(String fileName) {
-        int i = fileName.lastIndexOf('.');
-        if (i > 0 && i < fileName.length() - 1) {
-            return fileName.substring(i + 1).toLowerCase(Locale.ROOT);
+    public static Optional<String> getExtension(String name) {
+        int i = name.lastIndexOf('.');
+        if (i > 0 && i < name.length() - 1) {
+            return Optional.of(name.substring(i + 1).toLowerCase(Locale.ROOT));
         }
-        return "";
+
+        return Optional.empty();
     }
 
     public static String getNameWithoutExtension(Path p) {
-        if (p == null) {
-            throw new IllegalArgumentException();
-        }
         return getNameWithoutExtension(p.getFileName().toString());
     }
 
-    public static String getNameWithoutExtension(String fileName) {
-        int i = fileName.lastIndexOf('.');
-        if (i > 0 && i < fileName.length() - 1) {
-            return fileName.substring(0, i);
+    public static String getNameWithoutExtension(String name) {
+        int i = name.lastIndexOf('.');
+        if (i > 0 && i < name.length() - 1) {
+            return name.substring(0, i);
         }
-        return fileName;
+
+        return name;
     }
 
-    private static void closeSilently(Closeable c) {
+    private static void closeSilently(AutoCloseable c) {
         if (c == null) {
             return;
         }
 
         try {
             c.close();
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
         }
     }
 

@@ -4,8 +4,8 @@ import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.util.io.FileNameFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -27,7 +27,7 @@ public class StellarisSave {
     private static final String GAMESTATE = "gamestate";
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final IPathFilter FILTER = new FileNameFilter(n -> META.equals(n) || GAMESTATE.equals(n));
+    private static final PathFilter FILTER = FileNameFilter.ofNames(META, GAMESTATE);
     public final Meta meta;
     public final GameState gameState;
     private final Path save;
@@ -95,7 +95,7 @@ public class StellarisSave {
     }
 
     public static boolean isValidSaveFile(Path saveFile) {
-        return saveFile != null && Files.isRegularFile(saveFile) && IOUtil.getExtension(saveFile).equals("sav");
+        return saveFile != null && Files.isRegularFile(saveFile) && IOUtil.getExtension(saveFile).orElseThrow().equals("sav");
     }
 
     public static boolean isValidSaveFileOrDir(Path saveFile) {

@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.util.io.IOUtil;
+import io.github.ititus.pdx.util.IOUtil;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;

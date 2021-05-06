@@ -14,8 +14,8 @@ import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
 import io.github.ititus.pdx.stellaris.game.gfx.Gfx;
 import io.github.ititus.pdx.stellaris.game.trigger.*;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -46,7 +46,7 @@ public class StellarisGame {
             // TODO: needs "interface" (variables)
             "interface/planet_view.gui"
     );
-    private static final IPathFilter SCRIPT = new FileExtensionFilter("txt");
+    private static final PathFilter SCRIPT = new FileExtensionFilter("txt");
     // private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 
     public final Triggers triggers;

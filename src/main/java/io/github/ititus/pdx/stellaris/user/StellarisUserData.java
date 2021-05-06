@@ -5,7 +5,7 @@ import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.user.mod.StellarisMods;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSaves;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
 
@@ -21,7 +21,7 @@ public class StellarisUserData {
             // Handled separately
             "mod", "save games"
     );
-    private static final IPathFilter FILTER = new FileExtensionFilter("txt", "mod");
+    private static final PathFilter FILTER = new FileExtensionFilter("txt", "mod");
 
     private final Path userDataDir;
     private final StellarisMods mods;

@@ -3,8 +3,8 @@ package io.github.ititus.pdx.stellaris.game.gfx;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -33,8 +33,8 @@ public class Gfx {
     // "projectiles" <- *.txt
     // "shipview" <- *.txt
     // "worldgfx" <- *.txt
-    private static final IPathFilter FILTER = new FileExtensionFilter("asset", "gfx", "txt");
-    private static final IPathFilter ASSET = new FileExtensionFilter("asset");
+    private static final PathFilter FILTER = new FileExtensionFilter("asset", "gfx", "txt");
+    private static final PathFilter ASSET = new FileExtensionFilter("asset");
 
     public final ImmutableList<Light> lights;
     public final ImmutableList<Animation> animations;

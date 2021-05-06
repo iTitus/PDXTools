@@ -31,14 +31,6 @@ public final class MutableString {
         return s != null;
     }
 
-    public boolean isNullOrEmpty() {
-        return s == null || s.isEmpty();
-    }
-
-    public boolean isNotNullOrEmpty() {
-        return s != null && !s.isEmpty();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

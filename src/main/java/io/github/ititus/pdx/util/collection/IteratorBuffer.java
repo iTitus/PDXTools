@@ -6,17 +6,17 @@ import java.util.Objects;
 
 public final class IteratorBuffer<T> {
 
-    private final Iterator<T> iterator;
+    private final Iterator<? extends T> iterator;
     private final T[] buffer;
     private final int forward, backward;
 
     private int oldest, cursor, pos;
 
     @SuppressWarnings("unchecked")
-    public IteratorBuffer(Iterator<T> iterator, int forward, int backward) {
+    public IteratorBuffer(Iterator<? extends T> iterator, int forward, int backward) {
         Objects.requireNonNull(iterator);
         if (forward < 0 || backward < 0) {
-            throw new IllegalArgumentException("required positive forward and backward buffer sizes");
+            throw new IllegalArgumentException("non-negative forward and backward buffer sizes required");
         }
 
         this.iterator = iterator;

@@ -2,8 +2,8 @@ package io.github.ititus.pdx.stellaris.user.mod;
 
 import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import io.github.ititus.pdx.util.mutable.MutableInt;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class StellarisMods {
 
-    private static final IPathFilter MOD = new FileExtensionFilter("mod");
+    private static final PathFilter MOD = new FileExtensionFilter("mod");
 
     private final Path userDataDir, modsFolder;
     private final ImmutableMap<String, StellarisMod> mods;

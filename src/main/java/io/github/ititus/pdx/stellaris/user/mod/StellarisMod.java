@@ -4,8 +4,8 @@ import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.util.io.FileExtensionFilter;
-import io.github.ititus.pdx.util.io.IOUtil;
-import io.github.ititus.pdx.util.io.IPathFilter;
+import io.github.ititus.pdx.util.IOUtil;
+import io.github.ititus.pdx.util.io.PathFilter;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -16,7 +16,7 @@ import java.nio.file.Path;
 public class StellarisMod {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx", "txt");
+    private static final PathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx", "txt");
 
     private final Path userDataDir, modDescriptorFile;
 
@@ -28,9 +28,10 @@ public class StellarisMod {
     private final PdxRawDataLoader modArchive;
 
     public StellarisMod(Path userDataDir, Path modDescriptorFile) {
-        if (userDataDir == null || !Files.isDirectory(userDataDir) || modDescriptorFile == null || !Files.isRegularFile(modDescriptorFile) || !IOUtil.getExtension(modDescriptorFile).equals("mod")) {
+        if (userDataDir == null || !Files.isDirectory(userDataDir) || modDescriptorFile == null || !Files.isRegularFile(modDescriptorFile) || !IOUtil.getExtension(modDescriptorFile).orElseThrow().equals("mod")) {
             throw new IllegalArgumentException();
         }
+
         this.userDataDir = userDataDir;
         this.modDescriptorFile = modDescriptorFile;
 
