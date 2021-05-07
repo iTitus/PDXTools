@@ -1,6 +1,6 @@
 --- a/Stellaris/common/technology/00_soc_tech.txt
 +++ b/Stellaris/common/technology/00_soc_tech.txt
-@@ -4239,7 +4239,6 @@
+@@ -4235,7 +4235,6 @@
  	is_dangerous = yes
  	prerequisites = { "tech_precognition_interface" }
  	weight = @tier5weight2
