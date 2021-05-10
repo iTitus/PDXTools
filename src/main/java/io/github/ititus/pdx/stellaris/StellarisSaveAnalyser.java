@@ -73,9 +73,12 @@ public class StellarisSaveAnalyser implements Runnable {
 
         userData = new StellarisUserData(USER_DATA_DIR, 1, this::updateProgressMessage);
         // String userDataString = userData != null && userData.getRawDataLoader() != null ? userData.getRawDataLoader().getRawData().toPdxScript() : null;
-        updateProgressMessage(0, true, 2, steps, "Analysing Save Game");
+        updateProgressMessage(0, true, 2, steps, "Loading Save Game");
 
         stellarisSave = userData != null && userData.getSaves() != null ? userData.getSaves().getSave(SAVE_FOLDER, SAVE_GAME) : null;
+        if (stellarisSave != null) {
+            stellarisSave.loadGamestate();
+        }
 
         updateProgressMessage(0, true, 3, steps, "Gathering Errors");
 

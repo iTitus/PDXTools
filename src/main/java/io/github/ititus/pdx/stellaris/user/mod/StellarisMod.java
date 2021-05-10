@@ -44,8 +44,8 @@ public class StellarisMod {
         this.remoteFileId = str != null ? Integer.parseInt(str) : -1;
         this.supportedVersion = o.getString("supported_version");
 
-        // TODO: Fix this
-        this.modArchive = Files.isDirectory(modFile) ? new PdxRawDataLoader(modFile, BLACKLIST, FILTER) : null;
+        // FIXME: disabled because it is slow
+        this.modArchive = null; // new PdxRawDataLoader(modFile, BLACKLIST, FILTER);
     }
 
     public Path getUserDataDir() {

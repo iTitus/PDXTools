@@ -1,37 +1,29 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
-import io.github.ititus.io.FileNameFilter;
-import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.math.time.DurationFormatter;
-import io.github.ititus.math.time.StopWatch;
-import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
+import io.github.ititus.io.ZipUtil;
+import io.github.ititus.pdx.pdxscript.PdxScriptObject;
+import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.impl.factory.Sets;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static io.github.ititus.pdx.pdxscript.PdxConstants.DTF;
 
 public class StellarisSave {
 
     private static final String META = "meta";
     private static final String GAMESTATE = "gamestate";
 
-    private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of();
-    private static final PathFilter FILTER = FileNameFilter.ofNames(META, GAMESTATE);
     public final Meta meta;
-    public final GameState gameState;
     private final Path save;
-    private final PdxRawDataLoader saveDataLoader;
+    public GameState gameState;
+    private ImmutableList<String> errors;
 
     public StellarisSave(Path saveFile) {
         if (!isValidSaveFileOrDir(saveFile)) {
@@ -39,22 +31,10 @@ public class StellarisSave {
         }
 
         this.save = saveFile;
-        System.out.println("Loading Save " + saveFile);
-
-        StopWatch s = StopWatch.createRunning();
-        this.saveDataLoader = new PdxRawDataLoader(saveFile, BLACKLIST, FILTER);
-        System.out.println("Parsing: " + DurationFormatter.format(s.stop()));
-
-        s.start();
-        this.meta = this.saveDataLoader.getRawData().getObjectAs(META, Meta::new);
-        System.out.println("Meta: " + DurationFormatter.format(s.stop()));
-
-        s.start();
-        this.gameState = this.saveDataLoader.getRawData().getObjectAs(GAMESTATE, GameState::new);
-        System.out.println("Gamestate: " + DurationFormatter.format(s.stop()));
+        this.meta = loadMeta();
     }
 
-    public static StellarisSave loadLastModified(Path saveDir) {
+    public static StellarisSave loadLatestByLastModifiedTime(Path saveDir) {
         if (!Files.isDirectory(saveDir)) {
             throw new IllegalArgumentException();
         }
@@ -77,21 +57,31 @@ public class StellarisSave {
         return latest.map(StellarisSave::new).orElseThrow();
     }
 
-    public static StellarisSave loadNewest(Path saveDir) {
+    public static StellarisSave loadLatestByIngameDate(Path saveDir) {
         if (!Files.isDirectory(saveDir)) {
             throw new IllegalArgumentException();
         }
 
-        Optional<Path> latest;
+        Optional<StellarisSave> latest;
         try (Stream<Path> stream = Files.list(saveDir)) {
             latest = stream
                     .filter(StellarisSave::isValidSaveFile)
-                    .max(Comparator.comparing(p -> LocalDate.parse(PathUtil.getNameWithoutExtension(p), DTF)));
+                    .map(StellarisSave::new)
+                    .max(Comparator
+                            .comparing((StellarisSave s) -> s.meta.date)
+                            .thenComparing(s -> {
+                                try {
+                                    return Files.getLastModifiedTime(s.save);
+                                } catch (IOException e) {
+                                    throw new UncheckedIOException(e);
+                                }
+                            })
+                    );
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
 
-        return latest.map(StellarisSave::new).orElseThrow();
+        return latest.orElseThrow();
     }
 
     public static boolean isValidSaveFile(Path saveFile) {
@@ -102,8 +92,26 @@ public class StellarisSave {
         return saveFile != null && (Files.isDirectory(saveFile) || isValidSaveFile(saveFile));
     }
 
-    public PdxRawDataLoader getSaveDataLoader() {
-        return saveDataLoader;
+    private Meta loadMeta() {
+        return load(META).getAs(Meta::new);
+    }
+
+    public void loadGamestate() {
+        PdxScriptObject o = load(GAMESTATE);
+        this.gameState = o.getAs(GameState::new);
+        this.errors = o.getUsageStatistic().getErrorStrings();
+    }
+
+    private PdxScriptObject load(String name) {
+        if (Files.isRegularFile(save)) {
+            try (FileSystem fs = ZipUtil.openZip(save)) {
+                return PdxScriptParser.parse(fs.getPath(name)).expectObject();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        return PdxScriptParser.parse(save.resolve(name)).expectObject();
     }
 
     public Path getSave() {
@@ -111,6 +119,6 @@ public class StellarisSave {
     }
 
     public ImmutableList<String> getErrors() {
-        return saveDataLoader.getRawData().getUsageStatistic().getErrorStrings();
+        return errors;
     }
 }

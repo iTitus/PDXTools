@@ -56,7 +56,8 @@ public class Test {
 
     private static StellarisSave getStellarisSave() {
         StopWatch s = StopWatch.createRunning();
-        StellarisSave save = StellarisSave.loadLastModified(SAVE_DIR);
+        StellarisSave save = StellarisSave.loadLatestByLastModifiedTime(SAVE_DIR);
+        save.loadGamestate();
         System.out.println("Test Save Load Time: " + DurationFormatter.format(s.stop()));
         return save;
     }
