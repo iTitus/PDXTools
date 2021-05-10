@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.github.ititus.pdx.Main" />
+    <module name="pdx.pdx-tools.main" />
+    <option name="VM_PARAMETERS" value="-Xmx4G" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -23,7 +23,7 @@ public class StellarisMod {
     private final String name, supportedVersion;
     private final Path modFile;
     private final ImmutableList<String> tags;
-    private final int remoteFileId;
+    private final long remoteFileId;
 
     private final PdxRawDataLoader modArchive;
 
@@ -41,7 +41,7 @@ public class StellarisMod {
         this.modFile = str != null ? Path.of(str) : userDataDir.resolve(o.getString("path"));
         this.tags = o.getListAsEmptyOrStringList("tags");
         str = o.getString("remote_file_id", null);
-        this.remoteFileId = str != null ? Integer.parseInt(str) : -1;
+        this.remoteFileId = str != null ? Long.parseLong(str) : -1;
         this.supportedVersion = o.getString("supported_version");
 
         // FIXME: disabled because it is slow
@@ -68,7 +68,7 @@ public class StellarisMod {
         return tags;
     }
 
-    public int getRemoteFileId() {
+    public long getRemoteFileId() {
         return remoteFileId;
     }
 

@@ -15,7 +15,7 @@ public final class PatchGenerator {
 
     private static final Path PATCHES_DIR = toRealPath(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
     private static final Path INSTALL_DIR = toRealPath(Path.of("C:/Program Files (x86)/Steam/steamapps/common"));
-    private static final Path OUTPUT_DIR = toRealPath(Path.of("src/main/resources/patches"));
+    private static final Path OUTPUT_DIR = toRealPath(Path.of("pdx-tools/src/main/resources/patches"));
 
     private static final int CONTEXT_SIZE = 3;
 

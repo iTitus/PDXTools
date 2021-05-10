@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group = 'io.github.ititus'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.github.ititus:ititus-commons:1.5.1'
+
+    testImplementation platform('org.junit:junit-bom:5.7.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'org.mockito:mockito-core:3.9.0'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,39 @@
+plugins {
+    id 'myproject.java-conventions'
+    id 'application'
+    id 'org.javamodularity.moduleplugin' version '1.8.3'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.beryx.jlink' version '2.23.8'
+}
+
+modularity {
+    disableEffectiveArgumentsAdjustment()
+}
+
+application {
+    mainModule = 'io.github.ititus.pdx'
+    mainClass = 'io.github.ititus.pdx.Main'
+}
+
+dependencies {
+    implementation project(':dds-reader')
+
+    implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'
+    implementation 'io.github.java-diff-utils:java-diff-utils:4.10'
+
+    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
+}
+
+javafx {
+    version = '16'
+    modules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
+}
+
+jlink {
+    options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--compress', '2']
+    launcher {
+        name = 'pdxtools'
+    }
+}
