@@ -27,9 +27,9 @@ public record DdsHeaderDxt10(
         return "DdsHeaderDxt10[" +
                 "dxgiFormat=" + dxgiFormat +
                 ", resourceDimension=" + resourceDimension +
-                ", miscFlag=0x" + Integer.toHexString(miscFlag) +
-                ", arraySize=" + arraySize +
-                ", miscFlags2=0x" + Integer.toHexString(miscFlags2) +
+                (miscFlag == 0 ? "" : ", miscFlag=0x" + Integer.toHexString(miscFlag)) +
+                (arraySize == 0 ? "" : ", arraySize=" + arraySize) +
+                (miscFlags2 == 0 ? "" : ", miscFlags2=0x" + Integer.toHexString(miscFlags2)) +
                 ']';
     }
 }

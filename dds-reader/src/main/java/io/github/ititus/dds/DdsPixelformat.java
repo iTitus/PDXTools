@@ -46,14 +46,14 @@ public record DdsPixelformat(
     @Override
     public String toString() {
         return "DdsPixelformat[" +
-                "dwSize=" + dwSize +
-                ", dwFlags=0x" + Integer.toHexString(dwFlags) +
-                ", dwFourCC=" + (dwFourCC == 0 ? dwFourCC : getStringFrom4CC(dwFourCC)) +
-                ", dwRGBBitCount=" + dwRGBBitCount +
-                ", dwRBitMask=0x" + Integer.toHexString(dwRBitMask) +
-                ", dwGBitMask=0x" + Integer.toHexString(dwGBitMask) +
-                ", dwBBitMask=0x" + Integer.toHexString(dwBBitMask) +
-                ", dwABitMask=0x" + Integer.toHexString(dwABitMask) +
+                (dwSize == 32 ? "" : "dwSize=" + dwSize + ", ") +
+                (dwFlags == 0 ? "" : "dwFlags=0x" + Integer.toHexString(dwFlags) + ", ") +
+                (dwFourCC == 0 ? "" : "dwFourCC=" + getStringFrom4CC(dwFourCC) + ", ") +
+                (dwRGBBitCount == 0 ? "" : "dwRGBBitCount=" + dwRGBBitCount) +
+                (dwRBitMask == 0 ? "" : ", dwRBitMask=0x" + Integer.toHexString(dwRBitMask)) +
+                (dwGBitMask == 0 ? "" : ", dwGBitMask=0x" + Integer.toHexString(dwGBitMask)) +
+                (dwBBitMask == 0 ? "" : ", dwBBitMask=0x" + Integer.toHexString(dwBBitMask)) +
+                (dwABitMask == 0 ? "" : ", dwABitMask=0x" + Integer.toHexString(dwABitMask)) +
                 ']';
     }
 }

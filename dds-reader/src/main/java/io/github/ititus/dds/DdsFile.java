@@ -79,4 +79,12 @@ public record DdsFile(
     public int resourceCount() {
         return header10 != null ? header10.resourceCount() : 1;
     }
+
+    @Override
+    public String toString() {
+        return "DdsFile[" +
+                "header=" + header +
+                (header10 == null ? "" : ", header10=" + header10) +
+                ']';
+    }
 }

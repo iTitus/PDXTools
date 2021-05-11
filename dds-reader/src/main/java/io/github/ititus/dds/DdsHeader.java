@@ -1,5 +1,7 @@
 package io.github.ititus.dds;
 
+import java.util.Arrays;
+
 import static io.github.ititus.dds.DdsConstants.*;
 
 public record DdsHeader(
@@ -18,6 +20,8 @@ public record DdsHeader(
         int dwCaps4,
         int dwReserved2
 ) {
+
+    private static final int[] RESERVED_DEFAULT = new int[11];
 
     public static DdsHeader load(DataReader r) {
         return new DdsHeader(
@@ -69,20 +73,20 @@ public record DdsHeader(
     @Override
     public String toString() {
         return "DdsHeader[" +
-                "dwSize=" + dwSize +
-                ", dwFlags=0x" + Integer.toHexString(dwFlags) +
-                ", dwHeight=" + dwHeight +
+                (dwSize == 124 ? "" : "dwSize=" + dwSize + ", ") +
+                (dwFlags == 0 ? "" : "dwFlags=0x" + Integer.toHexString(dwFlags) + ", ") +
+                "dwHeight=" + dwHeight +
                 ", dwWidth=" + dwWidth +
                 ", dwPitchOrLinearSize=" + dwPitchOrLinearSize +
-                ", dwDepth=" + dwDepth +
-                ", dwMipMapCount=" + dwMipMapCount +
-                // ", dwReserved1=" + Arrays.toString(dwReserved1) +
+                (dwDepth == 0 ? "" : ", dwDepth=" + dwDepth) +
+                (dwMipMapCount == 0 ? "" : ", dwMipMapCount=" + dwMipMapCount) +
+                (Arrays.equals(dwReserved1, RESERVED_DEFAULT) ? "" : ", dwReserved1=" + Arrays.toString(dwReserved1)) +
+                (dwCaps == 0 ? "" : ", dwCaps=0x" + Integer.toHexString(dwCaps)) +
+                (dwCaps2 == 0 ? "" : ", dwCaps2=0x" + Integer.toHexString(dwCaps2)) +
+                (dwCaps3 == 0 ? "" : ", dwCaps3=" + dwCaps3) +
+                (dwCaps4 == 0 ? "" : ", dwCaps4=" + dwCaps4) +
+                (dwReserved2 == 0 ? "" : ", dwReserved2=" + dwReserved2) +
                 ", ddspf=" + ddspf +
-                ", dwCaps=0x" + Integer.toHexString(dwCaps) +
-                ", dwCaps2=0x" + Integer.toHexString(dwCaps2) +
-                // ", dwCaps3=" + dwCaps3 +
-                // ", dwCaps4=" + dwCaps4 +
-                // ", dwReserved2=" + dwReserved2 +
                 ']';
     }
 }
