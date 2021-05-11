@@ -1,7 +1,5 @@
 package io.github.ititus.dds;
 
-import java.util.Arrays;
-
 import static io.github.ititus.dds.DdsConstants.*;
 
 public record DdsHeader(
@@ -72,19 +70,19 @@ public record DdsHeader(
     public String toString() {
         return "DdsHeader[" +
                 "dwSize=" + dwSize +
-                ", dwFlags=" + dwFlags +
+                ", dwFlags=0x" + Integer.toHexString(dwFlags) +
                 ", dwHeight=" + dwHeight +
                 ", dwWidth=" + dwWidth +
                 ", dwPitchOrLinearSize=" + dwPitchOrLinearSize +
                 ", dwDepth=" + dwDepth +
                 ", dwMipMapCount=" + dwMipMapCount +
-                ", dwReserved1=" + Arrays.toString(dwReserved1) +
+                // ", dwReserved1=" + Arrays.toString(dwReserved1) +
                 ", ddspf=" + ddspf +
-                ", dwCaps=" + dwCaps +
-                ", dwCaps2=" + dwCaps2 +
-                ", dwCaps3=" + dwCaps3 +
-                ", dwCaps4=" + dwCaps4 +
-                ", dwReserved2=" + dwReserved2 +
+                ", dwCaps=0x" + Integer.toHexString(dwCaps) +
+                ", dwCaps2=0x" + Integer.toHexString(dwCaps2) +
+                // ", dwCaps3=" + dwCaps3 +
+                // ", dwCaps4=" + dwCaps4 +
+                // ", dwReserved2=" + dwReserved2 +
                 ']';
     }
 }

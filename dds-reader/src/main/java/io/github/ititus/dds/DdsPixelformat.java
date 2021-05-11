@@ -42,4 +42,18 @@ public record DdsPixelformat(
                     || dwFourCC == D3DFMT_DXT5
                     || dwFourCC == DDS_DX10;
     }
+
+    @Override
+    public String toString() {
+        return "DdsPixelformat[" +
+                "dwSize=" + dwSize +
+                ", dwFlags=0x" + Integer.toHexString(dwFlags) +
+                ", dwFourCC=" + (dwFourCC == 0 ? dwFourCC : getStringFrom4CC(dwFourCC)) +
+                ", dwRGBBitCount=" + dwRGBBitCount +
+                ", dwRBitMask=0x" + Integer.toHexString(dwRBitMask) +
+                ", dwGBitMask=0x" + Integer.toHexString(dwGBitMask) +
+                ", dwBBitMask=0x" + Integer.toHexString(dwBBitMask) +
+                ", dwABitMask=0x" + Integer.toHexString(dwABitMask) +
+                ']';
+    }
 }

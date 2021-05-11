@@ -21,4 +21,15 @@ public record DdsHeaderDxt10(
     public int resourceCount() {
         return arraySize > 0 ? arraySize : 1;
     }
+
+    @Override
+    public String toString() {
+        return "DdsHeaderDxt10[" +
+                "dxgiFormat=" + dxgiFormat +
+                ", resourceDimension=" + resourceDimension +
+                ", miscFlag=0x" + Integer.toHexString(miscFlag) +
+                ", arraySize=" + arraySize +
+                ", miscFlags2=0x" + Integer.toHexString(miscFlags2) +
+                ']';
+    }
 }
