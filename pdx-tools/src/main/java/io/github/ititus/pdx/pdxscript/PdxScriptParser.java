@@ -49,8 +49,8 @@ public final class PdxScriptParser {
                     String key = stripQuotes(token);
                     token = tokens.getNext();
 
-                    if (PdxRelation.get(token) == null) {
-                        throw new RuntimeException("Missing relation sign in object");
+                    if (!LIST_OBJECT_OPEN.equals(token) && PdxRelation.get(token) == null) {
+                        throw new RuntimeException("Missing relation sign or { in object");
                     }
 
                     IPdxScript parsedValue = parse(tokens, variables);
@@ -523,7 +523,16 @@ public final class PdxScriptParser {
             throw new IllegalArgumentException("got empty path array");
         }
 
-        return parse(IOUtil.getCharacterIterator(patchDatabase, scriptFiles), variables);
+        if (variables == null) {
+            variables = Maps.mutable.empty();
+        }
+
+        PdxScriptObject.Builder b = PdxScriptObject.builder();
+        for (Path p : scriptFiles) {
+            b.addAll(parse(IOUtil.getCharacterIterator(patchDatabase, p), variables).expectObject());
+        }
+
+        return b.build();
     }
 
     private static IPdxScript parse(PrimitiveIterator.OfInt charIterator, MutableMap<String, IPdxScript> variables) {

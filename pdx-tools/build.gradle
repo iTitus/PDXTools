@@ -6,10 +6,6 @@ plugins {
     id 'org.beryx.jlink' version '2.23.8'
 }
 
-modularity {
-    disableEffectiveArgumentsAdjustment()
-}
-
 application {
     mainModule = 'io.github.ititus.pdx'
     mainClass = 'io.github.ititus.pdx.Main'

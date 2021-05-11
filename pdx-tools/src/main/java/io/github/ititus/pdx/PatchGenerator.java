@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -23,6 +24,27 @@ public final class PatchGenerator {
     }
 
     public static void main(String[] args) {
+        deletePatches();
+        generatePatches();
+    }
+
+    private static void deletePatches() {
+        try (Stream<Path> stream = Files.walk(OUTPUT_DIR)) {
+            stream
+                    .sorted(Comparator.reverseOrder())
+                    .forEachOrdered(p -> {
+                        try {
+                            Files.delete(p);
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static void generatePatches() {
         try (Stream<Path> stream = Files.walk(PATCHES_DIR)) {
             stream
                     .filter(Files::isRegularFile)

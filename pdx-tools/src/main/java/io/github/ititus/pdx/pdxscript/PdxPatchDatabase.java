@@ -10,4 +10,5 @@ public interface PdxPatchDatabase {
     PdxPatchDatabase DEFAULT = DefaultPdxPatchDatabase.INSTANCE;
 
     Optional<PdxPatch> findPatch(Path scriptFile);
+
 }

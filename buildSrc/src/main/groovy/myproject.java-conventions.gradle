@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'org.javamodularity.moduleplugin'
 }
 
 group = 'io.github.ititus'
@@ -16,6 +17,10 @@ idea {
     module {
         inheritOutputDirs = true
     }
+}
+
+modularity {
+    disableEffectiveArgumentsAdjustment()
 }
 
 repositories {
