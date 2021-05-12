@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,7 +20,7 @@ public record DdsPixelformat(
 
     public static final int SIZE = 32;
 
-    public static DdsPixelformat load(DataReader r) {
+    public static DdsPixelformat load(DataReader r) throws IOException {
         return new DdsPixelformat(
                 r.readDword(),
                 r.readDword(),

@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public record DdsHeaderDxt10(
         int miscFlags2
 ) {
 
-    public static DdsHeaderDxt10 load(DataReader r) {
+    public static DdsHeaderDxt10 load(DataReader r) throws IOException {
         return new DdsHeaderDxt10(
                 DxgiFormat.load(r),
                 D3d10ResourceDimension.load(r),

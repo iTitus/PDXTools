@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 public enum D3d10ResourceDimension {
@@ -22,8 +23,12 @@ public enum D3d10ResourceDimension {
         this.value = value;
     }
 
-    public static D3d10ResourceDimension load(DataReader r) {
-        return get(r.readUInt());
+    public static D3d10ResourceDimension load(DataReader r) throws IOException {
+        try {
+            return get(r.readUInt());
+        } catch (NoSuchElementException e) {
+            throw new IOException(e);
+        }
     }
 
     public static D3d10ResourceDimension get(int value) {

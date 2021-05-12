@@ -63,9 +63,15 @@ public class ReadADdsFile {
         Map<D3dFormat, List<Path>> formats = new LinkedHashMap<>();
         Map<Type, List<Path>> types = new LinkedHashMap<>();
         for (Path p : files) {
-            DdsFile dds = read(p);
+            DdsFile dds;
+            try {
+                dds = read(p);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+
             if (dds.isDx10()) {
-                throw new RuntimeException();
+                throw new RuntimeException("dds file contains unexpected dx10 header");
             }
 
             headers.computeIfAbsent(dds.header(), k -> new ArrayList<>()).add(p);
@@ -127,7 +133,7 @@ public class ReadADdsFile {
         }
     }
 
-    private DdsFile read(Path p) {
+    private DdsFile read(Path p) throws IOException {
         DdsFile dds = DdsFile.load(p);
         /*if ((dds.header().dwCaps() & DDSCAPS_TEXTURE) != DDSCAPS_TEXTURE) {
             System.out.println(pathToString(p) + ": dwCaps (0x" + Integer.toHexString(dds.header().dwCaps()) + ") doesnt contain DDSCAPS_TEXTURE (0x" + Integer.toHexString(DDSCAPS_TEXTURE) + ")");

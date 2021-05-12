@@ -1,5 +1,7 @@
 package io.github.ititus.dds.imageio;
 
+import io.github.ititus.dds.DdsFile;
+
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
@@ -13,6 +15,7 @@ import java.util.Iterator;
 public class DdsReader extends ImageReader {
 
     private ImageInputStream stream;
+    private DdsFile dds;
 
     public DdsReader(DdsImageReaderSpi originator) {
         super(originator);
@@ -20,36 +23,46 @@ public class DdsReader extends ImageReader {
 
     @Override
     public int getNumImages(boolean allowSearch) throws IOException {
-        throw new UnsupportedEncodingException();
+        if (seekForwardOnly && allowSearch) {
+            throw new IllegalStateException("seekForwardOnly and allowSearch can't both be true!");
+        }
+
+        load();
+        return dds.resourceCount();
     }
 
     @Override
     public int getWidth(int imageIndex) throws IOException {
+        load();
         throw new UnsupportedEncodingException();
     }
 
     @Override
     public int getHeight(int imageIndex) throws IOException {
+        load();
         throw new UnsupportedEncodingException();
     }
 
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
+        load();
         throw new UnsupportedEncodingException();
     }
 
     @Override
-    public IIOMetadata getStreamMetadata() throws IOException {
-        throw new UnsupportedEncodingException();
+    public IIOMetadata getStreamMetadata() {
+        return null;
     }
 
     @Override
     public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
+        load();
         throw new UnsupportedEncodingException();
     }
 
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
+        load();
         throw new UnsupportedEncodingException();
     }
 
@@ -57,5 +70,31 @@ public class DdsReader extends ImageReader {
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
         this.stream = (ImageInputStream) input;
+        _reset();
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        _reset();
+    }
+
+    private void checkSource() {
+        if (stream == null) {
+            throw new IllegalStateException("No input source set!");
+        }
+    }
+
+    private void _reset() {
+        dds = null;
+    }
+
+    private void load() throws IOException {
+        checkSource();
+        if (dds != null) {
+            return;
+        }
+
+        dds = DdsFile.load(stream);
     }
 }

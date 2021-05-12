@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 public enum DxgiFormat {
@@ -135,8 +136,12 @@ public enum DxgiFormat {
         this.value = value;
     }
 
-    public static DxgiFormat load(DataReader r) {
-        return get(r.readUInt());
+    public static DxgiFormat load(DataReader r) throws IOException {
+        try {
+            return get(r.readUInt());
+        } catch (NoSuchElementException e) {
+            throw new IOException(e);
+        }
     }
 
     public static DxgiFormat get(int value) {

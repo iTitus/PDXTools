@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public record DdsHeader(
 
     public static final int SIZE = 124;
 
-    public static DdsHeader load(DataReader r) {
+    public static DdsHeader load(DataReader r) throws IOException {
         return new DdsHeader(
                 r.readDword(),
                 r.readDword(),

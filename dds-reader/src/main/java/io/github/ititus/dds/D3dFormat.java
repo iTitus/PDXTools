@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 public enum D3dFormat {
@@ -77,6 +78,14 @@ public enum D3dFormat {
 
     D3dFormat(int value) {
         this.value = value;
+    }
+
+    public static D3dFormat load(DataReader r) throws IOException {
+        try {
+            return get(r.readDword());
+        } catch (NoSuchElementException e) {
+            throw new IOException(e);
+        }
     }
 
     public static D3dFormat get(int value) {

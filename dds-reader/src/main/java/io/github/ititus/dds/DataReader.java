@@ -14,9 +14,9 @@ public interface DataReader {
         return Byte.toUnsignedInt(b1) | (Byte.toUnsignedInt(b2) << 8) | (Byte.toUnsignedInt(b3) << 16) | (Byte.toUnsignedInt(b4) << 24);
     }
 
-    byte readByte();
+    byte readByte() throws IOException;
 
-    default int readDword() {
+    default int readDword() throws IOException {
         byte b1 = readByte();
         byte b2 = readByte();
         byte b3 = readByte();
@@ -24,16 +24,7 @@ public interface DataReader {
         return Byte.toUnsignedInt(b1) | (Byte.toUnsignedInt(b2) << 8) | (Byte.toUnsignedInt(b3) << 16) | (Byte.toUnsignedInt(b4) << 24);
     }
 
-    default int[] readDwordArray(int length) {
-        int[] arr = new int[length];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = readDword();
-        }
-
-        return arr;
-    }
-
-    default int readUInt() {
+    default int readUInt() throws IOException {
         return readDword();
     }
 }

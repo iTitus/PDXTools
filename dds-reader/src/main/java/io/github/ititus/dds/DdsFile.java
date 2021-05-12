@@ -11,35 +11,36 @@ public record DdsFile(
         DdsHeaderDxt10 header10
 ) {
 
-    public static DdsFile load(Path path) {
+    public static DdsFile load(Path path) throws IOException {
         try (InputStream is = new BufferedInputStream(Files.newInputStream(path))) {
-            return load(() -> {
-                int n;
-                try {
-                    n = is.read();
-                    if (n == -1) {
-                        throw new EOFException();
-                    }
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-
-                return (byte) n;
-            });
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            return load(is);
         }
     }
 
-    public static DdsFile load(DataReader r) {
+    public static DdsFile load(InputStream is) throws IOException {
+        return load(() -> {
+            int n = is.read();
+            if (n == -1) {
+                throw new EOFException();
+            }
+
+            return (byte) n;
+        });
+    }
+
+    public static DdsFile load(DataInput di) throws IOException {
+        return load(di::readByte);
+    }
+
+    public static DdsFile load(DataReader r) throws IOException {
         int dwMagic = r.readDword();
         if (dwMagic != DDS_MAGIC) {
-            throw new RuntimeException("invalid dds magic");
+            throw new IOException("invalid dds magic");
         }
 
         DdsHeader header = DdsHeader.load(r);
         if (!header.isValid()) {
-            throw new RuntimeException("invalid dds header");
+            throw new IOException("invalid dds header");
         }
 
         DdsHeaderDxt10 header10;
