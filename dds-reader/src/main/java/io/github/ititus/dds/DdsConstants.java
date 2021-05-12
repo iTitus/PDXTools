@@ -53,6 +53,7 @@ public final class DdsConstants {
     public static final int DDPF_RGB = 0x40;
     public static final int DDPF_YUV = 0x200;
     public static final int DDPF_LUMINANCE = 0x20000;
+    public static final int DDS_RGBA = DDPF_RGB | DDPF_ALPHAPIXELS;
 
     // DdsPixelformat.dwFourCC
     public static final int D3DFMT_DXT1 = make4CC("DXT1");
@@ -61,21 +62,15 @@ public final class DdsConstants {
     public static final int D3DFMT_DXT4 = make4CC("DXT4");
     public static final int D3DFMT_DXT5 = make4CC("DXT5");
     public static final int DDS_DX10 = make4CC("DX10");
-
-    // Also valid values for DdsPixelformat.dwFourCC ?
-    public static final int D3DFMT_UYVY = make4CC("UYVY");
+    public static final int DXGI_FORMAT_BC4_UNORM = make4CC("BC4U");
+    public static final int DXGI_FORMAT_BC4_SNORM = make4CC("BC4S");
+    public static final int DXGI_FORMAT_BC5_UNORM = make4CC("ATI2");
+    public static final int DXGI_FORMAT_BC5_SNORM = make4CC("BC5S");
     public static final int D3DFMT_R8G8_B8G8 = make4CC("RGBG");
-    public static final int D3DFMT_YUY2 = make4CC("YUY2");
     public static final int D3DFMT_G8R8_G8B8 = make4CC("GRGB");
+    public static final int D3DFMT_UYVY = make4CC("UYVY");
+    public static final int D3DFMT_YUY2 = make4CC("YUY2");
     public static final int D3DFMT_MULTI2_ARGB8 = make4CC("MET1");
-    public static final int FMT_BC4U = make4CC("BC4U");
-    public static final int FMT_BC4S = make4CC("BC4S");
-    public static final int FMT_BC5U = make4CC("BC5U");
-    public static final int FMT_BC5S = make4CC("BC5S");
-    public static final int FMT_ATI1 = make4CC("ATI1");
-    public static final int FMT_ATI2 = make4CC("ATI2");
-    public static final int FMT_RGBG = make4CC("RGBG");
-    public static final int FMT_GRGB = make4CC("GRGB");
 
     // DdsHeaderDxt10.miscFlags
     public static final int D3D10_RESOURCE_MISC_GENERATE_MIPS = 0x1;

@@ -1,5 +1,8 @@
 package io.github.ititus.dds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public record DdsHeaderDxt10(
         DxgiFormat dxgiFormat,
         D3d10ResourceDimension resourceDimension,
@@ -24,12 +27,18 @@ public record DdsHeaderDxt10(
 
     @Override
     public String toString() {
-        return "DdsHeaderDxt10[" +
-                "dxgiFormat=" + dxgiFormat +
-                ", resourceDimension=" + resourceDimension +
-                (miscFlag == 0 ? "" : ", miscFlag=0x" + Integer.toHexString(miscFlag)) +
-                (arraySize == 0 ? "" : ", arraySize=" + arraySize) +
-                (miscFlags2 == 0 ? "" : ", miscFlags2=0x" + Integer.toHexString(miscFlags2)) +
-                ']';
+        List<String> list = new ArrayList<>(5);
+        list.add("dxgiFormat=" + dxgiFormat);
+        list.add("resourceDimension=" + resourceDimension);
+        if (miscFlag != 0) {
+            list.add("miscFlag=0x" + Integer.toHexString(miscFlag));
+        }
+        if (arraySize != 0) {
+            list.add("arraySize=" + arraySize);
+        }
+        if (miscFlags2 != 0) {
+            list.add("miscFlags2=0x" + Integer.toHexString(miscFlags2));
+        }
+        return "DdsHeaderDxt10[" + String.join(", ", list) + ']';
     }
 }

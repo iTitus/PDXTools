@@ -1,34 +1,14 @@
 package io.github.ititus.dds;
 
-/**
- * Identifies the type of resource being used.
- */
+import java.util.NoSuchElementException;
+
 public enum D3d10ResourceDimension {
 
-    /**
-     * Resource is of unknown type.
-     */
-    D3D10_RESOURCE_DIMENSION_UNKNOWN,
-
-    /**
-     * Resource is a buffer.
-     */
-    D3D10_RESOURCE_DIMENSION_BUFFER,
-
-    /**
-     * Resource is a 1D texture.
-     */
-    D3D10_RESOURCE_DIMENSION_TEXTURE1D,
-
-    /**
-     * Resource is a 2D texture.
-     */
-    D3D10_RESOURCE_DIMENSION_TEXTURE2D,
-
-    /**
-     * Resource is a 3D texture.
-     */
-    D3D10_RESOURCE_DIMENSION_TEXTURE3D;
+    D3D10_RESOURCE_DIMENSION_UNKNOWN(0),
+    D3D10_RESOURCE_DIMENSION_BUFFER(1),
+    D3D10_RESOURCE_DIMENSION_TEXTURE1D(2),
+    D3D10_RESOURCE_DIMENSION_TEXTURE2D(3),
+    D3D10_RESOURCE_DIMENSION_TEXTURE3D(4);
 
     public static final D3d10ResourceDimension DDS_DIMENSION_TEXTURE1D = D3D10_RESOURCE_DIMENSION_TEXTURE1D;
     public static final D3d10ResourceDimension DDS_DIMENSION_TEXTURE2D = D3D10_RESOURCE_DIMENSION_TEXTURE2D;
@@ -36,11 +16,27 @@ public enum D3d10ResourceDimension {
 
     private static final D3d10ResourceDimension[] VALUES = values();
 
+    private final int value;
+
+    D3d10ResourceDimension(int value) {
+        this.value = value;
+    }
+
     public static D3d10ResourceDimension load(DataReader r) {
-        return VALUES[r.readUInt()];
+        return get(r.readUInt());
+    }
+
+    public static D3d10ResourceDimension get(int value) {
+        for (D3d10ResourceDimension d : VALUES) {
+            if (d.value == value) {
+                return d;
+            }
+        }
+
+        throw new NoSuchElementException("unknown resource dimension");
     }
 
     public int value() {
-        return ordinal();
+        return value;
     }
 }

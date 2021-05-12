@@ -1,5 +1,9 @@
 package io.github.ititus.dds;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import static io.github.ititus.dds.DdsConstants.*;
 
 public record DdsPixelformat(
@@ -12,6 +16,8 @@ public record DdsPixelformat(
         int dwBBitMask,
         int dwABitMask
 ) {
+
+    public static final int SIZE = 32;
 
     public static DdsPixelformat load(DataReader r) {
         return new DdsPixelformat(
@@ -30,30 +36,145 @@ public record DdsPixelformat(
         return dwFlags == DDPF_FOURCC && dwFourCC == DDS_DX10;
     }
 
-    public boolean isValid() {
-        if (dwSize != 32) {
-            return false;
-        } else
-            return (dwFlags & DDPF_FOURCC) != DDPF_FOURCC
-                    || dwFourCC == D3DFMT_DXT1
-                    || dwFourCC == D3DFMT_DXT2
-                    || dwFourCC == D3DFMT_DXT3
-                    || dwFourCC == D3DFMT_DXT4
-                    || dwFourCC == D3DFMT_DXT5
-                    || dwFourCC == DDS_DX10;
+    public boolean isValid(boolean strict) {
+        return dwSize == SIZE;
+    }
+
+    public D3dFormat d3dFormat() {
+        if ((dwFlags & DDS_RGBA) == DDS_RGBA) {
+            return switch (dwRGBBitCount) {
+                case 16 -> {
+                    if (dwRBitMask == 0x7c00 && dwGBitMask == 0x3e0 && dwBBitMask == 0x1f && dwABitMask == 0x8000) {
+                        yield D3dFormat.A1R5G5B5;
+                    } else if (dwRBitMask == 0xf00 && dwGBitMask == 0xf0 && dwBBitMask == 0xf && dwABitMask == 0xf000) {
+                        yield D3dFormat.A4R4G4B4;
+                    } else if (dwRBitMask == 0xe0 && dwGBitMask == 0x1c && dwBBitMask == 0x3 && dwABitMask == 0xff00) {
+                        yield D3dFormat.A8R3G3B2;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                case 32 -> {
+                    if (dwRBitMask == 0xff && dwGBitMask == 0xff00 && dwBBitMask == 0xff0000 && dwABitMask == 0xff000000) {
+                        yield D3dFormat.A8B8G8R8;
+                    } else if (dwRBitMask == 0xffff && dwGBitMask == 0xffff0000) {
+                        yield D3dFormat.G16R16;
+                    } else if (dwRBitMask == 0x3ff && dwGBitMask == 0xffc00 && dwBBitMask == 0x3ff00000) {
+                        yield D3dFormat.A2B10G10R10;
+                    } else if (dwRBitMask == 0xff0000 && dwGBitMask == 0xff00 && dwBBitMask == 0xff && dwABitMask == 0xff000000) {
+                        yield D3dFormat.A8R8G8B8;
+                    } else if (dwRBitMask == 0x3ff00000 && dwGBitMask == 0xffc00 && dwBBitMask == 0x3ff && dwABitMask == 0xc0000000) {
+                        yield D3dFormat.A2R10G10B10;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                default -> D3dFormat.UNKNOWN;
+            };
+        } else if ((dwFlags & DDPF_RGB) == DDPF_RGB) {
+            return switch (dwRGBBitCount) {
+                case 16 -> {
+                    if (dwRBitMask == 0xf800 && dwGBitMask == 0x7e0 && dwBBitMask == 0x1f) {
+                        yield D3dFormat.R5G6B5;
+                    } else if (dwRBitMask == 0x7c00 && dwGBitMask == 0x3e0 && dwBBitMask == 0x1f) {
+                        yield D3dFormat.X1R5G5B5;
+                    } else if (dwRBitMask == 0xf00 && dwGBitMask == 0xf0 && dwBBitMask == 0xf) {
+                        yield D3dFormat.X4R4G4B4;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                case 24 -> {
+                    if (dwRBitMask == 0xff0000 && dwGBitMask == 0xff00 && dwBBitMask == 0xff) {
+                        yield D3dFormat.R8G8B8;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                case 32 -> {
+                    if (dwRBitMask == 0xffff && dwGBitMask == 0xffff0000) {
+                        yield D3dFormat.G16R16;
+                    } else if (dwRBitMask == 0xff0000 && dwGBitMask == 0xff00 && dwBBitMask == 0xff) {
+                        yield D3dFormat.X8R8G8B8;
+                    } else if (dwRBitMask == 0xff && dwGBitMask == 0xff00 && dwBBitMask == 0xff0000) {
+                        yield D3dFormat.X8B8G8R8;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                default -> D3dFormat.UNKNOWN;
+            };
+        } else if ((dwFlags & DDPF_ALPHA) == DDPF_ALPHA) {
+            return switch (dwRGBBitCount) {
+                case 8 -> {
+                    if (dwABitMask == 0xff) {
+                        yield D3dFormat.A8;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                default -> D3dFormat.UNKNOWN;
+            };
+        } else if ((dwFlags & DDPF_LUMINANCE) == DDPF_LUMINANCE) {
+            return switch (dwRGBBitCount) {
+                case 8 -> {
+                    if (dwRBitMask == 0xf && dwABitMask == 0xf0) {
+                        yield D3dFormat.A4L4;
+                    } else if (dwRBitMask == 0xff) {
+                        yield D3dFormat.L8;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                case 16 -> {
+                    if (dwRBitMask == 0xff && dwABitMask == 0xff00) {
+                        yield D3dFormat.A8L8;
+                    } else if (dwRBitMask == 0xffff) {
+                        yield D3dFormat.L16;
+                    }
+
+                    yield D3dFormat.UNKNOWN;
+                }
+                default -> D3dFormat.UNKNOWN;
+            };
+        } else if ((dwFlags & DdsConstants.DDPF_FOURCC) == DdsConstants.DDPF_FOURCC) {
+            try {
+                return D3dFormat.get(dwFourCC);
+            } catch (NoSuchElementException ignored) {
+                return D3dFormat.UNKNOWN;
+            }
+        }
+
+        return D3dFormat.UNKNOWN;
     }
 
     @Override
     public String toString() {
-        return "DdsPixelformat[" +
-                (dwSize == 32 ? "" : "dwSize=" + dwSize + ", ") +
-                (dwFlags == 0 ? "" : "dwFlags=0x" + Integer.toHexString(dwFlags) + ", ") +
-                (dwFourCC == 0 ? "" : "dwFourCC=" + getStringFrom4CC(dwFourCC) + ", ") +
-                (dwRGBBitCount == 0 ? "" : "dwRGBBitCount=" + dwRGBBitCount) +
-                (dwRBitMask == 0 ? "" : ", dwRBitMask=0x" + Integer.toHexString(dwRBitMask)) +
-                (dwGBitMask == 0 ? "" : ", dwGBitMask=0x" + Integer.toHexString(dwGBitMask)) +
-                (dwBBitMask == 0 ? "" : ", dwBBitMask=0x" + Integer.toHexString(dwBBitMask)) +
-                (dwABitMask == 0 ? "" : ", dwABitMask=0x" + Integer.toHexString(dwABitMask)) +
-                ']';
+        List<String> list = new ArrayList<>(8);
+        if (dwSize != SIZE) {
+            list.add("dwSize=" + dwSize);
+        }
+        if (dwFlags != 0) {
+            list.add("dwFlags=0x" + Integer.toHexString(dwFlags));
+        }
+        if (dwFourCC != 0) {
+            list.add("dwFourCC=" + getStringFrom4CC(dwFourCC));
+        }
+        if (dwRGBBitCount != 0) {
+            list.add("dwRGBBitCount=" + dwRGBBitCount);
+        }
+        if (dwRBitMask != 0) {
+            list.add("dwRBitMask=0x" + Integer.toHexString(dwRBitMask));
+        }
+        if (dwGBitMask != 0) {
+            list.add("dwGBitMask=0x" + Integer.toHexString(dwGBitMask));
+        }
+        if (dwBBitMask != 0) {
+            list.add("dwBBitMask=0x" + Integer.toHexString(dwBBitMask));
+        }
+        if (dwABitMask != 0) {
+            list.add("dwABitMask=0x" + Integer.toHexString(dwABitMask));
+        }
+        return "DdsPixelformat[" + String.join(", ", list) + ']';
     }
 }
