@@ -33,19 +33,19 @@ public class DdsReader extends ImageReader {
 
     @Override
     public int getWidth(int imageIndex) throws IOException {
-        load();
-        throw new UnsupportedEncodingException();
+        loadAndCheckIndex(imageIndex);
+        return dds.width();
     }
 
     @Override
     public int getHeight(int imageIndex) throws IOException {
-        load();
-        throw new UnsupportedEncodingException();
+        loadAndCheckIndex(imageIndex);
+        return dds.height();
     }
 
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
-        load();
+        loadAndCheckIndex(imageIndex);
         throw new UnsupportedEncodingException();
     }
 
@@ -56,13 +56,13 @@ public class DdsReader extends ImageReader {
 
     @Override
     public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
-        load();
-        throw new UnsupportedEncodingException();
+        loadAndCheckIndex(imageIndex);
+        return null;
     }
 
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
-        load();
+        loadAndCheckIndex(imageIndex);
         throw new UnsupportedEncodingException();
     }
 
@@ -82,6 +82,13 @@ public class DdsReader extends ImageReader {
     private void checkSource() {
         if (stream == null) {
             throw new IllegalStateException("No input source set!");
+        }
+    }
+
+    private void loadAndCheckIndex(int imageIndex) throws IOException {
+        load();
+        if (imageIndex < 0 || imageIndex >= dds.resourceCount()) {
+            throw new IndexOutOfBoundsException("imageIndex " + imageIndex + " out of bounds: only " + dds.resourceCount() + "image(s)!");
         }
     }
 
