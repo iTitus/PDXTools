@@ -88,7 +88,7 @@ public class DdsReader extends ImageReader {
     private void loadAndCheckIndex(int imageIndex) throws IOException {
         load();
         if (imageIndex < 0 || imageIndex >= dds.resourceCount()) {
-            throw new IndexOutOfBoundsException("imageIndex " + imageIndex + " out of bounds: only " + dds.resourceCount() + "image(s)!");
+            throw new IndexOutOfBoundsException("imageIndex " + imageIndex + " out of bounds: only " + dds.resourceCount() + "image(s) available!");
         }
     }
 
