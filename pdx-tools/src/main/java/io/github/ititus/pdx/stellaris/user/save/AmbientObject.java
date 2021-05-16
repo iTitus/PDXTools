@@ -6,13 +6,15 @@ import org.eclipse.collections.api.map.ImmutableMap;
 
 public class AmbientObject {
 
+    public final int id;
     public final Coordinate coordinate;
     public final String data;
     public final ImmutableMap<String, FlagData> flags;
     public final boolean killed;
     public final AmbientObjectProperties properties;
 
-    public AmbientObject(IPdxScript s) {
+    public AmbientObject(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.coordinate = o.getObjectAs("coordinate", Coordinate::new);
         this.data = o.getString("data");

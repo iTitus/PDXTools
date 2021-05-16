@@ -10,7 +10,7 @@ public class Description {
 
     public Description(PdxScriptObject o) {
         this.description = o.getString("description");
-        this.descriptionParameters = o.getObjectAsEmptyOrStringObjectMap("description_parameters", s -> s.expectValue().getValue());
+        this.descriptionParameters = o.getObjectAsEmptyOrStringObjectMap("description_parameters", (k, v) -> v.expectValue().getValue());
     }
 
     public static Description createOrNull(PdxScriptObject o) {

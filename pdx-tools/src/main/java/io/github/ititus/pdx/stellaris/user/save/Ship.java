@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 public class Ship {
 
+    public final long id;
     public final boolean isBeingRepaired;
     public final boolean createdThisUpdate;
     public final boolean killed;
@@ -51,7 +52,8 @@ public class Ship {
     public final FormationPos formationPos;
     public final ImmutableObjectDoubleMap<String> auraModifier;
 
-    public Ship(IPdxScript s) {
+    public Ship(long id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.auras = o.getListAsEmptyOrList("auras", Aura::new);
         this.isBeingRepaired = o.getBoolean("is_being_repaired", false);

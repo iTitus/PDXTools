@@ -37,6 +37,11 @@ public final class PdxScriptNull extends PdxScriptValue {
     }
 
     @Override
+    public boolean isNull() {
+        return true;
+    }
+
+    @Override
     public <T> T expectNull() {
         return null;
     }

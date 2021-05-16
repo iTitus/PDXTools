@@ -5,6 +5,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Missile {
 
+    public final long id;
     public final Coordinate position;
     public final double rotation;
     public final int owner;
@@ -21,7 +22,8 @@ public class Missile {
     public final int retargets;
     public final String weaponComponentTemplate;
 
-    public Missile(IPdxScript s) {
+    public Missile(long id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.position = o.getObjectAs("position", Coordinate::new);
         this.rotation = o.getDouble("rotation");

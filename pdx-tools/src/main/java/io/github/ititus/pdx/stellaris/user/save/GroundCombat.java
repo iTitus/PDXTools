@@ -5,7 +5,10 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class GroundCombat {
 
-    public GroundCombat(IPdxScript s) {
+    public final int id;
+
+    public GroundCombat(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         // TODO: this
     }

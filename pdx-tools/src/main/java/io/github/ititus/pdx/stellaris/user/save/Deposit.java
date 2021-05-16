@@ -5,12 +5,14 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Deposit {
 
+    public final int id;
     public final String type;
     public final boolean killed;
     public final String swapType;
     public final int planet;
 
-    public Deposit(IPdxScript s) {
+    public Deposit(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.type = o.getString("type", null);
         this.killed = o.getBoolean("killed", false);

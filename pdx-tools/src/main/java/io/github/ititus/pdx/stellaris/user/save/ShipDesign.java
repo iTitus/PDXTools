@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class ShipDesign {
 
+    public final int id;
     public final String name;
     public final String shipSize;
     public final ImmutableList<ShipDesignSection> sections;
@@ -15,7 +16,8 @@ public class ShipDesign {
     public final boolean isSpecialBuildable;
     public final String allowBuildableTrigger;
 
-    public ShipDesign(IPdxScript s) {
+    public ShipDesign(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.name = o.getString("name", null);
         this.shipSize = o.getString("ship_size");

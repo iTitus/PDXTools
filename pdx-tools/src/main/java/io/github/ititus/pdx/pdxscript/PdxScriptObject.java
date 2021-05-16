@@ -2,6 +2,7 @@ package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.function.BiIntObjFunction;
 import io.github.ititus.pdx.pdxscript.internal.BasePdxScript;
+import io.github.ititus.pdx.util.function.BiLongObjFunction;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableBooleanList;
@@ -436,10 +437,6 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, PdxScriptObject::getAsIntStringMap);
     }
 
-    public <V> ImmutableIntObjectMap<V> getObjectAsIntObjectMap(String key, Function<? super IPdxScript, ? extends V> fct) {
-        return getObjectAs(key, o -> o.getAsIntObjectMap(fct));
-    }
-
     public <V> ImmutableIntObjectMap<V> getObjectAsIntObjectMap(String key, BiIntObjFunction<? super IPdxScript, ? extends V> fct) {
         return getObjectAs(key, o -> o.getAsIntObjectMap(fct));
     }
@@ -464,7 +461,7 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, PdxScriptObject::getAsLongStringMap);
     }
 
-    public <V> ImmutableLongObjectMap<V> getObjectAsLongObjectMap(String key, Function<? super IPdxScript, ? extends V> fct) {
+    public <V> ImmutableLongObjectMap<V> getObjectAsLongObjectMap(String key, BiLongObjFunction<? super IPdxScript, ? extends V> fct) {
         return getObjectAs(key, o -> o.getAsLongObjectMap(fct));
     }
 
@@ -488,7 +485,7 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, PdxScriptObject::getAsStringStringMap);
     }
 
-    public <V> ImmutableMap<String, V> getObjectAsStringObjectMap(String key, Function<? super IPdxScript, ? extends V> fct) {
+    public <V> ImmutableMap<String, V> getObjectAsStringObjectMap(String key, BiFunction<? super String, ? super IPdxScript, ? extends V> fct) {
         return getObjectAs(key, o -> o.getAsStringObjectMap(fct));
     }
 
@@ -524,7 +521,7 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, PdxScriptObject::getAsIntStringMap, IntObjectMaps.immutable.empty());
     }
 
-    public <V> ImmutableIntObjectMap<V> getObjectAsEmptyOrIntObjectMap(String key, Function<? super IPdxScript, ? extends V> fct) {
+    public <V> ImmutableIntObjectMap<V> getObjectAsEmptyOrIntObjectMap(String key, BiIntObjFunction<? super IPdxScript, ? extends V> fct) {
         return getObjectAs(key, o -> o.getAsIntObjectMap(fct), IntObjectMaps.immutable.empty());
     }
 
@@ -548,7 +545,7 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, PdxScriptObject::getAsLongStringMap, LongObjectMaps.immutable.empty());
     }
 
-    public <V> ImmutableLongObjectMap<V> getObjectAsEmptyOrLongObjectMap(String key, Function<? super IPdxScript, ? extends V> fct) {
+    public <V> ImmutableLongObjectMap<V> getObjectAsEmptyOrLongObjectMap(String key, BiLongObjFunction<? super IPdxScript, ? extends V> fct) {
         return getObjectAs(key, o -> o.getAsLongObjectMap(fct), LongObjectMaps.immutable.empty());
     }
 
@@ -572,7 +569,7 @@ public final class PdxScriptObject extends BasePdxScript {
         return getObjectAs(key, PdxScriptObject::getAsStringStringMap, Maps.immutable.empty());
     }
 
-    public <V> ImmutableMap<String, V> getObjectAsEmptyOrStringObjectMap(String key, Function<? super IPdxScript, ? extends V> fct) {
+    public <V> ImmutableMap<String, V> getObjectAsEmptyOrStringObjectMap(String key, BiFunction<? super String, ? super IPdxScript, ? extends V> fct) {
         return getObjectAs(key, o -> o.getAsStringObjectMap(fct), Maps.immutable.empty());
     }
 
@@ -649,21 +646,13 @@ public final class PdxScriptObject extends BasePdxScript {
         return map.toImmutable();
     }
 
-    public <V> ImmutableIntObjectMap<V> getAsIntObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
-        MutableIntObjectMap<V> map = IntObjectMaps.mutable.empty();
-        this.map.forEach((k, oldV) -> {
-            V v = valueFct.apply(oldV);
-            if (v != null) {
-                usageStatistic.use(k, oldV.getTypeString(), oldV);
-                map.put(Integer.parseInt(k), v);
-            }
-        });
-        return map.toImmutable();
-    }
-
     public <V> ImmutableIntObjectMap<V> getAsIntObjectMap(BiIntObjFunction<? super IPdxScript, ? extends V> valueFct) {
         MutableIntObjectMap<V> map = IntObjectMaps.mutable.empty();
         this.map.forEach((oldK, oldV) -> {
+            if (oldV instanceof PdxScriptValue sv && sv.isNull()) {
+                return;
+            }
+
             int k = Integer.parseInt(oldK);
             V v = valueFct.apply(k, oldV);
             if (v != null) {
@@ -719,13 +708,18 @@ public final class PdxScriptObject extends BasePdxScript {
         return map.toImmutable();
     }
 
-    public <V> ImmutableLongObjectMap<V> getAsLongObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
+    public <V> ImmutableLongObjectMap<V> getAsLongObjectMap(BiLongObjFunction<? super IPdxScript, ? extends V> valueFct) {
         MutableLongObjectMap<V> map = LongObjectMaps.mutable.empty();
-        this.map.forEach((k, oldV) -> {
-            V v = valueFct.apply(oldV);
+        this.map.forEach((oldK, oldV) -> {
+            if (oldV instanceof PdxScriptValue sv && sv.isNull()) {
+                return;
+            }
+
+            long k = Long.parseLong(oldK);
+            V v = valueFct.apply(k, oldV);
             if (v != null) {
-                usageStatistic.use(k, oldV.getTypeString(), oldV);
-                map.put(Long.parseLong(k), v);
+                usageStatistic.use(oldK, oldV.getTypeString(), oldV);
+                map.put(k, v);
             }
         });
         return map.toImmutable();
@@ -784,35 +778,16 @@ public final class PdxScriptObject extends BasePdxScript {
         return map.toImmutable();
     }
 
-
-    public <V> ImmutableMap<String, V> getAsStringObjectMap(Function<? super IPdxScript, ? extends V> valueFct) {
-        return getAsStringObjectMap(null, valueFct);
-    }
-
     public <V> ImmutableMap<String, V> getAsStringObjectMap(BiFunction<? super String, ? super IPdxScript, ? extends V> valueFct) {
         return getAsStringObjectMap(null, valueFct);
-    }
-
-    public <V> ImmutableMap<String, V> getAsStringObjectMap(Predicate<String> keyFilter, Function<? super IPdxScript, ? extends V> valueFct) {
-        MutableMap<String, V> map = Maps.mutable.empty();
-        this.map.forEach((k, oldV) -> {
-            if (keyFilter != null && !keyFilter.test(k)) {
-                return;
-            }
-
-            V v = valueFct.apply(oldV);
-            if (v != null) {
-                usageStatistic.use(k, oldV.getTypeString(), oldV);
-                map.put(k, v);
-            }
-        });
-        return map.toImmutable();
     }
 
     public <V> ImmutableMap<String, V> getAsStringObjectMap(Predicate<String> keyFilter, BiFunction<? super String, ? super IPdxScript, ? extends V> valueFct) {
         MutableMap<String, V> map = Maps.mutable.empty();
         this.map.forEach((k, oldV) -> {
-            if (keyFilter != null && !keyFilter.test(k)) {
+            if (oldV instanceof PdxScriptValue sv && sv.isNull()) {
+                return;
+            } else if (keyFilter != null && !keyFilter.test(k)) {
                 return;
             }
 
@@ -836,37 +811,28 @@ public final class PdxScriptObject extends BasePdxScript {
     private PdxScriptList extractImplicitList(String key, IPdxScript s) {
         if (s == null) {
             return PdxScriptList.EMPTY_IMPLICIT;
-        } else if (s instanceof PdxScriptList) {
-            PdxScriptList l = (PdxScriptList) s;
-            if (l.getMode() == PdxScriptList.Mode.IMPLICIT) {
-                return l;
-            }
+        } else if (s instanceof PdxScriptList l && l.getMode() == PdxScriptList.Mode.IMPLICIT) {
+            return l;
         }
 
         return PdxScriptList.builder().add(s).build(PdxScriptList.Mode.IMPLICIT);
     }
 
     private PdxScriptList extractList(String key, IPdxScript s) {
-        if (s instanceof PdxScriptList) {
-            PdxScriptList l = (PdxScriptList) s;
-            if (l.getMode() != PdxScriptList.Mode.IMPLICIT) {
-                return l;
-            }
-        } else if (s instanceof PdxScriptObject) {
-            PdxScriptObject o = (PdxScriptObject) s;
-            if (o.size() == 0) {
-                return PdxScriptList.builder().build(o.getRelation());
-            }
+        if (s instanceof PdxScriptList l && l.getMode() != PdxScriptList.Mode.IMPLICIT) {
+            return l;
+        } else if (s instanceof PdxScriptObject o && o.size() == 0) {
+            return PdxScriptList.builder().build(o.getRelation());
         }
 
         throw new NoSuchElementException("expected explicit list for key " + key + " but got " + s);
     }
 
     private boolean extractBoolean(String key, IPdxScript s) {
-        if (s instanceof PdxScriptValue) {
-            Object v = ((PdxScriptValue) s).getValue();
-            if (v instanceof Boolean) {
-                return (boolean) v;
+        if (s instanceof PdxScriptValue sv) {
+            Object v = sv.getValue();
+            if (v instanceof Boolean b) {
+                return b;
             }
         }
 
@@ -965,7 +931,6 @@ public final class PdxScriptObject extends BasePdxScript {
 
         throw new NoSuchElementException("expected string or null for key " + key + " but got " + s);
     }
-
 
     private String extractEnum(String key, IPdxScript s) {
         if (s instanceof PdxScriptValue) {

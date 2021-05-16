@@ -5,6 +5,7 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Army {
 
+    public final int id;
     public final String name;
     public final String type;
     public final double health;
@@ -20,7 +21,8 @@ public class Army {
     public final double morale;
     public final int pop;
 
-    public Army(IPdxScript s) {
+    public Army(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.name = o.getString("name");
         this.type = o.getString("type");

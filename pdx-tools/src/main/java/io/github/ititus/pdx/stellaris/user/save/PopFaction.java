@@ -8,6 +8,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 
 public class PopFaction {
 
+    public final int id;
     public final int country;
     public final String type;
     public final String name;
@@ -19,7 +20,8 @@ public class PopFaction {
     public final ImmutableIntList members;
     public final ImmutableMap<String, FlagData> flags;
 
-    public PopFaction(IPdxScript s) {
+    public PopFaction(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.country = o.getInt("country");
         this.type = o.getString("type");

@@ -7,6 +7,7 @@ import org.eclipse.collections.api.map.primitive.ImmutableIntObjectMap;
 
 public class Starbase {
 
+    public final int id;
     public final String level;
     public final ImmutableIntObjectMap<String> modules;
     public final ImmutableIntObjectMap<String> buildings;
@@ -17,7 +18,8 @@ public class Starbase {
     public final int owner;
     public final ImmutableIntIntMap orbitals;
 
-    public Starbase(IPdxScript s) {
+    public Starbase(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.level = o.getString("level");
         this.modules = o.getObjectAsEmptyOrIntStringMap("modules");

@@ -149,7 +149,6 @@ public class Test {
         int countryId = 0;
         CountryScope cs = new CountryScope(game, save, countryId);
 
-
         game.common.technologies.get("tech_ascension_theory").localise().forEach(System.out::println);
 
         var techs = game.common.technologies.all().toList();

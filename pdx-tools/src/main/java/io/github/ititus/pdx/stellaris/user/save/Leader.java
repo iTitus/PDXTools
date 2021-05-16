@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 public class Leader {
 
+    public final int id;
     public final int species;
     public final int country;
     public final int creator;
@@ -36,7 +37,8 @@ public class Leader {
     public final int cooldown;
     public final LeaderRoles roles;
 
-    public Leader(IPdxScript s) {
+    public Leader(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.name = o.getObjectAsNullOr("name", LeaderName::new);
         this.species = o.getInt("species");

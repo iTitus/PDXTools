@@ -87,7 +87,6 @@ public class Country {
     public final ImmutableList<ActivePolicy> activePolicies;
     public final ImmutableList<Edict> edicts;
     public final ImmutableList<RegnalNumber> regnalNumbers;
-    public final ImmutableList<Species> speciesModTemplates;
     public final Flag flag;
     public final TechStatus techStatus;
     public final CountryBudget budget;
@@ -173,9 +172,9 @@ public class Country {
         this.sensorRangeFleets = o.getListAsEmptyOrIntList("sensor_range_fleets");
         this.faction = o.getObjectAs("faction", Faction::new);
         this.nameList = o.getString("name_list");
-        this.shipNames = o.getObjectAsEmptyOrStringObjectMap("ship_names", _s -> _s.expectImplicitList().getAsIntList());
+        this.shipNames = o.getObjectAsEmptyOrStringObjectMap("ship_names", (k, v) -> v.expectImplicitList().getAsIntList());
         this.ruler = o.getInt("ruler", -1);
-        this.controlGroups = o.getObjectAsEmptyOrIntObjectMap("control_groups", _s -> _s.expectList().getAsList(Property::new));
+        this.controlGroups = o.getObjectAsEmptyOrIntObjectMap("control_groups", (k, v) -> v.expectList().getAsList(Property::new));
         this.shipPrefix = o.getString("ship_prefix", null);
         this.activePolicies = o.getListAsList("active_policies", ActivePolicy::new);
         this.policyFlags = o.getListAsStringList("policy_flags");
@@ -209,7 +208,6 @@ public class Country {
         this.relationsManager = o.getObjectAsNullOr("relations_manager", RelationsManager::new);
         this.location = o.getObjectAsNullOr("location", Property::new);
         this.warAllies = o.getListAsEmptyOrIntList("war_allies");
-        this.speciesModTemplates = o.getListAsEmptyOrList("species_mod_templates", Species::new);
         this.neighborRivals = o.getInt("neighbor_rivals", 0);
         this.customization = o.getString("customization");
         this.lastChangedCountryType = o.getDate("last_changed_country_type", null);

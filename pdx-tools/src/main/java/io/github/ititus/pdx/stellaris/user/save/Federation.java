@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 public class Federation {
 
+    public final int id;
     public final String name;
     public final FederationProgression federationProgression;
     public final ImmutableIntList members;
@@ -20,7 +21,8 @@ public class Federation {
     public final ImmutableList<TimedModifier> timedModifiers;
     public final ImmutableMap<String, FlagData> flags;
 
-    public Federation(IPdxScript s) {
+    public Federation(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.name = o.getString("name");
         this.federationProgression = o.getObjectAs("federation_progression", FederationProgression::new);

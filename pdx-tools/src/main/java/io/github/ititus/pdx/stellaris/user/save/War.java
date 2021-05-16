@@ -5,7 +5,10 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class War {
 
-    public War(IPdxScript s) {
+    public final int id;
+
+    public War(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         // TODO: name, start_date, attackers: Belligerent, defenders: Belligerent, attacker_war_goal: Type,
         //  defender_war_goal: Type, have_defender_war_goal, attacker_war_exhaustion, defender_war_exhaustion,

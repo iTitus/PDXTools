@@ -145,7 +145,6 @@ public record Technology(
         return cost + currentLevel * costPerLevel;
     }
 
-
     public int cost(CountryScope cs) {
         return cost(cs.getCountry().techStatus.getTechLevel(name));
     }

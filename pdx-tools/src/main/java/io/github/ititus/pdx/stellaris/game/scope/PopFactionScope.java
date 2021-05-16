@@ -40,7 +40,6 @@ public class PopFactionScope extends StellarisScope implements PopOwnerScope {
         };
     }
 
-
     @Override
     public RichIterable<PopScope> getOwnedPops() {
         return popFaction.members.collect(id -> new PopScope(game, save, id));

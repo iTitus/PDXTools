@@ -7,6 +7,7 @@ import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 
 public class PlanetClass {
 
+    public final String name;
     public final boolean habitat;
     public final boolean ringworld;
     public final String entity;
@@ -56,7 +57,8 @@ public class PlanetClass {
     public final String districtSet;
     public final boolean usesAlternativeSkiesForMoons;
 
-    public PlanetClass(IPdxScript s) {
+    public PlanetClass(String name, IPdxScript s) {
+        this.name = name;
         PdxScriptObject o = s.expectObject();
         this.habitat = o.getBoolean("habitat", false);
         this.ringworld = o.getBoolean("ringworld", false);

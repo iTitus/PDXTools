@@ -5,7 +5,10 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class StrikeCraft {
 
-    public StrikeCraft(IPdxScript s) {
+    public final int id;
+
+    public StrikeCraft(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         // TODO: this
     }

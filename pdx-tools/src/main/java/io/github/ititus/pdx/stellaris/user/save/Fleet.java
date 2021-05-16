@@ -9,24 +9,39 @@ import java.time.LocalDate;
 
 public class Fleet {
 
-    public final boolean actionInitialized, civilian, station, mia;
-    public final int aggroRangeMeasureFrom, fleetTemplate, owner, previousOwner, orderId;
-    public final double aggroRange, hitPoints;
-    public final String name, groundSupportStance, fleetStance, miaType;
+    public final int id;
+    public final boolean actionInitialized;
+    public final boolean civilian;
+    public final boolean station;
+    public final boolean mia;
+    public final int aggroRangeMeasureFrom;
+    public final int fleetTemplate;
+    public final int owner;
+    public final int previousOwner;
+    public final int orderId;
+    public final double aggroRange;
+    public final double hitPoints;
+    public final String name;
+    public final String groundSupportStance;
+    public final String fleetStance;
+    public final String miaType;
     public final LocalDate returnDate;
-    public final ImmutableIntList ships, incomingMerges;
+    public final ImmutableIntList ships;
+    public final ImmutableIntList incomingMerges;
     public final FleetActions actions;
     public final FleetCombat combat;
     public final FleetAutoMovement autoMovement;
     public final FleetStats fleetStats;
-    public final FleetOrders currentOrder, orders;
+    public final FleetOrders currentOrder;
+    public final FleetOrders orders;
     public final Coordinate miaFrom;
     public final ImmutableMap<String, FlagData> flags;
     public final FleetMovementManager movementManager;
     public final FleetMission mission;
     public final FleetSettings settings;
 
-    public Fleet(IPdxScript s) {
+    public Fleet(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.name = o.getString("name");
         this.aggroRange = o.getDouble("aggro_range", -1);

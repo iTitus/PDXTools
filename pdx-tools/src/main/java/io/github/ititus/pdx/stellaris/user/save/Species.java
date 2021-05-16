@@ -6,6 +6,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 
 public class Species {
 
+    public final int id;
     public final int base;
     public final boolean killed;
     public final String nameList;
@@ -22,7 +23,8 @@ public class Species {
     public final ImmutableMap<String, FlagData> flags;
     public final boolean halfSpecies;
 
-    public Species(IPdxScript s) {
+    public Species(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.base = o.getInt("base_ref", -1);
         this.killed = o.getBoolean("killed", false);

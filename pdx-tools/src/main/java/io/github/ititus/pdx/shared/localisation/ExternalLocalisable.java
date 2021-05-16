@@ -7,7 +7,6 @@ import static io.github.ititus.pdx.pdxscript.PdxConstants.DEFAULT_LANGUAGE;
 
 public interface ExternalLocalisable {
 
-
     default ImmutableList<String> localise(PdxLocalisation localisation) {
         return localise(localisation, DEFAULT_LANGUAGE);
     }

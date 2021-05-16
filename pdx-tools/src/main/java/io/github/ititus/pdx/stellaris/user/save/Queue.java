@@ -5,7 +5,10 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class Queue {
 
-    public Queue(IPdxScript s) {
+    public final int id;
+
+    public Queue(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
     }
 }

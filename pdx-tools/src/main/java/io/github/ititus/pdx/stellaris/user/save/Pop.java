@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 public class Pop {
 
+    public final int id;
     public final int species;
     public final Ethos ethos;
     public final ImmutableMap<String, FlagData> flags;
@@ -34,7 +35,8 @@ public class Pop {
     public final String approvalModifier;
     public final ImmutableIntList spawnedArmies;
 
-    public Pop(IPdxScript s) {
+    public Pop(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.species = o.getInt("species");
         this.ethos = o.getObjectAsNullOr("ethos", Ethos::new);

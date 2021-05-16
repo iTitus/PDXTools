@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 public class FleetTemplate {
 
+    public final int id;
     public final int fleet;
     public final HomeBase homeBase;
     public final ImmutableList<FleetTemplateDesign> fleetTemplateDesigns;
@@ -13,7 +14,8 @@ public class FleetTemplate {
     public final int count;
     public final double fleetSize;
 
-    public FleetTemplate(IPdxScript s) {
+    public FleetTemplate(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.fleet = o.getInt("fleet");
         this.homeBase = o.getObjectAsNullOr("home_base", HomeBase::new);

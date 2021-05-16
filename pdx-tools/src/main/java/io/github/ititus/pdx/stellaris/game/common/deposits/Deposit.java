@@ -8,12 +8,15 @@ import io.github.ititus.pdx.stellaris.shared.Resources;
 
 public class Deposit {
 
+    public final String name;
     public final boolean isNull;
     public final DepositResources resources;
+
     private final StellarisGame game;
 
-    public Deposit(StellarisGame game, IPdxScript s) {
+    public Deposit(StellarisGame game, String name, IPdxScript s) {
         this.game = game;
+        this.name = name;
         PdxScriptObject o = s.expectObject();
         this.isNull = o.getBoolean("is_null", false);
         this.resources = o.getObjectAsNullOr("resources", o_ -> new DepositResources(game, o_));

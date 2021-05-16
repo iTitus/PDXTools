@@ -5,7 +5,10 @@ import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 
 public class ArchaeologicalSite {
 
-    public ArchaeologicalSite(IPdxScript s) {
+    public final int id;
+
+    public ArchaeologicalSite(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         // TODO: this
     }

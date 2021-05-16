@@ -1,9 +1,5 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.function.BiIntObjFunction;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -45,8 +41,7 @@ public final class PdxHelper {
                 .collect(Collectors.joining());
     }
 
-    public static void listObjectOpen(int indent, boolean root, String key, StringBuilder b, PdxRelation relation,
-                                      boolean empty) {
+    public static void listObjectOpen(int indent, boolean root, String key, StringBuilder b, PdxRelation relation, boolean empty) {
         if (!root) {
             b.append(indent(indent));
             if (key != null) {
@@ -69,17 +64,5 @@ public final class PdxHelper {
         } else if (!empty && b.charAt(b.length() - 1) == LINE_FEED) {
             b.deleteCharAt(b.length() - 1);
         }
-    }
-
-    public static <T extends IPdxScript, R> Function<T, R> nullOr(Function<? super T, ? extends R> fct) {
-        return s -> s instanceof PdxScriptValue && ((PdxScriptValue) s).getValue() == null ? null : fct.apply(s);
-    }
-
-    public static <T extends String, U extends IPdxScript, R> BiFunction<T, U, R> nullOr(BiFunction<? super T, ? super U, ? extends R> fct) {
-        return (k, v) -> v instanceof PdxScriptValue && ((PdxScriptValue) v).getValue() == null ? null : fct.apply(k, v);
-    }
-
-    public static <T extends IPdxScript, R> BiIntObjFunction<T, R> nullOr(BiIntObjFunction<? super T, ? extends R> fct) {
-        return (k, v) -> v instanceof PdxScriptValue && ((PdxScriptValue) v).getValue() == null ? null : fct.apply(k, v);
     }
 }
