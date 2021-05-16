@@ -5,6 +5,7 @@ import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.Federation;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
+import org.eclipse.collections.api.RichIterable;
 
 import java.util.Objects;
 
@@ -37,5 +38,9 @@ public class FederationScope extends StellarisScope {
             case "has_modifier" -> federation.hasModifier(v.expectString());
             default -> super.evaluateValueTrigger(name, v);
         };
+    }
+
+    public RichIterable<CountryScope> getMembers() {
+        return federation.members.collect(id -> new CountryScope(game, save, id));
     }
 }

@@ -4,6 +4,7 @@ import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.shared.scope.Scope;
 import io.github.ititus.pdx.shared.trigger.AnyTrigger;
 import io.github.ititus.pdx.shared.trigger.Triggers;
+import io.github.ititus.pdx.stellaris.game.scope.FederationScope;
 
 public class AnyMemberTrigger extends AnyTrigger {
 
@@ -13,8 +14,6 @@ public class AnyMemberTrigger extends AnyTrigger {
 
     @Override
     protected Iterable<? extends Scope> getScopes(Scope scope) {
-        // scopes: federation
-        // return scope.getMembers();
-        throw new UnsupportedOperationException();
+        return FederationScope.expect(scope).getMembers();
     }
 }
