@@ -2,6 +2,7 @@ package io.github.ititus.dds;
 
 import java.io.DataInput;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 @FunctionalInterface
 public interface DataReader {
@@ -26,5 +27,11 @@ public interface DataReader {
 
     default int readUInt() throws IOException {
         return readDword();
+    }
+
+    default void read(ByteBuffer target, int size) throws IOException {
+        for (int i = 0; i < size; i++) {
+            target.put(readByte());
+        }
     }
 }

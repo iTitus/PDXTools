@@ -8,17 +8,18 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
-public class DdsReader extends ImageReader {
+public class DdsImageReader extends ImageReader {
 
     private ImageInputStream stream;
     private DdsFile dds;
 
-    public DdsReader(DdsImageReaderSpi originator) {
+    public DdsImageReader(DdsImageReaderSpi originator) {
         super(originator);
     }
 
@@ -64,7 +65,14 @@ public class DdsReader extends ImageReader {
     @Override
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
         loadAndCheckIndex(imageIndex);
-        throw new UnsupportedEncodingException();
+
+        BufferedImage img = getDestination(param, getImageTypes(imageIndex), getWidth(imageIndex), getHeight(imageIndex));
+        WritableRaster raster = img.getRaster();
+        DataBuffer buf = raster.getDataBuffer();
+
+        // TODO: implement this
+
+        return img;
     }
 
     @Override

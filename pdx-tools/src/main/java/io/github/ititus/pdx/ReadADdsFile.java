@@ -6,10 +6,10 @@ import io.github.ititus.dds.DdsHeader;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
+import io.github.ititus.pdx.util.IOUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -20,13 +20,14 @@ import java.util.stream.Stream;
 
 public class ReadADdsFile {
 
-    private static final Path LOG_FILE = toRealPath(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"), false);
-    private static final Path INSTALL_DIR = toRealPath(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"), true);
+    private static final Path LOG_FILE = IOUtil.resolveRealFile(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"));
+    private static final Path OUT_DIR = IOUtil.resolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
+    private static final Path INSTALL_DIR = IOUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"));
     private static final PathFilter FILTER = new FileExtensionFilter("dds");
 
     private final List<String> log = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new ReadADdsFile().run();
     }
 
@@ -34,48 +35,20 @@ public class ReadADdsFile {
         return INSTALL_DIR.relativize(p).toString().replace('\\', '/');
     }
 
-    private static Path toRealPath(Path p, boolean isDir) {
+    private void run() {
         try {
-            Files.createDirectories(isDir ? p : p.normalize().getParent());
-            return p.toRealPath();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            categorizeAllDds();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
 
-    private void run() throws IOException {
-        // categorizeAllDds();
+        try {
+            convertSampleImages();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        // A8R8G8B8
-        BufferedImage img1 = ImageIO.read(INSTALL_DIR.resolve("flags/backgrounds/diagonal_stripe.dds").toFile());
-        ImageIO.write(img1, "png", new File("out/img1.png"));
-
-        // R8G8B8
-        BufferedImage img2 = ImageIO.read(INSTALL_DIR.resolve("flags/backgrounds/circle.dds").toFile());
-        ImageIO.write(img2, "png", new File("out/img2.png"));
-
-        // A1R5G5B5
-        BufferedImage img3 = ImageIO.read(INSTALL_DIR.resolve("gfx/interface/icons/dlc/ancient_relics_big.dds").toFile());
-        ImageIO.write(img3, "png", new File("out/img3.png"));
-
-        // A8B8G8R8
-        BufferedImage img4 = ImageIO.read(INSTALL_DIR.resolve("gfx/interface/buttons/standard_button_200_24_dlc_overlay_animated.dds").toFile());
-        ImageIO.write(img4, "png", new File("out/img4.png"));
-
-        // DXT5
-        BufferedImage img5 = ImageIO.read(INSTALL_DIR.resolve("flags/human/flag_human_1.dds").toFile());
-        ImageIO.write(img5, "png", new File("out/img5.png"));
-
-        // DXT3
-        BufferedImage img6 = ImageIO.read(INSTALL_DIR.resolve("gfx/interface/fleet_view/fleet_view_upgradable_design.dds").toFile());
-        ImageIO.write(img6, "png", new File("out/img6.png"));
-
-        // DXT1
-        BufferedImage img7 = ImageIO.read(INSTALL_DIR.resolve("gfx/event_pictures/space_dragon_blue.dds").toFile());
-        ImageIO.write(img7, "png", new File("out/img7.png"));
-
-        /*BufferedImage img = ImageIO.read(p.toFile());
-        System.out.println(img);*/
+        dumpLog();
     }
 
     private void categorizeAllDds() {
@@ -84,7 +57,7 @@ public class ReadADdsFile {
             files = stream
                     .filter(Files::isRegularFile)
                     .filter(FILTER)
-                    .map(p -> toRealPath(p, false))
+                    .map(IOUtil::resolveRealFile)
                     .sorted(PathUtil.ASCIIBETICAL)
                     .toList();
         } catch (IOException e) {
@@ -155,8 +128,38 @@ public class ReadADdsFile {
                     log("(" + e.getValue().size() + "): " + e.getKey());
                     log(e.getValue().stream().map(ReadADdsFile::pathToString).collect(Collectors.joining(", ")));
                 });
+    }
 
-        dumpLog();
+    private void convertSampleImages() throws IOException {
+        // A8R8G8B8
+        convertSampleImage("flags/backgrounds/diagonal_stripe.dds");
+
+        // R8G8B8
+        convertSampleImage("flags/backgrounds/circle.dds");
+
+        // A1R5G5B5
+        convertSampleImage("gfx/interface/icons/dlc/ancient_relics_big.dds");
+
+        // A8B8G8R8
+        convertSampleImage("gfx/interface/buttons/standard_button_200_24_dlc_overlay_animated.dds");
+
+        // DXT5
+        convertSampleImage("flags/human/flag_human_1.dds");
+
+        // DXT3
+        convertSampleImage("gfx/interface/fleet_view/fleet_view_upgradable_design.dds");
+
+        // DXT1
+        convertSampleImage("gfx/event_pictures/space_dragon_blue.dds");
+    }
+
+    private void convertSampleImage(String path) throws IOException {
+        BufferedImage img = ImageIO.read(INSTALL_DIR.resolve(path).toFile());
+
+        String outPath = path.replace('/', '_');
+        outPath = outPath.replace(".dds", ".png");
+
+        ImageIO.write(img, "png", OUT_DIR.resolve(outPath).toFile());
     }
 
     private void dumpLog() {

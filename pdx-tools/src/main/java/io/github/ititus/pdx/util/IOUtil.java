@@ -18,6 +18,31 @@ import java.util.PrimitiveIterator;
 
 public final class IOUtil {
 
+    public static Path resolveRealDir(Path p) {
+        return resolveRealPath(p, true);
+    }
+
+    public static Path resolveRealFile(Path p) {
+        return resolveRealPath(p, false);
+    }
+
+    public static Path resolveRealPath(Path p, boolean isDir) {
+        try {
+            Files.createDirectories(isDir ? p : p.normalize().getParent());
+            p = p.toRealPath();
+
+            if (isDir && !Files.isDirectory(p)) {
+                throw new IllegalStateException("expected " + p + " to be a dir");
+            } else if (!isDir && !Files.isRegularFile(p)) {
+                throw new IllegalStateException("expected " + p + " to be a regular file");
+            }
+
+            return p;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     public static PrimitiveIterator.OfInt getCharacterIterator(PdxPatchDatabase patchDatabase, Path... files) {
         return new PrimitiveIterator.OfInt() {
 

@@ -5,6 +5,7 @@ import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.Patch;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
+import io.github.ititus.pdx.util.IOUtil;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -16,9 +17,9 @@ import java.util.stream.Stream;
 
 public final class PatchGenerator {
 
-    private static final Path PATCHES_DIR = toRealPath(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"), true);
-    private static final Path INSTALL_DIR = toRealPath(Path.of("C:/Program Files (x86)/Steam/steamapps/common"), true);
-    private static final Path OUTPUT_DIR = toRealPath(Path.of("pdx-tools/src/main/resources/patches"), true);
+    private static final Path PATCHES_DIR = IOUtil.resolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
+    private static final Path INSTALL_DIR = IOUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common"));
+    private static final Path OUTPUT_DIR = IOUtil.resolveRealDir(Path.of("pdx-tools/src/main/resources/patches"));
     private static final PathFilter FILTER = new FileExtensionFilter("patch");
 
     private static final int CONTEXT_SIZE = 3;
@@ -52,7 +53,7 @@ public final class PatchGenerator {
             stream
                     .filter(Files::isRegularFile)
                     .filter(FILTER)
-                    .map(p -> toRealPath(p, false))
+                    .map(IOUtil::resolveRealFile)
                     .forEach(PatchGenerator::generatePatch);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -88,15 +89,6 @@ public final class PatchGenerator {
         try {
             Files.createDirectories(outputFile.getParent());
             Files.write(outputFile, unifiedDiff);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private static Path toRealPath(Path p, boolean isDir) {
-        try {
-            Files.createDirectories(isDir ? p : p.normalize().getParent());
-            return p.toRealPath();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

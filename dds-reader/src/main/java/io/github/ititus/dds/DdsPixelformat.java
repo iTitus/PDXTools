@@ -189,13 +189,13 @@ public record DdsPixelformat(
             if (dwFourCC == D3DFMT_DXT1) {
                 ColorModel cm = new DirectColorModel(
                         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
-                        16,
+                        17,
                         0xf800,
                         0x7e0,
                         0x1f,
-                        0,
+                        0x10000,
                         false,
-                        DataBuffer.TYPE_USHORT
+                        DataBuffer.TYPE_INT
                 );
                 return new ImageTypeSpecifier(
                         cm,

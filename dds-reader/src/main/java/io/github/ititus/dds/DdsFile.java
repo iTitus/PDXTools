@@ -4,12 +4,14 @@ import javax.imageio.ImageTypeSpecifier;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static io.github.ititus.dds.DdsConstants.DDS_MAGIC;
 
 public record DdsFile(
         DdsHeader header,
-        DdsHeaderDxt10 header10
+        DdsHeaderDxt10 header10,
+        List<DdsResource> resources
 ) {
 
     public static DdsFile load(Path path) throws IOException {
@@ -51,7 +53,13 @@ public record DdsFile(
             header10 = null;
         }
 
-        return new DdsFile(header, header10);
+        int resourceCount = header10 != null ? header10.resourceCount() : 1;
+        DdsResource[] resources = new DdsResource[resourceCount];
+        for (int i = 0; i < resourceCount; i++) {
+            resources[i] = DdsResource.load(r, header, header10);
+        }
+
+        return new DdsFile(header, header10, List.of(resources));
     }
 
     public int height() {

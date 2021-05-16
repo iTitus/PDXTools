@@ -18,7 +18,7 @@ public class DdsImageReaderSpi extends ImageReaderSpi {
                 new String[] { "dds", "DDS" },
                 new String[] { "dds" },
                 new String[] { "image/vnd-ms.dds" },
-                DdsReader.class.getName(),
+                DdsImageReader.class.getName(),
                 new Class<?>[] { ImageInputStream.class },
                 null,
                 false,
@@ -49,7 +49,7 @@ public class DdsImageReaderSpi extends ImageReaderSpi {
 
     @Override
     public ImageReader createReaderInstance(Object extension) throws IOException {
-        return new DdsReader(this);
+        return new DdsImageReader(this);
     }
 
     @Override
