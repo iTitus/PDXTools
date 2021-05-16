@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
+import java.util.List;
 
 public class DdsReader extends ImageReader {
 
@@ -46,7 +47,7 @@ public class DdsReader extends ImageReader {
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
         loadAndCheckIndex(imageIndex);
-        throw new UnsupportedEncodingException();
+        return List.of(dds.imageType()).iterator();
     }
 
     @Override

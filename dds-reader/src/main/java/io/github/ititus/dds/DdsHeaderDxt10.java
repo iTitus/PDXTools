@@ -1,5 +1,6 @@
 package io.github.ititus.dds;
 
+import javax.imageio.ImageTypeSpecifier;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,10 @@ public record DdsHeaderDxt10(
 
     public int resourceCount() {
         return arraySize > 0 ? arraySize : 1;
+    }
+
+    public ImageTypeSpecifier imageType() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

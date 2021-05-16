@@ -7,6 +7,9 @@ import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -23,7 +26,7 @@ public class ReadADdsFile {
 
     private final List<String> log = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new ReadADdsFile().run();
     }
 
@@ -40,7 +43,42 @@ public class ReadADdsFile {
         }
     }
 
-    private void run() {
+    private void run() throws IOException {
+        // categorizeAllDds();
+
+        // A8R8G8B8
+        BufferedImage img1 = ImageIO.read(INSTALL_DIR.resolve("flags/backgrounds/diagonal_stripe.dds").toFile());
+        ImageIO.write(img1, "png", new File("out/img1.png"));
+
+        // R8G8B8
+        BufferedImage img2 = ImageIO.read(INSTALL_DIR.resolve("flags/backgrounds/circle.dds").toFile());
+        ImageIO.write(img2, "png", new File("out/img2.png"));
+
+        // A1R5G5B5
+        BufferedImage img3 = ImageIO.read(INSTALL_DIR.resolve("gfx/interface/icons/dlc/ancient_relics_big.dds").toFile());
+        ImageIO.write(img3, "png", new File("out/img3.png"));
+
+        // A8B8G8R8
+        BufferedImage img4 = ImageIO.read(INSTALL_DIR.resolve("gfx/interface/buttons/standard_button_200_24_dlc_overlay_animated.dds").toFile());
+        ImageIO.write(img4, "png", new File("out/img4.png"));
+
+        // DXT5
+        BufferedImage img5 = ImageIO.read(INSTALL_DIR.resolve("flags/human/flag_human_1.dds").toFile());
+        ImageIO.write(img5, "png", new File("out/img5.png"));
+
+        // DXT3
+        BufferedImage img6 = ImageIO.read(INSTALL_DIR.resolve("gfx/interface/fleet_view/fleet_view_upgradable_design.dds").toFile());
+        ImageIO.write(img6, "png", new File("out/img6.png"));
+
+        // DXT1
+        BufferedImage img7 = ImageIO.read(INSTALL_DIR.resolve("gfx/event_pictures/space_dragon_blue.dds").toFile());
+        ImageIO.write(img7, "png", new File("out/img7.png"));
+
+        /*BufferedImage img = ImageIO.read(p.toFile());
+        System.out.println(img);*/
+    }
+
+    private void categorizeAllDds() {
         List<Path> files;
         try (Stream<Path> stream = Files.walk(INSTALL_DIR)) {
             files = stream
@@ -119,9 +157,6 @@ public class ReadADdsFile {
                 });
 
         dumpLog();
-
-        /*BufferedImage img = ImageIO.read(p.toFile());
-        System.out.println(img);*/
     }
 
     private void dumpLog() {
