@@ -12,7 +12,8 @@ public class VisualHyperlane {
     private static final PhongMaterial MATERIAL_BYPASS_ACTIVE = new PhongMaterial(Color.LIGHTGREEN);
     private static final PhongMaterial MATERIAL_BYPASS_INACTIVE = new PhongMaterial(Color.INDIANRED);
 
-    private final int from, to;
+    private final int from;
+    private final int to;
     private final Type type;
 
     public VisualHyperlane(int from, int to, Type type) {
@@ -23,6 +24,7 @@ public class VisualHyperlane {
             this.from = to;
             this.to = from;
         }
+
         this.type = type;
     }
 
@@ -43,17 +45,17 @@ public class VisualHyperlane {
     }
 
     public boolean isVisible() {
-        return type != Type.BYPASS_INACTIVE;
+        return type != Type.WORMHOLE_BYPASS_INACTIVE && type != Type.MEGASTRUCTURE_BYPASS_ACTIVE && type != Type.MEGASTRUCTURE_BYPASS_INACTIVE;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof VisualHyperlane)) {
+        } else if (!(o instanceof VisualHyperlane)) {
             return false;
         }
+
         VisualHyperlane that = (VisualHyperlane) o;
         return from == that.from && to == that.to && type == that.type;
     }
@@ -67,8 +69,10 @@ public class VisualHyperlane {
 
         NORMAL(MATERIAL_NORMAL),
         BRIDGE(MATERIAL_BRIDGE),
-        BYPASS_ACTIVE(MATERIAL_BYPASS_ACTIVE),
-        BYPASS_INACTIVE(MATERIAL_BYPASS_INACTIVE);
+        WORMHOLE_BYPASS_ACTIVE(MATERIAL_BYPASS_ACTIVE),
+        WORMHOLE_BYPASS_INACTIVE(MATERIAL_BYPASS_INACTIVE),
+        MEGASTRUCTURE_BYPASS_ACTIVE(MATERIAL_BYPASS_ACTIVE),
+        MEGASTRUCTURE_BYPASS_INACTIVE(MATERIAL_BYPASS_INACTIVE);
 
         private final PhongMaterial material;
 

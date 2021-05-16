@@ -24,7 +24,7 @@ public class StellarisSaveAnalyser implements Runnable {
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
 
     private static final String SAVE_FOLDER = "mpthorquellalliance_-677535411";
-    private static final String SAVE_GAME = "2318.07.01";
+    private static final String SAVE_GAME = "2352.09.22";
 
     private static final int PROGRESS_DEPTH = 5;
 

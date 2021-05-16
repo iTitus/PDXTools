@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.primitive.ImmutableIntList;
 
 public class Bypass {
 
+    public final int id;
     public final String type;
     public final boolean active;
     public final int linkedTo;
@@ -13,7 +14,8 @@ public class Bypass {
     public final ImmutableIntList activeConnections;
     public final Property owner;
 
-    public Bypass(IPdxScript s) {
+    public Bypass(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.type = o.getString("type");
         this.active = o.getBoolean("active");

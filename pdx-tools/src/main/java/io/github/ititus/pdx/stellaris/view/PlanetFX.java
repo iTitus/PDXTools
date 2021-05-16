@@ -13,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Translate;
-import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -28,29 +27,29 @@ public class PlanetFX extends Group {
     // private final Color color;
 
     private final GalaxyView galaxyView;
-    private final IntObjectPair<Planet> planetPair;
+    private final Planet planet;
 
     private final Sphere planetSphere;
     private final Tooltip planetTooltip;
 
-    public PlanetFX(GalaxyView galaxyView, IntObjectPair<Planet> planetPair) {
+    public PlanetFX(GalaxyView galaxyView, Planet planet) {
         this.galaxyView = galaxyView;
-        this.planetPair = planetPair;
+        this.planet = planet;
 
-        // int hash = planetPair.hashCode();
+        // int hash = planet.hashCode();
         // hash = (hash ^ (hash >>> 8)) & 0xFFFFFF;
         // this.color = Color.rgb((hash >>> 16) & 0xFF, (hash >>> 8) & 0xFF, hash & 0xFF);
 
         this.planetSphere = new Sphere(calculatePlanetVisualSize());
-        Coordinate c = planetPair.getTwo().coordinate;
+        Coordinate c = planet.coordinate;
         this.planetSphere.getTransforms().add(new Translate(c.x, c.y, 0));
         // this.planetSphere.setMaterial(new PhongMaterial(this.color));
         this.planetSphere.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            galaxyView.onClickInSystemView(planetPair);
+            galaxyView.onClickInSystemView(planet);
             event.consume();
         });
 
-        this.planetTooltip = new Tooltip(planetPair.getTwo().name + " (#" + planetPair.getOne() + ")");
+        this.planetTooltip = new Tooltip(planet.name + " (#" + planet.id + ")");
 
         Circle orbit = createOrbit();
 
@@ -64,20 +63,20 @@ public class PlanetFX extends Group {
     }
 
     private Circle createOrbit() {
-        PlanetClass planetClass = galaxyView.getGame().getCommon().planetClasses.planetClasses.get(planetPair.getTwo().planetClass);
+        PlanetClass planetClass = galaxyView.getGame().getCommon().planetClasses.planetClasses.get(planet.planetClass);
         if (planetClass.star || !planetClass.orbitLines) {
             return null;
         }
 
-        Coordinate c = planetPair.getTwo().coordinate;
+        Coordinate c = planet.coordinate;
         Point3D p = new Point3D(c.x, c.y, 0);
 
         Point3D center;
-        if (planetPair.getTwo().isMoon) { // moon
-            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planetPair.getTwo().moonOf).coordinate;
+        if (planet.isMoon) { // moon
+            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planet.moonOf).coordinate;
             center = new Point3D(centerC.x, centerC.y, 0);
-        } else if (planetPair.getTwo().moonOf != -1) { // more than 1 star in system, this planet is not orbiting the central one
-            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planetPair.getTwo().moonOf).coordinate;
+        } else if (planet.moonOf != -1) { // more than 1 star in system, this planet is not orbiting the central one
+            Coordinate centerC = galaxyView.getSave().gameState.planets.planets.get(planet.moonOf).coordinate;
             center = new Point3D(centerC.x, centerC.y, 0);
         } else {
             center = Point3D.ZERO;
@@ -97,8 +96,6 @@ public class PlanetFX extends Group {
     }
 
     private double calculatePlanetVisualSize() {
-        Planet planet = planetPair.getTwo();
-
         int planetSize = planet.planetSize;
 
         String planetClassName = planet.planetClass;

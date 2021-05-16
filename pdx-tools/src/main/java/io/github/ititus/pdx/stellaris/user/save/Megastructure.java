@@ -7,6 +7,7 @@ import org.eclipse.collections.api.map.primitive.ImmutableIntIntMap;
 
 public class Megastructure {
 
+    public final int id;
     public final MegastructureUpgrade upgrade;
     public final String type;
     public final Coordinate coordinate;
@@ -18,7 +19,8 @@ public class Megastructure {
     public final ImmutableIntIntMap orbitals;
     public final int bypass;
 
-    public Megastructure(IPdxScript s) {
+    public Megastructure(int id, IPdxScript s) {
+        this.id = id;
         PdxScriptObject o = s.expectObject();
         this.upgrade = o.getObjectAsNullOr("upgrade", MegastructureUpgrade::new);
         this.type = o.getString("type");

@@ -27,6 +27,8 @@ public class Galaxy {
     public final double primitive;
     public final double crises;
     public final double technology;
+    public final double logisticCeiling;
+    public final double growthScale;
     public final double coreRadius;
     public final double numGateways;
     public final double numWormholePairs;
@@ -55,6 +57,8 @@ public class Galaxy {
         this.scaling = o.getBoolean("scaling");
         this.crises = o.getDouble("crises");
         this.technology = o.getDouble("technology");
+        this.logisticCeiling = o.getDouble("logistic_ceiling");
+        this.growthScale = o.getDouble("growth_scale");
         this.clustered = o.getBoolean("clustered");
         this.randomEmpires = o.getBoolean("random_empires");
         this.randomFallenEmpires = o.getBoolean("random_fallen_empires");
