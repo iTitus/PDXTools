@@ -59,6 +59,17 @@ public record DdsFile(
             resources[i] = DdsResource.load(r, header, header10);
         }
 
+        int unconsumed = 0;
+        try {
+            for (; ; unconsumed++) {
+                r.readByte();
+            }
+        } catch (EOFException ignored) {
+            if (unconsumed > 0) {
+                throw new IOException(unconsumed + " unconsumed bytes");
+            }
+        }
+
         return new DdsFile(header, header10, List.of(resources));
     }
 
@@ -72,6 +83,10 @@ public record DdsFile(
 
     public boolean hasMipmaps() {
         return header.hasMipmaps();
+    }
+
+    public boolean isFlatTexture() {
+        return header.isFlatTexture();
     }
 
     public boolean isCubemap() {

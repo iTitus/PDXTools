@@ -101,4 +101,25 @@ public enum D3dFormat {
     public int value() {
         return ordinal();
     }
+
+    public int getBitsPerPixel() {
+        return switch (this) {
+            case A1 -> 1;
+            case DXT1 -> 4;
+            case R3G3B2, A8, P8, L8, A4L4, S8_LOCKABLE, DXT2, DXT3, DXT4, DXT5 -> 8;
+            case R5G6B5, X1R5G5B5, A1R5G5B5, A4R4G4B4, A8R3G3B2, X4R4G4B4, A8P8, A8L8, V8U8, L6V5U5, UYVY, YUY2, R8G8_B8G8, G8R8_G8B8, D16, D16_LOCKABLE, D15S1, L16, INDEX16, R16F, CxV8U8 -> 16;
+            case R8G8B8 -> 24;
+            case A8R8G8B8, X8R8G8B8, A2B10G10R10, A8B8G8R8, X8B8G8R8, G16R16, A2R10G10B10, X8L8V8U8, V16U16, A2W10V10U10, D32, D24S8, D24X8, D24X4S4, D24FS8, INDEX32, G16R16F, R32F, A2B10G10R10_XR_BIAS, MULTI2_ARGB8 -> 32;
+            case A16B16G16R16, A16B16G16R16F, Q16W16V16U16, G32R32F -> 64;
+            case A32B32G32R32F -> 128;
+            default -> throw new IllegalStateException("unknown bpp for format " + this);
+        };
+    }
+
+    public boolean isBlockCompressed() {
+        return switch (this) {
+            case DXT1, DXT2, DXT3, DXT4, DXT5 -> true;
+            default -> false;
+        };
+    }
 }

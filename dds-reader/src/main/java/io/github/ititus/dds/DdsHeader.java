@@ -76,7 +76,13 @@ public record DdsHeader(
             return false;
         } else if ((dwFlags & DDS_HEADER_FLAGS_TEXTURE) != DDS_HEADER_FLAGS_TEXTURE) {
             return false;
-        } else if (hasPitch() && hasLinearSize()) {
+        } else if (isUncompressed() && isCompressed()) {
+            return false;
+        } else if (isCubemap() && isVolumeTexture()) {
+            return false;
+        } else if (hasDepth() && !isVolumeTexture()) {
+            return false;
+        } else if (strict && isBlockCompressed() && (dwHeight % 4 != 0 || dwWidth % 4 != 0)) {
             return false;
         }
 
@@ -87,12 +93,16 @@ public record DdsHeader(
         return ddspf.shouldLoadHeader10();
     }
 
-    public boolean hasPitch() {
+    public boolean isUncompressed() {
         return (dwFlags & DDS_HEADER_FLAGS_PITCH) == DDS_HEADER_FLAGS_PITCH;
     }
 
-    public boolean hasLinearSize() {
+    public boolean isCompressed() {
         return (dwFlags & DDS_HEADER_FLAGS_LINEARSIZE) == DDS_HEADER_FLAGS_LINEARSIZE;
+    }
+
+    public boolean isBlockCompressed() {
+        return d3dFormat().isBlockCompressed();
     }
 
     public boolean hasDepth() {
@@ -102,6 +112,10 @@ public record DdsHeader(
     public boolean hasMipmaps() {
         return (dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT
                 && (dwCaps & DDSCAPS_MIPMAP) == DDSCAPS_MIPMAP;
+    }
+
+    public boolean isFlatTexture() {
+        return !isCubemap() && !isVolumeTexture();
     }
 
     public boolean isCubemap() {
@@ -120,6 +134,29 @@ public record DdsHeader(
         return ddspf.imageType();
     }
 
+    public int calculateCubemapFaces() {
+        int faces = 0;
+        if ((dwCaps2 & DDSCAPS2_CUBEMAP_POSITIVEX) == DDSCAPS2_CUBEMAP_POSITIVEX) {
+            faces++;
+        }
+        if ((dwCaps2 & DDSCAPS2_CUBEMAP_NEGATIVEX) == DDSCAPS2_CUBEMAP_NEGATIVEX) {
+            faces++;
+        }
+        if ((dwCaps2 & DDSCAPS2_CUBEMAP_POSITIVEY) == DDSCAPS2_CUBEMAP_POSITIVEY) {
+            faces++;
+        }
+        if ((dwCaps2 & DDSCAPS2_CUBEMAP_NEGATIVEY) == DDSCAPS2_CUBEMAP_NEGATIVEY) {
+            faces++;
+        }
+        if ((dwCaps2 & DDSCAPS2_CUBEMAP_POSITIVEZ) == DDSCAPS2_CUBEMAP_POSITIVEZ) {
+            faces++;
+        }
+        if ((dwCaps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ) == DDSCAPS2_CUBEMAP_NEGATIVEZ) {
+            faces++;
+        }
+        return faces;
+    }
+
     @Override
     public String toString() {
         List<String> list = new ArrayList<>(24);
@@ -132,7 +169,7 @@ public record DdsHeader(
         list.add("dwHeight=" + dwHeight);
         list.add("dwWidth=" + dwWidth);
         if (dwPitchOrLinearSize != 0) {
-            list.add((hasPitch() ? "dwPitch=" : hasLinearSize() ? "dwLinearSize=" : "dwPitchOrLinearSize=") + dwPitchOrLinearSize);
+            list.add((isUncompressed() ? "dwPitch=" : isCompressed() ? "dwLinearSize=" : "dwPitchOrLinearSize=") + dwPitchOrLinearSize);
         }
         if (dwDepth != 0) {
             list.add("dwDepth=" + dwDepth);

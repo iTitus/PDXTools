@@ -7,22 +7,18 @@ import java.nio.ByteBuffer;
 @FunctionalInterface
 public interface DataReader {
 
-    static int readDword(DataInput i) throws IOException {
-        byte b1 = i.readByte();
-        byte b2 = i.readByte();
-        byte b3 = i.readByte();
-        byte b4 = i.readByte();
+    private static int bytesToDword(byte b1, byte b2, byte b3, byte b4) {
         return Byte.toUnsignedInt(b1) | (Byte.toUnsignedInt(b2) << 8) | (Byte.toUnsignedInt(b3) << 16) | (Byte.toUnsignedInt(b4) << 24);
+    }
+
+    static int readDword(DataInput i) throws IOException {
+        return bytesToDword(i.readByte(), i.readByte(), i.readByte(), i.readByte());
     }
 
     byte readByte() throws IOException;
 
     default int readDword() throws IOException {
-        byte b1 = readByte();
-        byte b2 = readByte();
-        byte b3 = readByte();
-        byte b4 = readByte();
-        return Byte.toUnsignedInt(b1) | (Byte.toUnsignedInt(b2) << 8) | (Byte.toUnsignedInt(b3) << 16) | (Byte.toUnsignedInt(b4) << 24);
+        return bytesToDword(readByte(), readByte(), readByte(), readByte());
     }
 
     default int readUInt() throws IOException {

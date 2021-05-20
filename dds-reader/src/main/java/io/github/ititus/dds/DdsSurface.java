@@ -14,6 +14,11 @@ public class DdsSurface {
     public static DdsSurface load(DataReader r, int size) throws IOException {
         ByteBuffer buf = ByteBuffer.allocate(size);
         r.read(buf, size);
+        buf.flip();
         return new DdsSurface(buf.asReadOnlyBuffer());
+    }
+
+    public ByteBuffer getBuffer() {
+        return buffer.duplicate();
     }
 }

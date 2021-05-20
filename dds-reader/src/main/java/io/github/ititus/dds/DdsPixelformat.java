@@ -201,7 +201,7 @@ public record DdsPixelformat(
                         cm,
                         cm.createCompatibleSampleModel(1, 1)
                 );
-            } else if (dwFourCC == D3DFMT_DXT3) {
+            } else if (dwFourCC == D3DFMT_DXT2 || dwFourCC == D3DFMT_DXT3) {
                 ColorModel cm = new DirectColorModel(
                         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
                         20,
@@ -209,14 +209,14 @@ public record DdsPixelformat(
                         0x7e0,
                         0x1f,
                         0xf0000,
-                        false,
+                        dwFourCC == D3DFMT_DXT2,
                         DataBuffer.TYPE_INT
                 );
                 return new ImageTypeSpecifier(
                         cm,
                         cm.createCompatibleSampleModel(1, 1)
                 );
-            } else if (dwFourCC == D3DFMT_DXT5) {
+            } else if (dwFourCC == D3DFMT_DXT4 || dwFourCC == D3DFMT_DXT5) {
                 ColorModel cm = new DirectColorModel(
                         ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
                         24,
@@ -224,7 +224,7 @@ public record DdsPixelformat(
                         0x7e0,
                         0x1f,
                         0xff0000,
-                        false,
+                        dwFourCC == D3DFMT_DXT4,
                         DataBuffer.TYPE_INT
                 );
                 return new ImageTypeSpecifier(
