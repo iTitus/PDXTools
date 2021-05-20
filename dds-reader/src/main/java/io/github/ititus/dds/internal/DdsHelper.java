@@ -34,7 +34,7 @@ public final class DdsHelper {
     public static int read24BE(ByteBuffer b) {
         byte[] bytes = new byte[3];
         b.get(bytes);
-        return Byte.toUnsignedInt(bytes[2]) | (Byte.toUnsignedInt(bytes[1]) << 8) | (Byte.toUnsignedInt(bytes[0]) << 16);
+        return (Byte.toUnsignedInt(bytes[0]) << 16) | (Byte.toUnsignedInt(bytes[1]) << 8) | Byte.toUnsignedInt(bytes[2]);
     }
 
     public static int read24LE(ByteBuffer b) {
@@ -43,27 +43,18 @@ public final class DdsHelper {
         return Byte.toUnsignedInt(bytes[0]) | (Byte.toUnsignedInt(bytes[1]) << 8) | (Byte.toUnsignedInt(bytes[2]) << 16);
     }
 
-    public static int ip_half(int a, int b) {
-        return (a + b) / 2;
+    public static byte ip_u8(byte a, byte b, int n1, int n2) {
+        return (byte) ((n1 * Byte.toUnsignedInt(a) + n2 * Byte.toUnsignedInt(b)) / (n1 + n2));
     }
 
-    public static int ip_third(int a, int b) {
-        return (2 * a + b) / 3;
+    private static int ip_u16(int a, int b, int n1, int n2) {
+        return (n1 * a + n2 * b) / (n1 + n2);
     }
 
-    public static byte ip_fifth(byte a, byte b, int n) {
-        return (byte) (((5 - n) * Byte.toUnsignedInt(a) + n * Byte.toUnsignedInt(b)) / 5);
-    }
-
-    public static byte ip_seventh(byte a, byte b, int n) {
-        return (byte) (((7 - n) * Byte.toUnsignedInt(a) + n * Byte.toUnsignedInt(b)) / 7);
-    }
-
-    public static short ip_half_565(short c0, short c1) {
-        return (short) ((ip_half(c0 & 0xf800, c1 & 0xf800) & 0xf800) | (ip_half(c0 & 0x7e0, c1 & 0x7e0) & 0x7e0) | (ip_half(c0 & 0x1f, c1 & 0x1f) & 0x1f));
-    }
-
-    public static short ip_third_565(short c0, short c1) {
-        return (short) ((ip_third(c0 & 0xf800, c1 & 0xf800) & 0xf800) | (ip_third(c0 & 0x7e0, c1 & 0x7e0) & 0x7e0) | (ip_third(c0 & 0x1f, c1 & 0x1f) & 0x1f));
+    public static short ip_565(short c0, short c1, int n1, int n2) {
+        int r = ip_u16(c0 & 0xf800, c1 & 0xf800, n1, n2) & 0xf800;
+        int g = ip_u16(c0 & 0x7e0, c1 & 0x7e0, n1, n2) & 0x7e0;
+        int b = ip_u16(c0 & 0x1f, c1 & 0x1f, n1, n2) & 0x1f;
+        return (short) (r | g | b);
     }
 }
