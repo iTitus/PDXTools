@@ -14,7 +14,6 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Iterator;
@@ -183,7 +182,7 @@ public class DdsImageReader extends ImageReader {
         loadAndCheckIndex(imageIndex);
 
         if (dds.header10() != null) {
-            throw new UnsupportedEncodingException("dx10 header not supported");
+            throw new UnsupportedOperationException("dx10 header not supported");
         }
 
         D3dFormat d3dFormat = dds.d3dFormat();
@@ -206,7 +205,7 @@ public class DdsImageReader extends ImageReader {
                 case DXT1 -> bc1(h, w, raster, b);
                 case DXT2, DXT3 -> bc2(h, w, raster, b);
                 case DXT4, DXT5 -> bc3(h, w, raster, b);
-                default -> throw new UnsupportedEncodingException();
+                default -> throw new RuntimeException("illegal block compression");
             }
         } else {
             for (int y = 0; y < h; y++) {
