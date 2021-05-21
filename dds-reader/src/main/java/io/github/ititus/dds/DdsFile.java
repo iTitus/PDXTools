@@ -2,6 +2,7 @@ package io.github.ititus.dds;
 
 import javax.imageio.ImageTypeSpecifier;
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -21,18 +22,54 @@ public record DdsFile(
     }
 
     public static DdsFile load(InputStream is) throws IOException {
-        return load(() -> {
-            int n = is.read();
-            if (n == -1) {
-                throw new EOFException();
+        return load(new DataReader() {
+            @Override
+            public byte readByte() throws IOException {
+                int n = is.read();
+                if (n == -1) {
+                    throw new EOFException();
+                }
+
+                return (byte) n;
             }
 
-            return (byte) n;
+            @Override
+            public void read(ByteBuffer target, int size) throws IOException {
+                if (target.hasArray()) {
+                    if (is.readNBytes(target.array(), target.arrayOffset() + target.position(), size) != size) {
+                        throw new EOFException();
+                    }
+                    target.position(target.position() + size);
+                } else {
+                    byte[] arr = new byte[size];
+                    if (is.readNBytes(arr, 0, size) != size) {
+                        throw new EOFException();
+                    }
+                    target.put(arr, 0, size);
+                }
+            }
         });
     }
 
     public static DdsFile load(DataInput di) throws IOException {
-        return load(di::readByte);
+        return load(new DataReader() {
+            @Override
+            public byte readByte() throws IOException {
+                return di.readByte();
+            }
+
+            @Override
+            public void read(ByteBuffer target, int size) throws IOException {
+                if (target.hasArray()) {
+                    di.readFully(target.array(), target.arrayOffset() + target.position(), size);
+                    target.position(target.position() + size);
+                } else {
+                    byte[] arr = new byte[size];
+                    di.readFully(arr, 0, size);
+                    target.put(arr, 0, size);
+                }
+            }
+        });
     }
 
     public static DdsFile load(DataReader r) throws IOException {

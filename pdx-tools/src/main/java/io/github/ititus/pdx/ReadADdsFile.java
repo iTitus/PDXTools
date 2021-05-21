@@ -6,6 +6,8 @@ import io.github.ititus.dds.DdsHeader;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
+import io.github.ititus.math.time.DurationFormatter;
+import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.util.IOUtil;
 
 import javax.imageio.ImageIO;
@@ -29,6 +31,7 @@ public class ReadADdsFile {
     private final List<Path> files;
 
     private ReadADdsFile() {
+        StopWatch s = StopWatch.createRunning();
         try (Stream<Path> stream = Files.walk(INSTALL_DIR)) {
             files = stream
                     .filter(Files::isRegularFile)
@@ -40,7 +43,7 @@ public class ReadADdsFile {
             throw new UncheckedIOException(e);
         }
 
-        log("Found " + files.size() + " dds files");
+        logWithPrint("Found " + files.size() + " dds files in " + DurationFormatter.format(s.stop()));
     }
 
     public static void main(String[] args) {
@@ -53,19 +56,26 @@ public class ReadADdsFile {
 
     private void run() {
         try {
+            StopWatch s = StopWatch.createRunning();
             categorizeAllDds();
+            logWithPrint("Analysed all dds files in " + DurationFormatter.format(s.stop()));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
+            StopWatch s = StopWatch.createRunning();
             convertSampleImages();
+            logWithPrint("Converted some dds files in " + DurationFormatter.format(s.stop()));
+
             // convertAllImages();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        StopWatch s = StopWatch.createRunning();
         dumpLog();
+        logWithPrint("Dumped log in " + DurationFormatter.format(s.stop()));
     }
 
     private void categorizeAllDds() {
@@ -134,25 +144,27 @@ public class ReadADdsFile {
     }
 
     private void convertSampleImages() throws IOException {
-        // A8R8G8B8
+        log("\n\nConverting sample images...");
+
+        log("\nA8R8G8B8:");
         convertImageFlat("flags/backgrounds/diagonal_stripe.dds");
 
-        // R8G8B8
+        log("\nR8G8B8:");
         convertImageFlat("flags/backgrounds/circle.dds");
 
-        // A1R5G5B5
+        log("\nA1R5G5B5:");
         convertImageFlat("gfx/interface/icons/dlc/ancient_relics_big.dds");
 
-        // A8B8G8R8
+        log("\nA8B8G8R8:");
         convertImageFlat("gfx/interface/buttons/standard_button_200_24_dlc_overlay_animated.dds");
 
-        // DXT5
+        log("\nDXT5:");
         convertImageFlat("flags/human/flag_human_1.dds");
 
-        // DXT3
+        log("\nDXT3:");
         convertImageFlat("gfx/interface/fleet_view/fleet_view_upgradable_design.dds");
 
-        // DXT1
+        log("\nDXT1:");
         convertImageFlat("gfx/event_pictures/space_dragon_blue.dds");
     }
 
@@ -173,13 +185,15 @@ public class ReadADdsFile {
     private void convertImage(Path inPath, Path outPath) throws IOException {
         log("converting " + inPath);
 
-        DdsFile dds = DdsFile.load(inPath);
-        log("format=" + dds.d3dFormat());
-
         Files.createDirectories(outPath.normalize().getParent());
-        BufferedImage img = ImageIO.read(inPath.toFile());
 
+        StopWatch s = StopWatch.createRunning();
+        BufferedImage img = ImageIO.read(inPath.toFile());
+        log("read: " + DurationFormatter.format(s.stop()));
+
+        s.start();
         ImageIO.write(img, "png", outPath.toFile());
+        log("write: " + DurationFormatter.format(s.stop()));
     }
 
     private void dumpLog() {
@@ -197,8 +211,18 @@ public class ReadADdsFile {
         return dds;
     }
 
-    private void log(String msg) {
+    private void log(String msg, boolean print) {
         log.add(msg);
-        // System.out.println(msg);
+        if (print) {
+            System.out.println(msg);
+        }
+    }
+
+    private void log(String msg) {
+        log(msg, false);
+    }
+
+    private void logWithPrint(String msg) {
+        log(msg, true);
     }
 }
