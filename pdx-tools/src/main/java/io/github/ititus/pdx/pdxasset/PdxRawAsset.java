@@ -140,7 +140,7 @@ public final class PdxRawAsset {
                     int length = i.readByte();
                     String name = readString(i, length);
                     Object value = readValueArray(i);
-                    objects.peek().add(name, value);
+                    objects.peek().addProperty(name, value);
                 }
                 case '[' -> {
                     int depth = 1;
@@ -157,11 +157,11 @@ public final class PdxRawAsset {
                         }
 
                         PdxRawAssetObject.Builder newBuilder = PdxRawAssetObject.builder();
-                        objects.peek().add(name, newBuilder);
+                        objects.peek().addChild(name, newBuilder);
                         objects.push(newBuilder);
                     } else if (depthDiff == -1) {
                         PdxRawAssetObject.Builder newBuilder = PdxRawAssetObject.builder();
-                        objects.peek().add(name, newBuilder);
+                        objects.peek().addChild(name, newBuilder);
                         objects.push(newBuilder);
                     } else {
                         throw new IllegalArgumentException("skipping depth levels not supported");

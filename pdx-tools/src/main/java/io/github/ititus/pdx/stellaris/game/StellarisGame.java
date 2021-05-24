@@ -107,7 +107,7 @@ public class StellarisGame {
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading Assets");
         // FIXME: disabled because it is slow
-        this.assets = null; // new PdxAssets(installDir, index + 1, progressMessageUpdater);
+        this.assets = /*null; //*/ new PdxAssets(installDir, index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, false, progress, steps, "Done");
     }
