@@ -1,5 +1,9 @@
 package io.github.ititus.pdx.pdxasset;
 
+import io.github.ititus.math.vector.Vec2f;
+import io.github.ititus.math.vector.Vec3f;
+import io.github.ititus.math.vector.Vec3i;
+import io.github.ititus.math.vector.Vec4f;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -91,14 +95,14 @@ public final class PdxMesh implements IPdxAsset {
 
     public record Mesh(
             String name,
-            ImmutableList<ImmutableFloatList> vertices,
-            ImmutableList<ImmutableFloatList> normals,
-            ImmutableList<ImmutableFloatList> tangents,
-            ImmutableList<ImmutableFloatList> uv0,
-            ImmutableList<ImmutableFloatList> uv1,
-            ImmutableList<ImmutableFloatList> uv2,
-            ImmutableList<ImmutableFloatList> uv3,
-            ImmutableList<ImmutableIntList> triangles,
+            ImmutableList<Vec3f> vertices,
+            ImmutableList<Vec3f> normals,
+            ImmutableList<Vec4f> tangents,
+            ImmutableList<Vec2f> uv0,
+            ImmutableList<Vec2f> uv1,
+            ImmutableList<Vec2f> uv2,
+            ImmutableList<Vec2f> uv3,
+            ImmutableList<Vec3i> triangles,
             Aabb aabb,
             Material material,
             Skin skin
@@ -108,63 +112,63 @@ public final class PdxMesh implements IPdxAsset {
             int propertyCount = 2;
             int childCount = 2;
 
-            ImmutableList<ImmutableFloatList> vertices = o.getProperty("p").expectGroupedFloatList(3);
+            ImmutableList<Vec3f> vertices = o.getProperty("p").expectVec3fList();
 
-            ImmutableList<ImmutableFloatList> normals;
+            ImmutableList<Vec3f> normals;
             if (o.hasProperty("n")) {
                 propertyCount++;
 
-                normals = o.getProperty("n").expectGroupedFloatList(3);
+                normals = o.getProperty("n").expectVec3fList();
             } else {
                 normals = null;
             }
 
-            ImmutableList<ImmutableFloatList> tangents;
+            ImmutableList<Vec4f> tangents;
             if (o.hasProperty("ta")) {
                 propertyCount++;
 
-                tangents = o.getProperty("ta").expectGroupedFloatList(4);
+                tangents = o.getProperty("ta").expectVec4fList();
             } else {
                 tangents = null;
             }
 
-            ImmutableList<ImmutableFloatList> uv0;
+            ImmutableList<Vec2f> uv0;
             if (o.hasProperty("u0")) {
                 propertyCount++;
 
-                uv0 = o.getProperty("u0").expectGroupedFloatList(2);
+                uv0 = o.getProperty("u0").expectVec2fList();
             } else {
                 uv0 = null;
             }
 
-            ImmutableList<ImmutableFloatList> uv1;
+            ImmutableList<Vec2f> uv1;
             if (o.hasProperty("u1")) {
                 propertyCount++;
 
-                uv1 = o.getProperty("u1").expectGroupedFloatList(2);
+                uv1 = o.getProperty("u1").expectVec2fList();
             } else {
                 uv1 = null;
             }
 
-            ImmutableList<ImmutableFloatList> uv2;
+            ImmutableList<Vec2f> uv2;
             if (o.hasProperty("u2")) {
                 propertyCount++;
 
-                uv2 = o.getProperty("u2").expectGroupedFloatList(2);
+                uv2 = o.getProperty("u2").expectVec2fList();
             } else {
                 uv2 = null;
             }
 
-            ImmutableList<ImmutableFloatList> uv3;
+            ImmutableList<Vec2f> uv3;
             if (o.hasProperty("u3")) {
                 propertyCount++;
 
-                uv3 = o.getProperty("u3").expectGroupedFloatList(2);
+                uv3 = o.getProperty("u3").expectVec2fList();
             } else {
                 uv3 = null;
             }
 
-            ImmutableList<ImmutableIntList> triangles = o.getProperty("tri").expectGroupedIntList(3);
+            ImmutableList<Vec3i> triangles = o.getProperty("tri").expectVec3iList();
 
             Aabb aabb = Aabb.of(o.getChild("aabb"));
 
@@ -198,8 +202,8 @@ public final class PdxMesh implements IPdxAsset {
 
     public record Locator(
             String name,
-            ImmutableFloatList position,
-            ImmutableFloatList rotation,
+            Vec3f position,
+            Vec4f rotation,
             ImmutableFloatList transform,
             String parent
     ) {
@@ -207,15 +211,9 @@ public final class PdxMesh implements IPdxAsset {
         public static Locator of(String name, PdxRawAssetObject o) {
             int propertyCount = 2;
 
-            ImmutableFloatList position = o.getProperty("p").expectFloatList();
-            if (position.size() != 3) {
-                throw new RuntimeException("illegal size for locator position");
-            }
+            Vec3f position = o.getProperty("p").expectVec3f();
 
-            ImmutableFloatList rotation = o.getProperty("q").expectFloatList();
-            if (rotation.size() != 4) {
-                throw new RuntimeException("illegal size for locator rotation");
-            }
+            Vec4f rotation = o.getProperty("q").expectVec4f();
 
             ImmutableFloatList transform;
             if (o.hasProperty("tx")) {
@@ -247,20 +245,13 @@ public final class PdxMesh implements IPdxAsset {
     }
 
     public record Aabb(
-            ImmutableFloatList min,
-            ImmutableFloatList max
+            Vec3f min,
+            Vec3f max
     ) {
 
         public static Aabb of(PdxRawAssetObject o) {
-            ImmutableFloatList min = o.getProperty("min").expectFloatList();
-            if (min.size() != 3) {
-                throw new RuntimeException("illegal size for aabb min");
-            }
-
-            ImmutableFloatList max = o.getProperty("max").expectFloatList();
-            if (max.size() != 3) {
-                throw new RuntimeException("illegal size for aabb max");
-            }
+            Vec3f min = o.getProperty("min").expectVec3f();
+            Vec3f max = o.getProperty("max").expectVec3f();
 
             if (o.getProperties().size() != 2 || o.getChildren().size() != 0) {
                 throw new RuntimeException("unexpected properties or children in aabb");
@@ -332,10 +323,9 @@ public final class PdxMesh implements IPdxAsset {
 
         public static Skin of(PdxRawAssetObject o) {
             int bones = o.getProperty("bones").expectInt();
-
             ImmutableIntList indices = o.getProperty("ix").expectIntList();
-
             ImmutableFloatList weights = o.getProperty("w").expectFloatList();
+
             if (indices.size() != weights.size()) {
                 throw new RuntimeException("illegal size for skin indices and weights");
             }

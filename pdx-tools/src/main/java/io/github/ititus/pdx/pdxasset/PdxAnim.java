@@ -1,5 +1,7 @@
 package io.github.ititus.pdx.pdxasset;
 
+import io.github.ititus.math.vector.Vec3f;
+import io.github.ititus.math.vector.Vec4f;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -50,23 +52,17 @@ public final class PdxAnim implements IPdxAsset {
     public record AnimBone(
             String name,
             String sampleTypes,
-            ImmutableFloatList translation,
-            ImmutableFloatList rotation,
+            Vec3f translation,
+            Vec4f rotation,
             float scale
     ) {
 
         public static AnimBone of(String name, PdxRawAssetObject o) {
             String sampleTypes = o.getProperty("sa").expectString();
 
-            ImmutableFloatList translation = o.getProperty("t").expectFloatList();
-            if (translation.size() != 3) {
-                throw new RuntimeException("illegal size for translation");
-            }
+            Vec3f translation = o.getProperty("t").expectVec3f();
 
-            ImmutableFloatList rotation = o.getProperty("q").expectFloatList();
-            if (rotation.size() != 4) {
-                throw new RuntimeException("illegal size for rotation");
-            }
+            Vec4f rotation = o.getProperty("q").expectVec4f();
 
             float scale = o.getProperty("s").expectFloat();
 
@@ -79,28 +75,28 @@ public final class PdxAnim implements IPdxAsset {
     }
 
     public record Samples(
-            ImmutableList<ImmutableFloatList> translations,
-            ImmutableList<ImmutableFloatList> rotations,
+            ImmutableList<Vec3f> translations,
+            ImmutableList<Vec4f> rotations,
             ImmutableFloatList scales
     ) {
 
         public static Samples of(PdxRawAssetObject o) {
             int propertyCount = 0;
 
-            ImmutableList<ImmutableFloatList> translations;
+            ImmutableList<Vec3f> translations;
             if (o.hasProperty("t")) {
                 propertyCount++;
 
-                translations = o.getProperty("t").expectGroupedFloatList(3);
+                translations = o.getProperty("t").expectVec3fList();
             } else {
                 translations = null;
             }
 
-            ImmutableList<ImmutableFloatList> rotations;
+            ImmutableList<Vec4f> rotations;
             if (o.hasProperty("q")) {
                 propertyCount++;
 
-                rotations = o.getProperty("q").expectGroupedFloatList(4);
+                rotations = o.getProperty("q").expectVec4fList();
             } else {
                 rotations = null;
             }
