@@ -5,7 +5,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableFloatList;
 import org.eclipse.collections.api.list.primitive.ImmutableIntList;
-import org.eclipse.collections.impl.factory.primitive.FloatLists;
 import org.eclipse.collections.impl.factory.primitive.IntLists;
 
 import java.nio.file.Path;
@@ -41,12 +40,14 @@ public final class PdxAnim implements IPdxAsset {
 
         PdxRawAssetObject samples = data.getChild("samples");
         this.samples = Samples.of(samples);
-        if (this.samples.translations.size() % this.frameCount != 0 || this.samples.rotations.size() % this.frameCount != 0 || this.samples.scales.size() % this.frameCount != 0) {
+        if ((this.samples.translations != null && this.samples.translations.size() % this.frameCount != 0)
+                || (this.samples.rotations != null && this.samples.rotations.size() % this.frameCount != 0)
+                || (this.samples.scales != null && this.samples.scales.size() % this.frameCount != 0)) {
             throw new RuntimeException("illegal size for samples");
         }
     }
 
-    public static record AnimBone(
+    public record AnimBone(
             String name,
             String sampleTypes,
             ImmutableFloatList translation,
@@ -69,56 +70,52 @@ public final class PdxAnim implements IPdxAsset {
 
             float scale = o.getProperty("s").expectFloat();
 
+            if (o.getProperties().size() != 4 || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in anim bone");
+            }
+
             return new AnimBone(name, sampleTypes, translation, rotation, scale);
         }
     }
 
-    public static record Samples(
+    public record Samples(
             ImmutableList<ImmutableFloatList> translations,
             ImmutableList<ImmutableFloatList> rotations,
             ImmutableFloatList scales
     ) {
 
         public static Samples of(PdxRawAssetObject o) {
+            int propertyCount = 0;
+
             ImmutableList<ImmutableFloatList> translations;
             if (o.hasProperty("t")) {
-                ImmutableFloatList ts = o.getProperty("t").expectFloatList();
-                if (ts.size() % 3 != 0) {
-                    throw new RuntimeException("illegal size for translation samples");
-                }
+                propertyCount++;
 
-                MutableList<ImmutableFloatList> mutTranslations = Lists.mutable.empty();
-                for (int i = 0; i < ts.size(); i += 3) {
-                    mutTranslations.add(FloatLists.immutable.of(ts.get(i), ts.get(i + 1), ts.get(i + 2)));
-                }
-
-                translations = mutTranslations.toImmutable();
+                translations = o.getProperty("t").expectGroupedFloatList(3);
             } else {
-                translations = Lists.immutable.empty();
+                translations = null;
             }
 
             ImmutableList<ImmutableFloatList> rotations;
             if (o.hasProperty("q")) {
-                ImmutableFloatList qs = o.getProperty("q").expectFloatList();
-                if (qs.size() % 4 != 0) {
-                    throw new RuntimeException("illegal size for rotation samples");
-                }
+                propertyCount++;
 
-                MutableList<ImmutableFloatList> mutRotations = Lists.mutable.empty();
-                for (int i = 0; i < qs.size(); i += 4) {
-                    mutRotations.add(FloatLists.immutable.of(qs.get(i), qs.get(i + 1), qs.get(i + 2), qs.get(i + 3)));
-                }
-
-                rotations = mutRotations.toImmutable();
+                rotations = o.getProperty("q").expectGroupedFloatList(4);
             } else {
-                rotations = Lists.immutable.empty();
+                rotations = null;
             }
 
             ImmutableFloatList scales;
             if (o.hasProperty("s")) {
+                propertyCount++;
+
                 scales = o.getProperty("s").expectFloatList();
             } else {
-                scales = FloatLists.immutable.empty();
+                scales = null;
+            }
+
+            if (o.getProperties().size() != propertyCount || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in anim samples");
             }
 
             return new Samples(translations, rotations, scales);

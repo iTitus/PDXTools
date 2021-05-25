@@ -25,26 +25,28 @@ public final class PdxMesh implements IPdxAsset {
             throw new IllegalArgumentException("unknown version " + this.version);
         }
 
-        PdxRawAssetObject object = data.getChildOrEmpty("object");
         MutableList<Bone> bones = Lists.mutable.empty();
         MutableList<Mesh> meshes = Lists.mutable.empty();
-        object.getChildren().forEach((k, vs) -> {
-            for (PdxRawAssetObject v : vs) {
-                for (PdxRawAssetObject b : v.getAllChildren("skeleton")) {
-                    bones.add(Bone.of(k, b));
+        data.getChildOrEmpty("object").getChildren().forEach((shapeName, shapeValues) -> {
+            for (PdxRawAssetObject v : shapeValues) {
+                if (v.hasChild("skeleton")) {
+                    v.getChild("skeleton").getChildren().forEach((boneName, boneValues) -> {
+                        for (PdxRawAssetObject boneValue : boneValues) {
+                            bones.add(Bone.of(shapeName, boneName, boneValue));
+                        }
+                    });
                 }
 
-                for (PdxRawAssetObject m : v.getAllChildren("mesh")) {
-                    meshes.add(Mesh.of(k, m));
+                for (PdxRawAssetObject m : v.getChildren("mesh")) {
+                    meshes.add(Mesh.of(shapeName, m));
                 }
             }
         });
         this.bones = bones.toImmutable();
         this.meshes = meshes.toImmutable();
 
-        PdxRawAssetObject locator = data.getChild("locator");
         MutableList<Locator> locators = Lists.mutable.empty();
-        locator.getChildren().forEach((k, vs) -> {
+        data.getChild("locator").getChildren().forEach((k, vs) -> {
             for (PdxRawAssetObject v : vs) {
                 locators.add(Locator.of(k, v));
             }
@@ -52,48 +54,298 @@ public final class PdxMesh implements IPdxAsset {
         this.locators = locators.toImmutable();
     }
 
-    public static record Bone(
-            String name,
-            PdxRawAssetObject o
+    public record Bone(
+            String shapeName,
+            String boneName,
+            int index,
+            int parent,
+            ImmutableFloatList transform
     ) {
 
-        // TODO: properties: ix (index), tx (transform), pa (parent)
-        public static Bone of(String name, PdxRawAssetObject o) {
-            return new Bone(name, o);
+        public static Bone of(String shapeName, String boneName, PdxRawAssetObject o) {
+            int propertyCount = 2;
+
+            int index = o.getProperty("ix").expectInt();
+
+            int parent;
+            if (o.hasProperty("pa")) {
+                propertyCount++;
+
+                parent = o.getProperty("pa").expectInt();
+            } else {
+                parent = -1;
+            }
+
+            ImmutableFloatList transform = o.getProperty("tx").expectFloatList();
+            if (transform.size() != 12) {
+                throw new RuntimeException("illegal size for bone transform");
+            }
+
+            if (o.getProperties().size() != propertyCount || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in bone");
+            }
+
+            return new Bone(shapeName, boneName, index, parent, transform);
         }
     }
 
-    public static record Mesh(
+    public record Mesh(
             String name,
-            PdxRawAssetObject o
+            ImmutableList<ImmutableFloatList> vertices,
+            ImmutableList<ImmutableFloatList> normals,
+            ImmutableList<ImmutableFloatList> tangents,
+            ImmutableList<ImmutableFloatList> uv0,
+            ImmutableList<ImmutableFloatList> uv1,
+            ImmutableList<ImmutableFloatList> uv2,
+            ImmutableList<ImmutableFloatList> uv3,
+            ImmutableList<ImmutableIntList> triangles,
+            Aabb aabb,
+            Material material,
+            Skin skin
     ) {
 
-        // TODO: properties: p (vertices), n (normals), ta (tangents), u0-u3 (uvs), tri (triangles)
-        // TODO: children: aabb (properties: min, max), material (properties: shader, diff, n (normal), spec), skin (properties: ix (joints), w (weights), bones)
+        // TODO: children: skin? (properties: ix (joints), w (weights), bones)
         public static Mesh of(String name, PdxRawAssetObject o) {
-            return new Mesh(name, o);
+            int propertyCount = 2;
+            int childCount = 2;
+
+            ImmutableList<ImmutableFloatList> vertices = o.getProperty("p").expectGroupedFloatList(3);
+
+            ImmutableList<ImmutableFloatList> normals;
+            if (o.hasProperty("n")) {
+                propertyCount++;
+
+                normals = o.getProperty("n").expectGroupedFloatList(3);
+            } else {
+                normals = null;
+            }
+
+            ImmutableList<ImmutableFloatList> tangents;
+            if (o.hasProperty("ta")) {
+                propertyCount++;
+
+                tangents = o.getProperty("ta").expectGroupedFloatList(4);
+            } else {
+                tangents = null;
+            }
+
+            ImmutableList<ImmutableFloatList> uv0;
+            if (o.hasProperty("u0")) {
+                propertyCount++;
+
+                uv0 = o.getProperty("u0").expectGroupedFloatList(2);
+            } else {
+                uv0 = null;
+            }
+
+            ImmutableList<ImmutableFloatList> uv1;
+            if (o.hasProperty("u1")) {
+                propertyCount++;
+
+                uv1 = o.getProperty("u1").expectGroupedFloatList(2);
+            } else {
+                uv1 = null;
+            }
+
+            ImmutableList<ImmutableFloatList> uv2;
+            if (o.hasProperty("u2")) {
+                propertyCount++;
+
+                uv2 = o.getProperty("u2").expectGroupedFloatList(2);
+            } else {
+                uv2 = null;
+            }
+
+            ImmutableList<ImmutableFloatList> uv3;
+            if (o.hasProperty("u3")) {
+                propertyCount++;
+
+                uv3 = o.getProperty("u3").expectGroupedFloatList(2);
+            } else {
+                uv3 = null;
+            }
+
+            ImmutableList<ImmutableIntList> triangles = o.getProperty("tri").expectGroupedIntList(3);
+
+            Aabb aabb = Aabb.of(o.getChild("aabb"));
+
+            Material material = Material.of(o.getChild("material"));
+
+            Skin skin;
+            if (o.hasChild("skin")) {
+                childCount++;
+
+                skin = Skin.of(o.getChild("skin"));
+            } else {
+                skin = null;
+            }
+
+            if ((normals != null && normals.size() != vertices.size())
+                    || (tangents != null && tangents.size() != vertices.size())
+                    || (uv0 != null && uv0.size() != vertices.size())
+                    || (uv1 != null && uv1.size() != vertices.size())
+                    || (uv2 != null && uv2.size() != vertices.size())
+                    || (uv3 != null && uv3.size() != vertices.size())) {
+                throw new RuntimeException("illegal size in mesh");
+            }
+
+            if (o.getProperties().size() != propertyCount || o.getChildren().size() != childCount) {
+                throw new RuntimeException("unexpected properties or children in mesh");
+            }
+
+            return new Mesh(name, vertices.toImmutable(), normals, tangents, uv0, uv1, uv2, uv3, triangles, aabb, material, skin);
         }
     }
 
-    public static record Locator(
+    public record Locator(
             String name,
             ImmutableFloatList position,
-            ImmutableFloatList rotation
+            ImmutableFloatList rotation,
+            ImmutableFloatList transform,
+            String parent
     ) {
 
-        // TODO: check for pa (parent) or tx (full 4x4 transform matrix for translation, rotation & scale)
         public static Locator of(String name, PdxRawAssetObject o) {
+            int propertyCount = 2;
+
             ImmutableFloatList position = o.getProperty("p").expectFloatList();
             if (position.size() != 3) {
-                throw new RuntimeException("illegal size for position");
+                throw new RuntimeException("illegal size for locator position");
             }
 
             ImmutableFloatList rotation = o.getProperty("q").expectFloatList();
             if (rotation.size() != 4) {
-                throw new RuntimeException("illegal size for rotation");
+                throw new RuntimeException("illegal size for locator rotation");
             }
 
-            return new Locator(name, position, rotation);
+            ImmutableFloatList transform;
+            if (o.hasProperty("tx")) {
+                propertyCount++;
+
+                transform = o.getProperty("tx").expectFloatList();
+                if (transform.size() != 16) {
+                    throw new RuntimeException("illegal size for locator transform");
+                }
+            } else {
+                transform = null;
+            }
+
+            String parent;
+            if (o.hasProperty("pa")) {
+                propertyCount++;
+
+                parent = o.getProperty("pa").expectString();
+            } else {
+                parent = null;
+            }
+
+            if (o.getProperties().size() != propertyCount || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in locator");
+            }
+
+            return new Locator(name, position, rotation, transform, parent);
+        }
+    }
+
+    public record Aabb(
+            ImmutableFloatList min,
+            ImmutableFloatList max
+    ) {
+
+        public static Aabb of(PdxRawAssetObject o) {
+            ImmutableFloatList min = o.getProperty("min").expectFloatList();
+            if (min.size() != 3) {
+                throw new RuntimeException("illegal size for aabb min");
+            }
+
+            ImmutableFloatList max = o.getProperty("max").expectFloatList();
+            if (max.size() != 3) {
+                throw new RuntimeException("illegal size for aabb max");
+            }
+
+            if (o.getProperties().size() != 2 || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in aabb");
+            }
+
+            return new Aabb(min, max);
+        }
+    }
+
+    public record Material(
+            String shader,
+            String diffuse,
+            String normal,
+            String specular
+    ) {
+
+        public static Material of(PdxRawAssetObject o) {
+            int propertyCount = 0;
+
+            String shader;
+            if (o.hasProperty("shader")) {
+                propertyCount++;
+
+                shader = o.getProperty("shader").expectString();
+            } else {
+                shader = null;
+            }
+
+            String diffuse;
+            if (o.hasProperty("diff")) {
+                propertyCount++;
+
+                diffuse = o.getProperty("diff").expectString();
+            } else {
+                diffuse = null;
+            }
+
+            String normal;
+            if (o.hasProperty("n")) {
+                propertyCount++;
+
+                normal = o.getProperty("n").expectString();
+            } else {
+                normal = null;
+            }
+
+            String specular;
+            if (o.hasProperty("spec")) {
+                propertyCount++;
+
+                specular = o.getProperty("spec").expectString();
+            } else {
+                specular = null;
+            }
+
+            if (o.getProperties().size() != propertyCount || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in material");
+            }
+
+            return new Material(shader, diffuse, normal, specular);
+        }
+    }
+
+    public record Skin(
+            int bones,
+            ImmutableIntList indices,
+            ImmutableFloatList weights
+    ) {
+
+        public static Skin of(PdxRawAssetObject o) {
+            int bones = o.getProperty("bones").expectInt();
+
+            ImmutableIntList indices = o.getProperty("ix").expectIntList();
+
+            ImmutableFloatList weights = o.getProperty("w").expectFloatList();
+            if (indices.size() != weights.size()) {
+                throw new RuntimeException("illegal size for skin indices and weights");
+            }
+
+            if (o.getProperties().size() != 3 || o.getChildren().size() != 0) {
+                throw new RuntimeException("unexpected properties or children in skin");
+            }
+
+            return new Skin(bones, indices, weights);
         }
     }
 }

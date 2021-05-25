@@ -48,13 +48,17 @@ public final class PdxRawAssetObject implements IPdxRawAsset {
         return v;
     }
 
-    public List<PdxRawAssetObject> getAllChildren(String name) {
+    public boolean hasChild(String name) {
+        return children.containsKey(name);
+    }
+
+    public List<PdxRawAssetObject> getChildren(String name) {
         List<PdxRawAssetObject> os = children.get(name);
         return os != null ? os : List.of();
     }
 
     public PdxRawAssetObject getChild(String name) {
-        List<PdxRawAssetObject> os = getAllChildren(name);
+        List<PdxRawAssetObject> os = getChildren(name);
         int size = os.size();
         if (size == 1) {
             return os.get(0);
@@ -64,7 +68,7 @@ public final class PdxRawAssetObject implements IPdxRawAsset {
     }
 
     public PdxRawAssetObject getChildOrEmpty(String name) {
-        List<PdxRawAssetObject> os = getAllChildren(name);
+        List<PdxRawAssetObject> os = getChildren(name);
         int size = os.size();
         if (size == 0) {
             return EMPTY;

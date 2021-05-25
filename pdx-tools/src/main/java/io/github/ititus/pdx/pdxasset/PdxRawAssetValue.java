@@ -32,8 +32,27 @@ public final class PdxRawAssetValue implements IPdxRawAsset {
     }
 
     public ImmutableIntList expectIntList() {
-        if (value instanceof int[]) {
-            return IntLists.immutable.of((int[]) value);
+        if (value instanceof int[] arr) {
+            return IntLists.immutable.of(arr);
+        }
+
+        throw new IllegalStateException("expected int[] but got " + value);
+    }
+
+    public ImmutableList<ImmutableIntList> expectGroupedIntList(int stride) {
+        if (value instanceof int[] arr) {
+            if (arr.length % stride != 0) {
+                throw new RuntimeException("illegal size");
+            }
+
+            ImmutableIntList[] groups = new ImmutableIntList[arr.length / stride];
+            for (int i = 0; i < arr.length; i += stride) {
+                int[] group = new int[stride];
+                System.arraycopy(arr, i, group, 0, stride);
+                groups[i / stride] = IntLists.immutable.of(group);
+            }
+
+            return Lists.immutable.of(groups);
         }
 
         throw new IllegalStateException("expected int[] but got " + value);
@@ -48,8 +67,27 @@ public final class PdxRawAssetValue implements IPdxRawAsset {
     }
 
     public ImmutableFloatList expectFloatList() {
-        if (value instanceof float[]) {
-            return FloatLists.immutable.of((float[]) value);
+        if (value instanceof float[] arr) {
+            return FloatLists.immutable.of(arr);
+        }
+
+        throw new IllegalStateException("expected float[] but got " + value);
+    }
+
+    public ImmutableList<ImmutableFloatList> expectGroupedFloatList(int stride) {
+        if (value instanceof float[] arr) {
+            if (arr.length % stride != 0) {
+                throw new RuntimeException("illegal size");
+            }
+
+            ImmutableFloatList[] groups = new ImmutableFloatList[arr.length / stride];
+            for (int i = 0; i < arr.length; i += stride) {
+                float[] group = new float[stride];
+                System.arraycopy(arr, i, group, 0, stride);
+                groups[i / stride] = FloatLists.immutable.of(group);
+            }
+
+            return Lists.immutable.of(groups);
         }
 
         throw new IllegalStateException("expected float[] but got " + value);
