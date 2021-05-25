@@ -104,7 +104,6 @@ public final class PdxMesh implements IPdxAsset {
             Skin skin
     ) {
 
-        // TODO: children: skin? (properties: ix (joints), w (weights), bones)
         public static Mesh of(String name, PdxRawAssetObject o) {
             int propertyCount = 2;
             int childCount = 2;
