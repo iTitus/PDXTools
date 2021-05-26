@@ -36,7 +36,6 @@ public class ReadADdsFile {
             files = stream
                     .filter(Files::isRegularFile)
                     .filter(FILTER)
-                    .map(IOUtil::resolveRealFile)
                     .sorted(PathUtil.ASCIIBETICAL)
                     .toList();
         } catch (IOException e) {

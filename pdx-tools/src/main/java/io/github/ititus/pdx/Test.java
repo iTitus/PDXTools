@@ -150,6 +150,7 @@ public class Test {
         CountryScope cs = new CountryScope(game, save, countryId);
 
         game.common.technologies.get("tech_ascension_theory").localise().forEach(System.out::println);
+        System.out.println();
 
         var techs = game.common.technologies.all().toList();
         techs.removeIf(t -> t.levels() >= 1 && cs.getCountry().techStatus.getTechLevel(t.name()) >= t.levels());

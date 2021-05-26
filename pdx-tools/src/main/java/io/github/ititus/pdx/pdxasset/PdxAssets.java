@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public final class PdxAssets {
 
-    private static final PathFilter FILTER = new FileExtensionFilter("mesh", "anim");
+    private static final PathFilter FILTER = new FileExtensionFilter("anim", "dds", "mesh");
 
     private final Map<String, IPdxAsset> assets;
 

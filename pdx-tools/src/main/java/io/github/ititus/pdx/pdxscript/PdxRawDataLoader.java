@@ -111,18 +111,15 @@ public final class PdxRawDataLoader {
         }
     }
 
-    private PdxScriptObject parseFolder(Path root, Path dir, int index, MutableInt progress, int fileCount,
-                                        StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    private PdxScriptObject parseFolder(Path root, Path dir, int index, MutableInt progress, int fileCount, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         PdxScriptObject.Builder b = PdxScriptObject.builder();
 
         try (Stream<Path> stream = Files.list(dir)) {
             stream
                     .filter(p -> isAllowed(root, p))
-                    .sorted(PathUtil.ASCIIBETICAL)
+                    .sorted(PathUtil.ASCIIBETICAL_FILES_FIRST)
                     .forEachOrdered(p -> {
-                        IPdxScript s = Files.isDirectory(p) ? parseFolder(root, p, index, progress, fileCount,
-                                progressMessageUpdater) : parseFile(root, p, index, progress, fileCount,
-                                progressMessageUpdater);
+                        IPdxScript s = Files.isDirectory(p) ? parseFolder(root, p, index, progress, fileCount, progressMessageUpdater) : parseFile(root, p, index, progress, fileCount, progressMessageUpdater);
                         if (s != null) {
                             b.add(p.getFileName().toString(), s);
                         }

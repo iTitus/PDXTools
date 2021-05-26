@@ -18,14 +18,17 @@ import java.util.PrimitiveIterator;
 
 public final class IOUtil {
 
+    @Deprecated(forRemoval = true)
     public static Path resolveRealDir(Path p) {
         return resolveRealPath(p, true);
     }
 
+    @Deprecated(forRemoval = true)
     public static Path resolveRealFile(Path p) {
         return resolveRealPath(p, false);
     }
 
+    @Deprecated(forRemoval = true)
     public static Path resolveRealPath(Path p, boolean isDir) {
         try {
             Files.createDirectories(isDir ? p : p.normalize().getParent());

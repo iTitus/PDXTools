@@ -14,8 +14,9 @@ public interface IPdxAsset {
         }
 
         return switch (ext.get()) {
-            case "mesh" -> new PdxMesh(path);
             case "anim" -> new PdxAnim(path);
+            case "dds" -> new PdxDds(path);
+            case "mesh" -> new PdxMesh(path);
             default -> throw new IllegalStateException("unknown asset file extension: " + ext.get());
         };
     }

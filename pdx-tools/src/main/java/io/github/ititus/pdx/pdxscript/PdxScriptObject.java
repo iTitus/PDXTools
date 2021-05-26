@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.pdxscript;
 
 import io.github.ititus.function.BiIntObjFunction;
+import io.github.ititus.function.BiLongObjFunction;
 import io.github.ititus.pdx.pdxscript.internal.BasePdxScript;
-import io.github.ititus.pdx.util.function.BiLongObjFunction;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableBooleanList;
