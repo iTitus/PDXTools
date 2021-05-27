@@ -1,7 +1,7 @@
 plugins {
     id 'myproject.java-conventions'
     id 'application'
-    id 'org.javamodularity.moduleplugin' version '1.8.4'
+    id 'org.javamodularity.moduleplugin' version '1.8.6'
     id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'org.beryx.jlink' version '2.24.0'
 }
