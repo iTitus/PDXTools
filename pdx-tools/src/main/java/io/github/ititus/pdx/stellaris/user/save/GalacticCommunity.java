@@ -8,7 +8,7 @@ public class GalacticCommunity {
     public final ImmutableIntList members;
 
     public GalacticCommunity(PdxScriptObject o) {
-        this.members = o.getListAsIntList("members");
+        this.members = o.getListAsEmptyOrIntList("members");
         // TODO: this
     }
 }

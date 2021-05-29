@@ -63,7 +63,7 @@ public class Ship {
         this.reserve = o.getInt("reserve", -1);
         this.shipDesign = o.getInt("ship_design");
         this.designUpgrade = o.getInt("design_upgrade", -1);
-        this.graphicalCulture = o.getString("graphical_culture");
+        this.graphicalCulture = o.getString("graphical_culture", null);
         this.sections = o.getImplicitListAsList("section", ShipSection::new);
         this.speed = o.getDouble("speed", 0);
         this.experience = o.getDouble("experience", 0);

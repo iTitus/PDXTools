@@ -37,7 +37,8 @@ public class StellarisUserData {
         int steps = 3;
 
         progressMessageUpdater.updateProgressMessage(index, true, 0, steps, "Loading Mods");
-        this.mods = new StellarisMods(userDataDir, userDataDir.resolve("mod"), index + 1, progressMessageUpdater);
+        // FIXME: disabled because it is slow
+        this.mods = null; // new StellarisMods(userDataDir, userDataDir.resolve("mod"), index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, 1, steps, "Loading Saves");
         this.saves = new StellarisSaves(userDataDir.resolve("save games"), index + 1, progressMessageUpdater);

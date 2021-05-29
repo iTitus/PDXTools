@@ -42,7 +42,7 @@ public class StellarisMod {
         this.tags = o.getListAsEmptyOrStringList("tags");
         str = o.getString("remote_file_id", null);
         this.remoteFileId = str != null ? Long.parseLong(str) : -1;
-        this.supportedVersion = o.getString("supported_version");
+        this.supportedVersion = o.getString("supported_version", null);
 
         // FIXME: disabled because it is slow
         this.modArchive = null; // new PdxRawDataLoader(modFile, BLACKLIST, FILTER);

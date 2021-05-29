@@ -23,8 +23,7 @@ public class StellarisMods {
     private final Path userDataDir, modsFolder;
     private final ImmutableMap<String, StellarisMod> mods;
 
-    public StellarisMods(Path userDataDir, Path modsFolder, int index,
-                         StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisMods(Path userDataDir, Path modsFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
         if (userDataDir == null || !Files.isDirectory(userDataDir) || modsFolder == null || !Files.isDirectory(modsFolder)) {
             throw new IllegalArgumentException();
         }
