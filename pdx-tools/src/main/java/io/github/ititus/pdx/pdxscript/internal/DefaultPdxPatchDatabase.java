@@ -10,8 +10,8 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.lang.module.ModuleReader;
 import java.lang.module.ModuleReference;
-import java.nio.file.Path;
-import java.util.HashMap;
+import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,14 +19,14 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
 
     public static final DefaultPdxPatchDatabase INSTANCE = new DefaultPdxPatchDatabase();
 
-    private final Map<Path, PdxPatchImpl> patches;
+    private final Map<String, PdxPatchImpl> patches;
 
     private DefaultPdxPatchDatabase() {
         this.patches = loadPatches();
     }
 
-    private static Map<Path, PdxPatchImpl> loadPatches() {
-        Map<Path, PdxPatchImpl> map = new HashMap<>();
+    private static Map<String, PdxPatchImpl> loadPatches() {
+        Map<String, PdxPatchImpl> map = new LinkedHashMap<>();
         ModuleReference module = ModuleLayer.boot().configuration().findModule(DefaultPdxPatchDatabase.class.getModule().getName()).orElseThrow().reference();
         try (ModuleReader reader = module.open()) {
             reader.list()
@@ -41,9 +41,9 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
 
                         return diff.getFiles().stream();
                     })
-                    .forEach(d -> map
+                    .forEachOrdered(d -> map
                             .computeIfAbsent(
-                                    Path.of(d.getFromFile()),
+                                    d.getFromFile(),
                                     k -> new PdxPatchImpl(d.getFromFile())
                             )
                             .addPatch(d.getPatch())
@@ -56,15 +56,21 @@ public class DefaultPdxPatchDatabase implements PdxPatchDatabase {
     }
 
     @Override
-    public Optional<PdxPatch> findPatch(Path scriptFile) {
-        Path p;
-        try {
-            p = scriptFile.toRealPath();
-        } catch (IOException e) {
-            throw new UncheckedIOException("unable to normalize given path", e);
+    public Optional<PdxPatch> findPatch(URI scriptFile) {
+        if (!scriptFile.isAbsolute() || scriptFile.getRawFragment() != null || scriptFile.getRawQuery() != null) {
+            throw new IllegalArgumentException("illegal uri " + scriptFile);
         }
 
-        for (Map.Entry<Path, PdxPatchImpl> entry : patches.entrySet()) {
+        String p;
+        if ("file".equals(scriptFile.getScheme())) {
+            p = scriptFile.getPath();
+        } else if ("jar".equals(scriptFile.getScheme())) {
+            p = scriptFile.getRawSchemeSpecificPart();
+        } else {
+            throw new IllegalArgumentException("illegal scheme for uri " + scriptFile);
+        }
+
+        for (Map.Entry<String, PdxPatchImpl> entry : patches.entrySet()) {
             if (p.endsWith(entry.getKey())) {
                 return Optional.of(entry.getValue());
             }

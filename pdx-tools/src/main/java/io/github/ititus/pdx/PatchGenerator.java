@@ -3,10 +3,10 @@ package io.github.ititus.pdx;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.Patch;
-import io.github.ititus.io.FileExtensionFilter;
-import io.github.ititus.io.PathFilter;
+import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.util.IOUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -17,10 +17,9 @@ import java.util.stream.Stream;
 
 public final class PatchGenerator {
 
-    private static final Path PATCHES_DIR = IOUtil.resolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
+    private static final Path PATCHES_DIR = IOUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
     private static final Path INSTALL_DIR = IOUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common"));
-    private static final Path OUTPUT_DIR = IOUtil.resolveRealDir(Path.of("pdx-tools/src/main/resources/patches"));
-    private static final PathFilter FILTER = new FileExtensionFilter("patch");
+    private static final Path OUTPUT_DIR = IOUtil.createOrResolveRealDir(Path.of("pdx-tools/src/main/resources/patches"));
 
     private static final int CONTEXT_SIZE = 3;
 
@@ -52,9 +51,8 @@ public final class PatchGenerator {
         try (Stream<Path> stream = Files.walk(PATCHES_DIR)) {
             stream
                     .filter(Files::isRegularFile)
-                    .filter(FILTER)
-                    .map(IOUtil::resolveRealFile)
-                    .forEach(PatchGenerator::generatePatch);
+                    .sorted(PathUtil.ASCIIBETICAL)
+                    .forEachOrdered(PatchGenerator::generatePatch);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -64,7 +62,7 @@ public final class PatchGenerator {
         System.out.println("#".repeat(80));
 
         Path relative = PATCHES_DIR.relativize(changedFile);
-        String relativePath = relative.toString().replace('\\', '/');
+        String relativePath = relative.toString().replace(File.separatorChar, '/');
         Path originalFile = INSTALL_DIR.resolve(PATCHES_DIR.relativize(changedFile));
 
         List<String> original, revised;

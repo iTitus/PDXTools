@@ -47,7 +47,7 @@ public class StellarisGame {
             "interface/planet_view.gui"
     );
     private static final PathFilter SCRIPT = new FileExtensionFilter("txt");
-    // private static final IPathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
+    private static final PathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 
     public final Triggers triggers;
     public final Effects effects;
@@ -95,8 +95,7 @@ public class StellarisGame {
         this.gfx = new Gfx(installDir, installDir.resolve("gfx"), index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading dlc");
-        // FIXME: disabled because it is slow
-        this.dlcs = null; // new StellarisDLCs(installDir, installDir.resolve("dlc"), index + 1, progressMessageUpdater);
+        this.dlcs = new StellarisDLCs(installDir, installDir.resolve("dlc"), index + 1, progressMessageUpdater);
 
         progressMessageUpdater.updateProgressMessage(index, true, progress++, steps, "Loading Localisation");
         this.localisation = PdxLocalisationParser.parse(installDir, index + 1, progressMessageUpdater);

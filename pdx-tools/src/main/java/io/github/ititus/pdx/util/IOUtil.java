@@ -19,31 +19,52 @@ import java.util.PrimitiveIterator;
 public final class IOUtil {
 
     @Deprecated(forRemoval = true)
+    public static Path createOrResolveRealDir(Path p) {
+        return resolveRealPath(p, true, true);
+    }
+
+    @Deprecated(forRemoval = true)
     public static Path resolveRealDir(Path p) {
-        return resolveRealPath(p, true);
+        return resolveRealPath(p, true, false);
     }
 
     @Deprecated(forRemoval = true)
-    public static Path resolveRealFile(Path p) {
-        return resolveRealPath(p, false);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Path resolveRealPath(Path p, boolean isDir) {
+    private static Path resolveRealPath(Path p, boolean isDir, boolean createDir) {
         try {
-            Files.createDirectories(isDir ? p : p.normalize().getParent());
-            p = p.toRealPath();
+            if (isDir && createDir) {
+                Files.createDirectories(p);
+            }
 
-            if (isDir && !Files.isDirectory(p)) {
-                throw new IllegalStateException("expected " + p + " to be a dir");
-            } else if (!isDir && !Files.isRegularFile(p)) {
+            p = p.toRealPath();
+            if (isDir) {
+                if (!createDir && !Files.isDirectory(p)) {
+                    throw new IllegalStateException("expected " + p + " to be a directory");
+                }
+            } else if (!Files.isRegularFile(p)) {
                 throw new IllegalStateException("expected " + p + " to be a regular file");
             }
 
             return p;
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new UncheckedIOException("error while resolving real path of " + (isDir ? "directory" : "regular file") + " " + p, e);
         }
+    }
+
+    @Deprecated(forRemoval = true)
+    public static Path createParentsAndResolveFile(Path p) {
+        p = p.toAbsolutePath().normalize();
+
+        try {
+            Files.createDirectories(p.getParent());
+        } catch (IOException e) {
+            throw new UncheckedIOException("error while creating parents of " + p, e);
+        }
+
+        if (Files.exists(p) && !Files.isRegularFile(p)) {
+            throw new IllegalStateException("expected " + p + " to not exist or be a regular file");
+        }
+
+        return p;
     }
 
     public static PrimitiveIterator.OfInt getCharacterIterator(PdxPatchDatabase patchDatabase, Path... files) {
@@ -70,7 +91,7 @@ public final class IOUtil {
             private Reader openCurrent() {
                 Path p = files[currentFile];
                 if (patchDatabase != null) {
-                    Optional<PdxPatch> patch = patchDatabase.findPatch(p);
+                    Optional<PdxPatch> patch = patchDatabase.findPatch(p.toUri());
                     if (patch.isPresent()) {
                         List<String> original;
                         try {

@@ -3,19 +3,18 @@ package io.github.ititus.pdx.pdxscript.internal;
 import com.github.difflib.patch.Patch;
 import com.github.difflib.patch.PatchFailedException;
 import io.github.ititus.pdx.pdxscript.PdxPatch;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PdxPatchImpl implements PdxPatch {
 
     private final String path;
-    private final MutableList<Patch<String>> patches;
+    private final List<Patch<String>> patches;
 
     public PdxPatchImpl(String path) {
         this.path = path;
-        this.patches = Lists.mutable.empty();
+        this.patches = new ArrayList<>();
     }
 
     public void addPatch(Patch<String> patch) {
@@ -24,17 +23,21 @@ public class PdxPatchImpl implements PdxPatch {
 
     @Override
     public List<String> apply(List<String> lines) {
-        MutableList<PatchFailedException> suppressed = Lists.mutable.empty();
+        List<PatchFailedException> suppressed = new ArrayList<>();
 
         for (Patch<String> patch : patches) {
             try {
                 return patch.applyTo(lines);
-            } catch (PatchFailedException ignored) {
+            } catch (PatchFailedException e) {
+                suppressed.add(e);
             }
         }
 
         RuntimeException e = new RuntimeException("unable to patch pdx script file " + path);
-        suppressed.forEach(e::addSuppressed);
+        for (PatchFailedException s : suppressed) {
+            e.addSuppressed(s);
+        }
+
         throw e;
     }
 }

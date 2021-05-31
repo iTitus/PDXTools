@@ -12,6 +12,7 @@ import io.github.ititus.pdx.util.IOUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -22,8 +23,8 @@ import java.util.stream.Stream;
 
 public class ReadADdsFile {
 
-    private static final Path LOG_FILE = IOUtil.resolveRealFile(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"));
-    private static final Path OUT_DIR = IOUtil.resolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
+    private static final Path LOG_FILE = IOUtil.createParentsAndResolveFile(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"));
+    private static final Path OUT_DIR = IOUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
     private static final Path INSTALL_DIR = IOUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"));
     private static final PathFilter FILTER = new FileExtensionFilter("dds");
 
@@ -50,7 +51,7 @@ public class ReadADdsFile {
     }
 
     private static String pathToString(Path p) {
-        return INSTALL_DIR.relativize(p).toString().replace('\\', '/');
+        return INSTALL_DIR.relativize(p).toString().replace(File.separatorChar, '/');
     }
 
     private void run() {
@@ -66,11 +67,17 @@ public class ReadADdsFile {
             StopWatch s = StopWatch.createRunning();
             convertSampleImages();
             logWithPrint("Converted some dds files in " + DurationFormatter.format(s.stop()));
-
-            // convertAllImages();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        /*try {
+            StopWatch s = StopWatch.createRunning();
+            convertAllImages();
+            logWithPrint("Converted all dds files in " + DurationFormatter.format(s.stop()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
 
         StopWatch s = StopWatch.createRunning();
         dumpLog();
@@ -146,39 +153,38 @@ public class ReadADdsFile {
         log("\n\nConverting sample images...");
 
         log("\nA8R8G8B8:");
-        convertImageFlat("flags/backgrounds/diagonal_stripe.dds");
+        convertImageFlat("flags/backgrounds/diagonal_stripe");
 
         log("\nR8G8B8:");
-        convertImageFlat("flags/backgrounds/circle.dds");
+        convertImageFlat("flags/backgrounds/circle");
 
         log("\nA1R5G5B5:");
-        convertImageFlat("gfx/interface/icons/dlc/ancient_relics_big.dds");
+        convertImageFlat("gfx/interface/icons/dlc/ancient_relics_big");
 
         log("\nA8B8G8R8:");
-        convertImageFlat("gfx/interface/buttons/standard_button_200_24_dlc_overlay_animated.dds");
+        convertImageFlat("gfx/interface/buttons/standard_button_200_24_dlc_overlay_animated");
 
         log("\nDXT5:");
-        convertImageFlat("flags/human/flag_human_1.dds");
+        convertImageFlat("flags/human/flag_human_1");
 
         log("\nDXT3:");
-        convertImageFlat("gfx/interface/fleet_view/fleet_view_upgradable_design.dds");
+        convertImageFlat("gfx/interface/fleet_view/fleet_view_upgradable_design");
 
         log("\nDXT1:");
-        convertImageFlat("gfx/event_pictures/space_dragon_blue.dds");
+        convertImageFlat("gfx/event_pictures/space_dragon_blue");
     }
 
     private void convertAllImages() throws IOException {
         for (Path file : files) {
             Path relative = INSTALL_DIR.relativize(file);
-            convertImage(file, OUT_DIR.resolve(relative).resolveSibling(relative.getFileName().toString().replace(".dds", ".png")));
+            String newName = PathUtil.getNameWithoutExtension(relative) + ".png";
+            convertImage(file, OUT_DIR.resolve(relative).resolveSibling(newName));
         }
     }
 
     private void convertImageFlat(String path) throws IOException {
         String outPath = path.replace('/', '_');
-        outPath = outPath.replace(".dds", ".png");
-
-        convertImage(INSTALL_DIR.resolve(path), OUT_DIR.resolve(outPath));
+        convertImage(INSTALL_DIR.resolve(path + ".dds"), OUT_DIR.resolve(outPath + ".png"));
     }
 
     private void convertImage(Path inPath, Path outPath) throws IOException {

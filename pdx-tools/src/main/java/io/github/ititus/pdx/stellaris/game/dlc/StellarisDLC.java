@@ -18,10 +18,10 @@ public class StellarisDLC {
 
     private static final ImmutableSet<String> BLACKLIST = Sets.immutable.of(
             // TODO: error in script parsing, use patches to load this; problem: file is in a zip archive
-            "sound/megacorp_vo.asset"
+            // "sound/megacorp_vo.asset" // fixed by disabling math tokenization
     );
     private static final PathFilter DLC = new FileExtensionFilter("dlc");
-    private static final PathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "mod", "settings", "sfx", "txt");
+    private static final PathFilter FILTER = new FileExtensionFilter("asset", "dlc", "gfx", "gui", "settings", "sfx", "txt");
 
     private final Path installDir, dlcDir;
 

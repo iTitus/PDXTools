@@ -109,6 +109,10 @@ public final class PdxScriptParser {
             }
         } else { // value
             if (token.charAt(0) == VARIABLE_PREFIX) {
+                if (token.charAt(1) == '[') {
+                    throw new RuntimeException("inline math not yet supported");
+                }
+
                 IPdxScript resolved = variables.get(token);
                 if (resolved == null) {
                     throw new RuntimeException("cannot resolve variable " + token);
@@ -181,7 +185,7 @@ public final class PdxScriptParser {
 
                                 // TODO: Fix tokenizer splitting raw tokens with math symbols in it
                                 /*String tokenString = token;
-                                tring operator = tokens.get(1);
+                                String operator = tokens.get(1);
                                 PdxMathOperation operation = PdxMathOperation.get(operator);
                                 if (operation != null) {
                                     tokenString += operator;
@@ -223,7 +227,7 @@ public final class PdxScriptParser {
                     token = tokens.getNext();
 
                     // TODO: Fix this (currently evaluated from right to left and ignores brackets)
-                    if (value instanceof Number) {
+                    /*if (value instanceof Number) {
                         PdxMathOperation op = PdxMathOperation.get(token);
                         if (op != null) {
                             tokens.next();
@@ -239,7 +243,7 @@ public final class PdxScriptParser {
                             value = op.apply((Number) value, (Number) o);
                             tokens.next();
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -258,7 +262,7 @@ public final class PdxScriptParser {
         boolean startsWithQuote = s.charAt(0) == QUOTE_CHAR;
         boolean endsWithQuote = s.charAt(l) == QUOTE_CHAR;
 
-        if (startsWithQuote ^ endsWithQuote) {
+        if (startsWithQuote != endsWithQuote) {
             throw new IllegalArgumentException("given string has mismatched quotes: " + s);
         } else if (startsWithQuote) {
             return s.substring(1, l).replace(ESCAPED_QUOTE, QUOTE);
@@ -267,6 +271,8 @@ public final class PdxScriptParser {
         return s;
     }
 
+    // TODO: correctly parse escaped characters, like \n, \t, \[
+    // TODO: correctly tokenize @[...]
     private static Iterator<String> tokenize(PrimitiveIterator.OfInt src) {
         return new Iterator<>() {
 
@@ -454,7 +460,8 @@ public final class PdxScriptParser {
     }
 
     private static boolean isMathOperator(char c) {
-        return /*c == ADD_CHAR || c == SUBTRACT_CHAR || c == MULTIPLY_CHAR ||*/ c == DIVIDE_CHAR;
+        // FIXME: re-enable once tokenization is fixed
+        return false; /*c == ADD_CHAR || c == SUBTRACT_CHAR || c == MULTIPLY_CHAR || c == DIVIDE_CHAR;*/
     }
 
     public static boolean isQuoteNecessary(String s) {
