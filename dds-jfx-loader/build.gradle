@@ -11,8 +11,10 @@ dependencies {
 
 compileJava {
     moduleOptions {
-        addExports = ['javafx.graphics/com.sun.javafx.iio': 'io.github.ititus.ddsfx']
-        addExports = ['javafx.graphics/com.sun.javafx.iio.common': 'io.github.ititus.ddsfx']
+        addExports = [
+                'javafx.graphics/com.sun.javafx.iio'       : 'io.github.ititus.ddsfx',
+                'javafx.graphics/com.sun.javafx.iio.common': 'io.github.ititus.ddsfx'
+        ]
     }
 }
 
