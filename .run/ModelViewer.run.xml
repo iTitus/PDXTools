@@ -1,8 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="PatchGenerator" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="io.github.ititus.pdx.PatchGenerator" />
+  <configuration default="false" name="ModelViewer" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="io.github.ititus.pdx.ModelViewer" />
     <module name="pdx.pdx-tools.main" />
     <option name="VM_PARAMETERS" value="--add-exports=javafx.graphics/com.sun.javafx.iio=io.github.ititus.ddsfx --add-exports=javafx.graphics/com.sun.javafx.iio.common=io.github.ititus.ddsfx" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="io.github.ititus.pdx.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

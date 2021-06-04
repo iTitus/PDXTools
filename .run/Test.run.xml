@@ -2,7 +2,7 @@
   <configuration default="false" name="Test" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="io.github.ititus.pdx.Test" />
     <module name="pdx.pdx-tools.main" />
-    <option name="VM_PARAMETERS" value="-Xmx4G" />
+    <option name="VM_PARAMETERS" value="-Xmx4G --add-exports=javafx.graphics/com.sun.javafx.iio=io.github.ititus.ddsfx --add-exports=javafx.graphics/com.sun.javafx.iio.common=io.github.ititus.ddsfx" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

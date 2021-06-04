@@ -8,11 +8,12 @@ plugins {
 
 application {
     mainModule = 'io.github.ititus.pdx'
-    mainClass = 'io.github.ititus.pdx.Main'
+    mainClass = 'io.github.ititus.pdx.ModelViewer'
 }
 
 dependencies {
     implementation project(':dds-reader')
+    implementation project(':dds-jfx-loader')
     implementation 'io.github.ititus:ititus-commons:1.5.4'
 
     implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
@@ -21,6 +22,15 @@ dependencies {
     implementation 'io.github.java-diff-utils:java-diff-utils:4.10'
 
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
+}
+
+run {
+    moduleOptions {
+        addExports = [
+                'javafx.graphics/com.sun.javafx.iio'       : 'io.github.ititus.ddsfx',
+                'javafx.graphics/com.sun.javafx.iio.common': 'io.github.ititus.ddsfx'
+        ]
+    }
 }
 
 javafx {
@@ -32,5 +42,9 @@ jlink {
     options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--compress', '2']
     launcher {
         name = 'pdxtools'
+        jvmArgs = [
+                '--add-exports=javafx.graphics/com.sun.javafx.iio=io.github.ititus.ddsfx',
+                '--add-exports=javafx.graphics/com.sun.javafx.iio.common=io.github.ititus.ddsfx'
+        ]
     }
 }

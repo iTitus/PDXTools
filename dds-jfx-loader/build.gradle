@@ -1,0 +1,22 @@
+plugins {
+    id 'myproject.java-conventions'
+    id 'java-library'
+    id 'org.javamodularity.moduleplugin' version '1.8.6'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+}
+
+dependencies {
+    implementation project(':dds-reader')
+}
+
+compileJava {
+    moduleOptions {
+        addExports = ['javafx.graphics/com.sun.javafx.iio': 'io.github.ititus.ddsfx']
+        addExports = ['javafx.graphics/com.sun.javafx.iio.common': 'io.github.ititus.ddsfx']
+    }
+}
+
+javafx {
+    version = '16'
+    modules = ['javafx.base', 'javafx.graphics']
+}

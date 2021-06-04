@@ -24,6 +24,7 @@ public record DdsPixelformat(
 ) {
 
     public static final int SIZE = 32;
+    private static final int RGB_COLORSPACE = ColorSpace.CS_sRGB;
 
     public static DdsPixelformat load(DataReader r) throws IOException {
         return new DdsPixelformat(
@@ -157,7 +158,7 @@ public record DdsPixelformat(
     public ImageTypeSpecifier imageType() {
         if ((dwFlags & DDS_RGBA) == DDS_RGBA) {
             ColorModel cm = new DirectColorModel(
-                    ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+                    ColorSpace.getInstance(RGB_COLORSPACE),
                     dwRGBBitCount,
                     dwRBitMask,
                     dwGBitMask,
@@ -172,7 +173,7 @@ public record DdsPixelformat(
             );
         } else if ((dwFlags & DDPF_RGB) == DDPF_RGB) {
             ColorModel cm = new DirectColorModel(
-                    ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+                    ColorSpace.getInstance(RGB_COLORSPACE),
                     dwRGBBitCount,
                     dwRBitMask,
                     dwGBitMask,
@@ -188,7 +189,7 @@ public record DdsPixelformat(
         } else if ((dwFlags & DdsConstants.DDPF_FOURCC) == DdsConstants.DDPF_FOURCC) {
             if (dwFourCC == D3DFMT_DXT1) {
                 ColorModel cm = new DirectColorModel(
-                        ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+                        ColorSpace.getInstance(RGB_COLORSPACE),
                         17,
                         0xf800,
                         0x7e0,
@@ -203,7 +204,7 @@ public record DdsPixelformat(
                 );
             } else if (dwFourCC == D3DFMT_DXT2 || dwFourCC == D3DFMT_DXT3) {
                 ColorModel cm = new DirectColorModel(
-                        ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+                        ColorSpace.getInstance(RGB_COLORSPACE),
                         20,
                         0xf800,
                         0x7e0,
@@ -218,7 +219,7 @@ public record DdsPixelformat(
                 );
             } else if (dwFourCC == D3DFMT_DXT4 || dwFourCC == D3DFMT_DXT5) {
                 ColorModel cm = new DirectColorModel(
-                        ColorSpace.getInstance(ColorSpace.CS_LINEAR_RGB),
+                        ColorSpace.getInstance(RGB_COLORSPACE),
                         24,
                         0xf800,
                         0x7e0,

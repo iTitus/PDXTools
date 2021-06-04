@@ -1,3 +1,5 @@
 rootProject.name = 'pdx'
-include 'pdx-tools'
 include 'dds-reader'
+include 'dds-jfx-loader'
+include 'pdx-tools'
+

@@ -166,9 +166,22 @@ public class ReadADdsFile {
 
         log("\nDXT5:");
         convertImageFlat("flags/human/flag_human_1");
+        convertImageFlat("gfx/models/combat_items/shatter_planet_laser");
+        convertImageFlat("gfx/interface/icons/districts/district_city");
 
         log("\nDXT3:");
         convertImageFlat("gfx/interface/fleet_view/fleet_view_upgradable_design");
+        convertImageFlat("gfx/interface/frontend/weapon_type_randomized");
+        convertImageFlat("gfx/interface/galacticCommunity/old/vote_freeze_resolution");
+        convertImageFlat("gfx/interface/galacticCommunity/unknown_empire_support");
+        convertImageFlat("gfx/interface/icons/dlc/green_underlay");
+        convertImageFlat("gfx/interface/icons/dlc/silver_underlay");
+        convertImageFlat("gfx/interface/ship_designer/ship_designer_item_selected");
+        convertImageFlat("gfx/interface/system/icon_1");
+        convertImageFlat("gfx/interface/system/icon_2");
+        convertImageFlat("gfx/interface/system/icon_4");
+        convertImageFlat("gfx/interface/system/icon_8");
+        convertImageFlat("gfx/interface/tiles/small_tiles_dialog2");
 
         log("\nDXT1:");
         convertImageFlat("gfx/event_pictures/space_dragon_blue");
@@ -183,14 +196,15 @@ public class ReadADdsFile {
     }
 
     private void convertImageFlat(String path) throws IOException {
-        String outPath = path.replace('/', '_');
-        convertImage(INSTALL_DIR.resolve(path + ".dds"), OUT_DIR.resolve(outPath + ".png"));
+        convertImage(INSTALL_DIR.resolve(path + ".dds"), OUT_DIR.resolve(path + ".png"));
+        convertImage(INSTALL_DIR.resolve(path + ".dds"), OUT_DIR.resolve(path.replace('/', '_') + ".png"));
     }
 
     private void convertImage(Path inPath, Path outPath) throws IOException {
         log("converting " + inPath);
 
-        Files.createDirectories(outPath.normalize().getParent());
+        outPath = outPath.toAbsolutePath().normalize();
+        Files.createDirectories(outPath.getParent());
 
         StopWatch s = StopWatch.createRunning();
         BufferedImage img = ImageIO.read(inPath.toFile());
