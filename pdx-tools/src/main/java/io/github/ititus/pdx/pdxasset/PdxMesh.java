@@ -17,12 +17,15 @@ public final class PdxMesh implements IPdxAsset {
 
     private static final ImmutableIntList VERSION = IntLists.immutable.of(1, 0);
 
+    public final Path path;
     public final ImmutableIntList version;
     public final ImmutableList<Bone> bones;
     public final ImmutableList<Mesh> meshes;
     public final ImmutableList<Locator> locators;
 
     public PdxMesh(Path path) {
+        this.path = path;
+
         PdxRawAssetObject data = new PdxRawAsset(path).getData();
         this.version = data.getProperty("pdxasset").expectIntList();
         if (!VERSION.equals(this.version)) {
