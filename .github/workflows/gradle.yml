@@ -47,12 +47,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Save Test Reports
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: test-reports-${{ matrix.os }}-${{ matrix.java }}
-          path: build/reports
+      #- name: Save Test Reports
+      #  uses: actions/upload-artifact@v2
+      #  if: always()
+      #  with:
+      #    name: test-reports-${{ matrix.os }}-${{ matrix.java }}
+      #    path: build/reports
 
       - name: Build jlink Image with Gradle
         run: ./gradlew jlinkZip
