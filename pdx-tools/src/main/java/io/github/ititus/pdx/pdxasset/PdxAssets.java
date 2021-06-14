@@ -3,7 +3,7 @@ package io.github.ititus.pdx.pdxasset;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public final class PdxAssets {
 
     private final Map<String, IPdxAsset> assets;
 
-    public PdxAssets(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public PdxAssets(Path installDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         Path[] assetFiles;
         try (Stream<Path> stream = Files.walk(installDir)) {
             assetFiles = stream

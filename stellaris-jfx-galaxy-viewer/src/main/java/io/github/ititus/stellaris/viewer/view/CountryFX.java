@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.stellaris.view;
+package io.github.ititus.stellaris.viewer.view;
 
 import io.github.ititus.pdx.stellaris.user.save.Country;
 import io.github.ititus.pdx.stellaris.user.save.GalacticObject;

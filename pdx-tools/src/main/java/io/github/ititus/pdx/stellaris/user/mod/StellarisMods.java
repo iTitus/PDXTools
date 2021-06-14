@@ -4,7 +4,7 @@ import io.github.ititus.data.mutable.MutableInt;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
@@ -23,7 +23,7 @@ public class StellarisMods {
     private final Path userDataDir, modsFolder;
     private final ImmutableMap<String, StellarisMod> mods;
 
-    public StellarisMods(Path userDataDir, Path modsFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisMods(Path userDataDir, Path modsFolder, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (userDataDir == null || !Files.isDirectory(userDataDir) || modsFolder == null || !Files.isDirectory(modsFolder)) {
             throw new IllegalArgumentException();
         }

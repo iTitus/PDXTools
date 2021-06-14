@@ -18,55 +18,6 @@ import java.util.PrimitiveIterator;
 
 public final class IOUtil {
 
-    @Deprecated(forRemoval = true)
-    public static Path createOrResolveRealDir(Path p) {
-        return resolveRealPath(p, true, true);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Path resolveRealDir(Path p) {
-        return resolveRealPath(p, true, false);
-    }
-
-    @Deprecated(forRemoval = true)
-    private static Path resolveRealPath(Path p, boolean isDir, boolean createDir) {
-        try {
-            if (isDir && createDir) {
-                Files.createDirectories(p);
-            }
-
-            p = p.toRealPath();
-            if (isDir) {
-                if (!createDir && !Files.isDirectory(p)) {
-                    throw new IllegalStateException("expected " + p + " to be a directory");
-                }
-            } else if (!Files.isRegularFile(p)) {
-                throw new IllegalStateException("expected " + p + " to be a regular file");
-            }
-
-            return p;
-        } catch (IOException e) {
-            throw new UncheckedIOException("error while resolving real path of " + (isDir ? "directory" : "regular file") + " " + p, e);
-        }
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Path createParentsAndResolveFile(Path p) {
-        p = p.toAbsolutePath().normalize();
-
-        try {
-            Files.createDirectories(p.getParent());
-        } catch (IOException e) {
-            throw new UncheckedIOException("error while creating parents of " + p, e);
-        }
-
-        if (Files.exists(p) && !Files.isRegularFile(p)) {
-            throw new IllegalStateException("expected " + p + " to not exist or be a regular file");
-        }
-
-        return p;
-    }
-
     public static PrimitiveIterator.OfInt getCharacterIterator(PdxPatchDatabase patchDatabase, Path... files) {
         return new PrimitiveIterator.OfInt() {
 

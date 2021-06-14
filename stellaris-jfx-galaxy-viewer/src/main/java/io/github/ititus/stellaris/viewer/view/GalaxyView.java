@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.stellaris.view;
+package io.github.ititus.stellaris.viewer.view;
 
 import io.github.ititus.data.mutable.MutableInt;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;

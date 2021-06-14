@@ -4,7 +4,6 @@ import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.Patch;
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.pdx.util.IOUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +16,9 @@ import java.util.stream.Stream;
 
 public final class PatchGenerator {
 
-    private static final Path PATCHES_DIR = IOUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
-    private static final Path INSTALL_DIR = IOUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common"));
-    private static final Path OUTPUT_DIR = IOUtil.createOrResolveRealDir(Path.of("pdx-tools/src/main/resources/patches"));
+    private static final Path PATCHES_DIR = PathUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/patches"));
+    private static final Path INSTALL_DIR = PathUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common"));
+    private static final Path OUTPUT_DIR = PathUtil.createOrResolveRealDir(Path.of("pdx-tools/src/main/resources/patches"));
 
     private static final int CONTEXT_SIZE = 3;
 

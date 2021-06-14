@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
@@ -17,7 +17,7 @@ public class StellarisDLCs {
     private final Path installDir, dlcDir;
     private final ImmutableMap<String, StellarisDLC> dlcs;
 
-    public StellarisDLCs(Path installDir, Path dlcDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisDLCs(Path installDir, Path dlcDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir) || dlcDir == null || !Files.isDirectory(dlcDir)) {
             throw new IllegalArgumentException();
         }

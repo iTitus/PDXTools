@@ -9,9 +9,9 @@ import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import io.github.ititus.pdx.shared.effect.Effects;
 import io.github.ititus.pdx.shared.trigger.*;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
 import io.github.ititus.pdx.stellaris.game.common.Common;
 import io.github.ititus.pdx.stellaris.game.dlc.StellarisDLCs;
 import io.github.ititus.pdx.stellaris.game.gfx.Gfx;
@@ -61,7 +61,7 @@ public class StellarisGame {
     private final Path installDir;
     private final PdxRawDataLoader rawDataLoader;
 
-    public StellarisGame(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisGame(Path installDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir)) {
             throw new IllegalArgumentException();
         }

@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.stellaris.view;
+package io.github.ititus.stellaris.viewer.view;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;

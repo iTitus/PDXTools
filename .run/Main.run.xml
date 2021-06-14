@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Main" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="io.github.ititus.pdx.Main" />
-    <module name="pdx.pdx-tools.main" />
+  <configuration default="false" name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="io.github.ititus.stellaris.viewer.Main" />
+    <module name="pdx.stellaris-jfx-galaxy-viewer.main" />
     <option name="VM_PARAMETERS" value="-Xmx4G --add-exports=javafx.graphics/com.sun.javafx.iio=io.github.ititus.ddsfx --add-exports=javafx.graphics/com.sun.javafx.iio.common=io.github.ititus.ddsfx" />
     <method v="2">
       <option name="Make" enabled="true" />

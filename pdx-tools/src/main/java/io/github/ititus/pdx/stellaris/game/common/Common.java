@@ -6,7 +6,7 @@ import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.game.common.deposits.Deposits;
 import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClasses;
@@ -56,7 +56,7 @@ public class Common {
     private final Path commonDir;
     private final PdxRawDataLoader commonDataLoader;
 
-    public Common(StellarisGame game, Path commonDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public Common(StellarisGame game, Path commonDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (commonDir == null || !Files.isDirectory(commonDir)) {
             throw new IllegalArgumentException();
         }

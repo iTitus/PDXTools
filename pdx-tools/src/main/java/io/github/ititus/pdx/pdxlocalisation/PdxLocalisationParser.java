@@ -5,9 +5,8 @@ import io.github.ititus.data.mutable.MutableBoolean;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.pdx.pdxscript.PdxConstants;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.MutableSet;
@@ -21,6 +20,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import static io.github.ititus.pdx.pdxscript.PdxConstants.LANGUAGE_COUNT;
 import static io.github.ititus.pdx.pdxscript.PdxConstants.UTF_8_BOM;
 
 public final class PdxLocalisationParser {
@@ -30,11 +30,11 @@ public final class PdxLocalisationParser {
     private PdxLocalisationParser() {
     }
 
-    public static PdxLocalisation parse(Path installDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public static PdxLocalisation parse(Path installDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         return parse(installDir, FILTER, index, progressMessageUpdater);
     }
 
-    public static PdxLocalisation parse(Path installDir, PathFilter filter, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public static PdxLocalisation parse(Path installDir, PathFilter filter, int index, ProgressMessageUpdater progressMessageUpdater) {
         Path[] files;
         try (Stream<Path> stream = Files.walk(installDir)) {
             files = stream
@@ -94,7 +94,7 @@ public final class PdxLocalisationParser {
                                     if (valueEnd > valueStart) {
                                         String key = line.substring(0, separator).toLowerCase(Locale.ROOT);
                                         String value = line.substring(valueStart + 1, valueEnd);
-                                        localisation.computeIfAbsent(key, k -> Maps.mutable.withInitialCapacity(PdxConstants.LANGUAGE_COUNT))
+                                        localisation.computeIfAbsent(key, k -> Maps.mutable.withInitialCapacity(LANGUAGE_COUNT))
                                                 .put(language.get(), value);
 
                                         return;

@@ -1,4 +1,4 @@
-package io.github.ititus.pdx.stellaris.view;
+package io.github.ititus.stellaris.viewer.view;
 
 import io.github.ititus.pdx.stellaris.game.common.planet_classes.PlanetClass;
 import io.github.ititus.pdx.stellaris.game.gfx.Entity;

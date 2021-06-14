@@ -1,7 +1,6 @@
-package io.github.ititus.pdx;
+package io.github.ititus.stellaris.viewer;
 
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
-import io.github.ititus.pdx.stellaris.view.GalaxyView;
+import io.github.ititus.stellaris.viewer.view.GalaxyView;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

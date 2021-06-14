@@ -1,8 +1,7 @@
-package io.github.ititus.pdx.stellaris;
+package io.github.ititus.stellaris.viewer;
 
 import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
-import io.github.ititus.pdx.Main;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
@@ -159,11 +158,5 @@ public class StellarisSaveAnalyser implements Runnable {
 
     public StellarisSave getStellarisSave() {
         return stellarisSave;
-    }
-
-    @FunctionalInterface
-    public interface ProgressMessageUpdater {
-
-        void updateProgressMessage(int index, boolean visible, int workDone, int totalWork, String msg);
     }
 }

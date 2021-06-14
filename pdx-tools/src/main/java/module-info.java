@@ -1,24 +1,21 @@
 module io.github.ititus.pdx {
     requires java.desktop;
+    requires jdk.zipfs;
     requires io.github.ititus.commons;
     requires io.github.ititus.dds;
-    requires io.github.ititus.ddsfx;
     requires org.eclipse.collections.api;
     requires org.eclipse.collections.impl;
     requires io.github.javadiffutils;
-    requires javafx.base;
-    requires javafx.controls;
-    requires javafx.graphics;
 
     exports io.github.ititus.pdx;
     exports io.github.ititus.pdx.pdxasset;
     exports io.github.ititus.pdx.pdxlocalisation;
     exports io.github.ititus.pdx.pdxscript;
+    exports io.github.ititus.pdx.shared;
     exports io.github.ititus.pdx.shared.effect;
     exports io.github.ititus.pdx.shared.localisation;
     exports io.github.ititus.pdx.shared.scope;
     exports io.github.ititus.pdx.shared.trigger;
-    exports io.github.ititus.pdx.stellaris;
     exports io.github.ititus.pdx.stellaris.game;
     exports io.github.ititus.pdx.stellaris.game.common;
     exports io.github.ititus.pdx.stellaris.game.common.deposits;
@@ -36,6 +33,5 @@ module io.github.ititus.pdx {
     exports io.github.ititus.pdx.stellaris.user;
     exports io.github.ititus.pdx.stellaris.user.mod;
     exports io.github.ititus.pdx.stellaris.user.save;
-    exports io.github.ititus.pdx.stellaris.view;
     exports io.github.ititus.pdx.util;
 }

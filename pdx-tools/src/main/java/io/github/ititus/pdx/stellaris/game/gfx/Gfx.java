@@ -4,7 +4,7 @@ import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -43,7 +43,7 @@ public class Gfx {
 
     private final Path gfxDir;
 
-    public Gfx(Path installDir, Path gfxDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public Gfx(Path installDir, Path gfxDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (installDir == null || !Files.isDirectory(installDir) || gfxDir == null || !Files.isDirectory(gfxDir)) {
             throw new IllegalArgumentException();
         }

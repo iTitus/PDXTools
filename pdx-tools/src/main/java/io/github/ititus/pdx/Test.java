@@ -4,7 +4,7 @@ import io.github.ititus.math.time.DurationFormatter;
 import io.github.ititus.math.time.StopWatch;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.game.common.technology.Technology;
 import io.github.ititus.pdx.stellaris.game.scope.CountryScope;
@@ -251,7 +251,7 @@ public class Test {
                 .anyMatch(prereq -> anyPrerequisitesUnavailable(game, cs, prereq));
     }
 
-    private static final class TestProgressMessageUpdater implements StellarisSaveAnalyser.ProgressMessageUpdater {
+    private static final class TestProgressMessageUpdater implements ProgressMessageUpdater {
 
         private final MutableList<StopWatch> stopWatches = Lists.mutable.empty();
 

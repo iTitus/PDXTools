@@ -23,9 +23,9 @@ import java.util.stream.Stream;
 
 public class ReadADdsFile {
 
-    private static final Path LOG_FILE = IOUtil.createParentsAndResolveFile(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"));
-    private static final Path OUT_DIR = IOUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
-    private static final Path INSTALL_DIR = IOUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"));
+    private static final Path LOG_FILE = PathUtil.createParentsAndResolveFile(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"));
+    private static final Path OUT_DIR = PathUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
+    private static final Path INSTALL_DIR = PathUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"));
     private static final PathFilter FILTER = new FileExtensionFilter("dds");
 
     private final List<String> log = new ArrayList<>();

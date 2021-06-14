@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.stellaris.user.save;
 
 import io.github.ititus.io.PathUtil;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
@@ -27,7 +27,7 @@ public class StellarisSaves {
 
     private MutableList<Pair<String, Throwable>> errors;
 
-    public StellarisSaves(Path saveGameFolder, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisSaves(Path saveGameFolder, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (saveGameFolder == null || !Files.isDirectory(saveGameFolder)) {
             throw new IllegalArgumentException();
         }

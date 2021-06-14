@@ -3,7 +3,7 @@ package io.github.ititus.pdx.stellaris.user;
 import io.github.ititus.io.FileExtensionFilter;
 import io.github.ititus.io.PathFilter;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
-import io.github.ititus.pdx.stellaris.StellarisSaveAnalyser;
+import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import io.github.ititus.pdx.stellaris.user.mod.StellarisMods;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSaves;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -28,7 +28,7 @@ public class StellarisUserData {
     private final StellarisSaves saves;
     private final PdxRawDataLoader rawDataLoader;
 
-    public StellarisUserData(Path userDataDir, int index, StellarisSaveAnalyser.ProgressMessageUpdater progressMessageUpdater) {
+    public StellarisUserData(Path userDataDir, int index, ProgressMessageUpdater progressMessageUpdater) {
         if (userDataDir == null || !Files.isDirectory(userDataDir)) {
             throw new IllegalArgumentException();
         }
