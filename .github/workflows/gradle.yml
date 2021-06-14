@@ -60,5 +60,5 @@ jobs:
       - name: Save Image
         uses: actions/upload-artifact@v2
         with:
-          name: build-image-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.distribution }}
-          path: build/image.zip
+          name: stellaris-jfx-galaxy-viewer-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.distribution }}
+          path: stellaris-jfx-galaxy-viewer/build/image.zip
