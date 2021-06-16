@@ -1,0 +1,194 @@
+plugins {
+    id 'myproject.java-conventions'
+    id 'application'
+    id 'org.javamodularity.moduleplugin' version '1.8.7'
+    id 'org.beryx.jlink' version '2.24.0'
+}
+
+import org.gradle.internal.os.OperatingSystem
+
+project.ext.lwjglVersion = "3.2.3"
+project.ext.jomlVersion = "1.10.1"
+
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        def osArch = System.getProperty("os.arch")
+        project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
+                ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+                : "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+    case OperatingSystem.WINDOWS:
+        def osArch = System.getProperty("os.arch")
+        project.ext.lwjglNatives = osArch.contains("64")
+                ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}"
+                : "natives-windows-x86"
+        break
+}
+
+application {
+    mainModule = 'io.github.ititus.stellaris.lwjgl.viewer'
+    mainClass = 'io.github.ititus.stellaris.lwjgl.viewer.Main'
+}
+
+dependencies {
+    implementation project(':dds-reader')
+    implementation project(':pdx-tools')
+    implementation 'io.github.ititus:ititus-commons:1.5.6'
+
+    implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'
+
+    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
+
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-assimp"
+    implementation "org.lwjgl:lwjgl-bgfx"
+    implementation "org.lwjgl:lwjgl-cuda"
+    implementation "org.lwjgl:lwjgl-egl"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-jawt"
+    implementation "org.lwjgl:lwjgl-jemalloc"
+    implementation "org.lwjgl:lwjgl-libdivide"
+    implementation "org.lwjgl:lwjgl-llvm"
+    implementation "org.lwjgl:lwjgl-lmdb"
+    implementation "org.lwjgl:lwjgl-lz4"
+    implementation "org.lwjgl:lwjgl-meow"
+    implementation "org.lwjgl:lwjgl-nanovg"
+    implementation "org.lwjgl:lwjgl-nfd"
+    implementation "org.lwjgl:lwjgl-nuklear"
+    implementation "org.lwjgl:lwjgl-odbc"
+    implementation "org.lwjgl:lwjgl-openal"
+    implementation "org.lwjgl:lwjgl-opencl"
+    implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl:lwjgl-opengles"
+    implementation "org.lwjgl:lwjgl-openvr"
+    implementation "org.lwjgl:lwjgl-opus"
+    implementation "org.lwjgl:lwjgl-ovr"
+    implementation "org.lwjgl:lwjgl-par"
+    implementation "org.lwjgl:lwjgl-remotery"
+    implementation "org.lwjgl:lwjgl-rpmalloc"
+    implementation "org.lwjgl:lwjgl-shaderc"
+    implementation "org.lwjgl:lwjgl-sse"
+    implementation "org.lwjgl:lwjgl-stb"
+    implementation "org.lwjgl:lwjgl-tinyexr"
+    implementation "org.lwjgl:lwjgl-tinyfd"
+    implementation "org.lwjgl:lwjgl-tootle"
+    implementation "org.lwjgl:lwjgl-vma"
+    implementation "org.lwjgl:lwjgl-vulkan"
+    implementation "org.lwjgl:lwjgl-xxhash"
+    implementation "org.lwjgl:lwjgl-yoga"
+    implementation "org.lwjgl:lwjgl-zstd"
+    implementation "org.lwjgl:lwjgl::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-bgfx::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-jemalloc::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-libdivide::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-llvm::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-lmdb::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-lz4::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-meow::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-nanovg::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-nfd::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-nuklear::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-openal::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-opengles::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-openvr::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-opus::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-ovr::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-par::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-remotery::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-rpmalloc::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-shaderc::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-sse::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-tinyexr::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-tinyfd::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-tootle::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-vma::$lwjglNatives"
+    if (lwjglNatives == "natives-macos") implementation "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-xxhash::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-yoga::$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-zstd::$lwjglNatives"
+    implementation "org.joml:joml:${jomlVersion}"
+}
+
+jlink {
+    options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--compress', '2']
+    launcher {
+        name = 'stellaris-viewer'
+    }
+    mergedModule {
+        requires 'java.logging'
+
+        uses 'org.eclipse.collections.api.factory.bag.ImmutableBagFactory'
+        provides 'org.eclipse.collections.api.factory.bag.ImmutableBagFactory' with 'org.eclipse.collections.impl.bag.immutable.ImmutableBagFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.bag.MutableBagFactory'
+        provides 'org.eclipse.collections.api.factory.bag.MutableBagFactory' with 'org.eclipse.collections.impl.bag.mutable.MutableBagFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.bag.sorted.ImmutableSortedBagFactory'
+        provides 'org.eclipse.collections.api.factory.bag.sorted.ImmutableSortedBagFactory' with 'org.eclipse.collections.impl.bag.sorted.immutable.ImmutableSortedBagFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.bag.sorted.MutableSortedBagFactory'
+        provides 'org.eclipse.collections.api.factory.bag.sorted.MutableSortedBagFactory' with 'org.eclipse.collections.impl.bag.sorted.mutable.MutableSortedBagFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.bimap.ImmutableBiMapFactory'
+        provides 'org.eclipse.collections.api.factory.bimap.ImmutableBiMapFactory' with 'org.eclipse.collections.impl.bimap.immutable.ImmutableBiMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.bimap.MutableBiMapFactory'
+        provides 'org.eclipse.collections.api.factory.bimap.MutableBiMapFactory' with 'org.eclipse.collections.impl.bimap.mutable.MutableBiMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.list.FixedSizeListFactory'
+        provides 'org.eclipse.collections.api.factory.list.FixedSizeListFactory' with 'org.eclipse.collections.impl.list.fixed.FixedSizeListFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.list.ImmutableListFactory'
+        provides 'org.eclipse.collections.api.factory.list.ImmutableListFactory' with 'org.eclipse.collections.impl.list.immutable.ImmutableListFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.list.MutableListFactory'
+        provides 'org.eclipse.collections.api.factory.list.MutableListFactory' with 'org.eclipse.collections.impl.list.mutable.MutableListFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.map.FixedSizeMapFactory'
+        provides 'org.eclipse.collections.api.factory.map.FixedSizeMapFactory' with 'org.eclipse.collections.impl.map.fixed.FixedSizeMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.map.ImmutableMapFactory'
+        provides 'org.eclipse.collections.api.factory.map.ImmutableMapFactory' with 'org.eclipse.collections.impl.map.immutable.ImmutableMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.map.MutableMapFactory'
+        provides 'org.eclipse.collections.api.factory.map.MutableMapFactory' with 'org.eclipse.collections.impl.map.mutable.MutableMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.map.sorted.ImmutableSortedMapFactory'
+        provides 'org.eclipse.collections.api.factory.map.sorted.ImmutableSortedMapFactory' with 'org.eclipse.collections.impl.map.sorted.immutable.ImmutableSortedMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.map.sorted.MutableSortedMapFactory'
+        provides 'org.eclipse.collections.api.factory.map.sorted.MutableSortedMapFactory' with 'org.eclipse.collections.impl.map.sorted.mutable.MutableSortedMapFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.set.FixedSizeSetFactory'
+        provides 'org.eclipse.collections.api.factory.set.FixedSizeSetFactory' with 'org.eclipse.collections.impl.set.fixed.FixedSizeSetFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.set.ImmutableSetFactory'
+        provides 'org.eclipse.collections.api.factory.set.ImmutableSetFactory' with 'org.eclipse.collections.impl.set.immutable.ImmutableSetFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.set.MutableSetFactory'
+        provides 'org.eclipse.collections.api.factory.set.MutableSetFactory' with 'org.eclipse.collections.impl.set.mutable.MutableSetFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.set.sorted.ImmutableSortedSetFactory'
+        provides 'org.eclipse.collections.api.factory.set.sorted.ImmutableSortedSetFactory' with 'org.eclipse.collections.impl.set.sorted.immutable.ImmutableSortedSetFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.set.sorted.MutableSortedSetFactory'
+        provides 'org.eclipse.collections.api.factory.set.sorted.MutableSortedSetFactory' with 'org.eclipse.collections.impl.set.sorted.mutable.MutableSortedSetFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.stack.ImmutableStackFactory'
+        provides 'org.eclipse.collections.api.factory.stack.ImmutableStackFactory' with 'org.eclipse.collections.impl.stack.immutable.ImmutableStackFactoryImpl'
+
+        uses 'org.eclipse.collections.api.factory.stack.MutableStackFactory'
+        provides 'org.eclipse.collections.api.factory.stack.MutableStackFactory' with 'org.eclipse.collections.impl.stack.mutable.MutableStackFactoryImpl'
+    }
+}
