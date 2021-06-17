@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     implementation project(':dds-reader')
-    implementation 'io.github.ititus:ititus-commons:1.5.5'
+    implementation 'io.github.ititus:ititus-commons:1.5.7'
 
     implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
