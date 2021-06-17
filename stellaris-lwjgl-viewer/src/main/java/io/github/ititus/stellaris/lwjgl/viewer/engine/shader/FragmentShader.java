@@ -1,6 +1,7 @@
 package io.github.ititus.stellaris.lwjgl.viewer.engine.shader;
 
-import org.lwjgl.opengl.GL32C;
+import static org.lwjgl.opengl.GL32C.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL32C.glCreateShader;
 
 public class FragmentShader extends Shader {
 
@@ -12,6 +13,6 @@ public class FragmentShader extends Shader {
 
     @Override
     protected int create() {
-        return GL32C.glCreateShader(GL32C.GL_FRAGMENT_SHADER);
+        return glCreateShader(GL_FRAGMENT_SHADER);
     }
 }

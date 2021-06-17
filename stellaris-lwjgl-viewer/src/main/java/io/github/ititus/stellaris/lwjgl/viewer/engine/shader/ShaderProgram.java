@@ -7,13 +7,15 @@ import io.github.ititus.math.vector.Vec2f;
 import io.github.ititus.math.vector.Vec3f;
 import io.github.ititus.math.vector.Vec4f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.GlObject;
-import org.lwjgl.opengl.GL32C;
+import org.joml.Matrix4fc;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.lwjgl.opengl.GL32C.*;
 
 public abstract class ShaderProgram extends GlObject {
 
@@ -24,12 +26,12 @@ public abstract class ShaderProgram extends GlObject {
     }
 
     public void use() {
-        GL32C.glUseProgram(id);
+        glUseProgram(id);
     }
 
     @Override
     protected int create() {
-        return GL32C.glCreateProgram();
+        return glCreateProgram();
     }
 
     @Override
@@ -41,25 +43,25 @@ public abstract class ShaderProgram extends GlObject {
     @Override
     protected void delete() {
         freeShaders();
-        GL32C.glDeleteProgram(id);
+        glDeleteProgram(id);
     }
 
     protected abstract void findLocations();
 
     public int getUniformLocation(CharSequence name) {
-        return GL32C.glGetUniformLocation(id, name);
+        return glGetUniformLocation(id, name);
     }
 
     public int getAttributeLocation(CharSequence name) {
-        return GL32C.glGetAttribLocation(id, name);
+        return glGetAttribLocation(id, name);
     }
 
     public void setUniform(int location, int value) {
-        GL32C.glUniform1i(location, value);
+        glUniform1i(location, value);
     }
 
     public void setUniform(int location, float value) {
-        GL32C.glUniform1f(location, value);
+        glUniform1f(location, value);
     }
 
     public void setUniform(int location, Vec2f value) {
@@ -67,7 +69,7 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(2);
             value.write(buffer);
             buffer.flip();
-            GL32C.glUniform2fv(location, buffer);
+            glUniform2fv(location, buffer);
         }
     }
 
@@ -76,7 +78,7 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(3);
             value.write(buffer);
             buffer.flip();
-            GL32C.glUniform2fv(location, buffer);
+            glUniform3fv(location, buffer);
         }
     }
 
@@ -85,7 +87,7 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(4);
             value.write(buffer);
             buffer.flip();
-            GL32C.glUniform2fv(location, buffer);
+            glUniform4fv(location, buffer);
         }
     }
 
@@ -94,7 +96,7 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(4);
             value.write(buffer);
             buffer.flip();
-            GL32C.glUniform2fv(location, buffer);
+            glUniformMatrix2fv(location, false, buffer);
         }
     }
 
@@ -103,7 +105,7 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(9);
             value.write(buffer);
             buffer.flip();
-            GL32C.glUniform2fv(location, buffer);
+            glUniformMatrix3fv(location, false, buffer);
         }
     }
 
@@ -112,19 +114,27 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(16);
             value.write(buffer);
             buffer.flip();
-            GL32C.glUniform2fv(location, buffer);
+            glUniformMatrix4fv(location, false, buffer);
+        }
+    }
+
+    public void setUniform(int location, Matrix4fc value) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(16);
+            value.get(buffer);
+            glUniformMatrix4fv(location, false, buffer);
         }
     }
 
     private void link() {
         for (Shader shader : shaders) {
             shader.load();
-            GL32C.glAttachShader(id, shader.id());
+            glAttachShader(id, shader.id());
         }
 
-        GL32C.glLinkProgram(id);
-        if (GL32C.glGetProgrami(id, GL32C.GL_LINK_STATUS) != GL32C.GL_TRUE) {
-            String infoLog = GL32C.glGetProgramInfoLog(id);
+        glLinkProgram(id);
+        if (glGetProgrami(id, GL_LINK_STATUS) != GL_TRUE) {
+            String infoLog = glGetProgramInfoLog(id);
             free();
             throw new RuntimeException("Shader program linking failed: " + infoLog);
         }
@@ -134,7 +144,7 @@ public abstract class ShaderProgram extends GlObject {
 
     private void freeShaders() {
         for (Shader shader : shaders) {
-            GL32C.glDetachShader(id, shader.id());
+            glDetachShader(id, shader.id());
             shader.free();
         }
 

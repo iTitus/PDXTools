@@ -1,7 +1,8 @@
 package io.github.ititus.stellaris.lwjgl.viewer.engine.shader;
 
 import io.github.ititus.stellaris.lwjgl.viewer.engine.GlObject;
-import org.lwjgl.opengl.GL32C;
+
+import static org.lwjgl.opengl.GL32C.*;
 
 public abstract class Shader extends GlObject {
 
@@ -13,10 +14,10 @@ public abstract class Shader extends GlObject {
 
     @Override
     public void load() {
-        GL32C.glShaderSource(id, shaderSource.getShaderSource());
-        GL32C.glCompileShader(id);
-        if (GL32C.glGetShaderi(id, GL32C.GL_COMPILE_STATUS) != GL32C.GL_TRUE) {
-            String infoLog = GL32C.glGetShaderInfoLog(id);
+        glShaderSource(id, shaderSource.getShaderSource());
+        glCompileShader(id);
+        if (glGetShaderi(id, GL_COMPILE_STATUS) != GL_TRUE) {
+            String infoLog = glGetShaderInfoLog(id);
             delete();
             throw new RuntimeException("Shader compilation failed: " + infoLog);
         }
@@ -24,6 +25,6 @@ public abstract class Shader extends GlObject {
 
     @Override
     public void delete() {
-        GL32C.glDeleteShader(id);
+        glDeleteShader(id);
     }
 }
