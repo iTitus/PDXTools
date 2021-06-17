@@ -1,6 +1,7 @@
 package io.github.ititus.stellaris.lwjgl.viewer.engine.shader;
 
-import static org.lwjgl.opengl.GL32C.*;
+import static org.lwjgl.opengl.GL32C.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL32C.glCreateShader;
 
 public class VertexShader extends Shader {
 

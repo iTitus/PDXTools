@@ -6,8 +6,6 @@ public class DefaultShaderProgram extends ShaderProgram {
 
     private static final String PATH = "/shader/default";
 
-    private final int posLocation = 0;
-    private final int texposLocation = 1;
     private int modelLocation;
     private int viewLocation;
     private int projectionLocation;
@@ -45,11 +43,11 @@ public class DefaultShaderProgram extends ShaderProgram {
     }
 
     public int getPosLocation() {
-        return posLocation;
+        return 0;
     }
 
     public int getTexposLocation() {
-        return texposLocation;
+        return 1;
     }
 
     public int getModelLocation() {

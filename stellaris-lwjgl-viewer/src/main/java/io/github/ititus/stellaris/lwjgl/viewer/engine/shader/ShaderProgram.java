@@ -7,7 +7,6 @@ import io.github.ititus.math.vector.Vec2f;
 import io.github.ititus.math.vector.Vec3f;
 import io.github.ititus.math.vector.Vec4f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.GlObject;
-import org.joml.Matrix4fc;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
@@ -114,14 +113,6 @@ public abstract class ShaderProgram extends GlObject {
             FloatBuffer buffer = stack.mallocFloat(16);
             value.write(buffer);
             buffer.flip();
-            glUniformMatrix4fv(location, false, buffer);
-        }
-    }
-
-    public void setUniform(int location, Matrix4fc value) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            FloatBuffer buffer = stack.mallocFloat(16);
-            value.get(buffer);
             glUniformMatrix4fv(location, false, buffer);
         }
     }

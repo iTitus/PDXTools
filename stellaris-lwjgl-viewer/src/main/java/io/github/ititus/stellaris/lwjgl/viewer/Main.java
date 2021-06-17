@@ -1,10 +1,9 @@
 package io.github.ititus.stellaris.lwjgl.viewer;
 
+import io.github.ititus.math.matrix.Mat4f;
 import io.github.ititus.math.vector.Vec3f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.camera.Camera;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.shader.DefaultShaderProgram;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -32,6 +31,25 @@ public class Main {
 
     // The window handle
     private long window;
+
+    private static ByteBuffer getData(BufferedImage img) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(img.getWidth() * img.getHeight() * 3);
+        for (int y = img.getHeight() - 1; y >= 0; y--) {
+            for (int x = 0; x < img.getHeight(); x++) {
+                int argb = img.getRGB(x, y);
+                bb.put((byte) ((argb >> 16) & 0xff));
+                bb.put((byte) ((argb >> 8) & 0xff));
+                bb.put((byte) (argb & 0xff));
+            }
+        }
+
+        bb.flip();
+        return bb;
+    }
+
+    public static void main(String[] args) {
+        new Main().run();
+    }
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -261,34 +279,24 @@ public class Main {
             s.use();
 
             // pass projection matrix to shader (note that in this case it could change every frame)
-            // Mat4f projection = Mat4f.perspective((float) Math.toRadians(45), (float) WIDTH / HEIGHT, 0.1f, 100.0f);
-            // s.setProjection(projection);
-            Matrix4f p = new Matrix4f();
-            p.perspective((float) Math.toRadians(45), (float) WIDTH / HEIGHT, 0.1f, 100.0f);
-            s.setUniform(s.getProjectionLocation(), p);
+            Mat4f projection = Mat4f.perspective((float) Math.toRadians(45), (float) WIDTH / HEIGHT, 0.1f, 100.0f);
+            s.setProjection(projection);
 
             // camera/view transformation
-            // Mat4f view = camera.getViewMatrix();
-            // s.setView(view);
-            Matrix4f v = new Matrix4f();
-            v.lookAt(camera.getPos().x(), camera.getPos().y(), camera.getPos().z(), camera.getTarget().x(), camera.getTarget().y(), camera.getTarget().z(), camera.getUp().x(), camera.getUp().y(), camera.getUp().z());
-            s.setUniform(s.getViewLocation(), v);
+            Mat4f view = camera.getViewMatrix();
+            s.setView(view);
 
             // render boxes
             glBindVertexArray(vao);
             for (int i = 0; i < 10; i++) {
                 // calculate the model matrix for each object and pass it to shader before drawing
-                // Mat4f model = Mat4f.identity();
-                // model = model.multiply(Mat4f.translate(cubePositions[i]));
-                // model = model.multiply(Mat4f.rotate(new Vec3f(1.0f, 0.3f, 0.5f), (float) Math.toRadians(20.0f * i)));
-                // s.setModel(model);
+                Mat4f model = Mat4f.identity();
+                model = model.multiply(Mat4f.translate(cubePositions[i]));
+                model = model.multiply(Mat4f.rotate(new Vec3f(1.0f, 0.3f, 0.5f), (float) Math.toRadians(20.0f * i)));
+                // model = model.multiply(Mat4f.scale(1.0f + (i - 4) * 0.2f));
+                s.setModel(model);
 
-                Matrix4f m = new Matrix4f();
-                m.translate(cubePositions[i].x(), cubePositions[i].y(), cubePositions[i].z());
-                m.rotate((float) Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f));
-                s.setUniform(s.getModelLocation(), m);
-
-                glDrawArrays(GL_TRIANGLES, 0, 36);
+                glDrawArrays(GL_TRIANGLES, 0, vertices.length / (2 + 3));
             }
 
             glfwSwapBuffers(window); // swap the color buffers
@@ -300,24 +308,5 @@ public class Main {
 
         glDeleteVertexArrays(vao);
         glDeleteBuffers(vbo);
-    }
-
-    private ByteBuffer getData(BufferedImage img) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(img.getWidth() * img.getHeight() * 3);
-        for (int y = img.getHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x < img.getHeight(); x++) {
-                int argb = img.getRGB(x, y);
-                bb.put((byte) ((argb >> 16) & 0xff));
-                bb.put((byte) ((argb >> 8) & 0xff));
-                bb.put((byte) (argb & 0xff));
-            }
-        }
-
-        bb.flip();
-        return bb;
-    }
-
-    public static void main(String[] args) {
-        new Main().run();
     }
 }

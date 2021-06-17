@@ -5,9 +5,9 @@ import io.github.ititus.math.vector.Vec3f;
 
 public class Camera {
 
-    private Vec3f pos;
-    private Vec3f dir;
-    private Vec3f up;
+    private final Vec3f pos;
+    private final Vec3f dir;
+    private final Vec3f up;
 
     public Camera() {
         pos = new Vec3f(0, 0, 4);
