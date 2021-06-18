@@ -2,7 +2,7 @@ package io.github.ititus.stellaris.lwjgl.viewer.engine.shader;
 
 import io.github.ititus.math.matrix.Mat4f;
 
-public class DefaultShaderProgram extends ShaderProgram {
+public class DefaultShaderProgram extends ShaderProgram<DefaultShaderProgram> {
 
     private static final String PATH = "/shader/default";
 

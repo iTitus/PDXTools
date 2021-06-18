@@ -1,27 +1,31 @@
 package io.github.ititus.stellaris.lwjgl.viewer.engine;
 
-public abstract class GlObject {
+public abstract class GlObject<T extends GlObject<T>> {
 
-    protected final int id;
-    private boolean valid;
+    protected int id;
 
     protected GlObject() {
-        this.id = create();
-        this.valid = id != 0;
-        if (!isValid()) {
-            throw new IllegalStateException("gl object is invalid");
-        }
     }
 
     protected abstract int create();
 
-    public abstract void load();
+    protected abstract void init();
+
+    @SuppressWarnings("unchecked")
+    public final T load() {
+        this.id = create();
+        if (!isValid()) {
+            throw new IllegalStateException("gl object is invalid");
+        }
+
+        init();
+        return (T) this;
+    }
 
     protected abstract void delete();
 
     public final void free() {
         delete();
-        valid = false;
     }
 
     public int id() {
@@ -29,6 +33,6 @@ public abstract class GlObject {
     }
 
     public boolean isValid() {
-        return valid;
+        return id != 0;
     }
 }

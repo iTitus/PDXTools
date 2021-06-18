@@ -16,11 +16,11 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL32C.*;
 
-public abstract class ShaderProgram extends GlObject {
+public abstract class ShaderProgram<T extends ShaderProgram<T>> extends GlObject<T> {
 
-    private final List<Shader> shaders;
+    private final List<Shader<?>> shaders;
 
-    protected ShaderProgram(Shader... shaders) {
+    protected ShaderProgram(Shader<?>... shaders) {
         this.shaders = new ArrayList<>(Arrays.asList(shaders));
     }
 
@@ -34,7 +34,7 @@ public abstract class ShaderProgram extends GlObject {
     }
 
     @Override
-    public void load() {
+    public void init() {
         link();
         findLocations();
     }
@@ -118,7 +118,7 @@ public abstract class ShaderProgram extends GlObject {
     }
 
     private void link() {
-        for (Shader shader : shaders) {
+        for (Shader<?> shader : shaders) {
             shader.load();
             glAttachShader(id, shader.id());
         }
@@ -134,7 +134,7 @@ public abstract class ShaderProgram extends GlObject {
     }
 
     private void freeShaders() {
-        for (Shader shader : shaders) {
+        for (Shader<?> shader : shaders) {
             glDetachShader(id, shader.id());
             shader.free();
         }

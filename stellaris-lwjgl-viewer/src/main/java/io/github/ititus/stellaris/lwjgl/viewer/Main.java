@@ -2,20 +2,19 @@ package io.github.ititus.stellaris.lwjgl.viewer;
 
 import io.github.ititus.math.matrix.Mat4f;
 import io.github.ititus.math.vector.Vec3f;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ArrayBuffer;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.camera.Camera;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.shader.DefaultShaderProgram;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.FileImageSource;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.Texture;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.Texture2d;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.vertex.VertexArray;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -31,21 +30,6 @@ public class Main {
 
     // The window handle
     private long window;
-
-    private static ByteBuffer getData(BufferedImage img) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(img.getWidth() * img.getHeight() * 3);
-        for (int y = img.getHeight() - 1; y >= 0; y--) {
-            for (int x = 0; x < img.getHeight(); x++) {
-                int argb = img.getRGB(x, y);
-                bb.put((byte) ((argb >> 16) & 0xff));
-                bb.put((byte) ((argb >> 8) & 0xff));
-                bb.put((byte) (argb & 0xff));
-            }
-        }
-
-        bb.flip();
-        return bb;
-    }
 
     public static void main(String[] args) {
         new Main().run();
@@ -159,8 +143,7 @@ public class Main {
     private void loop() {
         Camera camera = new Camera();
 
-        DefaultShaderProgram s = new DefaultShaderProgram();
-        s.load();
+        DefaultShaderProgram s = new DefaultShaderProgram().load();
 
         float[] vertices = {
                 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
@@ -219,47 +202,35 @@ public class Main {
                 new Vec3f(-1.3f, 1.0f, -1.5f)
         };
 
-        int vao;
-        int vbo;
-        vao = glGenVertexArrays();
-        vbo = glGenBuffers();
+        VertexArray vao = new VertexArray().load();
+        ArrayBuffer vbo = new ArrayBuffer().load();
 
-        glBindVertexArray(vao);
+        vao.bind();
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        vbo.bind();
+        vbo.bufferData(vertices, GL_STATIC_DRAW);
 
         // position attribute
-        glEnableVertexAttribArray(s.getPosLocation());
-        glVertexAttribPointer(s.getPosLocation(), 3, GL_FLOAT, false, 5 * Float.BYTES, 0);
+        vao.enableVertexAttribArray(s.getPosLocation());
+        vao.vertexAttribPointer(s.getPosLocation(), 3, GL_FLOAT, false, 5 * Float.BYTES, 0);
         // texture coord attribute
-        glEnableVertexAttribArray(s.getTexposLocation());
-        glVertexAttribPointer(s.getTexposLocation(), 2, GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
+        vao.enableVertexAttribArray(s.getTexposLocation());
+        vao.vertexAttribPointer(s.getTexposLocation(), 2, GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
 
         // load and create a texture
-        int texture;
-        texture = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, texture);
+        Texture2d texture = new Texture2d().load();
+        texture.bind();
+
         // set the texture wrapping parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        texture.parameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+        texture.parameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
         // set texture filtering parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        texture.parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        texture.parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
         // load image, create texture and generate mipmaps
-
-        BufferedImage img;
-        try (InputStream is = Main.class.getResourceAsStream("/textures/container.jpg")) {
-            img = ImageIO.read(is);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        ByteBuffer data = getData(img);
-        // glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.getWidth(), img.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        texture.texImage2d(0, 0, new FileImageSource("/textures/container.jpg"));
+        texture.generateMipmap();
 
         // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
         s.use();
@@ -272,8 +243,8 @@ public class Main {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear the framebuffer
 
             // bind textures on corresponding texture units
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture);
+            Texture.activeTexture(0);
+            texture.bind();
 
             // activate shader
             s.use();
@@ -287,16 +258,16 @@ public class Main {
             s.setView(view);
 
             // render boxes
-            glBindVertexArray(vao);
+            vao.bind();
             for (int i = 0; i < 10; i++) {
                 // calculate the model matrix for each object and pass it to shader before drawing
                 Mat4f model = Mat4f.identity();
                 model = model.multiply(Mat4f.translate(cubePositions[i]));
                 model = model.multiply(Mat4f.rotate(new Vec3f(1.0f, 0.3f, 0.5f), (float) Math.toRadians(20.0f * i)));
-                // model = model.multiply(Mat4f.scale(1.0f + (i - 4) * 0.2f));
+                // model = model.multiply(Mat4f.scale(i >= 5 ? 1.0f + 0.2f * (i - 4) : 1.0f / (1.0f + 0.2f * (5 - i))));
                 s.setModel(model);
 
-                glDrawArrays(GL_TRIANGLES, 0, vertices.length / (2 + 3));
+                vao.draw(GL_TRIANGLES, 0, vertices.length / (3 + 2));
             }
 
             glfwSwapBuffers(window); // swap the color buffers
@@ -306,7 +277,9 @@ public class Main {
             glfwPollEvents();
         }
 
-        glDeleteVertexArrays(vao);
-        glDeleteBuffers(vbo);
+        vao.free();
+        vbo.free();
+        texture.free();
+        s.free();
     }
 }
