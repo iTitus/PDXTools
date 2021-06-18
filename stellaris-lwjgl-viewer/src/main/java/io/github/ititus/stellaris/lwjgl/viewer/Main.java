@@ -13,10 +13,15 @@ import io.github.ititus.stellaris.lwjgl.viewer.engine.vertex.VertexArray;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.ARBDebugOutput;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -66,8 +71,8 @@ public class Main {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
@@ -98,7 +103,7 @@ public class Main {
             glfwGetWindowSize(window, pWidth, pHeight);
 
             // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            GLFWVidMode vidmode = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor()), "no video mode");
 
             // Center the window
             glfwSetWindowPos(
@@ -113,13 +118,26 @@ public class Main {
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
-        GL.createCapabilities();
+        GLCapabilities caps = GL.createCapabilities();
 
         System.out.println("OpenGL:");
         System.out.println("  Version: " + glGetString(GL_VERSION));
         System.out.println("  Renderer: " + glGetString(GL_RENDERER));
         System.out.println("  Vendor: " + glGetString(GL_VENDOR));
         System.out.println("  Extensions: " + glGetString(GL_EXTENSIONS));
+
+        if (caps.GL_KHR_debug) {
+            System.out.println("Debug Logging supported: KHR_debug");
+            glEnable(KHRDebug.GL_DEBUG_OUTPUT);
+            glEnable(KHRDebug.GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            KHRDebug.glDebugMessageCallback(this::debugMessage, 0);
+        } else if (caps.GL_ARB_debug_output) {
+            System.out.println("Debug Logging supported: ARB_debug_output");
+            glEnable(ARBDebugOutput.GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+            ARBDebugOutput.glDebugMessageCallbackARB(this::debugMessage, 0);
+        } else {
+            System.out.println("Debug Logging not supported");
+        }
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
@@ -130,6 +148,39 @@ public class Main {
 
         // Make the window visible
         glfwShowWindow(window);
+    }
+
+    private void debugMessage(int source, int type, int id, int severity, int length, long message, long userParam) {
+        String strSource = switch (source) {
+            case KHRDebug.GL_DEBUG_SOURCE_API -> "API";
+            case KHRDebug.GL_DEBUG_SOURCE_WINDOW_SYSTEM -> "Window System";
+            case KHRDebug.GL_DEBUG_SOURCE_SHADER_COMPILER -> "Shader Compiler";
+            case KHRDebug.GL_DEBUG_SOURCE_THIRD_PARTY -> "Third Party";
+            case KHRDebug.GL_DEBUG_SOURCE_APPLICATION -> "Application";
+            case KHRDebug.GL_DEBUG_SOURCE_OTHER -> "Other";
+            default -> "Unknown";
+        };
+        String strType = switch (type) {
+            case KHRDebug.GL_DEBUG_TYPE_ERROR -> "Error";
+            case KHRDebug.GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR -> "Deprecated Behaviour";
+            case KHRDebug.GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR -> "Undefined Behaviour";
+            case KHRDebug.GL_DEBUG_TYPE_PORTABILITY -> "Portability";
+            case KHRDebug.GL_DEBUG_TYPE_PERFORMANCE -> "Performance";
+            case KHRDebug.GL_DEBUG_TYPE_OTHER -> "Other";
+            case KHRDebug.GL_DEBUG_TYPE_MARKER -> "Marker";
+            case KHRDebug.GL_DEBUG_TYPE_PUSH_GROUP -> "Push Group";
+            case KHRDebug.GL_DEBUG_TYPE_POP_GROUP -> "Pop Group";
+            default -> "Unknown";
+        };
+        String strSeverity = switch (severity) {
+            case KHRDebug.GL_DEBUG_SEVERITY_HIGH -> "High";
+            case KHRDebug.GL_DEBUG_SEVERITY_MEDIUM -> "Medium";
+            case KHRDebug.GL_DEBUG_SEVERITY_LOW -> "Low";
+            case KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION -> "Notification";
+            default -> "Unknown";
+        };
+        String strMessage = MemoryUtil.memUTF8Safe(message, length);
+        System.out.println("debugMessage(" + id + "): src=" + strSource + " type=" + strType + " sev=" + strSeverity + " msg=" + strMessage);
     }
 
     private void onResize(long window, int width, int height) {
