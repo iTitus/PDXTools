@@ -2,6 +2,8 @@ package io.github.ititus.stellaris.lwjgl.viewer;
 
 import io.github.ititus.math.matrix.Mat4f;
 import io.github.ititus.math.vector.Vec3f;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.Game;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.GameEngine;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ArrayBuffer;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ElementArrayBuffer;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.camera.Camera;
@@ -10,319 +12,162 @@ import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.FileImageSource;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.Texture;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.Texture2d;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.vertex.VertexArray;
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.ARBDebugOutput;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLCapabilities;
-import org.lwjgl.opengl.KHRDebug;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 
-import java.nio.IntBuffer;
-import java.util.Objects;
-
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL32C.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Main {
+public class Main implements Game {
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
+    private static final int WIDTH = 1280;
+    private static final int HEIGHT = 720;
+    private static final double MOUSE_SENSITIVITY = 0.075;
+    private static final float CAMERA_SPEED = 0.05f;
+    /*private static final float[] CUBE_VERTICES = {
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 
-    // The window handle
-    private long window;
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+    };*/
+    private static final float[] CUBE_VERTICES = {
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f
+    };
+    private static final short[] CUBE_INDICES = {
+            0, 1, 2, 2, 3, 0,
+            4, 5, 6, 6, 7, 4,
+            8, 9, 10, 10, 11, 8,
+            12, 13, 14, 14, 15, 12,
+            16, 17, 18, 18, 19, 16,
+            20, 21, 22, 22, 23, 20
+    };
+    // world space positions of our cubes
+    private static final Vec3f[] CUBE_POSITIONS = {
+            new Vec3f(0.0f, 0.0f, 0.0f),
+            new Vec3f(2.0f, 5.0f, -15.0f),
+            new Vec3f(-1.5f, -2.2f, -2.5f),
+            new Vec3f(-3.8f, -2.0f, -12.3f),
+            new Vec3f(2.4f, -0.4f, -3.5f),
+            new Vec3f(-1.7f, 3.0f, -7.5f),
+            new Vec3f(1.3f, -2.0f, -2.5f),
+            new Vec3f(1.5f, 2.0f, -2.5f),
+            new Vec3f(1.5f, 0.2f, -1.5f),
+            new Vec3f(-1.3f, 1.0f, -1.5f)
+    };
+
+    private GameEngine gameEngine;
+    private Camera camera;
+    private DefaultShaderProgram shader;
+    private VertexArray vao;
+    private ArrayBuffer vbo;
+    private ElementArrayBuffer ibo;
+    private Texture2d texture;
+
+    private boolean firstMouse = true;
+    private double lastMouseX;
+    private double lastMouseY;
+
+    private double yaw;
+    private double pitch;
 
     public static void main(String[] args) {
-        new Main().run();
+        new GameEngine(60, 1280, 720, "Hello World!", new Main()).run();
     }
 
-    public void run() {
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-
-        init();
-        loop();
-
-        // Free the window callbacks and destroy the window
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
-
-        // Terminate GLFW and free the error callback
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-    }
-
-    private void init() {
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
-        GLFWErrorCallback.createPrint(System.err).set();
-
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if (!glfwInit()) {
-            throw new IllegalStateException("Unable to initialize GLFW");
-        }
-
-        // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-
-        // Create the window
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World!", NULL, NULL);
-        if (window == NULL) {
-            throw new RuntimeException("Failed to create the GLFW window");
-        }
-
-        // Make the OpenGL context current
-        glfwMakeContextCurrent(window);
-
-        glfwSetFramebufferSizeCallback(window, this::onResize);
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, this::onKey);
-        glfwSetCursorPosCallback(window, this::onMouseMove);
-        glfwSetScrollCallback(window, this::onScroll);
-
-        // capture mouse
-        // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-        // Get the thread stack and push a new frame
-        try (MemoryStack stack = stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1); // int*
-            IntBuffer pHeight = stack.mallocInt(1); // int*
-
-            // Get the window size passed to glfwCreateWindow
-            glfwGetWindowSize(window, pWidth, pHeight);
-
-            // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor()), "no video mode");
-
-            // Center the window
-            glfwSetWindowPos(
-                    window,
-                    (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
-            );
-        } // the stack frame is popped automatically
-
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GLCapabilities caps = GL.createCapabilities();
-
-        System.out.println("OpenGL:");
-        System.out.println("  Version: " + glGetString(GL_VERSION));
-        System.out.println("  Renderer: " + glGetString(GL_RENDERER));
-        System.out.println("  Vendor: " + glGetString(GL_VENDOR));
-        System.out.println("  Extensions: " + glGetString(GL_EXTENSIONS));
-
-        if (caps.GL_KHR_debug) {
-            System.out.println("Debug Logging supported: KHR_debug");
-            glEnable(KHRDebug.GL_DEBUG_OUTPUT);
-            glEnable(KHRDebug.GL_DEBUG_OUTPUT_SYNCHRONOUS);
-            KHRDebug.glDebugMessageCallback(this::debugMessage, 0);
-        } else if (caps.GL_ARB_debug_output) {
-            System.out.println("Debug Logging supported: ARB_debug_output");
-            glEnable(ARBDebugOutput.GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-            ARBDebugOutput.glDebugMessageCallbackARB(this::debugMessage, 0);
-        } else {
-            System.out.println("Debug Logging not supported");
-        }
-
+    @Override
+    public void init(GameEngine gameEngine) {
+        this.gameEngine = gameEngine;
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        // Enable v-sync
-        glfwSwapInterval(1);
+        camera = new Camera();
+        shader = new DefaultShaderProgram().load();
 
-        // Make the window visible
-        glfwShowWindow(window);
-    }
-
-    private void debugMessage(int source, int type, int id, int severity, int length, long message, long userParam) {
-        String strSource = switch (source) {
-            case KHRDebug.GL_DEBUG_SOURCE_API -> "API";
-            case KHRDebug.GL_DEBUG_SOURCE_WINDOW_SYSTEM -> "Window System";
-            case KHRDebug.GL_DEBUG_SOURCE_SHADER_COMPILER -> "Shader Compiler";
-            case KHRDebug.GL_DEBUG_SOURCE_THIRD_PARTY -> "Third Party";
-            case KHRDebug.GL_DEBUG_SOURCE_APPLICATION -> "Application";
-            case KHRDebug.GL_DEBUG_SOURCE_OTHER -> "Other";
-            default -> "Unknown";
-        };
-        String strType = switch (type) {
-            case KHRDebug.GL_DEBUG_TYPE_ERROR -> "Error";
-            case KHRDebug.GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR -> "Deprecated Behaviour";
-            case KHRDebug.GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR -> "Undefined Behaviour";
-            case KHRDebug.GL_DEBUG_TYPE_PORTABILITY -> "Portability";
-            case KHRDebug.GL_DEBUG_TYPE_PERFORMANCE -> "Performance";
-            case KHRDebug.GL_DEBUG_TYPE_OTHER -> "Other";
-            case KHRDebug.GL_DEBUG_TYPE_MARKER -> "Marker";
-            case KHRDebug.GL_DEBUG_TYPE_PUSH_GROUP -> "Push Group";
-            case KHRDebug.GL_DEBUG_TYPE_POP_GROUP -> "Pop Group";
-            default -> "Unknown";
-        };
-        String strSeverity = switch (severity) {
-            case KHRDebug.GL_DEBUG_SEVERITY_HIGH -> "High";
-            case KHRDebug.GL_DEBUG_SEVERITY_MEDIUM -> "Medium";
-            case KHRDebug.GL_DEBUG_SEVERITY_LOW -> "Low";
-            case KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION -> "Notification";
-            default -> "Unknown";
-        };
-        String strMessage = MemoryUtil.memUTF8Safe(message, length);
-        System.out.println("debugMessage(" + id + "): src=" + strSource + " type=" + strType + " sev=" + strSeverity + " msg=" + strMessage);
-    }
-
-    private void onResize(long window, int width, int height) {
-        System.out.println("onResize: width=" + width + " height=" + height);
-        glViewport(0, 0, width, height);
-    }
-
-    private void onKey(long window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-            glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        }
-    }
-
-    private void onMouseMove(long window, double xPos, double yPos) {
-    }
-
-    private void onScroll(long window, double xOffset, double yOffset) {
-    }
-
-    private void loop() {
-        Camera camera = new Camera();
-
-        DefaultShaderProgram s = new DefaultShaderProgram().load();
-
-        /*float[] vertices = {
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-        };*/
-        float[] vertices = {
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f
-        };
-        short[] indices = {
-                0, 1, 2, 2, 3, 0,
-                4, 5, 6, 6, 7, 4,
-                8, 9, 10, 10, 11, 8,
-                12, 13, 14, 14, 15, 12,
-                16, 17, 18, 18, 19, 16,
-                20, 21, 22, 22, 23, 20
-        };
-
-        // world space positions of our cubes
-        Vec3f[] cubePositions = {
-                new Vec3f(0.0f, 0.0f, 0.0f),
-                new Vec3f(2.0f, 5.0f, -15.0f),
-                new Vec3f(-1.5f, -2.2f, -2.5f),
-                new Vec3f(-3.8f, -2.0f, -12.3f),
-                new Vec3f(2.4f, -0.4f, -3.5f),
-                new Vec3f(-1.7f, 3.0f, -7.5f),
-                new Vec3f(1.3f, -2.0f, -2.5f),
-                new Vec3f(1.5f, 2.0f, -2.5f),
-                new Vec3f(1.5f, 0.2f, -1.5f),
-                new Vec3f(-1.3f, 1.0f, -1.5f)
-        };
-
-        VertexArray vao = new VertexArray().load();
-        ArrayBuffer vbo = new ArrayBuffer().load();
-        ElementArrayBuffer ibo = new ElementArrayBuffer().load();
+        vao = new VertexArray().load();
+        vbo = new ArrayBuffer().load();
+        ibo = new ElementArrayBuffer().load();
 
         vao.bind();
 
         vbo.bind();
-        vbo.bufferData(vertices, GL_STATIC_DRAW);
+        vbo.bufferData(CUBE_VERTICES, GL_STATIC_DRAW);
 
         ibo.bind();
-        ibo.bufferData(indices, GL_STATIC_DRAW);
+        ibo.bufferData(CUBE_INDICES, GL_STATIC_DRAW);
 
         // position attribute
-        vao.enableVertexAttribArray(s.getPosLocation());
-        vao.vertexAttribPointer(s.getPosLocation(), 3, GL_FLOAT, false, 5 * Float.BYTES, 0);
+        vao.enableVertexAttribArray(shader.getPosLocation());
+        vao.vertexAttribPointer(shader.getPosLocation(), 3, GL_FLOAT, false, 5 * Float.BYTES, 0);
         // texture coord attribute
-        vao.enableVertexAttribArray(s.getTexposLocation());
-        vao.vertexAttribPointer(s.getTexposLocation(), 2, GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
+        vao.enableVertexAttribArray(shader.getTexposLocation());
+        vao.vertexAttribPointer(shader.getTexposLocation(), 2, GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
 
         // load and create a texture
-        Texture2d texture = new Texture2d().load();
+        texture = new Texture2d().load();
         texture.bind();
 
         // set the texture wrapping parameters
@@ -337,54 +182,137 @@ public class Main {
         texture.generateMipmap();
 
         // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-        s.use();
-        s.setTex(0);
+        shader.use();
+        shader.setTex(0);
+    }
 
-        // Run the rendering loop until the user has attempted to close
-        // the window or has pressed the ESCAPE key.
-        while (!glfwWindowShouldClose(window)) {
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear the framebuffer
+    @Override
+    public void processInput() {
+        Vec3f cameraSpeed = new Vec3f(0.0f, 0.0f, 0.0f);
 
-            // bind textures on corresponding texture units
-            Texture.activeTexture(0);
-            texture.bind();
+        Vec3f up = camera.getUp().normalize();
+        Vec3f projectedFront = camera.getDir().subtract(up.multiply(camera.getDir().dot(up))).normalize();
+        Vec3f projectedLeft = up.cross(projectedFront).normalize();
 
-            // activate shader
-            s.use();
-
-            // pass projection matrix to shader (note that in this case it could change every frame)
-            Mat4f projection = Mat4f.perspective((float) Math.toRadians(45), (float) WIDTH / HEIGHT, 0.1f, 100.0f);
-            s.setProjection(projection);
-
-            // camera/view transformation
-            Mat4f view = camera.getViewMatrix();
-            s.setView(view);
-
-            // render boxes
-            vao.bind();
-            for (int i = 0; i < 10; i++) {
-                // calculate the model matrix for each object and pass it to shader before drawing
-                Mat4f model = Mat4f.identity();
-                model = model.multiply(Mat4f.translate(cubePositions[i]));
-                model = model.multiply(Mat4f.rotate(new Vec3f(1.0f, 0.3f, 0.5f), (float) Math.toRadians(20.0f * i)));
-                // model = model.multiply(Mat4f.scale(i >= 5 ? 1.0f + 0.2f * (i - 4) : 1.0f / (1.0f + 0.2f * (5 - i))));
-                s.setModel(model);
-
-                // vao.drawArrays(GL_TRIANGLES, 0, vertices.length / (3 + 2));
-                vao.drawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_SHORT, 0);
-            }
-
-            glfwSwapBuffers(window); // swap the color buffers
-
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
-            glfwPollEvents();
+        if (gameEngine.getWindow().isKeyPressed(GLFW_KEY_W)) {
+            cameraSpeed = cameraSpeed.add(projectedFront);
+        }
+        if (gameEngine.getWindow().isKeyPressed(GLFW_KEY_S)) {
+            cameraSpeed = cameraSpeed.add(projectedFront.negate());
+        }
+        if (gameEngine.getWindow().isKeyPressed(GLFW_KEY_A)) {
+            cameraSpeed = cameraSpeed.add(projectedLeft);
+        }
+        if (gameEngine.getWindow().isKeyPressed(GLFW_KEY_D)) {
+            cameraSpeed = cameraSpeed.add(projectedLeft.negate());
+        }
+        if (gameEngine.getWindow().isKeyPressed(GLFW_KEY_SPACE)) {
+            cameraSpeed = cameraSpeed.add(up);
+        }
+        if (gameEngine.getWindow().isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+            cameraSpeed = cameraSpeed.add(up.negate());
         }
 
-        vao.free();
-        vbo.free();
+        if (cameraSpeed.lengthSquared() > 1e-3f) {
+            cameraSpeed = cameraSpeed.normalize().multiply(CAMERA_SPEED);
+            camera.setSpeed(cameraSpeed);
+        } else {
+            camera.setSpeed(new Vec3f(0.0f, 0.0f, 0.0f));
+        }
+    }
+
+    @Override
+    public void update() {
+        camera.setPos(camera.getPos().add(camera.getSpeed()));
+    }
+
+    @Override
+    public void render(float delta) {
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear the framebuffer
+
+        // bind textures on corresponding texture units
+        Texture.activeTexture(0);
+        texture.bind();
+
+        // activate shader
+        shader.use();
+
+        // pass projection matrix to shader (note that in this case it could change every frame)
+        Mat4f projection = Mat4f.perspective((float) Math.toRadians(45), (float) gameEngine.getWindow().getWidth() / gameEngine.getWindow().getHeight(), 0.1f, 100.0f);
+        shader.setProjection(projection);
+
+        // camera/view transformation
+        Mat4f view = camera.getViewMatrix(delta);
+        shader.setView(view);
+
+        // render boxes
+        vao.bind();
+        for (int i = 0; i < CUBE_POSITIONS.length; i++) {
+            // calculate the model matrix for each object and pass it to shader before drawing
+            Mat4f model = Mat4f.identity();
+            model = model.multiply(Mat4f.translate(CUBE_POSITIONS[i]));
+            model = model.multiply(Mat4f.rotate(new Vec3f(1.0f, 0.3f, 0.5f), (float) Math.toRadians(20.0f * i)));
+            // model = model.multiply(Mat4f.scale(i >= 5 ? 1.0f + 0.2f * (i - 4) : 1.0f / (1.0f + 0.2f * (5 - i))));
+            shader.setModel(model);
+
+            vao.drawElements(GL_TRIANGLES, CUBE_INDICES.length, GL_UNSIGNED_SHORT, 0);
+        }
+
+        gameEngine.getWindow().swap();
+    }
+
+    @Override
+    public void cleanup() {
         texture.free();
-        s.free();
+        ibo.free();
+        vbo.free();
+        vao.free();
+        shader.free();
+    }
+
+    @Override
+    public void onKey(int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+            gameEngine.getWindow().setShouldClose(true);
+        }
+    }
+
+    @Override
+    public void onMouseMove(double xpos, double ypos) {
+        if (firstMouse) {
+            lastMouseX = xpos;
+            lastMouseY = ypos;
+            firstMouse = false;
+        }
+
+        double offsetX = xpos - lastMouseX;
+        double offsetY = lastMouseY - ypos; // reversed since y-coordinates go from bottom to top
+        lastMouseX = xpos;
+        lastMouseY = ypos;
+
+        offsetX *= MOUSE_SENSITIVITY;
+        offsetY *= MOUSE_SENSITIVITY;
+
+        yaw += offsetX;
+        pitch += offsetY;
+
+        // make sure that when pitch is out of bounds, screen doesn't get flipped
+        if (pitch > 89.0) {
+            pitch = 89.0;
+        } else if (pitch < -89.0) {
+            pitch = -89.0;
+        }
+
+        Vec3f front = new Vec3f(
+                (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch))),
+                (float) Math.sin(Math.toRadians(pitch)),
+                (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)))
+        );
+        camera.setDir(front.normalize());
+    }
+
+    @Override
+    public void onScroll(double xoffset, double yoffset) {
     }
 }

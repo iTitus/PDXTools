@@ -20,4 +20,11 @@ module io.github.ititus.stellaris.lwjgl.viewer {
     requires org.joml;
 
     exports io.github.ititus.stellaris.lwjgl.viewer;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine.buffer;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine.camera;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine.shader;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine.texture;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine.vertex;
+    exports io.github.ititus.stellaris.lwjgl.viewer.engine.window;
 }
