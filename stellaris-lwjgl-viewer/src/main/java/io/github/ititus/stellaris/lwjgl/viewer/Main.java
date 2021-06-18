@@ -121,6 +121,8 @@ public class Main {
         System.out.println("  Extensions: " + glGetString(GL_EXTENSIONS));
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Enable v-sync
         glfwSwapInterval(1);
