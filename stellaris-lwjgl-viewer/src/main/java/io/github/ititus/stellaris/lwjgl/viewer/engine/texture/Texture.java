@@ -66,7 +66,6 @@ public abstract class Texture<T extends Texture<T>> extends GlObject<T> {
 
     @Override
     protected void init() {
-        // TODO: this
     }
 
     @Override
