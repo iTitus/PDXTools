@@ -114,6 +114,12 @@ public class Main {
         // bindings available for use.
         GL.createCapabilities();
 
+        System.out.println("OpenGL:");
+        System.out.println("  Version: " + glGetString(GL_VERSION));
+        System.out.println("  Renderer: " + glGetString(GL_RENDERER));
+        System.out.println("  Vendor: " + glGetString(GL_VENDOR));
+        System.out.println("  Extensions: " + glGetString(GL_EXTENSIONS));
+
         glEnable(GL_DEPTH_TEST);
 
         // Enable v-sync
