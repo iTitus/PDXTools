@@ -3,6 +3,7 @@ package io.github.ititus.stellaris.lwjgl.viewer;
 import io.github.ititus.math.matrix.Mat4f;
 import io.github.ititus.math.vector.Vec3f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ArrayBuffer;
+import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ElementArrayBuffer;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.camera.Camera;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.shader.DefaultShaderProgram;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.texture.FileImageSource;
@@ -153,7 +154,7 @@ public class Main {
 
         DefaultShaderProgram s = new DefaultShaderProgram().load();
 
-        float[] vertices = {
+        /*float[] vertices = {
                 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                 0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
                 0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
@@ -195,7 +196,47 @@ public class Main {
                 0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                 -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                 -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+        };*/
+        float[] vertices = {
+                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+
+                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f
         };
+        short[] indices = {
+                0, 1, 2, 2, 3, 0,
+                4, 5, 6, 6, 7, 4,
+                8, 9, 10, 10, 11, 8,
+                12, 13, 14, 14, 15, 12,
+                16, 17, 18, 18, 19, 16,
+                20, 21, 22, 22, 23, 20
+        };
+
         // world space positions of our cubes
         Vec3f[] cubePositions = {
                 new Vec3f(0.0f, 0.0f, 0.0f),
@@ -212,11 +253,15 @@ public class Main {
 
         VertexArray vao = new VertexArray().load();
         ArrayBuffer vbo = new ArrayBuffer().load();
+        ElementArrayBuffer ibo = new ElementArrayBuffer().load();
 
         vao.bind();
 
         vbo.bind();
         vbo.bufferData(vertices, GL_STATIC_DRAW);
+
+        ibo.bind();
+        ibo.bufferData(indices, GL_STATIC_DRAW);
 
         // position attribute
         vao.enableVertexAttribArray(s.getPosLocation());
@@ -275,7 +320,8 @@ public class Main {
                 // model = model.multiply(Mat4f.scale(i >= 5 ? 1.0f + 0.2f * (i - 4) : 1.0f / (1.0f + 0.2f * (5 - i))));
                 s.setModel(model);
 
-                vao.draw(GL_TRIANGLES, 0, vertices.length / (3 + 2));
+                // vao.drawArrays(GL_TRIANGLES, 0, vertices.length / (3 + 2));
+                vao.drawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_SHORT, 0);
             }
 
             glfwSwapBuffers(window); // swap the color buffers

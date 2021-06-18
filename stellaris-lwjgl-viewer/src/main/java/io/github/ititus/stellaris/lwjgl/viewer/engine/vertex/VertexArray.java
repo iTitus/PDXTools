@@ -18,8 +18,12 @@ public class VertexArray extends GlObject<VertexArray> {
         glVertexAttribPointer(index, size, type, normalized, stride, pointer);
     }
 
-    public void draw(int mode, int first, int count) {
+    public void drawArrays(int mode, int first, int count) {
         glDrawArrays(mode, first, count);
+    }
+
+    public void drawElements(int mode, int count, int type, long indices) {
+        glDrawElements(mode, count, type, indices);
     }
 
     @Override

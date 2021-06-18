@@ -16,6 +16,14 @@ public abstract class Buffer<T extends Buffer<T>> extends GlObject<T> {
         glBindBuffer(target, id);
     }
 
+    public void bufferData(short[] data, int usage) {
+        glBufferData(target, data, usage);
+    }
+
+    public void bufferData(int[] data, int usage) {
+        glBufferData(target, data, usage);
+    }
+
     public void bufferData(float[] data, int usage) {
         glBufferData(target, data, usage);
     }
