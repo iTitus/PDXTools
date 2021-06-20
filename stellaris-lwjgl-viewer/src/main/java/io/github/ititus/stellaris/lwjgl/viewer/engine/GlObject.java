@@ -26,6 +26,7 @@ public abstract class GlObject<T extends GlObject<T>> {
 
     public final void free() {
         delete();
+        id = 0;
     }
 
     public int id() {
