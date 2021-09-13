@@ -1,6 +1,6 @@
 plugins {
     id 'pdx.java-application-conventions'
-    id 'org.javamodularity.moduleplugin' version '1.8.7'
+    id 'org.javamodularity.moduleplugin' version '1.8.9'
     id 'org.beryx.jlink' version '2.24.1'
 }
 
@@ -47,7 +47,7 @@ dependencies {
         implementation "org.lwjgl:lwjgl${it}::${lwjglNatives}"
     }
 
-    implementation 'org.joml:joml:1.10.1'
+    implementation 'org.joml:joml:1.10.2'
 }
 
 jlink {
