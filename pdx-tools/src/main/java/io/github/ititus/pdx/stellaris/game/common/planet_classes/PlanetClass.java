@@ -15,7 +15,7 @@ public class PlanetClass {
     public final String overlayEntity;
     public final String picture;
     public final String tileSet;
-    public final int itemFrame;
+    public final String icon;
     public final String climate;
     public final double entityScale;
     public final boolean enableTilt;
@@ -67,7 +67,7 @@ public class PlanetClass {
         this.overlayEntity = o.getString("overlay_entity", null);
         this.picture = o.getString("picture", null);
         this.tileSet = o.getString("tile_set", null);
-        this.itemFrame = o.getInt("icon_frame");
+        this.icon = o.getString("icon");
         this.climate = o.getString("climate", null);
         this.entityScale = o.getDouble("entity_scale");
         this.enableTilt = o.getBoolean("enable_tilt", true);

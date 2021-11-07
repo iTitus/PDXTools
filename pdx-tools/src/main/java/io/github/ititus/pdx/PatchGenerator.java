@@ -82,9 +82,8 @@ public final class PatchGenerator {
         List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("a/" + relativePath, "b/" + relativePath, original, diff, CONTEXT_SIZE);
         unifiedDiff.forEach(System.out::println);
 
-        Path outputFile = OUTPUT_DIR.resolve(relativePath + ".patch");
+        Path outputFile = PathUtil.createParentsAndResolveFile(OUTPUT_DIR.resolve(relativePath + ".patch"));
         try {
-            Files.createDirectories(outputFile.getParent());
             Files.write(outputFile, unifiedDiff);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
