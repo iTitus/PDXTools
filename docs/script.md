@@ -593,8 +593,8 @@ All these errors do not cause the game to crash, they are ignored and thus might
 
 ## References
 
-- [Effects](/script_documentation/effects.log)
-- [Localizations](/script_documentation/localizations.log)
-- [Modifiers](/script_documentation/modifiers.log)
-- [Scopes](/script_documentation/scopes.log)
-- [Triggers](/script_documentation/triggers.log)
+- [Effects]({{ '/script_documentation/effects.log' | relative_url }})
+- [Localizations]({{ '/script_documentation/localizations.log' | relative_url }})
+- [Modifiers]({{ '/script_documentation/modifiers.log' | relative_url }})
+- [Scopes]({{ '/script_documentation/scopes.log' | relative_url }})
+- [Triggers]({{ '/script_documentation/triggers.log' | relative_url }})
