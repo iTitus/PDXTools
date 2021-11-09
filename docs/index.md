@@ -317,9 +317,10 @@ ship_names={
 
 
 ## Examples from the game files
+
 These are probably hand-written and may contain errors!
 
-### file: common/technology/00_soc_tech.txt
+### file: `common/technology/00_soc_tech.txt`
 ```
 tech_planetary_unification = {
     cost = @tier1cost1 # this is a variable defined in another file
@@ -384,7 +385,7 @@ tech_planetary_unification = {
 }
 ```
 
-### file: common/planet_classes/00_planet_classes.txt
+### file: `common/planet_classes/00_planet_classes.txt`
 ```
 pc_desert = {
     entity = "desert_planet"
@@ -423,7 +424,7 @@ pc_desert = {
 }
 ```
 
-### file: events/colony_events_1.txt
+### file: `events/colony_events_1.txt`
 ```
 planet_event = {
     id = colony.1
@@ -493,6 +494,88 @@ planet_event = {
             location = this
             owner = root
         }
+    }
+}
+```
+
+## file: `common/scripted_effects/00_scripted_effects.txt`
+```
+death_cult_sacrifice_effect = {
+    #First we need to get the variables that determine how big the boon is
+
+    # Formula is ( initiates * random factor ) / (total pops), and then round that to the nearest 0.1 to avoid weird-looking results
+    random_list = {
+        #This is effectively ( base * random ), where base = 30
+        #It is balanced so that sacrificing 5% of your pops gives a really good result
+
+        1 = {
+            set_variable = {
+                which = sacrifice_random_mult
+                value = 15
+            }
+        }
+        4 = {
+            set_variable = {
+                which = sacrifice_random_mult
+                value = 20
+            }
+        }
+        1 = {
+            set_variable = {
+                which = sacrifice_random_mult
+                value = 25
+            }
+        }
+    }
+    if = { #small empire penalty: losing 1 pop out of 30 is not the same as 30 out of 900 with logarithmic growth
+        limit = { num_pops < 100 }
+        multiply_variable = {
+            which = sacrifice_random_mult
+            value = 0.8
+        }
+        if = {
+            limit = { num_pops < 50 }
+            multiply_variable = {
+                which = sacrifice_random_mult
+                value = 0.8
+            }
+        }
+    }
+    export_trigger_value_to_variable = {
+        trigger = num_assigned_jobs
+        parameters = {
+            job = mortal_initiate
+        }
+        variable = sacrifice_result_mult
+    }
+    multiply_variable = {
+        which = sacrifice_result_mult
+        value = sacrifice_random_mult
+    }
+    clear_variable = sacrifice_random_mult
+    divide_variable = {
+        which = sacrifice_result_mult
+        value = trigger:num_pops
+    }
+    round_variable_to_closest = {
+        which = sacrifice_result_mult
+        value = 0.1
+    }
+
+    #We also need the edicts length multiplier for the modifiers
+    export_modifier_to_variable = {
+        modifier = edict_length_mult
+        variable = edict_length_modifiers
+    }
+    change_variable = { # Needs to be 1 + mult
+        which = edict_length_modifiers
+        value = 1
+    }
+
+    #Now we do the sacrifice
+    every_owned_pop = {
+        limit = { has_job = mortal_initiate }
+        kill_pop = yes
     }
 }
 ```
