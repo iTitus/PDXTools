@@ -1,5 +1,5 @@
 ---
-permalink: "/script.html"
+permalink: "/script"
 layout: default
 ---
 

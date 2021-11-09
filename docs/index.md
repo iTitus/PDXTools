@@ -5,5 +5,5 @@ layout: default
 
 # PDXTools
 
-- [Intro](/intro.html)
-- [Script](/script.html)
+- [Intro](/intro)
+- [Script](/script)

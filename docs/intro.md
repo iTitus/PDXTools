@@ -1,5 +1,5 @@
 ---
-permalink: "/intro.html"
+permalink: "/intro"
 layout: default
 ---
 
