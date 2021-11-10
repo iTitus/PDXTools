@@ -7,7 +7,7 @@ layout: default
 
 What can PDXTools do right now?
 
-## pdx-tools subproject
+## dds-reader/dds-jfx-loader subproject
 
 - Read `dds` images (DirectDrawSurface), an image format made by Microsoft for DirectX.
   - Targets: Java `BufferedImage` and JavaFX `Image`
