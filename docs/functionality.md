@@ -217,10 +217,9 @@ public record Technology(
         ImmutableList<String> weightGroups = o.getListAsEmptyOrStringList("weight_groups");
         ImmutableObjectDoubleMap<String> modWeightIfGroupPicked = o.getObjectAsEmptyOrStringDoubleMap("mod_weight_if_group_picked");
         return new Technology(game, name, cost, area, tier, category, levels, costPerLevel, prerequisites, weight, gateway, aiUpdateType, isRare, isDangerous, isReverseEngineerable, startTech, modifier, featureFlags, prereqforDesc, potential, weightModifier, aiWeight, weightGroups, modWeightIfGroupPicked);
-  }
+    }
   
-  // ...
-  
+    // ...
 }
 ```
 
@@ -237,18 +236,18 @@ public class ResearchLeaderTrigger extends TriggerBasedTrigger {
     public final Technology.Area area;
 
     public ResearchLeaderTrigger(Triggers triggers, IPdxScript s) {
-      super(triggers, s, not("area"::equals));
-      this.area = s.expectObject().getEnum("area", Technology.Area::of);
+        super(triggers, s, not("area"::equals));
+        this.area = s.expectObject().getEnum("area", Technology.Area::of);
     }
 
     @Override
     public boolean evaluate(Scope scope) {
-      CountryScope cs = CountryScope.expect(scope);
-      LeaderScope ls = cs.getResearchLeader(area);
-      return ls != null && evaluateAnd(ls, children);
+        CountryScope cs = CountryScope.expect(scope);
+        LeaderScope ls = cs.getResearchLeader(area);
+        return ls != null && evaluateAnd(ls, children);
     }
 
-  // ...
+    // ...
 }
 ```
 
