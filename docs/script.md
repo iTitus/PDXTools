@@ -591,6 +591,18 @@ death_cult_sacrifice_effect = {
 All these errors do not cause the game to crash, they are ignored and thus might lead to issues while playing.
 
 
+## Types of script
+
+There can be two types of script: static and dynamic.
+
+Static script just represents data - like in save files.
+
+Dynamic scripts can also contain triggers and effects. Triggers check something in the game and evaluate to boolean values while effects have no return value and change something in the game. They are governed by Scopes. A scope can be thought of as `this` in an object-oriented programming language - the current context where this script is executed. This can for example be a planet, a system or a pop.
+
+Each scope type has specific triggers and effects that can be executed.
+You can change your current scope. For example when you are in the scope of a country you can use `research_leader = { area = ? ... }` to execute something in the scope of the leader entity that is the current research leader in the given tech area.
+
+
 ## References
 
 - [Effects]({{ '/script_documentation/effects.log' | relative_url }})

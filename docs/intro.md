@@ -37,11 +37,6 @@ layout: default
 
 ![technology weights]({{ '/img/technology_weights.jpg' | relative_url}})
 
-## My viewer
-
-![my galaxy view]({{ '/img/my_galaxy_view.png' | relative_url}})
-![my system view]({{ '/img/my_system_view.png' | relative_url}})
-
 ## Game files
 
 ![dir tree]({{ '/img/dir_tree.png' | relative_url}})

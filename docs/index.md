@@ -7,3 +7,4 @@ layout: default
 
 - [Intro]({{ 'intro' | relative_url }})
 - [Script]({{ 'script' | relative_url }})
+- [Functionality]({{ 'functionality' | relative_url }})

@@ -12,6 +12,8 @@ public record TechnologyWeightModifiers(
         ImmutableList<TechnologyWeightModifier> modifiers
 ) {
 
+    // TODO: weight = 9999
+
     public static TechnologyWeightModifiers of(StellarisGame game, PdxScriptObject o) {
         double factor = o.getDouble("factor", 1);
         ImmutableList<TechnologyWeightModifier> modifiers = o.getImplicitListAsList("modifier", s -> TechnologyWeightModifier.of(game, s));
