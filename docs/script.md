@@ -55,6 +55,9 @@ no
 none
 ```
 
+### Percent
+I have logic for parsing decimals with percent (`%`) symbols. But I do not know where these are used in the game files.
+
 ### Parameters
 
 Not used in save files.
@@ -267,6 +270,9 @@ tech_status={
     # ...
 }
 ```
+
+### Comma
+I have logic for parsing lists with comma (`,`) as separators. But I do not know where these are used in the game files. They might have been a typo.
 
 
 ## Objects
