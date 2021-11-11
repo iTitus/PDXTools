@@ -5,6 +5,10 @@ layout: default
 
 # Functionality
 
+## History
+
+First commit in June 2018, but that was a prototype that already did something. Local work must have started a few weeks before I think.
+
 What can PDXTools do right now?
 
 ## dds-reader/dds-jfx-loader subproject
