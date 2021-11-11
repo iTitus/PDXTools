@@ -5,6 +5,7 @@ layout: default
 
 # PDXTools
 
-- [Intro]({{ 'intro' | relative_url }})
-- [Script]({{ 'script' | relative_url }})
-- [Functionality]({{ 'functionality' | relative_url }})
+- [Intro]({{ '/intro' | relative_url }})
+- [Script]({{ '/script' | relative_url }})
+- [Functionality]({{ '/functionality' | relative_url }})
+- [Parsing]({{ '/parsing' | relative_url }})
