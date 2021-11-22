@@ -35,7 +35,7 @@ public class Test {
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
     private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
-    private static final Path SAVE_DIR = USER_DATA_DIR.resolve("save games/mpthorquellalliance_-677535411");
+    private static final Path SAVE_DIR = USER_DATA_DIR.resolve("save games/unitednationsofearth_-15512622");
     private static final Path PDX_TEMP_DIR = USER_HOME.resolve("Desktop/pdx");
     private static final Path DEBUG_OUT = PDX_TEMP_DIR.resolve("out.txt");
     private static final Path[] TEST_FILES = { /*USER_HOME.resolve("Desktop/pdx/test.txt")*/ };

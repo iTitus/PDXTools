@@ -14,6 +14,7 @@ import io.github.ititus.pdx.stellaris.user.save.Country;
 import io.github.ititus.pdx.stellaris.user.save.Starbase;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.impl.collector.Collectors2;
 
 import java.util.Objects;
@@ -73,7 +74,7 @@ public class CountryScope extends StellarisScope implements HabitablePlanetOwner
             case "is_country_type" -> v.expectString().equals(country.type);
             case "is_galactic_community_member" -> v.expectBoolean() == save.gameState.galacticCommunity.members.contains(country.id);
             case "num_owned_planets" -> ScopeHelper.compare(country.ownedPlanets.size(), v);
-            case "num_communications" -> ScopeHelper.compare(country.relationsManager.relations.count(r_ -> r_.communications), v);
+            case "num_communications" -> ScopeHelper.compare(country.relationsManager != null ? country.relationsManager.relations.count(r_ -> r_.communications) : 0, v);
             case "owns_any_bypass" -> save.gameState.bypasses.anySatisfy(b -> b.owner.id == country.id && v.expectString().equals(b.type));
             default -> super.evaluateValueTrigger(name, v);
         };
@@ -128,10 +129,18 @@ public class CountryScope extends StellarisScope implements HabitablePlanetOwner
     }
 
     public RichIterable<CountryScope> getRelations() {
+        if (country.relationsManager == null) {
+            return Lists.mutable.empty();
+        }
+
         return country.relationsManager.relations.collect(r -> new CountryScope(game, save, r.country));
     }
 
     public RichIterable<CountryScope> getNeighborCountries() {
+        if (country.relationsManager == null) {
+            return Lists.mutable.empty();
+        }
+
         return country.relationsManager.relations.stream()
                 .filter(r -> r.borders)
                 .mapToInt(r -> r.country)

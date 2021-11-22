@@ -16,6 +16,6 @@ public class Cluster {
         this.id = o.getString("id");
         this.position = o.getObjectAs("position", Coordinate::new);
         this.radius = o.getDouble("radius");
-        this.objects = o.getListAsIntList("objects");
+        this.objects = o.getListAsEmptyOrIntList("objects");
     }
 }

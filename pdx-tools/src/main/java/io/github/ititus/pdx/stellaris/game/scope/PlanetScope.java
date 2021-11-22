@@ -51,6 +51,7 @@ public class PlanetScope extends StellarisScope implements PopOwnerScope, Resour
                 yield v.expectBoolean() == (c != null && c.startingSystem == planet.id);
             }
             case "is_planet_class" -> v.expectString().equals(planet.planetClass);
+            case "is_colonizable" -> v.expectBoolean() == (game.common.planetClasses.planetClasses.get(planet.planetClass).colonizable);
             default -> super.evaluateValueTrigger(name, v);
         };
     }

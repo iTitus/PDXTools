@@ -232,6 +232,7 @@ public class StellarisGame {
 
         // Engine Triggers for Stellaris
         triggers.addEngineValueTrigger("is_planet_class");
+        triggers.addEngineValueTrigger("is_colonizable");
         triggers.addEngineValueTrigger("has_origin");
         triggers.addEngineValueTrigger("has_trait");
         triggers.addEngineValueTrigger("years_passed");
@@ -284,6 +285,7 @@ public class StellarisGame {
         triggers.addEngineTrigger("research_leader", ResearchLeaderTrigger::new);
         triggers.addEngineTrigger("has_resource", HasResourceTrigger::new);
         triggers.addEngineTrigger("num_districts", NumDistrictsTrigger::new);
+        triggers.addEngineTrigger("habitability", HabitabilityTrigger::new);
     }
 
     private void addEngineEffects() {
