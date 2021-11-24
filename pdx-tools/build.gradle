@@ -9,7 +9,7 @@ dependencies {
 
     implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
-    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:11.0.0'
     implementation 'io.github.java-diff-utils:java-diff-utils:4.11'
 
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
