@@ -36,7 +36,7 @@ dependencies {
     implementation 'io.github.ititus:ititus-commons:1.5.14'
 
     implementation 'org.eclipse.collections:eclipse-collections-api:11.0.0'
-    implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
+    implementation 'org.eclipse.collections:eclipse-collections:11.0.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:11.0.0'
 
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
