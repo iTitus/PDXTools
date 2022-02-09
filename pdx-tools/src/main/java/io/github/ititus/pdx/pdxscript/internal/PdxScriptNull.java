@@ -56,4 +56,9 @@ public final class PdxScriptNull extends PdxScriptValue {
 
         return super.equals(o);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
