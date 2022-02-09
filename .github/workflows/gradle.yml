@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        java-version: [ 16 ]
+        java-version: [ 17 ]
         distribution: [ adopt ]
 
     runs-on: ${{ matrix.os }}

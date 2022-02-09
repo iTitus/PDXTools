@@ -20,7 +20,7 @@ dependencies {
     implementation 'org.eclipse.collections:eclipse-collections:11.0.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:11.0.0'
 
-    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:10.4.0'
+    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:11.0.0'
 }
 
 run {
@@ -33,7 +33,7 @@ run {
 }
 
 javafx {
-    version = '17.0.1'
+    version = '17.0.2'
     modules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
 }
 
