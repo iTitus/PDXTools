@@ -1,4 +1,4 @@
 extraction:
   java:
     index:
-      java_version: 16
+      java_version: 17
