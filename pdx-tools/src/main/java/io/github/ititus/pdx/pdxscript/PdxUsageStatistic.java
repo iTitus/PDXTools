@@ -83,7 +83,7 @@ public final class PdxUsageStatistic {
             return 0;
         };
         Comparator<Map.Entry<String, PdxUsage>> byTypes = Map.Entry.
-                <String, PdxUsage>comparingByValue(
+                        <String, PdxUsage>comparingByValue(
                         Comparator.comparing((PdxUsage u) -> u.getExpectedTypes().isEmpty(), trueFirst)
                                 .thenComparing((PdxUsage u) -> {
                                     ImmutableSet<String> actualTypes = u.getActualTypes();

@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.game;
 
-import io.github.ititus.io.FileExtensionFilter;
-import io.github.ititus.io.PathFilter;
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.io.FileExtensionFilter;
+import io.github.ititus.commons.io.PathFilter;
+import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.pdx.pdxasset.PdxAssets;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisation;
 import io.github.ititus.pdx.pdxlocalisation.PdxLocalisationParser;

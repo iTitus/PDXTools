@@ -1,10 +1,10 @@
 package io.github.ititus.pdx.pdxlocalisation;
 
-import io.github.ititus.data.mutable.Mutable;
-import io.github.ititus.data.mutable.MutableBoolean;
-import io.github.ititus.io.FileExtensionFilter;
-import io.github.ititus.io.PathFilter;
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.data.mutable.Mutable;
+import io.github.ititus.commons.data.mutable.MutableBoolean;
+import io.github.ititus.commons.io.FileExtensionFilter;
+import io.github.ititus.commons.io.PathFilter;
+import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;
 import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.factory.Sets;

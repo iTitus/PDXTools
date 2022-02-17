@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.stellaris.game.dlc;
 
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;

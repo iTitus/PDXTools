@@ -1,7 +1,7 @@
 package io.github.ititus.pdx.pdxscript;
 
-import io.github.ititus.data.IteratorBuffer;
-import io.github.ititus.data.mutable.MutableBoolean;
+import io.github.ititus.commons.data.IteratorBuffer;
+import io.github.ititus.commons.data.mutable.MutableBoolean;
 import io.github.ititus.pdx.util.IOUtil;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.factory.Maps;

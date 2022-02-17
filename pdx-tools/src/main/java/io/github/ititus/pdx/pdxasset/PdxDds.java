@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.pdxasset;
 
-import io.github.ititus.data.Lazy;
+import io.github.ititus.commons.data.Lazy;
 import io.github.ititus.dds.DdsFile;
 
 import java.io.IOException;

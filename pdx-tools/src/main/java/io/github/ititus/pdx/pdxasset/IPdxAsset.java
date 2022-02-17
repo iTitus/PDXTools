@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.pdxasset;
 
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.io.PathUtil;
 
 import java.nio.file.Path;
 import java.util.Optional;

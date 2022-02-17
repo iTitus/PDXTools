@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.shared.trigger;
 
-import io.github.ititus.data.mutable.MutableBoolean;
+import io.github.ititus.commons.data.mutable.MutableBoolean;
 import io.github.ititus.pdx.pdxscript.IPdxScript;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;

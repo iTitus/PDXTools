@@ -1,9 +1,9 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
-import io.github.ititus.data.mutable.MutableInt;
-import io.github.ititus.io.FileExtensionFilter;
-import io.github.ititus.io.PathFilter;
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.data.mutable.MutableInt;
+import io.github.ititus.commons.io.FileExtensionFilter;
+import io.github.ititus.commons.io.PathFilter;
+import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;

@@ -1,11 +1,11 @@
 package io.github.ititus.stellaris.lwjgl.viewer.engine.shader;
 
-import io.github.ititus.math.matrix.Mat2f;
-import io.github.ititus.math.matrix.Mat3f;
-import io.github.ititus.math.matrix.Mat4f;
-import io.github.ititus.math.vector.Vec2f;
-import io.github.ititus.math.vector.Vec3f;
-import io.github.ititus.math.vector.Vec4f;
+import io.github.ititus.commons.math.matrix.Mat2f;
+import io.github.ititus.commons.math.matrix.Mat3f;
+import io.github.ititus.commons.math.matrix.Mat4f;
+import io.github.ititus.commons.math.vector.Vec2f;
+import io.github.ititus.commons.math.vector.Vec3f;
+import io.github.ititus.commons.math.vector.Vec4f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.GlObject;
 import org.lwjgl.system.MemoryStack;
 

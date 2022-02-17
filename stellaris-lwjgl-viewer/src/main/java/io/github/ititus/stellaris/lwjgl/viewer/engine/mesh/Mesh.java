@@ -1,8 +1,8 @@
 package io.github.ititus.stellaris.lwjgl.viewer.engine.mesh;
 
-import io.github.ititus.math.matrix.Mat4f;
-import io.github.ititus.math.vector.Vec2f;
-import io.github.ititus.math.vector.Vec3f;
+import io.github.ititus.commons.math.matrix.Mat4f;
+import io.github.ititus.commons.math.vector.Vec2f;
+import io.github.ititus.commons.math.vector.Vec3f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ArrayBuffer;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.buffer.ElementArrayBuffer;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.shader.DefaultShaderProgram;

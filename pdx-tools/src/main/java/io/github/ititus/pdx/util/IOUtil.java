@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.util;
 
-import io.github.ititus.io.IO;
+import io.github.ititus.commons.io.IO;
 import io.github.ititus.pdx.pdxscript.PdxPatch;
 import io.github.ititus.pdx.pdxscript.PdxPatchDatabase;
 

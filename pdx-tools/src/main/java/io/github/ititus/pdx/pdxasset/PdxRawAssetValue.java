@@ -1,6 +1,6 @@
 package io.github.ititus.pdx.pdxasset;
 
-import io.github.ititus.math.vector.*;
+import io.github.ititus.commons.math.vector.*;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.ImmutableFloatList;

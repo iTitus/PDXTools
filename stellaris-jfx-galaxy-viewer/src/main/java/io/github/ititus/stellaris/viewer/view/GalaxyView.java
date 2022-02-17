@@ -1,6 +1,6 @@
 package io.github.ititus.stellaris.viewer.view;
 
-import io.github.ititus.data.mutable.MutableInt;
+import io.github.ititus.commons.data.mutable.MutableInt;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.save.*;
 import javafx.application.Platform;

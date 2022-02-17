@@ -39,11 +39,11 @@ public final class PdxConstants {
     public static final char LESS_THAN_CHAR = '<';
     public static final char GREATER_THAN_CHAR = '>';
     public static final String EQUALS = String.valueOf(EQUALS_CHAR);
-    public static final String LESS_THAN = String.valueOf(LESS_THAN_CHAR);
-    public static final String GREATER_THAN = String.valueOf(GREATER_THAN_CHAR);
     public static final String NOT_EQUALS = NOT_CHAR + EQUALS;
     public static final String LESS_THAN_OR_EQUALS = LESS_THAN_CHAR + EQUALS;
     public static final String GREATER_THAN_OR_EQUALS = GREATER_THAN_CHAR + EQUALS;
+    public static final String LESS_THAN = String.valueOf(LESS_THAN_CHAR);
+    public static final String GREATER_THAN = String.valueOf(GREATER_THAN_CHAR);
     /**
      * Currently only one math operation (division: 4/30) in common/defines/00_defines.txt:852
      */

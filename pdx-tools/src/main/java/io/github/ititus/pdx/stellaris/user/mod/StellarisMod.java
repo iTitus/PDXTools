@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.user.mod;
 
-import io.github.ititus.io.FileExtensionFilter;
-import io.github.ititus.io.PathFilter;
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.io.FileExtensionFilter;
+import io.github.ititus.commons.io.PathFilter;
+import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxRawDataLoader;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.pdxscript.PdxScriptParser;

@@ -3,7 +3,7 @@ package io.github.ititus.pdx;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.UnifiedDiffUtils;
 import com.github.difflib.patch.Patch;
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.io.PathUtil;
 
 import java.io.File;
 import java.io.IOException;

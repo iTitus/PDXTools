@@ -1,10 +1,10 @@
 package io.github.ititus.stellaris.viewer;
 
+import io.github.ititus.commons.io.PathUtil;
+import io.github.ititus.commons.math.vector.Vec2f;
+import io.github.ititus.commons.math.vector.Vec3f;
+import io.github.ititus.commons.math.vector.Vec3i;
 import io.github.ititus.ddsfx.DdsFx;
-import io.github.ititus.io.PathUtil;
-import io.github.ititus.math.vector.Vec2f;
-import io.github.ititus.math.vector.Vec3f;
-import io.github.ititus.math.vector.Vec3i;
 import io.github.ititus.pdx.pdxasset.IPdxAsset;
 import io.github.ititus.pdx.pdxasset.PdxMesh;
 import javafx.animation.Animation;
@@ -73,6 +73,25 @@ public class ModelViewer extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static void lookAt(Point3D lookAtPos, Rotate rX, Rotate rY, Translate translate) {
+        Point3D camDirection = lookAtPos.subtract(translate.getX(), translate.getY(), translate.getZ()).normalize();
+
+        double xRotation = Math.toDegrees(Math.asin(-camDirection.getY()));
+        double yRotation = Math.toDegrees(Math.atan2(camDirection.getX(), camDirection.getZ()));
+
+        rX.setAngle(xRotation);
+        rX.setPivotX(translate.getX());
+        rX.setPivotY(translate.getY());
+        rX.setPivotZ(translate.getZ());
+        rX.setAxis(Rotate.X_AXIS);
+
+        rY.setAngle(yRotation);
+        rY.setPivotX(translate.getX());
+        rY.setPivotY(translate.getY());
+        rY.setPivotZ(translate.getZ());
+        rY.setAxis(Rotate.Y_AXIS);
     }
 
     @Override
@@ -255,24 +274,5 @@ public class ModelViewer extends Application {
             content.getChildren().clear();
             content.getChildren().add(all);
         }
-    }
-
-    private static void lookAt(Point3D lookAtPos, Rotate rX, Rotate rY, Translate translate) {
-        Point3D camDirection = lookAtPos.subtract(translate.getX(), translate.getY(), translate.getZ()).normalize();
-
-        double xRotation = Math.toDegrees(Math.asin(-camDirection.getY()));
-        double yRotation = Math.toDegrees(Math.atan2(camDirection.getX(), camDirection.getZ()));
-
-        rX.setAngle(xRotation);
-        rX.setPivotX(translate.getX());
-        rX.setPivotY(translate.getY());
-        rX.setPivotZ(translate.getZ());
-        rX.setAxis(Rotate.X_AXIS);
-
-        rY.setAngle(yRotation);
-        rY.setPivotX(translate.getX());
-        rY.setPivotY(translate.getY());
-        rY.setPivotZ(translate.getZ());
-        rY.setAxis(Rotate.Y_AXIS);
     }
 }

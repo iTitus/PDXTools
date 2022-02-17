@@ -1,7 +1,7 @@
 package io.github.ititus.stellaris.lwjgl.viewer;
 
-import io.github.ititus.math.matrix.Mat4f;
-import io.github.ititus.math.vector.Vec3f;
+import io.github.ititus.commons.math.matrix.Mat4f;
+import io.github.ititus.commons.math.vector.Vec3f;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.Game;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.GameEngine;
 import io.github.ititus.stellaris.lwjgl.viewer.engine.camera.Camera;

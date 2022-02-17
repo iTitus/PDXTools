@@ -1,8 +1,8 @@
 package io.github.ititus.pdx.stellaris.game.gfx;
 
-import io.github.ititus.io.FileExtensionFilter;
-import io.github.ititus.io.PathFilter;
-import io.github.ititus.io.PathUtil;
+import io.github.ititus.commons.io.FileExtensionFilter;
+import io.github.ititus.commons.io.PathFilter;
+import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.pdx.pdxscript.PdxScriptObject;
 import io.github.ititus.pdx.shared.ProgressMessageUpdater;
 import org.eclipse.collections.api.list.ImmutableList;
