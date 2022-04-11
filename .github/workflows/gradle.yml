@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew build
 
       #- name: Save Test Reports
-      #  uses: actions/upload-artifact@v2
+      #  uses: actions/upload-artifact@v3
       #  if: always()
       #  with:
       #    name: test-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -58,7 +58,7 @@ jobs:
         run: ./gradlew jlinkZip
 
       - name: Save Image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: stellaris-jfx-galaxy-viewer-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.distribution }}
           path: stellaris-jfx-galaxy-viewer/build/image.zip
