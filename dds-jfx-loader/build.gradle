@@ -1,6 +1,6 @@
 plugins {
     id 'pdx.java-library-conventions'
-    id 'org.javamodularity.moduleplugin' version '1.8.11'
+    id 'org.javamodularity.moduleplugin' version '1.8.12'
     id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
