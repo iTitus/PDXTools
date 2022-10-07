@@ -73,7 +73,7 @@ public class Test {
 
         StopWatch s = StopWatch.createRunning();
 
-        StellarisGame game = /*null; //*/ getStellarisGame();
+        StellarisGame game = null; // getStellarisGame();
         StellarisUserData userData = null; // getStellarisUserData();
         StellarisSave save = /*null; //*/ getStellarisSave();
 

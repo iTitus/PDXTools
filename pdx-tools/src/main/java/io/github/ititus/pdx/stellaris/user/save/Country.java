@@ -113,7 +113,6 @@ public class Country {
     public final double givenValue;
     public final int numUpgradedStarbase;
     public final int starbaseCapacity;
-    public final int edictCapacity;
     public final ImmutableIntList ownedSpecies;
 
     public Country(int id, IPdxScript s) {
@@ -222,7 +221,6 @@ public class Country {
         this.givenValue = o.getDouble("given_value");
         this.numUpgradedStarbase = o.getInt("num_upgraded_starbase");
         this.starbaseCapacity = o.getInt("starbase_capacity");
-        this.edictCapacity = o.getInt("edict_capacity");
         // TODO: first_contact
         this.ownedSpecies = o.getListAsEmptyOrIntList("owned_species_refs");
     }
