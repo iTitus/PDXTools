@@ -1,4 +1,0 @@
-plugins {
-    id 'pdx.java-library-conventions'
-    id 'org.javamodularity.moduleplugin' version '1.8.12'
-}

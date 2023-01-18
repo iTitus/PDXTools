@@ -11,8 +11,9 @@ First commit in June 2018, but that was a prototype that already did something. 
 
 What can PDXTools do right now?
 
-## dds-reader/dds-jfx-loader subproject
+## dds/ddsfx project
 
+- In another repository
 - Read `dds` images (DirectDrawSurface), an image format made by Microsoft for DirectX.
   - Targets: Java `BufferedImage` and JavaFX `Image`
 

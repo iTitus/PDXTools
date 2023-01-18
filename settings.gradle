@@ -1,6 +1,4 @@
 rootProject.name = 'pdx'
-include 'dds-reader'
-include 'dds-jfx-loader'
 include 'pdx-tools'
 include 'stellaris-jfx-galaxy-viewer'
 include 'stellaris-lwjgl-viewer'

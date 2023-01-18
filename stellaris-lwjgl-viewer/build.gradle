@@ -31,7 +31,7 @@ application {
 }
 
 dependencies {
-    implementation project(':dds-reader')
+    implementation 'io.github.ititus:dds:1.0.0'
     implementation project(':pdx-tools')
     implementation 'io.github.ititus:ititus-commons:2.3.3'
 
