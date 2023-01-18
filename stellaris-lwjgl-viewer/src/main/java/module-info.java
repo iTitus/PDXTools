@@ -1,7 +1,7 @@
 module io.github.ititus.stellaris.lwjgl.viewer {
     requires java.desktop;
     requires io.github.ititus.commons;
-    requires io.github.ititus.dds;
+    requires io.github.ititus.ddsiio;
     requires io.github.ititus.pdx;
     requires org.eclipse.collections.api;
     requires org.eclipse.collections.impl;

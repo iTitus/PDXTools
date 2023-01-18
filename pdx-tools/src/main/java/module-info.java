@@ -2,7 +2,7 @@ module io.github.ititus.pdx {
     requires java.desktop;
     requires jdk.zipfs;
     requires io.github.ititus.commons;
-    requires io.github.ititus.dds;
+    requires io.github.ititus.ddsiio;
     requires org.eclipse.collections.api;
     requires org.eclipse.collections.impl;
     requires io.github.javadiffutils;
