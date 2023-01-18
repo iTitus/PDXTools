@@ -1,12 +1,11 @@
 name: Gradle Build
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main, develop ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
@@ -34,31 +33,25 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: ${{ matrix.distribution }}
 
-      - name: Load Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Build with Gradle
-        run: ./gradlew build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
-      #- name: Save Test Reports
-      #  uses: actions/upload-artifact@v3
-      #  if: always()
-      #  with:
-      #    name: test-reports-${{ matrix.os }}-${{ matrix.java }}
-      #    path: build/reports
+      - name: Save Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-reports-${{ matrix.os }}-${{ matrix.java }}
+          path: '*/build/reports'
 
       - name: Build jlink Image with Gradle
-        run: ./gradlew jlinkZip
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jlinkZip
 
       - name: Save Image
         uses: actions/upload-artifact@v3
         with:
           name: stellaris-jfx-galaxy-viewer-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.distribution }}
-          path: stellaris-jfx-galaxy-viewer/build/image.zip
+          path: '*/build/image.zip'
