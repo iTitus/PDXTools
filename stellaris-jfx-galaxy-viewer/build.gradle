@@ -19,7 +19,7 @@ dependencies {
     implementation 'org.eclipse.collections:eclipse-collections:11.1.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:11.1.0'
 
-    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:11.0.0'
+    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:11.1.0'
 }
 
 run {
