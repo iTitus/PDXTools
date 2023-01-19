@@ -31,8 +31,8 @@ application {
 }
 
 dependencies {
-    implementation 'io.github.ititus:ddsiio:2.0.1'
     implementation project(':pdx-tools')
+    implementation 'io.github.ititus:ddsiio:2.0.3'
     implementation 'io.github.ititus:ititus-commons:2.3.3'
 
     implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
