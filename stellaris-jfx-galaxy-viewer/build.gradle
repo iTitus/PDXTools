@@ -11,7 +11,7 @@ application {
 }
 
 dependencies {
-    implementation 'io.github.ititus:ddsfx:2.0.0'
+    implementation 'io.github.ititus:ddsfx:2.0.1'
     implementation project(':pdx-tools')
     implementation 'io.github.ititus:ititus-commons:2.3.3'
 
