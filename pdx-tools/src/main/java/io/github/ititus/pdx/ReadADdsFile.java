@@ -92,6 +92,14 @@ public class ReadADdsFile {
         Map<D3dFormat, List<Path>> formats = new LinkedHashMap<>();
         Map<Type, List<Path>> types = new LinkedHashMap<>();
         for (Path p : files) {
+            try {
+                if (Files.size(p) == 0) {
+                    continue;
+                }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+
             DdsFile dds;
             try {
                 dds = read(p);
@@ -99,8 +107,8 @@ public class ReadADdsFile {
                 throw new UncheckedIOException(e);
             }
 
-            if (dds.isDx10()) {
-                throw new RuntimeException("dds file contains unexpected dx10 header");
+            if (dds.isDxt10()) {
+                throw new RuntimeException("dds file contains unexpected dxt10 header");
             }
 
             headers.computeIfAbsent(dds.header(), k -> new ArrayList<>()).add(p);
