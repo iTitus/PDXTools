@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'io.github.ititus:ddsiio:3.0.1'
+    implementation 'io.github.ititus:ddsiio:3.1.0'
     implementation 'io.github.ititus:ititus-commons:2.3.3'
 
     implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
