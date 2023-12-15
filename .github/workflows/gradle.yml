@@ -39,7 +39,7 @@ jobs:
           arguments: build
 
       - name: Save Test Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-reports-${{ matrix.os }}-${{ matrix.java }}
@@ -51,7 +51,7 @@ jobs:
           arguments: jlinkZip
 
       - name: Save Image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: image-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.distribution }}
           path: '*/build/image.zip'
