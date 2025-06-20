@@ -15,11 +15,11 @@ dependencies {
     implementation 'io.github.ititus:ddsfx:3.1.0'
     implementation 'io.github.ititus:ititus-commons:2.3.3'
 
-    implementation 'org.eclipse.collections:eclipse-collections-api:11.1.0'
-    implementation 'org.eclipse.collections:eclipse-collections:11.1.0'
-    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:11.1.0'
+    implementation 'org.eclipse.collections:eclipse-collections-api:12.0.0'
+    implementation 'org.eclipse.collections:eclipse-collections:12.0.0'
+    implementation 'org.eclipse.collections:eclipse-collections-forkjoin:12.0.0'
 
-    // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:11.1.0'
+    //testImplementation 'org.eclipse.collections:eclipse-collections-testutils:12.0.0'
 }
 
 run {
@@ -32,83 +32,17 @@ run {
 }
 
 javafx {
-    version = '19'
+    version = '23.0.2'
     modules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
 }
 
 jlink {
-    options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--compress', '2']
+    options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--ignore-signing-information']
     launcher {
         name = 'stellaris-galaxy-viewer'
         jvmArgs = [
                 '--add-exports=javafx.graphics/com.sun.javafx.iio=io.github.ititus.ddsfx',
                 '--add-exports=javafx.graphics/com.sun.javafx.iio.common=io.github.ititus.ddsfx'
         ]
-    }
-    mergedModule {
-        requires 'java.logging'
-
-        uses 'org.eclipse.collections.api.factory.bag.ImmutableBagFactory'
-        provides 'org.eclipse.collections.api.factory.bag.ImmutableBagFactory' with 'org.eclipse.collections.impl.bag.immutable.ImmutableBagFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.bag.MutableBagFactory'
-        provides 'org.eclipse.collections.api.factory.bag.MutableBagFactory' with 'org.eclipse.collections.impl.bag.mutable.MutableBagFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.bag.sorted.ImmutableSortedBagFactory'
-        provides 'org.eclipse.collections.api.factory.bag.sorted.ImmutableSortedBagFactory' with 'org.eclipse.collections.impl.bag.sorted.immutable.ImmutableSortedBagFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.bag.sorted.MutableSortedBagFactory'
-        provides 'org.eclipse.collections.api.factory.bag.sorted.MutableSortedBagFactory' with 'org.eclipse.collections.impl.bag.sorted.mutable.MutableSortedBagFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.bimap.ImmutableBiMapFactory'
-        provides 'org.eclipse.collections.api.factory.bimap.ImmutableBiMapFactory' with 'org.eclipse.collections.impl.bimap.immutable.ImmutableBiMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.bimap.MutableBiMapFactory'
-        provides 'org.eclipse.collections.api.factory.bimap.MutableBiMapFactory' with 'org.eclipse.collections.impl.bimap.mutable.MutableBiMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.list.FixedSizeListFactory'
-        provides 'org.eclipse.collections.api.factory.list.FixedSizeListFactory' with 'org.eclipse.collections.impl.list.fixed.FixedSizeListFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.list.ImmutableListFactory'
-        provides 'org.eclipse.collections.api.factory.list.ImmutableListFactory' with 'org.eclipse.collections.impl.list.immutable.ImmutableListFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.list.MutableListFactory'
-        provides 'org.eclipse.collections.api.factory.list.MutableListFactory' with 'org.eclipse.collections.impl.list.mutable.MutableListFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.map.FixedSizeMapFactory'
-        provides 'org.eclipse.collections.api.factory.map.FixedSizeMapFactory' with 'org.eclipse.collections.impl.map.fixed.FixedSizeMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.map.ImmutableMapFactory'
-        provides 'org.eclipse.collections.api.factory.map.ImmutableMapFactory' with 'org.eclipse.collections.impl.map.immutable.ImmutableMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.map.MutableMapFactory'
-        provides 'org.eclipse.collections.api.factory.map.MutableMapFactory' with 'org.eclipse.collections.impl.map.mutable.MutableMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.map.sorted.ImmutableSortedMapFactory'
-        provides 'org.eclipse.collections.api.factory.map.sorted.ImmutableSortedMapFactory' with 'org.eclipse.collections.impl.map.sorted.immutable.ImmutableSortedMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.map.sorted.MutableSortedMapFactory'
-        provides 'org.eclipse.collections.api.factory.map.sorted.MutableSortedMapFactory' with 'org.eclipse.collections.impl.map.sorted.mutable.MutableSortedMapFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.set.FixedSizeSetFactory'
-        provides 'org.eclipse.collections.api.factory.set.FixedSizeSetFactory' with 'org.eclipse.collections.impl.set.fixed.FixedSizeSetFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.set.ImmutableSetFactory'
-        provides 'org.eclipse.collections.api.factory.set.ImmutableSetFactory' with 'org.eclipse.collections.impl.set.immutable.ImmutableSetFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.set.MutableSetFactory'
-        provides 'org.eclipse.collections.api.factory.set.MutableSetFactory' with 'org.eclipse.collections.impl.set.mutable.MutableSetFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.set.sorted.ImmutableSortedSetFactory'
-        provides 'org.eclipse.collections.api.factory.set.sorted.ImmutableSortedSetFactory' with 'org.eclipse.collections.impl.set.sorted.immutable.ImmutableSortedSetFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.set.sorted.MutableSortedSetFactory'
-        provides 'org.eclipse.collections.api.factory.set.sorted.MutableSortedSetFactory' with 'org.eclipse.collections.impl.set.sorted.mutable.MutableSortedSetFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.stack.ImmutableStackFactory'
-        provides 'org.eclipse.collections.api.factory.stack.ImmutableStackFactory' with 'org.eclipse.collections.impl.stack.immutable.ImmutableStackFactoryImpl'
-
-        uses 'org.eclipse.collections.api.factory.stack.MutableStackFactory'
-        provides 'org.eclipse.collections.api.factory.stack.MutableStackFactory' with 'org.eclipse.collections.impl.stack.mutable.MutableStackFactoryImpl'
     }
 }
