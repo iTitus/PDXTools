@@ -10,7 +10,7 @@ dependencies {
     implementation 'org.eclipse.collections:eclipse-collections-api:13.0.0'
     implementation 'org.eclipse.collections:eclipse-collections:13.0.0'
     implementation 'org.eclipse.collections:eclipse-collections-forkjoin:13.0.0'
-    implementation 'io.github.java-diff-utils:java-diff-utils:4.15'
+    implementation 'io.github.java-diff-utils:java-diff-utils:4.16'
 
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:13.0.0'
 }
