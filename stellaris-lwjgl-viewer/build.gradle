@@ -1,7 +1,7 @@
 plugins {
     id 'pdx.java-application-conventions'
     id 'org.javamodularity.moduleplugin' version '1.8.15'
-    id 'org.beryx.jlink' version '3.1.1'
+    id 'org.beryx.jlink' version '3.1.2'
 }
 
 import org.gradle.internal.os.OperatingSystem
