@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ModelViewer" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="io.github.ititus.stellaris.viewer.ModelViewer" />
+  <configuration default="false" name="Main (Stellaris Viewer)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.github.ititus.stellaris.viewer.Main" />
     <module name="pdx.stellaris-jfx-galaxy-viewer.main" />
     <method v="2">
       <option name="Make" enabled="true" />

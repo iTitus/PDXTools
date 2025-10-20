@@ -13,8 +13,8 @@ public class DefaultShaderProgram extends ShaderProgram<DefaultShaderProgram> {
 
     public DefaultShaderProgram() {
         super(
-                new VertexShader(new FileShaderSource(PATH + VertexShader.EXTENSION)),
-                new FragmentShader(new FileShaderSource(PATH + FragmentShader.EXTENSION))
+                new VertexShader(new ResourceShaderSource(PATH + VertexShader.EXTENSION)),
+                new FragmentShader(new ResourceShaderSource(PATH + FragmentShader.EXTENSION))
         );
     }
 

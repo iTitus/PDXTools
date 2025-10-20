@@ -1,6 +1,5 @@
 plugins {
-    id 'pdx.java-application-conventions'
-    id 'org.javamodularity.moduleplugin' version '1.8.15'
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.beryx.jlink' version '3.1.3'
 }
@@ -12,7 +11,7 @@ application {
 
 dependencies {
     implementation project(':pdx-tools')
-    implementation 'io.github.ititus:ddsfx:3.2.0'
+    implementation 'io.github.ititus:ddsiio:3.2.0'
     implementation 'io.github.ititus:ititus-commons:2.3.3'
 
     implementation 'org.eclipse.collections:eclipse-collections-api:13.0.0'
@@ -22,17 +21,8 @@ dependencies {
     //testImplementation 'org.eclipse.collections:eclipse-collections-testutils:13.0.0'
 }
 
-run {
-    moduleOptions {
-        addExports = [
-                'javafx.graphics/com.sun.javafx.iio'       : 'io.github.ititus.ddsfx',
-                'javafx.graphics/com.sun.javafx.iio.common': 'io.github.ititus.ddsfx'
-        ]
-    }
-}
-
 javafx {
-    version = '23.0.2'
+    version = '25'
     modules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
 }
 
@@ -40,9 +30,5 @@ jlink {
     options = ['--strip-debug', '--no-header-files', '--no-man-pages', '--ignore-signing-information']
     launcher {
         name = 'stellaris-galaxy-viewer'
-        jvmArgs = [
-                '--add-exports=javafx.graphics/com.sun.javafx.iio=io.github.ititus.ddsfx',
-                '--add-exports=javafx.graphics/com.sun.javafx.iio.common=io.github.ititus.ddsfx'
-        ]
     }
 }

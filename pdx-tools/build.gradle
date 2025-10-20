@@ -1,6 +1,5 @@
 plugins {
-    id 'pdx.java-library-conventions'
-    id 'org.javamodularity.moduleplugin' version '1.8.15'
+    id 'java-library'
 }
 
 dependencies {

@@ -4,7 +4,6 @@ import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.commons.math.vector.Vec2f;
 import io.github.ititus.commons.math.vector.Vec3f;
 import io.github.ititus.commons.math.vector.Vec3i;
-import io.github.ititus.ddsfx.DdsFx;
 import io.github.ititus.pdx.pdxasset.IPdxAsset;
 import io.github.ititus.pdx.pdxasset.PdxMesh;
 import javafx.animation.Animation;
@@ -97,7 +96,6 @@ public class ModelViewer extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        DdsFx.setup();
     }
 
     @Override
