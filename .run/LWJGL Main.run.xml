@@ -2,7 +2,7 @@
   <configuration default="false" name="LWJGL Main" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="io.github.ititus.stellaris.lwjgl.viewer.Main" />
     <module name="pdx.stellaris-lwjgl-viewer.main" />
-    <option name="VM_PARAMETERS" value="-Xmx4G -Dorg.lwjgl.util.Debug=true -Dorg.lwjgl.util.DebugLoader=true" />
+    <option name="VM_PARAMETERS" value="-Xmx4G -Dorg.lwjgl.util.Debug=true -Dorg.lwjgl.util.DebugLoader=true --patch-module io.github.ititus.stellaris.lwjgl.viewer=stellaris-lwjgl-viewer/out/production/resources" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
