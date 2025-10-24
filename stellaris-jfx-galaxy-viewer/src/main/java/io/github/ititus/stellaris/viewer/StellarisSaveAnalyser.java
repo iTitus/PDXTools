@@ -5,6 +5,7 @@ import io.github.ititus.commons.math.time.StopWatch;
 import io.github.ititus.pdx.stellaris.game.StellarisGame;
 import io.github.ititus.pdx.stellaris.user.StellarisUserData;
 import io.github.ititus.pdx.stellaris.user.save.StellarisSave;
+import io.github.ititus.valve_tools.steam_api.SteamInstallation;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
@@ -20,7 +21,7 @@ public class StellarisSaveAnalyser implements Runnable {
 
     private static final Path USER_HOME = Path.of(System.getProperty("user.home"));
     private static final Path USER_DATA_DIR = USER_HOME.resolve("Documents/Paradox Interactive/Stellaris");
-    private static final Path INSTALL_DIR = Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris");
+    private static final Path INSTALL_DIR = SteamInstallation.find().getInstallationDir(281990).orElseThrow();
 
     private static final String SAVE_FOLDER = "mpthorquellalliance_-677535411";
     private static final String SAVE_GAME = "2352.09.22";

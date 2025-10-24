@@ -6,6 +6,7 @@ import io.github.ititus.commons.math.vector.Vec3f;
 import io.github.ititus.commons.math.vector.Vec3i;
 import io.github.ititus.pdx.pdxasset.IPdxAsset;
 import io.github.ititus.pdx.pdxasset.PdxMesh;
+import io.github.ititus.valve_tools.steam_api.SteamInstallation;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -38,7 +39,7 @@ import java.util.List;
 
 public class ModelViewer extends Application {
 
-    private static final Path INSTALL_DIR = PathUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"));
+    private static final Path INSTALL_DIR = PathUtil.resolveRealDir(SteamInstallation.find().getInstallationDir(281990).orElseThrow());
     private static final Path OUT_DIR = PathUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
     private static final String[] IMAGES = {
             /* A8R8G8B8 */

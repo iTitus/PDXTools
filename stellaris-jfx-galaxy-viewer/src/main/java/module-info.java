@@ -8,6 +8,7 @@ module io.github.ititus.stellaris.viewer {
     requires javafx.base;
     requires javafx.controls;
     requires javafx.graphics;
+    requires io.github.ititus.valve_tools.steam_api;
 
     exports io.github.ititus.stellaris.viewer;
     exports io.github.ititus.stellaris.viewer.view;

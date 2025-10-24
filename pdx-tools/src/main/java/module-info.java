@@ -6,6 +6,7 @@ module io.github.ititus.pdx {
     requires org.eclipse.collections.api;
     requires org.eclipse.collections.impl;
     requires io.github.javadiffutils;
+    requires io.github.ititus.valve_tools.steam_api;
 
     exports io.github.ititus.pdx;
     exports io.github.ititus.pdx.pdxasset;

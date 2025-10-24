@@ -5,9 +5,10 @@ import io.github.ititus.commons.io.PathFilter;
 import io.github.ititus.commons.io.PathUtil;
 import io.github.ititus.commons.math.time.DurationFormatter;
 import io.github.ititus.commons.math.time.StopWatch;
-import io.github.ititus.dds.D3dFormat;
 import io.github.ititus.dds.DdsFile;
 import io.github.ititus.dds.DdsHeader;
+import io.github.ititus.dds.PixelFormat;
+import io.github.ititus.valve_tools.steam_api.SteamInstallation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,7 +25,7 @@ public class ReadADdsFile {
 
     private static final Path LOG_FILE = PathUtil.createParentsAndResolveFile(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds.log"));
     private static final Path OUT_DIR = PathUtil.createOrResolveRealDir(Path.of(System.getProperty("user.home"), "Desktop/pdx/dds_out"));
-    private static final Path INSTALL_DIR = PathUtil.resolveRealDir(Path.of("C:/Program Files (x86)/Steam/steamapps/common/Stellaris"));
+    private static final Path INSTALL_DIR = PathUtil.resolveRealDir(SteamInstallation.find().getInstallationDir(281990).orElseThrow());
     private static final PathFilter FILTER = new FileExtensionFilter("dds");
 
     private final List<String> log = new ArrayList<>();
@@ -62,13 +63,13 @@ public class ReadADdsFile {
             e.printStackTrace();
         }
 
-        try {
+        /*try {
             StopWatch s = StopWatch.createRunning();
             convertSampleImages();
             logWithPrint("Converted some dds files in " + DurationFormatter.format(s.stop()));
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         /*try {
             StopWatch s = StopWatch.createRunning();
@@ -89,11 +90,11 @@ public class ReadADdsFile {
         }
 
         Map<DdsHeader, List<Path>> headers = new LinkedHashMap<>();
-        Map<D3dFormat, List<Path>> formats = new LinkedHashMap<>();
+        Map<PixelFormat, List<Path>> formats = new LinkedHashMap<>();
         Map<Type, List<Path>> types = new LinkedHashMap<>();
         for (Path p : files) {
             try {
-                if (Files.size(p) == 0) {
+                if (Files.size(p) < (DdsHeader.SIZE + 4)) {
                     continue;
                 }
             } catch (IOException e) {
@@ -107,13 +108,9 @@ public class ReadADdsFile {
                 throw new UncheckedIOException(e);
             }
 
-            if (dds.isDxt10()) {
-                throw new RuntimeException("dds file contains unexpected dxt10 header");
-            }
-
-            headers.computeIfAbsent(dds.header(), k -> new ArrayList<>()).add(p);
-            formats.computeIfAbsent(dds.d3dFormat(), k -> new ArrayList<>()).add(p);
-            types.computeIfAbsent(dds.isCubemap() ? (dds.hasMipmaps() ? Type.CUBEMAP_MIPPED : Type.CUBEMAP) : dds.isVolumeTexture() ? (dds.hasMipmaps() ? Type.VOLUME_MIPPED : Type.VOLUME) : (dds.hasMipmaps() ? Type.FLAT_MIPPED : Type.FLAT), k -> new ArrayList<>()).add(p);
+            headers.computeIfAbsent(dds.header(), _ -> new ArrayList<>()).add(p);
+            formats.computeIfAbsent(dds.derivePixelFormat(), _ -> new ArrayList<>()).add(p);
+            types.computeIfAbsent(dds.isCubemap() ? (dds.hasMipmaps() ? Type.CUBEMAP_MIPPED : Type.CUBEMAP) : dds.isVolumeTexture() ? (dds.hasMipmaps() ? Type.VOLUME_MIPPED : Type.VOLUME) : (dds.hasMipmaps() ? Type.FLAT_MIPPED : Type.FLAT), _ -> new ArrayList<>()).add(p);
         }
 
         log("\n\n");
@@ -135,7 +132,7 @@ public class ReadADdsFile {
         log("#".repeat(120));
         log("");
         formats.entrySet().stream()
-                .sorted(Comparator.comparingInt((Map.Entry<D3dFormat, List<Path>> e) -> e.getValue().size()).reversed())
+                .sorted(Comparator.comparingInt((Map.Entry<PixelFormat, List<Path>> e) -> e.getValue().size()).reversed())
                 .forEachOrdered(e -> {
                     log("");
                     log("(" + e.getValue().size() + "): " + e.getKey());
