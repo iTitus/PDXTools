@@ -7,11 +7,19 @@ import org.gradle.internal.os.OperatingSystem
 
 def lwjglNatives
 switch (OperatingSystem.current()) {
+    case OperatingSystem.FREE_BSD:
+        lwjglNatives = 'natives-freebsd'
+        break
     case OperatingSystem.LINUX:
+        lwjglNatives = 'natives-linux'
         def osArch = System.getProperty('os.arch')
-        lwjglNatives = osArch.startsWith('arm') || osArch.startsWith('aarch64')
-                ? "natives-linux-${osArch.contains('64') || osArch.startsWith('armv8') ? 'arm64' : 'arm32'}"
-                : 'natives-linux'
+        if (osArch.startsWith('arm') || osArch.startsWith('aarch64')) {
+            lwjglNatives += osArch.contains('64') || osArch.startsWith('armv8') ? '-arm64' : '-arm32'
+        } else if (osArch.startsWith('ppc')) {
+            lwjglNatives += '-ppc64le'
+        } else if (osArch.startsWith('riscv')) {
+            lwjglNatives += '-riscv64'
+        }
         break
     case OperatingSystem.MAC_OS:
         lwjglNatives = System.getProperty('os.arch').startsWith('aarch64') ? 'natives-macos-arm64' : 'natives-macos'
@@ -41,13 +49,14 @@ dependencies {
 
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:13.0.0'
 
-    implementation platform('org.lwjgl:lwjgl-bom:3.3.6')
+    implementation platform('org.lwjgl:lwjgl-bom:3.4.0')
     ['', '-assimp', '-glfw', '-openal', '-opengl', '-stb'].each {
         implementation "org.lwjgl:lwjgl${it}"
         implementation "org.lwjgl:lwjgl${it}::${lwjglNatives}"
     }
 
     implementation 'org.joml:joml:1.10.8'
+    implementation 'org.joml:joml-primitives:1.10.0'
 }
 
 jlink {
