@@ -49,7 +49,7 @@ dependencies {
 
     // testImplementation 'org.eclipse.collections:eclipse-collections-testutils:13.0.0'
 
-    implementation platform('org.lwjgl:lwjgl-bom:3.4.0')
+    implementation platform('org.lwjgl:lwjgl-bom:3.4.1')
     ['', '-assimp', '-glfw', '-openal', '-opengl', '-stb'].each {
         implementation "org.lwjgl:lwjgl${it}"
         implementation "org.lwjgl:lwjgl${it}::${lwjglNatives}"
