@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.beryx.jlink' version '3.2.1'
+    id 'org.beryx.jlink' version '4.0.0'
 }
 
 import org.gradle.internal.os.OperatingSystem
